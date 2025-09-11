@@ -22,6 +22,7 @@ export default {
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
+          glow: "hsl(var(--primary-glow))",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
@@ -46,6 +47,31 @@ export default {
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
+        },
+        // Sistema OIE!
+        production: {
+          DEFAULT: "hsl(var(--production))",
+          foreground: "hsl(var(--production-foreground))",
+          light: "hsl(var(--production-light))",
+        },
+        ready: {
+          DEFAULT: "hsl(var(--ready))",
+          foreground: "hsl(var(--ready-foreground))",
+          light: "hsl(var(--ready-light))",
+        },
+        advertising: {
+          DEFAULT: "hsl(var(--advertising))",
+          foreground: "hsl(var(--advertising-foreground))",
+          light: "hsl(var(--advertising-light))",
+        },
+        "order-card": {
+          DEFAULT: "hsl(var(--order-card))",
+          foreground: "hsl(var(--order-card-foreground))",
+          border: "hsl(var(--order-card-border))",
+        },
+        "last-order": {
+          DEFAULT: "hsl(var(--last-order))",
+          foreground: "hsl(var(--last-order-foreground))",
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
