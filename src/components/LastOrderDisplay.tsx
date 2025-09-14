@@ -56,17 +56,18 @@ export const LastOrderDisplay = ({
         fontSize: `${safeConfig.fontSize}rem`,
         fontFamily: safeConfig.fontFamily,
         color: safeConfig.textColor,
-        backgroundColor: safeConfig.backgroundColor
+        backgroundColor: safeConfig.backgroundColor,
+        marginTop: '8px' // Garante espaço abaixo do título
       }}
       onClick={handleClick}
     >
       <div className="relative h-full flex flex-col items-center justify-center font-bold">
-        <span className="absolute top-2 right-2 w-3 h-3 bg-current rounded-full animate-pulse"></span>
-        <div className="flex flex-col items-center">
+        <span className="absolute top-1 right-1 w-2 h-2 bg-current rounded-full animate-pulse"></span>
+        <div className="flex flex-col items-center gap-0">
           <span>{orderNumber}</span>
           {nickname && (
             <div 
-              className="opacity-90 px-2 leading-none"
+              className="opacity-90 leading-none -mt-1"
               style={{ fontSize: `${nicknameFontSize}rem` }}
             >
               {nickname}

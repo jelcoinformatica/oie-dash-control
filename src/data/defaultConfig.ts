@@ -81,8 +81,11 @@ export const defaultConfig: PanelConfig = {
     rate: 1,
     pitch: 1,
     volume: 0.8,
-    textType: 'name_ready',
-    customText: ''
+    textType: 'name_order_ready',
+    customText: '',
+    repeatEnabled: false,
+    repeatCount: 2,
+    repeatInterval: 15
   },
   autoExpedition: {
     enabled: true,

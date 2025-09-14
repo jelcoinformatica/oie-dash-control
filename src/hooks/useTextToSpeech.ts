@@ -6,12 +6,15 @@ interface TTSConfig {
   rate?: number;
   pitch?: number;
   volume?: number;
-  textType?: 'number_only' | 'name_ready' | 'order_ready' | 'custom';
+  textType?: 'number_only' | 'name_ready' | 'order_ready' | 'name_order_ready' | 'custom';
   customText?: string;
+  repeatEnabled?: boolean;
+  repeatCount?: number;
+  repeatInterval?: number;
 }
 
 export const useTextToSpeech = () => {
-  const speak = useCallback(async (text: string, orderNumber: string, customerName: string, config?: TTSConfig) => {
+  const speak = useCallback(async (text: string, orderNumber: string, customerName: string, config?: TTSConfig, soundFile?: string) => {
     if (!config?.enabled || !text) return;
     
     // Gerar texto baseado no tipo configurado
@@ -30,6 +33,11 @@ export const useTextToSpeech = () => {
         case 'order_ready':
           finalText = `O pedido ${orderNumber} está pronto.`;
           break;
+        case 'name_order_ready':
+          finalText = customerName 
+            ? `${customerName}, o pedido ${orderNumber} está pronto!`
+            : `O pedido ${orderNumber} está pronto!`;
+          break;
         case 'custom':
           finalText = config.customText || text;
           break;
@@ -38,40 +46,78 @@ export const useTextToSpeech = () => {
       }
     }
     
+    const performSpeech = () => {
+      try {
+        if ('speechSynthesis' in window) {
+          const utterance = new SpeechSynthesisUtterance(finalText);
+          
+          // Configurar voz em português-BR
+          const voices = speechSynthesis.getVoices();
+          let selectedVoice = null;
+          
+          if (config.voice) {
+            // Procurar pela voz específica configurada
+            selectedVoice = voices.find(voice => 
+              voice.name.includes(config.voice!) && (voice.lang === 'pt-BR' || voice.lang.includes('pt'))
+            );
+          }
+          
+          // Se não encontrou voz específica, usar primeira voz português-BR disponível
+          if (!selectedVoice) {
+            selectedVoice = voices.find(voice => 
+              voice.lang === 'pt-BR' || voice.lang.includes('pt-BR')
+            ) || voices.find(voice => 
+              voice.name.includes('Portuguese') || voice.lang.includes('pt')
+            );
+          }
+          
+          if (selectedVoice) {
+            utterance.voice = selectedVoice;
+          }
+          
+          utterance.rate = config.rate || 1;
+          utterance.pitch = config.pitch || 1;
+          utterance.volume = config.volume || 0.8;
+          utterance.lang = 'pt-BR'; // Forçar idioma português-BR
+          
+          speechSynthesis.speak(utterance);
+        }
+      } catch (error) {
+        console.error('Erro no Text-to-Speech:', error);
+      }
+    };
+
     try {
-      if ('speechSynthesis' in window) {
-        const utterance = new SpeechSynthesisUtterance(finalText);
-        
-        // Configurar voz em português-BR
-        const voices = speechSynthesis.getVoices();
-        let selectedVoice = null;
-        
-        if (config.voice) {
-          // Procurar pela voz específica configurada
-          selectedVoice = voices.find(voice => 
-            voice.name.includes(config.voice!) && (voice.lang === 'pt-BR' || voice.lang.includes('pt'))
-          );
+      // Tocar som primeiro, se disponível
+      if (soundFile) {
+        const audio = new Audio(soundFile);
+        audio.play().then(() => {
+          // Aguardar som terminar antes de falar
+          audio.addEventListener('ended', performSpeech);
+        }).catch(() => {
+          // Se falhar ao tocar som, falar diretamente
+          performSpeech();
+        });
+      } else {
+        performSpeech();
+      }
+
+      // Implementar repetição se configurado
+      if (config.repeatEnabled && config.repeatCount && config.repeatInterval) {
+        for (let i = 1; i < config.repeatCount; i++) {
+          setTimeout(() => {
+            if (soundFile) {
+              const audio = new Audio(soundFile);
+              audio.play().then(() => {
+                audio.addEventListener('ended', performSpeech);
+              }).catch(() => {
+                performSpeech();
+              });
+            } else {
+              performSpeech();
+            }
+          }, i * config.repeatInterval * 1000);
         }
-        
-        // Se não encontrou voz específica, usar primeira voz português-BR disponível
-        if (!selectedVoice) {
-          selectedVoice = voices.find(voice => 
-            voice.lang === 'pt-BR' || voice.lang.includes('pt-BR')
-          ) || voices.find(voice => 
-            voice.name.includes('Portuguese') || voice.lang.includes('pt')
-          );
-        }
-        
-        if (selectedVoice) {
-          utterance.voice = selectedVoice;
-        }
-        
-        utterance.rate = config.rate || 1;
-        utterance.pitch = config.pitch || 1;
-        utterance.volume = config.volume || 0.8;
-        utterance.lang = 'pt-BR'; // Forçar idioma português-BR
-        
-        speechSynthesis.speak(utterance);
       }
     } catch (error) {
       console.error('Erro no Text-to-Speech:', error);

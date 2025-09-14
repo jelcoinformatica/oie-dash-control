@@ -6,7 +6,7 @@ import { Switch } from './ui/switch';
 import { Slider } from './ui/slider';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { PanelConfig } from '../types/order';
-import { Settings, Palette, Factory, CheckCircle, Monitor, Volume2, Clock, Puzzle, Cog, X, ChevronRight, ChevronDown } from 'lucide-react';
+import { Settings, Palette, Factory, CheckCircle, Monitor, Volume2, Clock, Puzzle, Cog, X, ChevronRight, ChevronDown, Plus, Minus } from 'lucide-react';
 import { cn } from '../lib/utils';
 
 interface ConfigurationPanelProps {
@@ -78,6 +78,22 @@ export const ConfigurationPanel = ({
     cards: false
   });
 
+  const toggleAllSections = () => {
+    const allOpen = Object.values(openSections).every(Boolean);
+    const newState = !allOpen;
+    setOpenSections({
+      background: newState,
+      production: newState,
+      ready: newState,
+      advertising: newState,
+      sounds: newState,
+      tts: newState,
+      autoExpedition: newState,
+      modules: newState,
+      cards: newState
+    });
+  };
+
 
   const toggleSection = (section: string) => {
     setOpenSections(prev => ({
@@ -109,9 +125,20 @@ export const ConfigurationPanel = ({
     >
         <div className="flex items-center justify-between p-3 border-b bg-gray-50/80">
           <h2 className="text-lg font-semibold">Configurações</h2>
-          <Button variant="ghost" size="sm" onClick={onCancel}>
-            <X className="w-4 h-4" />
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={toggleAllSections}
+              className="h-6 w-6 p-0"
+              title={Object.values(openSections).every(Boolean) ? "Colapsar todas" : "Expandir todas"}
+            >
+              {Object.values(openSections).every(Boolean) ? <Minus className="h-3 w-3" /> : <Plus className="h-3 w-3" />}
+            </Button>
+            <Button variant="ghost" size="sm" onClick={onCancel}>
+              <X className="w-4 h-4" />
+            </Button>
+          </div>
         </div>
 
         {/* Content */}
@@ -504,6 +531,45 @@ export const ConfigurationPanel = ({
                 <Label className="text-xs">Destacar Último Pedido</Label>
               </div>
             </div>
+
+            {/* Configurações de Repetição */}
+            <div className="space-y-4">
+              <div className="flex items-center space-x-2">
+                <Switch
+                  checked={config.textToSpeech.repeatEnabled || false}
+                  onCheckedChange={(checked) => updateConfig('textToSpeech.repeatEnabled', checked)}
+                  className="scale-50"
+                />
+                <Label className="text-xs">Repetir fala</Label>
+              </div>
+
+              {config.textToSpeech.repeatEnabled && (
+                <div className="grid grid-cols-2 gap-4 ml-4">
+                  <div className="space-y-1">
+                    <Label className="text-xs">Repetições</Label>
+                    <Input
+                      type="number"
+                      min="1"
+                      max="10"
+                      value={config.textToSpeech.repeatCount || 2}
+                      onChange={(e) => updateConfig('textToSpeech.repeatCount', parseInt(e.target.value))}
+                      className="h-8 text-xs"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <Label className="text-xs">Intervalo (segundos)</Label>
+                    <Input
+                      type="number"
+                      min="5"
+                      max="60"
+                      value={config.textToSpeech.repeatInterval || 15}
+                      onChange={(e) => updateConfig('textToSpeech.repeatInterval', parseInt(e.target.value))}
+                      className="h-8 text-xs"
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </ConfigSection>
 
@@ -580,20 +646,22 @@ export const ConfigurationPanel = ({
           onToggle={() => toggleSection('sounds')}
           colorClass="text-yellow-600"
         >
-          <div className="flex items-center space-x-2">
-            <Switch
-              checked={config.sounds.production}
-              onCheckedChange={(checked) => updateConfig('sounds.production', checked)}
-            />
-            <Label className="text-sm">Som para Produção</Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <Switch
-              checked={config.sounds.ready}
-              onCheckedChange={(checked) => updateConfig('sounds.ready', checked)}
-            />
-            <Label className="text-sm">Som para Pronto</Label>
-          </div>
+            <div className="flex items-center space-x-2">
+              <Switch
+                checked={config.sounds.production}
+                onCheckedChange={(checked) => updateConfig('sounds.production', checked)}
+                className="scale-50"
+              />
+              <Label className="text-sm">Som para Produção</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Switch
+                checked={config.sounds.ready}
+                onCheckedChange={(checked) => updateConfig('sounds.ready', checked)}
+                className="scale-50"
+              />
+              <Label className="text-sm">Som para Pronto</Label>
+            </div>
         </ConfigSection>
 
         {/* Auto Expedição */}
@@ -608,6 +676,7 @@ export const ConfigurationPanel = ({
             <Switch
               checked={config.autoExpedition.enabled}
               onCheckedChange={(checked) => updateConfig('autoExpedition.enabled', checked)}
+              className="scale-50"
             />
             <Label className="text-sm">Utilizar Auto Expedição</Label>
           </div>
@@ -636,6 +705,7 @@ export const ConfigurationPanel = ({
               <Switch
                 checked={config.textToSpeech.enabled}
                 onCheckedChange={(checked) => updateConfig('textToSpeech.enabled', checked)}
+                className="scale-50"
               />
               <Label className="text-xs">Ativar Voz</Label>
             </div>
@@ -669,6 +739,7 @@ export const ConfigurationPanel = ({
                       <SelectItem value="number_only">Só Número</SelectItem>
                       <SelectItem value="name_ready">[Nome], seu pedido está pronto!</SelectItem>
                       <SelectItem value="order_ready">O pedido [número] está pronto.</SelectItem>
+                      <SelectItem value="name_order_ready">[Nome], o pedido [número] está pronto!</SelectItem>
                       <SelectItem value="custom">Texto Personalizado</SelectItem>
                     </SelectContent>
                   </Select>
@@ -719,6 +790,45 @@ export const ConfigurationPanel = ({
                     />
                   </div>
                 )}
+
+                {/* Configurações de Repetição */}
+                <div className="space-y-4 pt-2 border-t border-gray-200">
+                  <div className="flex items-center space-x-2">
+                    <Switch
+                      checked={config.textToSpeech.repeatEnabled || false}
+                      onCheckedChange={(checked) => updateConfig('textToSpeech.repeatEnabled', checked)}
+                      className="scale-50"
+                    />
+                    <Label className="text-xs">Repetir fala</Label>
+                  </div>
+
+                  {config.textToSpeech.repeatEnabled && (
+                    <div className="grid grid-cols-2 gap-4 ml-4">
+                      <div className="space-y-1">
+                        <Label className="text-xs">Repetições</Label>
+                        <Input
+                          type="number"
+                          min="1"
+                          max="10"
+                          value={config.textToSpeech.repeatCount || 2}
+                          onChange={(e) => updateConfig('textToSpeech.repeatCount', parseInt(e.target.value))}
+                          className="h-8 text-xs"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <Label className="text-xs">Intervalo (s)</Label>
+                        <Input
+                          type="number"
+                          min="5"
+                          max="60"
+                          value={config.textToSpeech.repeatInterval || 15}
+                          onChange={(e) => updateConfig('textToSpeech.repeatInterval', parseInt(e.target.value))}
+                          className="h-8 text-xs"
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
               </>
             )}
           </div>
@@ -737,36 +847,36 @@ export const ConfigurationPanel = ({
               <Switch
                 checked={config.modules.balcao}
                 onCheckedChange={(checked) => updateConfig('modules.balcao', checked)}
-                className="scale-75"
+                className="scale-50"
               />
-              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+              <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
               <Label className="text-xs">Balcão</Label>
             </div>
             <div className="flex items-center space-x-2">
               <Switch
                 checked={config.modules.mesa}
                 onCheckedChange={(checked) => updateConfig('modules.mesa', checked)}
-                className="scale-75"
+                className="scale-50"
               />
-              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+              <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
               <Label className="text-xs">Mesa</Label>
             </div>
             <div className="flex items-center space-x-2">
               <Switch
                 checked={config.modules.entrega}
                 onCheckedChange={(checked) => updateConfig('modules.entrega', checked)}
-                className="scale-75"
+                className="scale-50"
               />
-              <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+              <div className="w-1.5 h-1.5 bg-red-500 rounded-full"></div>
               <Label className="text-xs">Entrega</Label>
             </div>
             <div className="flex items-center space-x-2">
               <Switch
                 checked={config.modules.ficha}
                 onCheckedChange={(checked) => updateConfig('modules.ficha', checked)}
-                className="scale-75"
+                className="scale-50"
               />
-              <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+              <div className="w-1.5 h-1.5 bg-purple-500 rounded-full"></div>
               <Label className="text-xs">Ficha</Label>
             </div>
           </div>

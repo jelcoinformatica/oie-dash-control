@@ -10,8 +10,11 @@ interface TTSConfig {
   rate?: number;
   pitch?: number;
   volume?: number;
-  textType?: 'number_only' | 'name_ready' | 'order_ready' | 'custom';
+  textType?: 'number_only' | 'name_ready' | 'order_ready' | 'name_order_ready' | 'custom';
   customText?: string;
+  repeatEnabled?: boolean;
+  repeatCount?: number;
+  repeatInterval?: number;
 }
 
 export const useOrders = (ttsConfig?: TTSConfig) => {
