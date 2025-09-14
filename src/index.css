@@ -140,6 +140,32 @@
 
   body {
     @apply bg-background text-foreground font-sans;
+    overflow: hidden; /* Remove a barra de rolagem do body */
+  }
+
+  /* Remove scroll global */
+  html {
+    overflow: hidden;
+    scrollbar-width: none;
+  }
+
+  /* Personalização da barra de rolagem (se necessário) */
+  ::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: transparent;
+  }
+
+  /* Garante que divs com overflow hidden não mostram scroll */
+  * {
+    scrollbar-width: none;
+  }
+
+  *::-webkit-scrollbar {
+    display: none;
   }
 
   /* Animações personalizadas */

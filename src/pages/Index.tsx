@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useOrders } from '../hooks/useOrders';
 import { OrderColumn } from '../components/OrderColumn';
 import { OrderCard } from '../components/OrderCard';
+import { OrderColumnGrid } from '../components/OrderColumnGrid';
 import { LastOrderDisplay } from '../components/LastOrderDisplay';
 import { AdvertisingColumn } from '../components/AdvertisingColumn';
 import { ControlPanel } from '../components/ControlPanel';
@@ -111,37 +112,6 @@ const Index = () => {
     };
   };
   
-  const getSmartColumnCount = (fontSize: number, containerWidth: number, containerHeight: number = 400) => {
-    // Calcular dimensões baseadas no tamanho da fonte
-    const baseFontSize = 16; // 1rem = 16px
-    const actualFontSize = fontSize * baseFontSize;
-    
-    // Dimensões mínimas do card baseadas na fonte
-    const minCardWidth = Math.max(80, actualFontSize * 4); // Mínimo para 4 dígitos + padding
-    const minCardHeight = Math.max(60, actualFontSize * 2.5); // Altura baseada na fonte
-    
-    // Espaçamento e padding
-    const gap = 4;
-    const containerPadding = 16; // 8px de cada lado
-    
-    // Espaço disponível
-    const availableWidth = containerWidth - containerPadding;
-    const availableHeight = containerHeight - containerPadding;
-    
-    // Calcular máximo de colunas e linhas que cabem
-    const maxColumns = Math.floor((availableWidth + gap) / (minCardWidth + gap));
-    const maxRows = Math.floor((availableHeight + gap) / (minCardHeight + gap));
-    
-    // Otimizar para usar o máximo do espaço - priorizar mais colunas
-    let optimalColumns = Math.max(1, maxColumns);
-    
-    // Limites baseados no tamanho da fonte para evitar cards muito pequenos
-    if (fontSize >= 2.0) optimalColumns = Math.min(optimalColumns, 3);
-    else if (fontSize >= 1.5) optimalColumns = Math.min(optimalColumns, 4);
-    else optimalColumns = Math.min(optimalColumns, 6);
-    
-    return optimalColumns;
-  };
   
   const columnWidths = getColumnWidths();
 
@@ -169,11 +139,7 @@ const Index = () => {
                 textColor: config.production.cardConfig.textColor,
                 backgroundColor: config.production.cardConfig.backgroundColor
               }}
-              smartColumns={getSmartColumnCount(
-                config.production.cardConfig.fontSize, 
-                window.innerWidth * (columnWidths.production / 100),
-                window.innerHeight - 100 // Altura disponível menos header e footer
-              )}
+              columns={config.production.cardConfig.columns}
               showBorder={config.production.showBorder}
             />
           </div>
@@ -211,43 +177,20 @@ const Index = () => {
             
             {/* Cards de Pedidos Prontos sem Scroll */}
             <div className="flex-1 bg-gray-50 p-2" style={{ overflow: 'hidden' }}>
-              <div 
-                className="grid gap-1 h-full"
-                style={{ 
-                  gridTemplateColumns: `repeat(${getSmartColumnCount(
-                    config.ready.cardConfig.fontSize, 
-                    window.innerWidth * (columnWidths.ready / 100),
-                    window.innerHeight - 150 // Altura disponível menos header, último pedido e footer
-                  )}, 1fr)`,
-                  gridAutoRows: `minmax(${Math.max(60, config.ready.cardConfig.fontSize * 50)}px, auto)`,
-                  overflow: 'hidden'
+              <OrderColumnGrid
+                orders={readyOrders}
+                columns={config.ready.cardConfig.columns}
+                onOrderClick={(order) => expedite(order.numeroPedido || order.number || '')}
+                showNickname={config.ready?.cardConfig?.showNickname ?? true}
+                showItems={config.ready?.cardConfig?.showItems ?? true}
+                enabledModules={config.modules}
+                cardConfig={{
+                  fontSize: config.ready?.cardConfig?.fontSize,
+                  fontFamily: config.ready?.cardConfig?.fontFamily,
+                  textColor: config.ready?.cardConfig?.textColor,
+                  backgroundColor: config.ready?.cardConfig?.backgroundColor
                 }}
-              >
-                {readyOrders.map((order) => (
-                  <OrderCard
-                    key={order.id}
-                    order={order}
-                    onClick={() => expedite(order.numeroPedido || order.number || '')}
-                    className="flex-shrink-0"
-                    showNickname={config.ready?.cardConfig?.showNickname ?? true}
-                    showItems={config.ready?.cardConfig?.showItems ?? true}
-                    enabledModules={config.modules}
-                    fontSize={config.ready?.cardConfig?.fontSize}
-                    fontFamily={config.ready?.cardConfig?.fontFamily}
-                    textColor={config.ready?.cardConfig?.textColor}
-                    backgroundColor={config.ready?.cardConfig?.backgroundColor}
-                  />
-                ))}
-              </div>
-              
-              {readyOrders.length === 0 && !lastOrderNumber && (
-                <div className="flex items-center justify-center h-32 text-muted-foreground">
-                  <div className="text-center">
-                    <div className="text-2xl mb-2">✅</div>
-                    <p>Nenhum pedido pronto</p>
-                  </div>
-                </div>
-              )}
+              />
             </div>
           </div>
         </div>

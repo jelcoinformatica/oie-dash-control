@@ -1,5 +1,6 @@
 import { Order } from '../types/order';
 import { OrderCard } from './OrderCard';
+import { OrderColumnGrid } from './OrderColumnGrid';
 import { cn } from '../lib/utils';
 
 interface OrderColumnProps {
@@ -27,7 +28,7 @@ interface OrderColumnProps {
     textColor?: string;
     backgroundColor?: string;
   };
-  smartColumns: number;
+  columns: number;
   showBorder?: boolean;
 }
 
@@ -61,7 +62,7 @@ export const OrderColumn = ({
   headerHeight = 48,
   enabledModules,
   cardConfig,
-  smartColumns,
+  columns,
   showBorder = false
 }: OrderColumnProps) => {
   return (
@@ -93,39 +94,15 @@ export const OrderColumn = ({
         </div>
         
         <div className="flex-1 p-2 bg-gray-50" style={{ overflow: 'hidden' }}>
-          <div 
-            className="grid gap-1 h-full"
-            style={{ 
-              gridTemplateColumns: `repeat(${smartColumns}, 1fr)`,
-              gridAutoRows: `minmax(${Math.max(60, (cardConfig?.fontSize || 1.2) * 50)}px, auto)`,
-              overflow: 'hidden'
-            }}
-          >
-            {orders.map((order) => (
-              <OrderCard
-                key={order.id}
-                order={order}
-                onClick={() => onOrderClick?.(order)}
-                className="flex-shrink-0"
-                showNickname={showNickname}
-                showItems={showItems}
-                enabledModules={enabledModules}
-                fontSize={cardConfig?.fontSize}
-                fontFamily={cardConfig?.fontFamily}
-                textColor={cardConfig?.textColor}
-                backgroundColor={cardConfig?.backgroundColor}
-              />
-            ))}
-          </div>
-          
-          {orders.length === 0 && (
-            <div className="flex items-center justify-center h-32 text-muted-foreground">
-              <div className="text-center">
-                <div className="text-2xl mb-2">📋</div>
-                <p>Nenhum pedido</p>
-              </div>
-            </div>
-          )}
+          <OrderColumnGrid
+            orders={orders}
+            columns={columns}
+            onOrderClick={onOrderClick}
+            showNickname={showNickname}
+            showItems={showItems}
+            enabledModules={enabledModules}
+            cardConfig={cardConfig}
+          />
         </div>
       </div>
     </div>

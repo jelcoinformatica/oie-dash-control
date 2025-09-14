@@ -190,8 +190,20 @@ export const ConfigurationPanel = ({
             />
           </div>
 
-          <div className="space-y-3 border-t pt-3">
+            <div className="space-y-3 border-t pt-3">
             <Label className="text-sm font-medium">Configuração dos Cards - Produção</Label>
+            
+            <div>
+              <Label className="text-xs">Colunas: {config.production.cardConfig.columns}</Label>
+              <Slider
+                value={[config.production.cardConfig.columns]}
+                onValueChange={([value]) => updateConfig('production.cardConfig.columns', value)}
+                max={5}
+                min={2}
+                step={1}
+                className="mt-1"
+              />
+            </div>
             
             <div>
               <Label className="text-xs">Tamanho da Fonte: {config.production.cardConfig.fontSize}rem</Label>
@@ -319,6 +331,18 @@ export const ConfigurationPanel = ({
 
           <div className="space-y-3 border-t pt-3">
             <Label className="text-sm font-medium">Configuração dos Cards - Prontos</Label>
+            
+            <div>
+              <Label className="text-xs">Colunas: {config.ready.cardConfig.columns}</Label>
+              <Slider
+                value={[config.ready.cardConfig.columns]}
+                onValueChange={([value]) => updateConfig('ready.cardConfig.columns', value)}
+                max={5}
+                min={2}
+                step={1}
+                className="mt-1"
+              />
+            </div>
             
             <div>
               <Label className="text-xs">Tamanho da Fonte: {config.ready.cardConfig.fontSize}rem</Label>
