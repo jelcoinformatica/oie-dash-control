@@ -34,7 +34,7 @@ const ConfigSection = ({ title, icon, isOpen, onToggle, children, colorClass = "
       className={cn(
         "w-full px-4 py-4 flex items-center justify-between transition-all duration-200",
         isOpen 
-          ? "bg-gradient-to-r from-gray-100 to-gray-200 shadow-md" 
+          ? "bg-gradient-to-r from-blue-50 to-blue-100 shadow-lg border-l-4 border-blue-400" 
           : "bg-white hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100"
       )}
     >
@@ -51,7 +51,7 @@ const ConfigSection = ({ title, icon, isOpen, onToggle, children, colorClass = "
       )}
     </button>
     {isOpen && (
-      <div className="px-6 pb-6 pt-4 space-y-4 bg-gradient-to-b from-gray-50 to-white border-t border-gray-200">
+      <div className="px-6 pb-6 pt-4 space-y-4 bg-gradient-to-b from-blue-25 to-white border-t border-blue-200 shadow-inner">
         {children}
       </div>
     )}
@@ -732,33 +732,41 @@ export const ConfigurationPanel = ({
           onToggle={() => toggleSection('modules')}
           colorClass="text-indigo-600"
         >
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 gap-3">
             <div className="flex items-center space-x-2">
               <Switch
                 checked={config.modules.balcao}
                 onCheckedChange={(checked) => updateConfig('modules.balcao', checked)}
+                className="scale-75"
               />
+              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
               <Label className="text-xs">Balcão</Label>
             </div>
             <div className="flex items-center space-x-2">
               <Switch
                 checked={config.modules.mesa}
                 onCheckedChange={(checked) => updateConfig('modules.mesa', checked)}
+                className="scale-75"
               />
+              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
               <Label className="text-xs">Mesa</Label>
             </div>
             <div className="flex items-center space-x-2">
               <Switch
                 checked={config.modules.entrega}
                 onCheckedChange={(checked) => updateConfig('modules.entrega', checked)}
+                className="scale-75"
               />
+              <div className="w-2 h-2 bg-red-500 rounded-full"></div>
               <Label className="text-xs">Entrega</Label>
             </div>
             <div className="flex items-center space-x-2">
               <Switch
                 checked={config.modules.ficha}
                 onCheckedChange={(checked) => updateConfig('modules.ficha', checked)}
+                className="scale-75"
               />
+              <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
               <Label className="text-xs">Ficha</Label>
             </div>
           </div>

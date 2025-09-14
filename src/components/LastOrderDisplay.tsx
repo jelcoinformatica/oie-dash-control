@@ -41,19 +41,8 @@ export const LastOrderDisplay = ({
     }
   };
 
-  // Calcular tamanho da fonte do apelido baseado no comprimento
-  const calculateNicknameFontSize = (nickname: string, baseFontSize: number) => {
-    if (!nickname) return baseFontSize;
-    
-    const maxChars = 15; // Número máximo de caracteres para tamanho normal
-    if (nickname.length <= maxChars) return baseFontSize;
-    
-    // Reduzir tamanho da fonte proporcionalmente ao comprimento
-    const reduction = Math.min(0.7, maxChars / nickname.length);
-    return baseFontSize * reduction;
-  };
-
-  const nicknameFontSize = nickname ? calculateNicknameFontSize(nickname, 0.8) : 0.8;
+  // Calcular tamanho da fonte do apelido como 50% do número
+  const nicknameFontSize = safeConfig.fontSize * 0.5;
 
   return (
     <div 
@@ -77,7 +66,7 @@ export const LastOrderDisplay = ({
           <span>{orderNumber}</span>
           {nickname && (
             <div 
-              className="opacity-90 mt-1 px-2 leading-tight"
+              className="opacity-90 px-2 leading-none"
               style={{ fontSize: `${nicknameFontSize}rem` }}
             >
               {nickname}
