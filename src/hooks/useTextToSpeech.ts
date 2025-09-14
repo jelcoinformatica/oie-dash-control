@@ -92,11 +92,13 @@ export const useTextToSpeech = () => {
       if (soundFile) {
         const audio = new Audio(soundFile);
         audio.play().then(() => {
-          // Aguardar som terminar antes de falar
-          audio.addEventListener('ended', performSpeech);
+          // Aguardar som terminar + pausa de 0.5s antes de falar
+          audio.addEventListener('ended', () => {
+            setTimeout(performSpeech, 500);
+          });
         }).catch(() => {
-          // Se falhar ao tocar som, falar diretamente
-          performSpeech();
+          // Se falhar ao tocar som, falar diretamente com pausa
+          setTimeout(performSpeech, 500);
         });
       } else {
         performSpeech();
@@ -109,9 +111,11 @@ export const useTextToSpeech = () => {
             if (soundFile) {
               const audio = new Audio(soundFile);
               audio.play().then(() => {
-                audio.addEventListener('ended', performSpeech);
+                audio.addEventListener('ended', () => {
+                  setTimeout(performSpeech, 500);
+                });
               }).catch(() => {
-                performSpeech();
+                setTimeout(performSpeech, 500);
               });
             } else {
               performSpeech();

@@ -650,7 +650,6 @@ export const ConfigurationPanel = ({
               
               {config.sounds.production && (
                 <div className="ml-6 space-y-2">
-                  <Label className="text-xs">Arquivo de Som (Produção)</Label>
                   <div className="flex gap-2">
                     <Input
                       type="file"
@@ -662,7 +661,7 @@ export const ConfigurationPanel = ({
                           updateConfig('sounds.productionFile', url);
                         }
                       }}
-                      className="text-xs"
+                      className="text-xs bg-muted hover:bg-background border-2 border-dashed"
                     />
                     <Button
                       variant="outline"
@@ -694,7 +693,6 @@ export const ConfigurationPanel = ({
               
               {config.sounds.ready && (
                 <div className="ml-6 space-y-2">
-                  <Label className="text-xs">Arquivo de Som (Pronto)</Label>
                   <div className="flex gap-2">
                     <Input
                       type="file"
@@ -706,7 +704,7 @@ export const ConfigurationPanel = ({
                           updateConfig('sounds.readyFile', url);
                         }
                       }}
-                      className="text-xs"
+                      className="text-xs bg-muted hover:bg-background border-2 border-dashed"
                     />
                     <Button
                       variant="outline"

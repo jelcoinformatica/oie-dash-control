@@ -41,7 +41,7 @@ const Index = () => {
     expeditionLog,
     clearAllOrders,
     generateOrders
-  } = useOrders(ttsConfig, autoExpeditionConfig);
+  } = useOrders(ttsConfig, autoExpeditionConfig, config);
 
   useEffect(() => {
     const savedConfig = localStorage.getItem('oie-config');

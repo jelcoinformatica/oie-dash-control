@@ -22,7 +22,7 @@ interface AutoExpeditionConfig {
   minutes: number;
 }
 
-export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpeditionConfig) => {
+export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpeditionConfig, config?: any) => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [lastOrderNumber, setLastOrderNumber] = useState<string>('');
   const [lastOrderData, setLastOrderData] = useState<Order | null>(null);
@@ -67,7 +67,10 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
         if (newLastOrderNumber !== previousLastOrderNumber.current && previousLastOrderNumber.current !== '' && ttsConfigRef.current?.enabled) {
           const nickname = lastReadyOrder.nomeCliente;
           const textToSpeak = nickname ? `Pedido ${newLastOrderNumber}, ${nickname}` : `Pedido ${newLastOrderNumber}`;
-          speak(textToSpeak, newLastOrderNumber, nickname || '', ttsConfigRef.current);
+          const soundFile = config?.sounds?.ready && config?.sounds?.readyFile 
+            ? config.sounds.readyFile 
+            : undefined;
+          speak(textToSpeak, newLastOrderNumber, nickname || '', ttsConfigRef.current, soundFile);
         }
         
         previousLastOrderNumber.current = newLastOrderNumber;
@@ -104,7 +107,10 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
       if (ttsConfigRef.current?.enabled && newOrderNumber !== previousLastOrderNumber.current) {
         const nickname = updatedOrder.nomeCliente;
         const textToSpeak = nickname ? `Pedido ${newOrderNumber}, ${nickname}` : `Pedido ${newOrderNumber}`;
-        speak(textToSpeak, newOrderNumber, nickname || '', ttsConfigRef.current);
+        const soundFile = autoExpeditionConfigRef.current?.enabled && config?.sounds?.ready && config?.sounds?.readyFile 
+          ? config.sounds.readyFile 
+          : undefined;
+        speak(textToSpeak, newOrderNumber, nickname || '', ttsConfigRef.current, soundFile);
       }
       
       previousLastOrderNumber.current = newOrderNumber;

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Settings, Send } from 'lucide-react';
@@ -17,6 +17,14 @@ export const ControlPanel = ({
   expeditionLog = []
 }: ControlPanelProps) => {
   const [expeditionInput, setExpeditionInput] = useState('');
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // Auto-focus no campo de expedição
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, []);
 
   const handleExpedite = () => {
     if (!expeditionInput.trim()) {
@@ -48,10 +56,15 @@ export const ControlPanel = ({
         <div className="flex-1 flex justify-center">
           <div className="flex items-center gap-1">
             <Input
+              ref={inputRef}
               placeholder="No.Pedido"
               value={expeditionInput}
               onChange={(e) => setExpeditionInput(e.target.value)}
               onKeyPress={handleKeyPress}
+              onBlur={() => {
+                // Re-focus após perder foco (para facilitar uso via teclado)
+                setTimeout(() => inputRef.current?.focus(), 100);
+              }}
               className="w-20 h-5 text-xs text-center placeholder:opacity-30"
             />
             <TooltipProvider>

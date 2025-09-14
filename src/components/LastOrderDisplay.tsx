@@ -67,7 +67,7 @@ export const LastOrderDisplay = ({
             <span className="leading-none">{orderNumber}</span>
             {nickname && (
               <div 
-                className="opacity-90 leading-none -mt-4"
+                className="opacity-90 leading-none -mt-1"
                 style={{ fontSize: `${nicknameFontSize}rem` }}
               >
                 {nickname}

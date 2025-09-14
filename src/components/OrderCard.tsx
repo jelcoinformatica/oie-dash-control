@@ -85,7 +85,7 @@ export const OrderCard = ({
           </div>
           {displayName && showNickname && (
             <div 
-              className="font-medium leading-none -mt-3"
+              className="font-medium leading-none -mt-1"
               style={{ 
                 fontSize: `${fontSize * 0.5}rem`
               }}
