@@ -5,18 +5,23 @@ interface AdvertisingColumnProps {
   imageUrl?: string;
   showHeader?: boolean;
   className?: string;
+  headerHeight?: number;
 }
 
 export const AdvertisingColumn = ({
   title = "PUBLICIDADE",
   imageUrl,
   showHeader = true,
-  className
+  className,
+  headerHeight = 48
 }: AdvertisingColumnProps) => {
   return (
     <div className={cn("flex flex-col h-full", className)}>
       {showHeader && (
-        <div className="bg-advertising text-advertising-foreground px-4 py-3 font-bold text-lg shadow-sm border-b">
+        <div 
+          className="bg-advertising text-advertising-foreground px-4 font-bold text-lg shadow-sm border-b flex items-center"
+          style={{ height: `${headerHeight}px` }}
+        >
           {title}
         </div>
       )}

@@ -168,6 +168,18 @@ export const ConfigurationPanel = ({
             />
           </div>
 
+          <div>
+            <Label className="text-sm font-medium">Altura do Cabeçalho: {config.production.headerHeight}px</Label>
+            <Slider
+              value={[config.production.headerHeight]}
+              onValueChange={([value]) => updateConfig('production.headerHeight', value)}
+              max={80}
+              min={32}
+              step={4}
+              className="mt-1"
+            />
+          </div>
+
           <div className="grid grid-cols-2 gap-2">
             <div>
               <Label className="text-xs">Cor de Fundo</Label>
@@ -223,6 +235,18 @@ export const ConfigurationPanel = ({
               max={60}
               min={10}
               step={1}
+              className="mt-1"
+            />
+          </div>
+
+          <div>
+            <Label className="text-sm font-medium">Altura do Cabeçalho: {config.ready.headerHeight}px</Label>
+            <Slider
+              value={[config.ready.headerHeight]}
+              onValueChange={([value]) => updateConfig('ready.headerHeight', value)}
+              max={80}
+              min={32}
+              step={4}
               className="mt-1"
             />
           </div>
@@ -294,6 +318,18 @@ export const ConfigurationPanel = ({
               max={50}
               min={10}
               step={1}
+              className="mt-1"
+            />
+          </div>
+
+          <div>
+            <Label className="text-sm font-medium">Altura do Cabeçalho: {config.advertising.headerHeight}px</Label>
+            <Slider
+              value={[config.advertising.headerHeight]}
+              onValueChange={([value]) => updateConfig('advertising.headerHeight', value)}
+              max={80}
+              min={32}
+              step={4}
               className="mt-1"
             />
           </div>

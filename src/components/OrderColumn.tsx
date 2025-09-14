@@ -14,6 +14,13 @@ interface OrderColumnProps {
   showItems?: boolean;
   headerBg?: string;
   headerColor?: string;
+  headerHeight?: number;
+  enabledModules?: {
+    balcao: boolean;
+    mesa: boolean;
+    entrega: boolean;
+    ficha: boolean;
+  };
 }
 
 const variantStyles = {
@@ -42,13 +49,15 @@ export const OrderColumn = ({
   showNickname = true,
   showItems = true,
   headerBg,
-  headerColor
+  headerColor,
+  headerHeight = 48,
+  enabledModules
 }: OrderColumnProps) => {
   return (
     <div className={cn("flex flex-col h-full", className)}>
       <div 
         className={cn(
-          "flex items-center justify-between px-4 py-3 font-bold text-lg",
+          "flex items-center justify-between px-4 font-bold text-lg",
           "shadow-sm border-b rounded-t-lg",
           !headerBg && "bg-gray-800",
           !headerColor && "text-white",
@@ -56,7 +65,8 @@ export const OrderColumn = ({
         )}
         style={{
           backgroundColor: headerBg,
-          color: headerColor
+          color: headerColor,
+          height: `${headerHeight}px`
         }}
       >
         <span>{title}</span>
@@ -75,6 +85,7 @@ export const OrderColumn = ({
               className="h-16"
               showNickname={showNickname}
               showItems={showItems}
+              enabledModules={enabledModules}
             />
           ))}
         </div>

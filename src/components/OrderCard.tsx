@@ -7,6 +7,12 @@ interface OrderCardProps {
   className?: string;
   showNickname?: boolean;
   showItems?: boolean;
+  enabledModules?: {
+    balcao: boolean;
+    mesa: boolean;
+    entrega: boolean;
+    ficha: boolean;
+  };
 }
 
 const moduleColors = {
@@ -21,8 +27,12 @@ export const OrderCard = ({
   onClick, 
   className,
   showNickname = true,
-  showItems = true
+  showItems = true,
+  enabledModules
 }: OrderCardProps) => {
+  const enabledModuleCount = enabledModules ? 
+    Object.values(enabledModules).filter(Boolean).length : 0;
+  const showModuleBullet = enabledModuleCount > 1;
   return (
     <div
       className={cn(
@@ -39,11 +49,13 @@ export const OrderCard = ({
         {order.number}
       </span>
       
-      {/* Colored Dot Indicator */}
-      <div className={cn(
-        "w-3 h-3 rounded-full",
-        moduleColors[order.modulo]
-      )} />
+      {/* Colored Dot Indicator - only show when more than 1 module enabled */}
+      {showModuleBullet && (
+        <div className={cn(
+          "w-3 h-3 rounded-full",
+          moduleColors[order.modulo]
+        )} />
+      )}
       
       {/* Hidden optional content */}
       <div className="hidden">

@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
-import { Settings, RefreshCw, Play, Pause } from 'lucide-react';
+import { Settings, RefreshCw, Play, Pause, Send } from 'lucide-react';
 import { toast } from '../hooks/use-toast';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 
 interface ControlPanelProps {
   onConfigClick: () => void;
@@ -45,10 +46,10 @@ export const ControlPanel = ({
 
   return (
     <div className="bg-card border-t shadow-sm">
-      <div className="container mx-auto px-4 py-3">
+      <div className="container mx-auto px-4 py-2">
         <div className="flex items-center justify-between">
-          <div className="text-sm text-muted-foreground">
-            OIE! v.5.0 - Jelco Informática (2025)
+          <div className="text-sm text-muted-foreground text-center flex-1">
+            Pedido
           </div>
           
           <div className="flex items-center gap-3">
@@ -60,13 +61,22 @@ export const ControlPanel = ({
                 onKeyPress={handleKeyPress}
                 className="w-40"
               />
-              <Button 
-                onClick={handleExpedite}
-                size="sm"
-                disabled={!expeditionInput.trim()}
-              >
-                Expedir
-              </Button>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button 
+                      onClick={handleExpedite}
+                      size="sm"
+                      disabled={!expeditionInput.trim()}
+                    >
+                      <Send className="w-4 h-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Expedir pedido</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
             
             <Button

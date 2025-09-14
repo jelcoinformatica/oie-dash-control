@@ -99,7 +99,7 @@ const Index = () => {
       className="h-screen flex flex-col"
       style={{ backgroundColor: config.backgroundColor }}
     >
-      <div className="flex-1 flex gap-4 p-4 overflow-hidden">
+      <div className="flex-1 flex gap-2 pl-2 pr-2 py-4 overflow-hidden">
         {/* Coluna Produção */}
         {config.production.visible && (
           <div 
@@ -117,6 +117,8 @@ const Index = () => {
               showItems={config.cards?.showItems ?? true}
               headerBg={config.production.headerBg}
               headerColor={config.production.headerColor}
+              headerHeight={config.production.headerHeight}
+              enabledModules={config.modules}
             />
           </div>
         )}
@@ -131,8 +133,12 @@ const Index = () => {
           >
             {/* Header Fixo */}
             <div 
-              className="bg-ready text-ready-foreground px-4 py-3 font-bold text-lg shadow-sm border-b flex items-center justify-between flex-shrink-0 rounded-t-lg"
-              style={{ backgroundColor: config.ready.headerBg, color: config.ready.headerColor }}
+              className="bg-ready text-ready-foreground px-4 font-bold text-lg shadow-sm border-b flex items-center justify-between flex-shrink-0 rounded-t-lg"
+              style={{ 
+                backgroundColor: config.ready.headerBg, 
+                color: config.ready.headerColor,
+                height: `${config.ready.headerHeight}px`
+              }}
             >
               <span>{config.ready.title}</span>
               <span className="bg-white/20 px-2 py-1 rounded-full text-sm">
@@ -158,14 +164,15 @@ const Index = () => {
             <div className="flex-1 bg-gray-50 p-4 overflow-y-auto">
               <div className="grid grid-cols-3 gap-2">
                 {readyOrders.map((order) => (
-                  <OrderCard
-                    key={order.id}
-                    order={order}
-                    onClick={() => handleExpedite(order.number)}
-                    className="h-16"
-                    showNickname={config.cards?.showNickname ?? true}
-                    showItems={config.cards?.showItems ?? true}
-                  />
+                    <OrderCard
+                      key={order.id}
+                      order={order}
+                      onClick={() => handleExpedite(order.number)}
+                      className="h-16"
+                      showNickname={config.cards?.showNickname ?? true}
+                      showItems={config.cards?.showItems ?? true}
+                      enabledModules={config.modules}
+                    />
                 ))}
               </div>
               
@@ -193,6 +200,7 @@ const Index = () => {
               title={config.advertising.headerTitle}
               imageUrl={config.advertising.imageUrl}
               showHeader={config.advertising.headerVisible}
+              headerHeight={config.advertising.headerHeight}
             />
           </div>
         )}
