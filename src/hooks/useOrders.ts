@@ -9,6 +9,7 @@ export const useOrders = () => {
   const [lastOrderNumber, setLastOrderNumber] = useState<string>('');
   const [isSimulationActive, setIsSimulationActive] = useState(false);
   const [simulationIntervalId, setSimulationIntervalId] = useState<NodeJS.Timeout | null>(null);
+  const [expeditionLog, setExpeditionLog] = useState<string[]>([]);
 
   const loadOrders = useCallback(async () => {
     try {
@@ -127,6 +128,9 @@ export const useOrders = () => {
       await expediteOrder(order.id);
       setOrders(prev => prev.filter(o => o.id !== order.id));
       
+      // Adicionar ao log de expedição
+      setExpeditionLog(prev => [orderNumber, ...prev].slice(0, 3));
+      
       // Se foi o último pedido expedido, mover o primeiro da coluna ready para último pedido
       if ((order.numeroPedido || order.number) === lastOrderNumber) {
         const remainingReady = orders.filter(o => o.status === 'ready' && o.id !== order.id);
@@ -200,7 +204,11 @@ export const useOrders = () => {
   }, [loadOrders, simulationIntervalId]);
 
   const productionOrders = orders.filter(order => order.status === 'production');
-  const readyOrders = orders.filter(order => order.status === 'ready');
+  // Filtrar pedidos ready que não estão no último pedido
+  const readyOrders = orders.filter(order => 
+    order.status === 'ready' && 
+    (order.numeroPedido || order.number) !== lastOrderNumber
+  );
 
   return {
     orders,
@@ -213,6 +221,7 @@ export const useOrders = () => {
     refresh: loadOrders,
     startSimulation,
     stopSimulation,
-    isSimulationActive
+    isSimulationActive,
+    expeditionLog
   };
 };

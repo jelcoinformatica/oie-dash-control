@@ -27,6 +27,7 @@ interface OrderColumnProps {
     textColor?: string;
     backgroundColor?: string;
   };
+  smartColumns?: number;
 }
 
 const variantStyles = {
@@ -58,7 +59,8 @@ export const OrderColumn = ({
   headerColor,
   headerHeight = 48,
   enabledModules,
-  cardConfig
+  cardConfig,
+  smartColumns = 3
 }: OrderColumnProps) => {
   return (
     <div className={cn("flex flex-col h-full", className)}>
@@ -82,8 +84,13 @@ export const OrderColumn = ({
         </span>
       </div>
       
-      <div className="flex-1 p-4 overflow-hidden bg-gray-50">
-        <div className="grid grid-cols-2 gap-1">
+      <div className="flex-1 p-2 overflow-hidden bg-gray-50">
+        <div 
+          className={`grid gap-1`}
+          style={{ 
+            gridTemplateColumns: `repeat(${smartColumns}, 1fr)` 
+          }}
+        >
           {orders.map((order) => (
             <OrderCard
               key={order.id}

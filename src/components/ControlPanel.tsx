@@ -8,11 +8,13 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/t
 interface ControlPanelProps {
   onConfigClick: () => void;
   onExpedite: (orderNumber: string) => void;
+  expeditionLog?: string[];
 }
 
 export const ControlPanel = ({ 
   onConfigClick, 
-  onExpedite
+  onExpedite,
+  expeditionLog = []
 }: ControlPanelProps) => {
   const [expeditionInput, setExpeditionInput] = useState('');
 
@@ -37,16 +39,20 @@ export const ControlPanel = ({
   };
 
   return (
-    <div className="bg-card border-t shadow-sm" style={{ height: '29px' }}>
-      <div className="container mx-auto px-4 py-0.5 flex items-center justify-between h-full">
+    <div className="bg-card border-t shadow-sm" style={{ height: '20px' }}>
+      <div className="container mx-auto px-2 py-0.5 flex items-center justify-between h-full">
+        <div className="text-xs text-muted-foreground">
+          Oie! v.5.0
+        </div>
+        
         <div className="flex-1 flex justify-center">
           <div className="flex items-center gap-1">
             <Input
-              placeholder="Pedido"
+              placeholder="No.Pedido"
               value={expeditionInput}
               onChange={(e) => setExpeditionInput(e.target.value)}
               onKeyPress={handleKeyPress}
-              className="w-24 h-6 text-xs text-center"
+              className="w-20 h-5 text-xs text-center placeholder:opacity-30"
             />
             <TooltipProvider>
               <Tooltip>
@@ -56,7 +62,7 @@ export const ControlPanel = ({
                     size="sm"
                     disabled={!expeditionInput.trim()}
                     variant="ghost"
-                    className="h-6 w-6 p-0"
+                    className="h-5 w-5 p-0 border-0"
                   >
                     <Send className="w-3 h-3" />
                   </Button>
@@ -66,6 +72,21 @@ export const ControlPanel = ({
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
+            
+            {/* Log visual dos últimos pedidos expedidos */}
+            {expeditionLog.length > 0 && (
+              <div className="flex items-center gap-1 ml-2">
+                {expeditionLog.map((order, index) => (
+                  <span 
+                    key={`${order}-${index}`}
+                    className="text-xs bg-muted px-1 rounded opacity-50"
+                    style={{ opacity: 0.8 - (index * 0.2) }}
+                  >
+                    {order}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
         </div>
         
@@ -73,7 +94,7 @@ export const ControlPanel = ({
           variant="ghost"
           size="sm"
           onClick={onConfigClick}
-          className="h-6 w-6 p-0"
+          className="h-5 w-5 p-0 border-0"
         >
           <Settings className="w-3 h-3" />
         </Button>

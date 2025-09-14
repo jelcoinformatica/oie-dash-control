@@ -66,7 +66,7 @@ export const OrderCard = ({
       {/* Colored Dot Indicator - only show when more than 1 module enabled - top right corner */}
       {showModuleBullet && (
         <div className={cn(
-          "absolute top-0.5 right-0.5 w-1.5 h-1.5 rounded-full",
+          "absolute top-0.5 right-0.5 w-1 h-1 rounded-full",
           moduleColors[order.modulo]
         )} />
       )}

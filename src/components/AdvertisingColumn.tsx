@@ -6,6 +6,9 @@ interface AdvertisingColumnProps {
   showHeader?: boolean;
   className?: string;
   headerHeight?: number;
+  headerBg?: string;
+  headerColor?: string;
+  backgroundColor?: string;
 }
 
 export const AdvertisingColumn = ({
@@ -13,20 +16,30 @@ export const AdvertisingColumn = ({
   imageUrl,
   showHeader = true,
   className,
-  headerHeight = 48
+  headerHeight = 48,
+  headerBg = "#8b5cf6",
+  headerColor = "#ffffff", 
+  backgroundColor = "#ffffff"
 }: AdvertisingColumnProps) => {
   return (
     <div className={cn("flex flex-col h-full", className)}>
       {showHeader && (
-        <div 
-          className="bg-advertising text-advertising-foreground px-4 font-bold text-lg shadow-sm border-b flex items-center"
-          style={{ height: `${headerHeight}px` }}
-        >
-          {title}
-        </div>
+      <div 
+        className="px-4 font-bold text-lg shadow-sm border-b flex items-center"
+        style={{ 
+          height: `${headerHeight}px`,
+          backgroundColor: headerBg,
+          color: headerColor
+        }}
+      >
+        {title}
+      </div>
       )}
       
-      <div className="flex-1 bg-advertising-light/50 p-4 flex flex-col items-center justify-center">
+      <div 
+        className="flex-1 p-4 flex flex-col items-center justify-center"
+        style={{ backgroundColor }}
+      >
         {imageUrl ? (
           <div className="w-full h-full flex items-center justify-center">
             <img

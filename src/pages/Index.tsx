@@ -11,17 +11,17 @@ import { PanelConfig } from '../types/order';
 import { toast } from '../hooks/use-toast';
 
 const Index = () => {
-  const {
-    productionOrders,
-    readyOrders,
-    lastOrderNumber,
-    loading,
-    moveToReady,
+  const { 
+    productionOrders, 
+    readyOrders, 
+    lastOrderNumber, 
+    loading, 
+    moveToReady, 
     expedite,
-    refresh,
     startSimulation,
     stopSimulation,
-    isSimulationActive
+    isSimulationActive,
+    expeditionLog
   } = useOrders();
 
   const [config, setConfig] = useState<PanelConfig>(defaultConfig);
@@ -85,52 +85,58 @@ const Index = () => {
     setConfigOpen(false);
   };
 
-  const handleToggleSimulation = () => {
-    if (isSimulationActive) {
-      stopSimulation();
-    } else {
-      startSimulation();
-    }
+  const getColumnWidths = () => {
+    const production = config.production.visible ? config.production.width : 0;
+    const ready = config.ready.width;
+    const advertising = config.advertising.visible ? config.advertising.width : 0;
+    const total = production + ready + advertising;
+    
+    return {
+      production: production > 0 ? (production / total) * 100 : 0,
+      ready: (ready / total) * 100,
+      advertising: advertising > 0 ? (advertising / total) * 100 : 0
+    };
   };
+  
+  const getSmartColumnCount = (fontSize: number) => {
+    // Se a fonte for muito grande, usar 2 colunas, senão 3
+    return fontSize >= 2.5 ? 2 : 3;
+  };
+  
+  const columnWidths = getColumnWidths();
 
   return (
     <div 
       className="h-screen flex flex-col"
       style={{ backgroundColor: config.backgroundColor }}
     >
-      <div className="flex-1 flex gap-0.5 px-1 py-4 overflow-hidden">
-        {/* Coluna Produção */}
+      <div className="flex-1 flex gap-0.5 p-1 pt-0">
+        {/* Coluna 1 - Produção */}
         {config.production.visible && (
-          <div 
-            className="bg-white rounded-lg shadow-lg border border-gray-300 flex flex-col overflow-hidden"
-            style={{ 
-              width: `${config.production.width}%`
-            }}
-          >
+          <div style={{ width: `${columnWidths.production}%` }}>
             <OrderColumn
               title={config.production.title}
               orders={productionOrders}
-              onOrderClick={handleOrderClick}
+              onOrderClick={(order) => moveToReady(order.id)}
               variant="production"
-              showNickname={config.production?.cardConfig?.showNickname ?? true}
-              showItems={config.production?.cardConfig?.showItems ?? true}
               headerBg={config.production.headerBg}
               headerColor={config.production.headerColor}
               headerHeight={config.production.headerHeight}
               enabledModules={config.modules}
-              cardConfig={config.production?.cardConfig}
+              cardConfig={{
+                fontSize: config.production.cardConfig.fontSize,
+                fontFamily: config.production.cardConfig.fontFamily,
+                textColor: config.production.cardConfig.textColor,
+                backgroundColor: config.production.cardConfig.backgroundColor
+              }}
+              smartColumns={getSmartColumnCount(config.production.cardConfig.fontSize)}
             />
           </div>
         )}
 
-        {/* Coluna Prontos */}
-        {config.ready.visible && (
-          <div 
-            className="bg-white rounded-lg shadow-lg border border-gray-300 flex flex-col overflow-hidden"
-            style={{
-              width: `${config.ready.width}%`
-            }}
-          >
+        {/* Coluna 2 - Prontos */}
+        <div style={{ width: `${columnWidths.ready}%` }}>
+          <div className="bg-white rounded-lg shadow-lg border border-gray-300 flex flex-col overflow-hidden h-full">
             {/* Header Fixo */}
             <div 
               className="bg-ready text-ready-foreground px-4 font-bold text-lg shadow-sm border-b flex items-center justify-between flex-shrink-0 rounded-t-lg"
@@ -142,45 +148,50 @@ const Index = () => {
             >
               <span>{config.ready.title}</span>
               <span className="bg-white/20 px-2 py-1 rounded-full text-sm">
-                {readyOrders.length}
+                {readyOrders.length + (lastOrderNumber && !config.lastOrder.highlight ? 0 : 1)}
               </span>
             </div>
             
             {/* Último Pedido Fixo */}
             {lastOrderNumber && config.lastOrder.highlight && (
-              <div 
-                className="flex-shrink-0"
-                style={{ backgroundColor: config.lastOrder.backgroundColor, color: config.lastOrder.textColor, fontSize: `${config.lastOrder.fontSize}rem` }}
-              >
+              <div className="flex-shrink-0">
                 <LastOrderDisplay
                   orderNumber={lastOrderNumber}
                   animate={config.lastOrder.pulseAnimation}
-                  className={`min-h-[${config.lastOrder.height}px]`}
+                  height={config.lastOrder.height}
+                  fontSize={config.lastOrder.fontSize}
+                  backgroundColor={config.lastOrder.backgroundColor}
+                  textColor={config.lastOrder.textColor}
                 />
               </div>
             )}
             
-            {/* Cards de Pedidos Prontos com Scroll */}
-            <div className="flex-1 bg-gray-50 p-4 overflow-y-auto">
-              <div className="grid grid-cols-3 gap-1">
+            {/* Cards de Pedidos Prontos sem Scroll */}
+            <div className="flex-1 bg-gray-50 p-2 overflow-hidden">
+              <div 
+                className="grid gap-1 h-full"
+                style={{ 
+                  gridTemplateColumns: `repeat(${getSmartColumnCount(config.ready.cardConfig.fontSize)}, 1fr)` 
+                }}
+              >
                 {readyOrders.map((order) => (
-                    <OrderCard
-                      key={order.id}
-                      order={order}
-                      onClick={() => handleExpedite(order.numeroPedido || order.number || '')}
-                      className="flex-shrink-0"
-                      showNickname={config.ready?.cardConfig?.showNickname ?? true}
-                      showItems={config.ready?.cardConfig?.showItems ?? true}
-                      enabledModules={config.modules}
-                      fontSize={config.ready?.cardConfig?.fontSize}
-                      fontFamily={config.ready?.cardConfig?.fontFamily}
-                      textColor={config.ready?.cardConfig?.textColor}
-                      backgroundColor={config.ready?.cardConfig?.backgroundColor}
-                    />
+                  <OrderCard
+                    key={order.id}
+                    order={order}
+                    onClick={() => expedite(order.numeroPedido || order.number || '')}
+                    className="flex-shrink-0"
+                    showNickname={config.ready?.cardConfig?.showNickname ?? true}
+                    showItems={config.ready?.cardConfig?.showItems ?? true}
+                    enabledModules={config.modules}
+                    fontSize={config.ready?.cardConfig?.fontSize}
+                    fontFamily={config.ready?.cardConfig?.fontFamily}
+                    textColor={config.ready?.cardConfig?.textColor}
+                    backgroundColor={config.ready?.cardConfig?.backgroundColor}
+                  />
                 ))}
               </div>
               
-              {readyOrders.length === 0 && (
+              {readyOrders.length === 0 && !lastOrderNumber && (
                 <div className="flex items-center justify-center h-32 text-muted-foreground">
                   <div className="text-center">
                     <div className="text-2xl mb-2">✅</div>
@@ -190,31 +201,30 @@ const Index = () => {
               )}
             </div>
           </div>
-        )}
+        </div>
 
-        {/* Coluna Publicidade */}
+        {/* Coluna 3 - Publicidade */}
         {config.advertising.visible && (
-          <div 
-            className="bg-white rounded-lg shadow-lg border border-gray-300 flex flex-col overflow-hidden"
-            style={{ 
-              width: `${config.advertising.width}%`
-            }}
-          >
+          <div style={{ width: `${columnWidths.advertising}%` }}>
             <AdvertisingColumn
               title={config.advertising.headerTitle}
-              imageUrl={config.advertising.imageUrl}
               showHeader={config.advertising.headerVisible}
+              headerBg={config.advertising.headerBg}
+              headerColor={config.advertising.headerColor}
               headerHeight={config.advertising.headerHeight}
+              backgroundColor={config.advertising.backgroundColor}
+              imageUrl={config.advertising.imageUrl}
             />
           </div>
         )}
       </div>
 
       {/* Painel de Controle Fixo */}
-      <div className="flex-shrink-0" style={{ height: '29px' }}>
+      <div className="flex-shrink-0" style={{ height: '20px' }}>
         <ControlPanel
           onConfigClick={() => setConfigOpen(true)}
-          onExpedite={handleExpedite}
+          onExpedite={expedite}
+          expeditionLog={expeditionLog}
         />
       </div>
 

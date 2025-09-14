@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
@@ -71,6 +71,10 @@ export const ConfigurationPanel = ({
     cards: false
   });
 
+  const [position, setPosition] = useState({ x: 50, y: 50 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+
   const toggleSection = (section: string) => {
     setOpenSections(prev => ({
       ...prev,
@@ -92,26 +96,62 @@ export const ConfigurationPanel = ({
     onConfigChange(newConfig);
   };
 
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      setIsDragging(true);
+      setDragStart({
+        x: e.clientX - position.x,
+        y: e.clientY - position.y
+      });
+    }
+  };
+
+  const handleMouseMove = (e: MouseEvent) => {
+    if (isDragging) {
+      setPosition({
+        x: Math.max(0, Math.min(window.innerWidth - 600, e.clientX - dragStart.x)),
+        y: Math.max(0, Math.min(window.innerHeight - 400, e.clientY - dragStart.y))
+      });
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  React.useEffect(() => {
+    if (isDragging) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+      return () => {
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+      };
+    }
+  }, [isDragging, dragStart]);
+
   if (!open) return null;
 
   return (
-    <div className="fixed right-4 top-4 bottom-4 w-80 bg-white shadow-xl border border-gray-200 rounded-lg z-50 flex flex-col">
-      {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-gray-200">
-        <div className="flex items-center gap-2">
-          <Settings className="w-5 h-5 text-gray-600" />
-          <h2 className="text-lg font-semibold text-gray-800">Configurações</h2>
+    <div className="fixed inset-0 bg-black/20 z-50 pointer-events-none">
+      <div 
+        className="bg-white rounded-lg shadow-xl w-[600px] h-[500px] flex flex-col pointer-events-auto cursor-move"
+        style={{
+          position: 'absolute',
+          left: `${position.x}px`,
+          top: `${position.y}px`,
+        }}
+        onMouseDown={handleMouseDown}
+      >
+        <div className="flex items-center justify-between p-3 border-b bg-gray-50 rounded-t-lg">
+          <h2 className="text-lg font-semibold">Configurações</h2>
+          <Button variant="ghost" size="sm" onClick={onCancel}>
+            <X className="w-4 h-4" />
+          </Button>
         </div>
-        <button
-          onClick={onCancel}
-          className="p-1 hover:bg-gray-100 rounded-full transition-colors"
-        >
-          <X className="w-5 h-5 text-gray-500" />
-        </button>
-      </div>
 
-      {/* Content */}
-      <div className="flex-1 overflow-y-auto">
+        {/* Content */}
+        <div className="flex-1 overflow-y-auto">
         {/* Fundo da Aplicação */}
         <ConfigSection
           title="Fundo da Aplicação"
@@ -139,10 +179,11 @@ export const ConfigurationPanel = ({
           onToggle={() => toggleSection('production')}
           colorClass="text-blue-600"
         >
-          <div className="flex items-center space-x-2">
-            <Switch
-              checked={config.production.visible}
+          <div className="flex items-center gap-2">
+            <Switch 
+              checked={config.production.visible} 
               onCheckedChange={(checked) => updateConfig('production.visible', checked)}
+              className="scale-75"
             />
             <Label className="text-sm">Exibir Coluna</Label>
           </div>
@@ -405,28 +446,26 @@ export const ConfigurationPanel = ({
           onToggle={() => toggleSection('advertising')}
           colorClass="text-cyan-600"
         >
-          <div className="flex items-center space-x-2">
-            <Switch
-              checked={config.advertising.visible}
+          <div className="flex items-center gap-2">
+            <Switch 
+              checked={config.advertising.visible} 
               onCheckedChange={(checked) => updateConfig('advertising.visible', checked)}
+              className="scale-75"
             />
             <Label className="text-sm">Exibir Coluna</Label>
           </div>
 
-          <div>
-            <Label className="text-sm font-medium">Largura (%): {config.advertising.width}</Label>
-            <Slider
-              value={[config.advertising.width]}
-              onValueChange={([value]) => updateConfig('advertising.width', value)}
-              max={50}
-              min={10}
-              step={1}
-              className="mt-1"
-            />
-            <div className="text-xs text-gray-500 mt-1">
-              Largura calculada: {Math.round((window.innerWidth || 1920) * config.advertising.width / 100)}px
+            <div>
+              <Label className="text-sm font-medium">Largura (% | {Math.round((window.innerWidth || 1920) * config.advertising.width / 100)}px): {config.advertising.width}</Label>
+              <Slider
+                value={[config.advertising.width]}
+                onValueChange={([value]) => updateConfig('advertising.width', value)}
+                max={50}
+                min={10}
+                step={1}
+                className="mt-1"
+              />
             </div>
-          </div>
 
           <div>
             <Label className="text-sm font-medium">Altura do Cabeçalho: {config.advertising.headerHeight}px</Label>
@@ -444,12 +483,12 @@ export const ConfigurationPanel = ({
           </div>
 
           <div>
-            <Label className="text-sm font-medium">URL da Imagem</Label>
+            <Label className="text-sm font-medium">URL ou Path da Imagem</Label>
             <Input
               value={config.advertising.imageUrl || ''}
               onChange={(e) => updateConfig('advertising.imageUrl', e.target.value)}
-              placeholder="https://exemplo.com/imagem.jpg"
-              className="mt-1"
+              placeholder="https://exemplo.com/imagem.jpg ou /assets/imagem.jpg"
+              className="mt-1 text-sm"
             />
           </div>
         </ConfigSection>
@@ -546,17 +585,18 @@ export const ConfigurationPanel = ({
           </div>
         </ConfigSection>
 
-      </div>
-
-      {/* Footer */}
-      <div className="p-4 border-t border-gray-200 bg-gray-50">
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={onCancel} className="flex-1">
-            Fechar
-          </Button>
-          <Button onClick={onSave} className="flex-1">
-            Salvar
-          </Button>
+        </div>
+        
+        {/* Footer */}
+        <div className="p-4 border-t border-gray-200 bg-gray-50">
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={onCancel} className="flex-1">
+              Fechar
+            </Button>
+            <Button onClick={onSave} className="flex-1">
+              Salvar
+            </Button>
+          </div>
         </div>
       </div>
     </div>
