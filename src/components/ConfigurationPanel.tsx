@@ -28,25 +28,30 @@ interface ConfigSectionProps {
 }
 
 const ConfigSection = ({ title, icon, isOpen, onToggle, children, colorClass = "text-blue-600" }: ConfigSectionProps) => (
-  <div className="border-b border-gray-200">
+  <div className="border-b-2 border-gray-300 shadow-sm">
     <button
       onClick={onToggle}
-      className="w-full px-4 py-3 flex items-center justify-between hover:bg-gray-50 transition-colors"
+      className={cn(
+        "w-full px-4 py-4 flex items-center justify-between transition-all duration-200",
+        isOpen 
+          ? "bg-gradient-to-r from-gray-100 to-gray-200 shadow-md" 
+          : "bg-white hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100"
+      )}
     >
       <div className="flex items-center gap-3">
-        <div className={cn("w-4 h-4", colorClass)}>
+        <div className={cn("w-5 h-5", colorClass)}>
           {icon}
         </div>
-        <span className="text-sm font-medium text-gray-700">{title}</span>
+        <span className="text-sm font-semibold text-gray-800">{title}</span>
       </div>
       {isOpen ? (
-        <ChevronDown className="w-4 h-4 text-gray-400" />
+        <ChevronDown className="w-5 h-5 text-gray-600" />
       ) : (
-        <ChevronRight className="w-4 h-4 text-gray-400" />
+        <ChevronRight className="w-5 h-5 text-gray-600" />
       )}
     </button>
     {isOpen && (
-      <div className="px-6 pb-4 space-y-4 bg-gray-50">
+      <div className="px-6 pb-6 pt-4 space-y-4 bg-gradient-to-b from-gray-50 to-white border-t border-gray-200">
         {children}
       </div>
     )}
@@ -190,6 +195,18 @@ export const ConfigurationPanel = ({
             />
           </div>
 
+          <div>
+            <Label className="text-sm font-medium">Tamanho da Fonte do Cabeçalho: {config.production.headerFontSize}rem</Label>
+            <Slider
+              value={[config.production.headerFontSize]}
+              onValueChange={([value]) => updateConfig('production.headerFontSize', value)}
+              max={3}
+              min={0.8}
+              step={0.1}
+              className="mt-1"
+            />
+          </div>
+
             <div className="space-y-3 border-t pt-3">
             <Label className="text-sm font-medium">Configuração dos Cards - Produção</Label>
             
@@ -325,6 +342,18 @@ export const ConfigurationPanel = ({
               max={180}
               min={32}
               step={4}
+              className="mt-1"
+            />
+          </div>
+
+          <div>
+            <Label className="text-sm font-medium">Tamanho da Fonte do Cabeçalho: {config.ready.headerFontSize}rem</Label>
+            <Slider
+              value={[config.ready.headerFontSize]}
+              onValueChange={([value]) => updateConfig('ready.headerFontSize', value)}
+              max={3}
+              min={0.8}
+              step={0.1}
               className="mt-1"
             />
           </div>

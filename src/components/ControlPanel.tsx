@@ -82,7 +82,7 @@ export const ControlPanel = ({
                     className="text-xs bg-muted px-1 rounded opacity-50"
                     style={{ opacity: 0.8 - (index * 0.2) }}
                   >
-                    {order}
+                    {order.replace(/[^\d]/g, '')}
                   </span>
                 ))}
               </div>

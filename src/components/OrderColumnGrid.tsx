@@ -31,33 +31,37 @@ export const OrderColumnGrid = ({
   enabledModules,
   cardConfig
 }: OrderColumnGridProps) => {
-  // Calcular quantos cards cabem na tela baseado na altura disponível
-  const { visibleOrders, cardHeight, adjustedFontSize } = useMemo(() => {
+  // Calcular quantos cards cabem na tela baseado na altura e largura disponível
+  const { visibleOrders, cardHeight, cardWidth, adjustedFontSize } = useMemo(() => {
     const baseFontSize = 16; // 1rem = 16px
     const requestedFontSize = cardConfig?.fontSize || 1.2;
     
-    // Calcular largura disponível por card
-    const containerWidth = window.innerWidth * 0.8; // Estimativa conservadora da largura da coluna
-    const cardWidth = (containerWidth - 16 - (4 * (columns - 1))) / columns; // Padding + gaps
+    // Obter dimensões do container pai (assumindo que o grid ocupa todo o espaço disponível)
+    const containerHeight = window.innerHeight - 300; // Espaço para cabeçalho, controles, etc
+    const containerWidth = window.innerWidth; // Será dividido entre as colunas
+    
+    // Calcular largura disponível por card (considerando gaps)
+    const totalGaps = 4 * (columns - 1); // 4px de gap entre colunas
+    const availableWidth = (containerWidth * 0.9) - totalGaps; // 90% da largura menos gaps
+    const cardWidth = Math.floor(availableWidth / columns);
     
     // Ajustar fonte para caber na largura do card
-    // Mínimo de 4 caracteres (número do pedido) + padding
-    const maxFontSizeForWidth = Math.min(requestedFontSize, cardWidth / 80); // 80px é o mínimo para 4 dígitos + padding
+    // Cada caractere ocupa aproximadamente 0.6 * fontSize pixels
+    const maxCharsPerLine = Math.floor(cardWidth / (requestedFontSize * baseFontSize * 0.6));
+    let adjustedFontSize = requestedFontSize;
     
-    const actualFontSize = Math.max(0.8, maxFontSizeForWidth) * baseFontSize;
+    // Reduzir fonte se necessário para caber pelo menos 3 caracteres (número do pedido)
+    if (maxCharsPerLine < 3) {
+      adjustedFontSize = Math.max(0.6, (cardWidth / (3 * baseFontSize * 0.6)));
+    }
     
-    // Altura mínima do card baseada na fonte + padding
-    const minCardHeight = Math.max(60, actualFontSize * 2.5);
+    // Altura do card baseada na fonte + padding
+    const cardHeight = Math.max(60, adjustedFontSize * baseFontSize * 3); // 3 linhas de altura
     
-    // Altura disponível (considerando que o container pai tem height: 100%)
-    const containerHeight = window.innerHeight - 200; // Deixar espaço para headers, footers etc
-    const containerPadding = 16; // 8px em cima e embaixo
-    const gap = 4;
-    
-    const availableHeight = containerHeight - containerPadding;
-    
-    // Calcular quantas linhas cabem
-    const maxRows = Math.floor((availableHeight + gap) / (minCardHeight + gap));
+    // Calcular quantas linhas de cards cabem na altura disponível
+    const totalVerticalGaps = 4; // gaps verticais
+    const availableHeight = containerHeight - totalVerticalGaps;
+    const maxRows = Math.floor(availableHeight / cardHeight);
     
     // Total de cards que cabem na tela
     const maxVisibleCards = Math.max(1, maxRows * columns);
@@ -67,8 +71,9 @@ export const OrderColumnGrid = ({
     
     return {
       visibleOrders,
-      cardHeight: minCardHeight,
-      adjustedFontSize: maxFontSizeForWidth
+      cardHeight: Math.floor(cardHeight),
+      cardWidth: Math.floor(cardWidth),
+      adjustedFontSize
     };
   }, [orders, columns, cardConfig?.fontSize]);
 
@@ -76,9 +81,10 @@ export const OrderColumnGrid = ({
     <div 
       className="grid gap-1 h-full"
       style={{ 
-        gridTemplateColumns: `repeat(${columns}, 1fr)`,
-        gridAutoRows: `${cardHeight}px`,
-        overflow: 'hidden' // Nunca mostrar scroll
+        gridTemplateColumns: `repeat(${columns}, ${cardWidth}px)`,
+        gridTemplateRows: `repeat(auto-fit, ${cardHeight}px)`,
+        overflow: 'hidden', // Nunca mostrar scroll
+        justifyContent: 'start'
       }}
     >
       {visibleOrders.map((order) => (

@@ -132,6 +132,7 @@ const Index = () => {
               headerBg={config.production.headerBg}
               headerColor={config.production.headerColor}
               headerHeight={config.production.headerHeight}
+              headerFontSize={config.production.headerFontSize}
               enabledModules={config.modules}
               cardConfig={{
                 fontSize: config.production.cardConfig.fontSize,
@@ -154,7 +155,8 @@ const Index = () => {
               style={{ 
                 backgroundColor: config.ready.headerBg, 
                 color: config.ready.headerColor,
-                height: `${config.ready.headerHeight}px`
+                height: `${config.ready.headerHeight}px`,
+                fontSize: `${config.ready.headerFontSize}rem`
               }}
             >
               <span>{config.ready.title}</span>

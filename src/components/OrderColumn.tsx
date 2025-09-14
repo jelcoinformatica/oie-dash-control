@@ -16,6 +16,7 @@ interface OrderColumnProps {
   headerBg?: string;
   headerColor?: string;
   headerHeight?: number;
+  headerFontSize?: number;
   enabledModules?: {
     balcao: boolean;
     mesa: boolean;
@@ -60,6 +61,7 @@ export const OrderColumn = ({
   headerBg,
   headerColor,
   headerHeight = 48,
+  headerFontSize = 1.2,
   enabledModules,
   cardConfig,
   columns,
@@ -75,7 +77,7 @@ export const OrderColumn = ({
       >
         <div 
           className={cn(
-            "flex items-center justify-between px-4 font-bold text-lg",
+            "flex items-center justify-between px-4 font-bold",
             "shadow-sm border-b rounded-t-lg",
             !headerBg && "bg-gray-800",
             !headerColor && "text-white",
@@ -84,7 +86,8 @@ export const OrderColumn = ({
           style={{
             backgroundColor: headerBg,
             color: headerColor,
-            height: `${headerHeight}px`
+            height: `${headerHeight}px`,
+            fontSize: `${headerFontSize}rem`
           }}
         >
           <span>{title}</span>
