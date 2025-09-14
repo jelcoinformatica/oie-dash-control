@@ -86,9 +86,9 @@ export const OrderColumn = ({
       
       <div className="flex-1 p-2 overflow-hidden bg-gray-50">
         <div 
-          className={`grid gap-1`}
+          className={`grid gap-1 overflow-hidden`}
           style={{ 
-            gridTemplateColumns: `repeat(${smartColumns}, 1fr)` 
+            gridTemplateColumns: `repeat(${smartColumns}, 1fr)`
           }}
         >
           {orders.map((order) => (

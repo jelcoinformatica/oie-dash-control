@@ -60,13 +60,14 @@ export const OrderCard = ({
         color: textColor,
         fontFamily,
         height: 'auto',
-        minHeight: '64px'
+        minHeight: '64px',
+        aspectRatio: '1.5/1'
       }}
     >
       {/* Colored Dot Indicator - only show when more than 1 module enabled - top right corner */}
       {showModuleBullet && (
         <div className={cn(
-          "absolute top-0.5 right-0.5 w-1 h-1 rounded-full",
+          "absolute top-0.5 right-0.5 w-2 h-2 rounded-full",
           moduleColors[order.modulo]
         )} />
       )}

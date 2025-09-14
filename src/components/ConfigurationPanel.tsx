@@ -109,8 +109,8 @@ export const ConfigurationPanel = ({
   const handleMouseMove = (e: MouseEvent) => {
     if (isDragging) {
       setPosition({
-        x: Math.max(0, Math.min(window.innerWidth - 600, e.clientX - dragStart.x)),
-        y: Math.max(0, Math.min(window.innerHeight - 400, e.clientY - dragStart.y))
+        x: e.clientX - dragStart.x,
+        y: e.clientY - dragStart.y
       });
     }
   };
@@ -135,7 +135,7 @@ export const ConfigurationPanel = ({
   return (
     <div className="fixed inset-0 bg-black/20 z-50 pointer-events-none">
       <div 
-        className="bg-white rounded-lg shadow-xl w-[600px] h-[500px] flex flex-col pointer-events-auto cursor-move"
+        className="bg-white rounded-lg shadow-xl w-[480px] h-[500px] flex flex-col pointer-events-auto cursor-move"
         style={{
           position: 'absolute',
           left: `${position.x}px`,
@@ -228,9 +228,9 @@ export const ConfigurationPanel = ({
               <Label className="text-xs">Tamanho da Fonte: {config.production.cardConfig.fontSize}rem</Label>
               <Slider
                 value={[config.production.cardConfig.fontSize]}
-                onValueChange={([value]) => updateConfig('production.cardConfig.fontSize', value)}
-                max={5}
-                min={0.5}
+              onValueChange={([value]) => updateConfig('production.cardConfig.fontSize', value)}
+              max={8}
+              min={0.5}
                 step={0.1}
                 className="mt-1"
               />
@@ -347,9 +347,9 @@ export const ConfigurationPanel = ({
               <Label className="text-xs">Tamanho da Fonte: {config.ready.cardConfig.fontSize}rem</Label>
               <Slider
                 value={[config.ready.cardConfig.fontSize]}
-                onValueChange={([value]) => updateConfig('ready.cardConfig.fontSize', value)}
-                max={5}
-                min={0.5}
+              onValueChange={([value]) => updateConfig('ready.cardConfig.fontSize', value)}
+              max={8}
+              min={0.5}
                 step={0.1}
                 className="mt-1"
               />
@@ -456,7 +456,7 @@ export const ConfigurationPanel = ({
           </div>
 
             <div>
-              <Label className="text-sm font-medium">Largura (% | {Math.round((window.innerWidth || 1920) * config.advertising.width / 100)}px): {config.advertising.width}</Label>
+              <Label className="text-sm font-medium">Largura (%): {config.advertising.width}</Label>
               <Slider
                 value={[config.advertising.width]}
                 onValueChange={([value]) => updateConfig('advertising.width', value)}
@@ -478,7 +478,7 @@ export const ConfigurationPanel = ({
               className="mt-1"
             />
             <div className="text-xs text-gray-500 mt-1">
-              Altura calculada: {config.advertising.headerHeight}px
+              Dimensões sugeridas: {Math.round((window.innerWidth || 1920) * config.advertising.width / 100)} x {Math.round((window.innerHeight || 1080) * 0.6)}px
             </div>
           </div>
 

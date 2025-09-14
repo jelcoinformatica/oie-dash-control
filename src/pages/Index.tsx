@@ -110,7 +110,7 @@ const Index = () => {
       className="h-screen flex flex-col"
       style={{ backgroundColor: config.backgroundColor }}
     >
-      <div className="flex-1 flex gap-0.5 p-1 pt-0">
+      <div className="flex-1 flex gap-0.5 p-1 pt-4">
         {/* Coluna 1 - Produção */}
         {config.production.visible && (
           <div style={{ width: `${columnWidths.production}%` }}>
@@ -220,7 +220,7 @@ const Index = () => {
       </div>
 
       {/* Painel de Controle Fixo */}
-      <div className="flex-shrink-0" style={{ height: '20px' }}>
+      <div className="flex-shrink-0" style={{ height: '22px' }}>
         <ControlPanel
           onConfigClick={() => setConfigOpen(true)}
           onExpedite={expedite}
