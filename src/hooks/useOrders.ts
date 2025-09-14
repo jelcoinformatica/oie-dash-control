@@ -1,18 +1,29 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { Order } from '../types/order';
 import { fetchOrders, updateOrderStatus, expediteOrder, addSimulatedOrder } from '../services/orderService';
-import { toast } from './use-toast';
 import { useTextToSpeech } from './useTextToSpeech';
+import { toast } from './use-toast';
 
-export const useOrders = (ttsConfig?: { enabled: boolean; voice?: string; rate?: number; pitch?: number; volume?: number }) => {
+interface TTSConfig {
+  enabled: boolean;
+  voice?: string;
+  rate?: number;
+  pitch?: number;
+  volume?: number;
+  textType?: 'number_only' | 'name_ready' | 'order_ready';
+  customText?: string;
+}
+
+export const useOrders = (ttsConfig?: TTSConfig) => {
   const [orders, setOrders] = useState<Order[]>([]);
-  const [loading, setLoading] = useState(true);
   const [lastOrderNumber, setLastOrderNumber] = useState<string>('');
+  const [lastOrderData, setLastOrderData] = useState<Order | null>(null);
+  const [loading, setLoading] = useState(false);
   const [isSimulationActive, setIsSimulationActive] = useState(false);
-  const [simulationIntervalId, setSimulationIntervalId] = useState<NodeJS.Timeout | null>(null);
   const [expeditionLog, setExpeditionLog] = useState<string[]>([]);
-  const previousLastOrderNumber = useRef<string>('');
+  
   const { speak } = useTextToSpeech();
+  const previousLastOrderNumber = useRef<string>('');
 
   const loadOrders = useCallback(async () => {
     try {
@@ -20,18 +31,25 @@ export const useOrders = (ttsConfig?: { enabled: boolean; voice?: string; rate?:
       const data = await fetchOrders();
       setOrders(data);
       
-      // Encontra o último pedido pronto
+      // Encontrar o último pedido 'ready' - busca mais robusta
       const readyOrders = data.filter(order => order.status === 'ready');
       if (readyOrders.length > 0) {
-        const latest = readyOrders.reduce((latest, current) => 
-          (current.ultimoConsumo || current.updatedAt) > (latest.ultimoConsumo || latest.updatedAt) ? current : latest
-        );
-        const newLastOrderNumber = latest.numeroPedido || latest.number;
+        // Ordenar por data de atualização mais recente
+        const sortedReadyOrders = readyOrders.sort((a, b) => {
+          const dateA = new Date(a.updatedAt || a.ultimoConsumo || 0);
+          const dateB = new Date(b.updatedAt || b.ultimoConsumo || 0);
+          return dateB.getTime() - dateA.getTime();
+        });
+        
+        const lastReadyOrder = sortedReadyOrders[0];
+        const newLastOrderNumber = lastReadyOrder.numeroPedido || lastReadyOrder.number || '';
+        
+        // Armazenar dados completos do último pedido
+        setLastOrderData(lastReadyOrder);
         
         // Verificar se é um novo pedido e falar se TTS habilitado
         if (newLastOrderNumber !== previousLastOrderNumber.current && previousLastOrderNumber.current !== '' && ttsConfig?.enabled) {
-          const orderToSpeak = data.find(o => (o.numeroPedido || o.number) === newLastOrderNumber);
-          const nickname = orderToSpeak?.nomeCliente;
+          const nickname = lastReadyOrder.nomeCliente;
           const textToSpeak = nickname ? `Pedido ${newLastOrderNumber}, ${nickname}` : `Pedido ${newLastOrderNumber}`;
           speak(textToSpeak, newLastOrderNumber, nickname || '', ttsConfig);
         }
@@ -40,6 +58,7 @@ export const useOrders = (ttsConfig?: { enabled: boolean; voice?: string; rate?:
         setLastOrderNumber(newLastOrderNumber);
       } else {
         setLastOrderNumber('');
+        setLastOrderData(null);
         previousLastOrderNumber.current = '';
       }
     } catch (error) {
@@ -51,33 +70,19 @@ export const useOrders = (ttsConfig?: { enabled: boolean; voice?: string; rate?:
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [ttsConfig, speak]);
 
   const moveToReady = useCallback(async (orderId: string) => {
     try {
-      // Encontrar o pedido atual
-      const currentOrder = orders.find(o => o.id === orderId);
-      if (!currentOrder) return;
-
-      // Se já há um último pedido, mover para ready orders
-      if (lastOrderNumber) {
-        const currentLastOrder = orders.find(o => 
-          (o.numeroPedido || o.number) === lastOrderNumber
-        );
-        if (currentLastOrder) {
-          const movedToReady = await updateOrderStatus(currentLastOrder.id, 'ready');
-          setOrders(prev => prev.map(order => 
-            order.id === currentLastOrder.id ? movedToReady : order
-          ));
-        }
-      }
-
-      // Mover o pedido clicado para ready e definir como último pedido
       const updatedOrder = await updateOrderStatus(orderId, 'ready');
-      setOrders(prev => prev.map(order => 
-        order.id === orderId ? updatedOrder : order
+      setOrders(prev => prev.map(o => 
+        o.id === orderId ? updatedOrder : o
       ));
-      const newOrderNumber = updatedOrder.numeroPedido || updatedOrder.number;
+      
+      const newOrderNumber = updatedOrder.numeroPedido || updatedOrder.number || '';
+      
+      // Armazenar dados completos do último pedido
+      setLastOrderData(updatedOrder);
       
       // Falar o novo pedido se TTS habilitado
       if (ttsConfig?.enabled && newOrderNumber !== previousLastOrderNumber.current) {
@@ -96,7 +101,7 @@ export const useOrders = (ttsConfig?: { enabled: boolean; voice?: string; rate?:
         variant: "destructive"
       });
     }
-  }, [orders, lastOrderNumber]);
+  }, [orders, lastOrderNumber, ttsConfig, speak]);
 
   const expedite = useCallback(async (orderNumber: string) => {
     try {
@@ -114,122 +119,97 @@ export const useOrders = (ttsConfig?: { enabled: boolean; voice?: string; rate?:
             o.id === order.id ? updatedOrder : o
           ));
           
-          // Se era o último pedido, atualizar
+          // Se era o último pedido, atualizar dados
           if ((order.numeroPedido || order.number) === lastOrderNumber) {
             const remainingReady = orders.filter(o => o.status === 'ready' && o.id !== order.id);
             if (remainingReady.length > 0) {
-              const latest = remainingReady.reduce((latest, current) => 
-                (current.ultimoConsumo || current.updatedAt) > (latest.ultimoConsumo || latest.updatedAt) ? current : latest
-              );
-              setLastOrderNumber(latest.numeroPedido || latest.number);
+              const newLastOrder = remainingReady.sort((a, b) => {
+                const dateA = new Date(a.updatedAt || a.ultimoConsumo || 0);
+                const dateB = new Date(b.updatedAt || b.ultimoConsumo || 0);
+                return dateB.getTime() - dateA.getTime();
+              })[0];
+              const newLastOrderNumber = newLastOrder.numeroPedido || newLastOrder.number || '';
+              setLastOrderNumber(newLastOrderNumber);
+              setLastOrderData(newLastOrder);
             } else {
               setLastOrderNumber('');
+              setLastOrderData(null);
             }
           }
+          
+          // Adicionar ao log de expedição
+          setExpeditionLog(prev => [...prev.slice(-4), `${order.numeroPedido || order.number} → PRODUÇÃO`]);
+          
+          toast({
+            title: "Pedido Retornado",
+            description: `Pedido ${order.numeroPedido || order.number} voltou para produção`
+          });
         }
         return;
       }
-
-      // Lógica normal de expedição
-      let order = orders.find(o => (o.numeroPedido || o.number) === orderNumber);
       
-      // Se não encontrou, tentar buscar apenas pelos números (para pedidos como IF-1234)
-      if (!order) {
-        order = orders.find(o => {
-          const orderNum = o.numeroPedido || o.number || '';
-          return orderNum.replace(/[^\d]/g, '') === orderNumber;
-        });
-      }
-
-      if (!order) {
+      // Expedição normal
+      const order = orders.find(o => {
+        const orderNum = o.numeroPedido || o.number || '';
+        return orderNum === orderNumber || orderNum.replace(/[^\d]/g, '') === orderNumber;
+      });
+      
+      if (order) {
+        await expediteOrder(order.id);
+        setOrders(prev => prev.filter(o => o.id !== order.id));
+        
+        // Se foi expedido o último pedido, encontrar novo último pedido
+        if (orderNumber === lastOrderNumber) {
+          const remainingReady = orders.filter(o => o.status === 'ready' && (o.numeroPedido || o.number) !== orderNumber);
+          if (remainingReady.length > 0) {
+            const newLastOrder = remainingReady.sort((a, b) => {
+              const dateA = new Date(a.updatedAt || a.ultimoConsumo || 0);
+              const dateB = new Date(b.updatedAt || b.ultimoConsumo || 0);
+              return dateB.getTime() - dateA.getTime();
+            })[0];
+            const newLastOrderNumber = newLastOrder.numeroPedido || newLastOrder.number || '';
+            setLastOrderNumber(newLastOrderNumber);
+            setLastOrderData(newLastOrder);
+          } else {
+            setLastOrderNumber('');
+            setLastOrderData(null);
+          }
+        }
+        
+        // Adicionar ao log de expedição
+        setExpeditionLog(prev => [...prev.slice(-4), `${order.numeroPedido || order.number} → EXPEDIDO`]);
+        
         toast({
-          title: "Erro",
-          description: "Pedido não encontrado",
-          variant: "destructive"
+          title: "Pedido Expedido",
+          description: `Pedido ${order.numeroPedido || order.number} foi entregue`
         });
-        return;
-      }
-
-      await expediteOrder(order.id);
-      setOrders(prev => prev.filter(o => o.id !== order.id));
-      
-      // Adicionar ao log de expedição
-      setExpeditionLog(prev => [orderNumber, ...prev].slice(0, 5));
-      
-      // Se foi o último pedido expedido, mover o primeiro da coluna ready para último pedido
-      if ((order.numeroPedido || order.number) === lastOrderNumber) {
-        const remainingReady = orders.filter(o => o.status === 'ready' && o.id !== order.id);
-        if (remainingReady.length > 0) {
-          const latest = remainingReady.reduce((latest, current) => 
-            (current.ultimoConsumo || current.updatedAt) > (latest.ultimoConsumo || latest.updatedAt) ? current : latest
-          );
-          setLastOrderNumber(latest.numeroPedido || latest.number);
-        } else {
-          setLastOrderNumber('');
-        }
       }
     } catch (error) {
       toast({
         title: "Erro",
-        description: "Falha ao processar pedido",
+        description: "Falha ao expedir pedido",
         variant: "destructive"
       });
     }
   }, [orders, lastOrderNumber]);
 
   const startSimulation = useCallback(() => {
-    if (simulationIntervalId) return; // Already active
-
     setIsSimulationActive(true);
-    toast({
-      title: "Simulação Iniciada",
-      description: "Novos pedidos serão gerados automaticamente",
-    });
-
-    const interval = setInterval(async () => {
-      try {
-        await addSimulatedOrder();
-        loadOrders(); // Recarrega os pedidos para exibir o novo
-      } catch (error) {
-        toast({
-          title: "Erro na Simulação",
-          description: "Falha ao gerar pedido simulado",
-          variant: "destructive"
-        });
-      }
-    }, 5000); // Gera um novo pedido a cada 5 segundos
-
-    setSimulationIntervalId(interval);
-  }, [loadOrders, simulationIntervalId]);
+  }, []);
 
   const stopSimulation = useCallback(() => {
-    if (simulationIntervalId) {
-      clearInterval(simulationIntervalId);
-      setSimulationIntervalId(null);
-      setIsSimulationActive(false);
-      toast({
-        title: "Simulação Parada",
-        description: "A geração automática de pedidos foi interrompida",
-      });
-    }
-  }, [simulationIntervalId]);
+    setIsSimulationActive(false);
+  }, []);
 
+  // Carregar pedidos inicialmente e periodicamente
   useEffect(() => {
     loadOrders();
-    
-    // Simula atualização em tempo real
-    const interval = setInterval(loadOrders, 30000); // 30 segundos
-    
-    return () => {
-      clearInterval(interval);
-      if (simulationIntervalId) {
-        clearInterval(simulationIntervalId);
-      }
-    };
-  }, [loadOrders, simulationIntervalId]);
+    const interval = setInterval(loadOrders, 5000); // Atualizar a cada 5 segundos
+    return () => clearInterval(interval);
+  }, [loadOrders]);
 
+  // Filtrar pedidos por status, excluindo o último pedido dos prontos se for destacado
   const productionOrders = orders.filter(order => order.status === 'production');
-  // Filtrar pedidos ready que não estão no último pedido
   const readyOrders = orders.filter(order => 
     order.status === 'ready' && 
     (order.numeroPedido || order.number) !== lastOrderNumber
@@ -240,10 +220,10 @@ export const useOrders = (ttsConfig?: { enabled: boolean; voice?: string; rate?:
     productionOrders,
     readyOrders,
     lastOrderNumber,
+    lastOrderData,
     loading,
     moveToReady,
     expedite,
-    refresh: loadOrders,
     startSimulation,
     stopSimulation,
     isSimulationActive,

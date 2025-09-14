@@ -19,6 +19,7 @@ const Index = () => {
     productionOrders, 
     readyOrders, 
     lastOrderNumber, 
+    lastOrderData, // Usar dados completos do último pedido
     loading, 
     moveToReady, 
     expedite,
@@ -166,7 +167,7 @@ const Index = () => {
               <div className="flex-shrink-0">
               <LastOrderDisplay
                 orderNumber={lastOrderNumber}
-                nickname={[...productionOrders, ...readyOrders].find(o => (o.numeroPedido || o.number) === lastOrderNumber)?.nomeCliente}
+                nickname={lastOrderData?.nomeCliente} // Usar dados diretos do último pedido
                 config={config.lastOrder}
                 onExpedite={handleExpedite}
               />
