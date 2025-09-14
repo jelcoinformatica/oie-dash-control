@@ -75,6 +75,7 @@ export const ConfigurationPanel = ({
     background: false,
     production: false,
     ready: false,
+    lastOrder: false,
     advertising: false,
     sounds: false,
     tts: true, // Deixar aberto por padrão para facilitar encontrar as opções
@@ -93,6 +94,7 @@ export const ConfigurationPanel = ({
       background: newState,
       production: newState,
       ready: newState,
+      lastOrder: newState,
       advertising: newState,
       sounds: newState,
       tts: newState,
@@ -166,7 +168,7 @@ export const ConfigurationPanel = ({
               type="color"
               value={config.backgroundColor}
               onChange={(e) => updateConfig('backgroundColor', e.target.value)}
-              className="h-10 mt-1"
+              className="h-12 mt-1 border-2"
             />
           </div>
         </ConfigSection>
@@ -295,7 +297,7 @@ export const ConfigurationPanel = ({
                   type="color"
                   value={config.production.cardConfig.textColor}
                   onChange={(e) => updateConfig('production.cardConfig.textColor', e.target.value)}
-                  className="h-6 mt-1"
+                  className="h-10 mt-1 border-2"
                 />
               </div>
               <div>
@@ -304,32 +306,32 @@ export const ConfigurationPanel = ({
                   type="color"
                   value={config.production.cardConfig.backgroundColor}
                   onChange={(e) => updateConfig('production.cardConfig.backgroundColor', e.target.value)}
-                  className="h-6 mt-1"
+                  className="h-10 mt-1 border-2"
                 />
               </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-2">
-            <div>
-              <Label className="text-xs">Cor de Fundo</Label>
-              <Input
-                type="color"
-                value={config.production.headerBg}
-                onChange={(e) => updateConfig('production.headerBg', e.target.value)}
-                className="h-8 mt-1"
-              />
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <Label className="text-xs">Cor de Fundo</Label>
+                <Input
+                  type="color"
+                  value={config.production.headerBg}
+                  onChange={(e) => updateConfig('production.headerBg', e.target.value)}
+                  className="h-12 mt-1 border-2"
+                />
+              </div>
+              <div>
+                <Label className="text-xs">Cor da Fonte</Label>
+                <Input
+                  type="color"
+                  value={config.production.headerColor}
+                  onChange={(e) => updateConfig('production.headerColor', e.target.value)}
+                  className="h-12 mt-1 border-2"
+                />
+              </div>
             </div>
-            <div>
-              <Label className="text-xs">Cor da Fonte</Label>
-              <Input
-                type="color"
-                value={config.production.headerColor}
-                onChange={(e) => updateConfig('production.headerColor', e.target.value)}
-                className="h-8 mt-1"
-              />
-            </div>
-          </div>
         </ConfigSection>
 
         {/* Coluna 2 - Prontos */}
@@ -446,7 +448,7 @@ export const ConfigurationPanel = ({
                   type="color"
                   value={config.ready.cardConfig.textColor}
                   onChange={(e) => updateConfig('ready.cardConfig.textColor', e.target.value)}
-                  className="h-6 mt-1"
+                  className="h-10 mt-1 border-2"
                 />
               </div>
               <div>
@@ -455,129 +457,109 @@ export const ConfigurationPanel = ({
                   type="color"
                   value={config.ready.cardConfig.backgroundColor}
                   onChange={(e) => updateConfig('ready.cardConfig.backgroundColor', e.target.value)}
-                  className="h-6 mt-1"
+                  className="h-10 mt-1 border-2"
                 />
               </div>
             </div>
           </div>
 
+        </ConfigSection>
+
+        {/* Último Pedido */}
+        <ConfigSection
+          title="Último Pedido"
+          icon={<Monitor className="w-4 h-4" />}
+          isOpen={openSections.lastOrder}
+          onToggle={() => toggleSection('lastOrder')}
+          colorClass="text-amber-600"
+        >
+          <div>
+            <Label className="text-sm font-medium">Altura: {config.lastOrder.height}px</Label>
+            <Slider
+              value={[config.lastOrder.height]}
+              onValueChange={([value]) => updateConfig('lastOrder.height', value)}
+              max={360}
+              min={40}
+              step={10}
+              className="mt-1 h-3"
+              style={{
+                '--tw-bg-opacity': '1',
+                background: `linear-gradient(to right, ${config.lastOrder.backgroundColor} 0%, ${config.lastOrder.backgroundColor} 100%)`
+              } as React.CSSProperties}
+            />
+          </div>
+          
+          <div>
+            <Label className="text-sm font-medium">Tamanho da Fonte: {config.lastOrder.fontSize}rem</Label>
+            <Slider
+              value={[config.lastOrder.fontSize]}
+              onValueChange={([value]) => updateConfig('lastOrder.fontSize', value)}
+              max={30}
+              min={1}
+              step={0.5}
+              className="mt-1 h-3"
+              style={{
+                '--tw-bg-opacity': '1',
+                background: `linear-gradient(to right, ${config.lastOrder.textColor || '#000000'} 0%, ${config.lastOrder.textColor || '#000000'} 100%)`
+              } as React.CSSProperties}
+            />
+          </div>
+
+          <div>
+            <Label className="text-sm font-medium">Família da Fonte</Label>
+            <select
+              value={config.lastOrder.fontFamily || 'Arial'}
+              onChange={(e) => updateConfig('lastOrder.fontFamily', e.target.value)}
+              className="w-full mt-1 px-3 py-2 text-sm border border-gray-300 rounded-md bg-white"
+            >
+              <option value="Arial">Arial</option>
+              <option value="Times New Roman">Times New Roman</option>
+              <option value="Courier New">Courier New</option>
+              <option value="Calibri">Calibri</option>
+              <option value="Verdana">Verdana</option>
+              <option value="Georgia">Georgia</option>
+              <option value="Tahoma">Tahoma</option>
+              <option value="Impact">Impact</option>
+            </select>
+          </div>
+
+          <div className="grid grid-cols-2 gap-2">
+            <div>
+              <Label className="text-sm font-medium">Cor da Fonte</Label>
+              <Input
+                type="color"
+                value={config.lastOrder.textColor || '#000000'}
+                onChange={(e) => updateConfig('lastOrder.textColor', e.target.value)}
+                className="h-12 mt-1 border-2"
+              />
+            </div>
+            <div>
+              <Label className="text-sm font-medium">Cor de Fundo</Label>
+              <Input
+                type="color"
+                value={config.lastOrder.backgroundColor || '#ffffff'}
+                onChange={(e) => updateConfig('lastOrder.backgroundColor', e.target.value)}
+                className="h-12 mt-1 border-2"
+              />
+            </div>
+          </div>
+          
           <div className="space-y-3">
-            <Label className="text-sm font-medium">Último Pedido</Label>
-            <div>
-              <Label className="text-xs">Altura: {config.lastOrder.height}px</Label>
-              <Slider
-                value={[config.lastOrder.height]}
-                onValueChange={([value]) => updateConfig('lastOrder.height', value)}
-                max={360}
-                min={40}
-                step={10}
-                className="mt-1"
+            <div className="flex items-center space-x-2">
+              <Switch
+                checked={config.lastOrder.pulseAnimation}
+                onCheckedChange={(checked) => updateConfig('lastOrder.pulseAnimation', checked)}
+                className="scale-75"
               />
+              <Label className="text-sm">Animação Pulsante</Label>
             </div>
-            <div>
-              <Label className="text-xs">Tamanho da Fonte: {config.lastOrder.fontSize}rem</Label>
-              <Slider
-                value={[config.lastOrder.fontSize]}
-                onValueChange={([value]) => updateConfig('lastOrder.fontSize', value)}
-                max={30}
-                min={1}
-                step={0.5}
-                className="mt-1"
+            <div className="flex items-center space-x-2">
+              <Switch
+                checked={config.lastOrder.highlight}
+                onCheckedChange={(checked) => updateConfig('lastOrder.highlight', checked)}
+                className="scale-75"
               />
-            </div>
-
-            <div>
-              <Label className="text-xs">Família da Fonte</Label>
-              <select
-                value={config.lastOrder.fontFamily || 'Arial'}
-                onChange={(e) => updateConfig('lastOrder.fontFamily', e.target.value)}
-                className="w-full mt-1 px-3 py-1 text-xs border border-gray-300 rounded-md bg-white"
-              >
-                <option value="Arial">Arial</option>
-                <option value="Times New Roman">Times New Roman</option>
-                <option value="Courier New">Courier New</option>
-                <option value="Calibri">Calibri</option>
-                <option value="Verdana">Verdana</option>
-                <option value="Georgia">Georgia</option>
-                <option value="Tahoma">Tahoma</option>
-                <option value="Impact">Impact</option>
-              </select>
-            </div>
-
-            <div className="grid grid-cols-2 gap-2">
-              <div>
-                <Label className="text-xs">Cor da Fonte</Label>
-                <Input
-                  type="color"
-                  value={config.lastOrder.textColor || '#000000'}
-                  onChange={(e) => updateConfig('lastOrder.textColor', e.target.value)}
-                  className="h-6 mt-1"
-                />
-              </div>
-              <div>
-                <Label className="text-xs">Cor de Fundo</Label>
-                <Input
-                  type="color"
-                  value={config.lastOrder.backgroundColor || '#ffffff'}
-                  onChange={(e) => updateConfig('lastOrder.backgroundColor', e.target.value)}
-                  className="h-6 mt-1"
-                />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <div className="flex items-center space-x-2">
-                <Switch
-                  checked={config.lastOrder.pulseAnimation}
-                  onCheckedChange={(checked) => updateConfig('lastOrder.pulseAnimation', checked)}
-                />
-                <Label className="text-xs">Animação Pulsante</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Switch
-                  checked={config.lastOrder.highlight}
-                  onCheckedChange={(checked) => updateConfig('lastOrder.highlight', checked)}
-                />
-                <Label className="text-xs">Destacar Último Pedido</Label>
-              </div>
-            </div>
-
-            {/* Configurações de Repetição */}
-            <div className="space-y-4">
-              <div className="flex items-center space-x-2">
-                <Switch
-                  checked={config.textToSpeech.repeatEnabled || false}
-                  onCheckedChange={(checked) => updateConfig('textToSpeech.repeatEnabled', checked)}
-                  className="scale-50"
-                />
-                <Label className="text-xs">Repetir fala</Label>
-              </div>
-
-              {config.textToSpeech.repeatEnabled && (
-                <div className="grid grid-cols-2 gap-4 ml-4">
-                  <div className="space-y-1">
-                    <Label className="text-xs">Repetições</Label>
-                    <Input
-                      type="number"
-                      min="1"
-                      max="10"
-                      value={config.textToSpeech.repeatCount || 2}
-                      onChange={(e) => updateConfig('textToSpeech.repeatCount', parseInt(e.target.value))}
-                      className="h-8 text-xs"
-                    />
-                  </div>
-                  <div className="space-y-1">
-                    <Label className="text-xs">Intervalo (segundos)</Label>
-                    <Input
-                      type="number"
-                      min="5"
-                      max="60"
-                      value={config.textToSpeech.repeatInterval || 15}
-                      onChange={(e) => updateConfig('textToSpeech.repeatInterval', parseInt(e.target.value))}
-                      className="h-8 text-xs"
-                    />
-                  </div>
-                </div>
-              )}
+              <Label className="text-sm">Destacar Último Pedido</Label>
             </div>
           </div>
         </ConfigSection>
@@ -655,22 +637,95 @@ export const ConfigurationPanel = ({
           onToggle={() => toggleSection('sounds')}
           colorClass="text-yellow-600"
         >
-            <div className="flex items-center space-x-2">
-              <Switch
-                checked={config.sounds.production}
-                onCheckedChange={(checked) => updateConfig('sounds.production', checked)}
-                className="scale-50"
-              />
-              <Label className="text-sm">Som para Produção</Label>
+          <div className="space-y-4">
+            <div className="space-y-3">
+              <div className="flex items-center space-x-2">
+                <Switch
+                  checked={config.sounds.production}
+                  onCheckedChange={(checked) => updateConfig('sounds.production', checked)}
+                  className="scale-75"
+                />
+                <Label className="text-sm">Som para Produção</Label>
+              </div>
+              
+              {config.sounds.production && (
+                <div className="ml-6 space-y-2">
+                  <Label className="text-xs">Arquivo de Som (Produção)</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      type="file"
+                      accept="audio/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          const url = URL.createObjectURL(file);
+                          updateConfig('sounds.productionFile', url);
+                        }
+                      }}
+                      className="text-xs"
+                    />
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        if (config.sounds.productionFile) {
+                          const audio = new Audio(config.sounds.productionFile);
+                          audio.play();
+                        }
+                      }}
+                      disabled={!config.sounds.productionFile}
+                    >
+                      Testar
+                    </Button>
+                  </div>
+                </div>
+              )}
             </div>
-            <div className="flex items-center space-x-2">
-              <Switch
-                checked={config.sounds.ready}
-                onCheckedChange={(checked) => updateConfig('sounds.ready', checked)}
-                className="scale-50"
-              />
-              <Label className="text-sm">Som para Pronto</Label>
+
+            <div className="space-y-3">
+              <div className="flex items-center space-x-2">
+                <Switch
+                  checked={config.sounds.ready}
+                  onCheckedChange={(checked) => updateConfig('sounds.ready', checked)}
+                  className="scale-75"
+                />
+                <Label className="text-sm">Som para Pronto</Label>
+              </div>
+              
+              {config.sounds.ready && (
+                <div className="ml-6 space-y-2">
+                  <Label className="text-xs">Arquivo de Som (Pronto)</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      type="file"
+                      accept="audio/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          const url = URL.createObjectURL(file);
+                          updateConfig('sounds.readyFile', url);
+                        }
+                      }}
+                      className="text-xs"
+                    />
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        if (config.sounds.readyFile) {
+                          const audio = new Audio(config.sounds.readyFile);
+                          audio.play();
+                        }
+                      }}
+                      disabled={!config.sounds.readyFile}
+                    >
+                      Testar
+                    </Button>
+                  </div>
+                </div>
+              )}
             </div>
+          </div>
         </ConfigSection>
 
         {/* Auto Expedição */}
@@ -685,7 +740,7 @@ export const ConfigurationPanel = ({
             <Switch
               checked={config.autoExpedition.enabled}
               onCheckedChange={(checked) => updateConfig('autoExpedition.enabled', checked)}
-              className="scale-50"
+              className="scale-75"
             />
             <Label className="text-sm">Utilizar Auto Expedição</Label>
           </div>
@@ -714,9 +769,9 @@ export const ConfigurationPanel = ({
               <Switch
                 checked={config.textToSpeech.enabled}
                 onCheckedChange={(checked) => updateConfig('textToSpeech.enabled', checked)}
-                className="scale-50"
+                className="scale-75"
               />
-              <Label className="text-xs">Ativar Voz</Label>
+              <Label className="text-sm">Ativar Voz</Label>
             </div>
             
             {config.textToSpeech.enabled && (
@@ -806,33 +861,33 @@ export const ConfigurationPanel = ({
                     <Switch
                       checked={config.textToSpeech.repeatEnabled || false}
                       onCheckedChange={(checked) => updateConfig('textToSpeech.repeatEnabled', checked)}
-                      className="scale-50"
+                      className="scale-75"
                     />
-                    <Label className="text-xs">Repetir fala</Label>
+                    <Label className="text-sm">Repetir fala</Label>
                   </div>
 
                   {config.textToSpeech.repeatEnabled && (
                     <div className="grid grid-cols-2 gap-4 ml-4">
                       <div className="space-y-1">
-                        <Label className="text-xs">Repetições</Label>
+                        <Label className="text-sm">Repetições</Label>
                         <Input
                           type="number"
                           min="1"
                           max="10"
                           value={config.textToSpeech.repeatCount || 2}
                           onChange={(e) => updateConfig('textToSpeech.repeatCount', parseInt(e.target.value))}
-                          className="h-8 text-xs"
+                          className="h-8"
                         />
                       </div>
                       <div className="space-y-1">
-                        <Label className="text-xs">Intervalo (s)</Label>
+                        <Label className="text-sm">Intervalo (s)</Label>
                         <Input
                           type="number"
                           min="5"
                           max="60"
                           value={config.textToSpeech.repeatInterval || 15}
                           onChange={(e) => updateConfig('textToSpeech.repeatInterval', parseInt(e.target.value))}
-                          className="h-8 text-xs"
+                          className="h-8"
                         />
                       </div>
                     </div>
@@ -856,37 +911,37 @@ export const ConfigurationPanel = ({
               <Switch
                 checked={config.modules.balcao}
                 onCheckedChange={(checked) => updateConfig('modules.balcao', checked)}
-                className="scale-50"
+                className="scale-75"
               />
               <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
-              <Label className="text-xs">Balcão</Label>
+              <Label className="text-sm">Balcão</Label>
             </div>
             <div className="flex items-center space-x-2">
               <Switch
                 checked={config.modules.mesa}
                 onCheckedChange={(checked) => updateConfig('modules.mesa', checked)}
-                className="scale-50"
+                className="scale-75"
               />
               <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
-              <Label className="text-xs">Mesa</Label>
+              <Label className="text-sm">Mesa</Label>
             </div>
             <div className="flex items-center space-x-2">
               <Switch
                 checked={config.modules.entrega}
                 onCheckedChange={(checked) => updateConfig('modules.entrega', checked)}
-                className="scale-50"
+                className="scale-75"
               />
               <div className="w-1.5 h-1.5 bg-red-500 rounded-full"></div>
-              <Label className="text-xs">Entrega</Label>
+              <Label className="text-sm">Entrega</Label>
             </div>
             <div className="flex items-center space-x-2">
               <Switch
                 checked={config.modules.ficha}
                 onCheckedChange={(checked) => updateConfig('modules.ficha', checked)}
-                className="scale-50"
+                className="scale-75"
               />
               <div className="w-1.5 h-1.5 bg-purple-500 rounded-full"></div>
-              <Label className="text-xs">Ficha</Label>
+              <Label className="text-sm">Ficha</Label>
             </div>
           </div>
         </ConfigSection>

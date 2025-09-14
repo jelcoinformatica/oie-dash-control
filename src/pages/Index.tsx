@@ -234,7 +234,7 @@ const Index = () => {
         onSave={handleSaveConfig}
         onCancel={handleCancelConfig}
         clearAllOrders={clearAllOrders}
-        generateOrders={generateOrders}
+        generateOrders={(count) => generateOrders(count, config)}
       />
       
       {/* Overlay */}

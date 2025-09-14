@@ -240,13 +240,26 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
     });
   }, []);
   
-  const generateOrders = useCallback(async (count: number) => {
+  const generateOrders = useCallback(async (count: number, config?: any) => {
     try {
       const newOrders: Order[] = [];
       
+      // Verificar módulos ativos
+      const activeModules = [];
+      if (config?.modules) {
+        if (config.modules.balcao) activeModules.push('balcao');
+        if (config.modules.mesa) activeModules.push('mesa');
+        if (config.modules.entrega) activeModules.push('entrega');
+        if (config.modules.ficha) activeModules.push('ficha');
+      }
+      
+      // Se nenhum módulo ativo, usar todos
+      const modulesToUse = activeModules.length > 0 ? activeModules : ['balcao', 'mesa', 'entrega', 'ficha'];
+      
       for (let i = 0; i < count; i++) {
-        // 30% dos pedidos serão iFood (IF-XXXXX)
-        const isIfoodOrder = Math.random() < 0.3;
+        // 30% dos pedidos de entrega serão iFood (IF-XXXXX) se entrega estiver ativa
+        const isEntregaActive = modulesToUse.includes('entrega');
+        const isIfoodOrder = isEntregaActive && Math.random() < 0.3;
         
         if (isIfoodOrder) {
           // Gerar pedido iFood simulado
@@ -254,10 +267,12 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
           const ifoodOrder = await addSimulatedOrder();
           ifoodOrder.numeroPedido = ifoodNumber;
           ifoodOrder.number = ifoodNumber;
-          ifoodOrder.modulo = 'entrega'; // Usar modulo ao invés de tipoEntrega
+          ifoodOrder.modulo = 'entrega' as 'balcao' | 'mesa' | 'entrega' | 'ficha';
           newOrders.push(ifoodOrder);
         } else {
           const newOrder = await addSimulatedOrder();
+          // Definir módulo baseado nos módulos ativos
+          newOrder.modulo = modulesToUse[Math.floor(Math.random() * modulesToUse.length)] as 'balcao' | 'mesa' | 'entrega' | 'ficha';
           newOrders.push(newOrder);
         }
       }
