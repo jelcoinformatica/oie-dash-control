@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
-import { Settings, RefreshCw } from 'lucide-react';
+import { Settings, RefreshCw, Play, Pause } from 'lucide-react';
 import { toast } from '../hooks/use-toast';
 
 interface ControlPanelProps {
@@ -9,13 +9,17 @@ interface ControlPanelProps {
   onExpedite: (orderNumber: string) => void;
   onRefresh: () => void;
   loading?: boolean;
+  onToggleSimulation: () => void;
+  isSimulationActive: boolean;
 }
 
 export const ControlPanel = ({ 
   onConfigClick, 
   onExpedite, 
   onRefresh,
-  loading = false 
+  loading = false,
+  onToggleSimulation,
+  isSimulationActive
 }: ControlPanelProps) => {
   const [expeditionInput, setExpeditionInput] = useState('');
 
@@ -74,6 +78,14 @@ export const ControlPanel = ({
               <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
             </Button>
             
+            <Button
+              variant={isSimulationActive ? "destructive" : "outline"}
+              size="sm"
+              onClick={onToggleSimulation}
+            >
+              {isSimulationActive ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+            </Button>
+
             <Button
               variant="outline"
               size="sm"

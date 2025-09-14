@@ -31,6 +31,8 @@ interface ConfigurationPanelProps {
   onOpenChange: (open: boolean) => void;
   config: PanelConfig;
   onConfigChange: (config: PanelConfig) => void;
+  onSave: () => void;
+  onCancel: () => void;
 }
 
 const fontOptions = [
@@ -44,7 +46,9 @@ export const ConfigurationPanel = ({
   open,
   onOpenChange,
   config,
-  onConfigChange
+  onConfigChange,
+  onSave,
+  onCancel
 }: ConfigurationPanelProps) => {
   const [activeTab, setActiveTab] = useState('production');
 
@@ -388,10 +392,10 @@ export const ConfigurationPanel = ({
         </Accordion>
 
         <div className="flex justify-end gap-2 mt-6">
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
+          <Button variant="outline" onClick={onCancel}>
             Fechar
           </Button>
-          <Button onClick={() => onOpenChange(false)}>
+          <Button onClick={onSave}>
             Salvar Configurações
           </Button>
         </div>

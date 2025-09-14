@@ -61,6 +61,15 @@ export const updateOrderStatus = async (orderId: string, newStatus: 'production'
   return mockOrders[orderIndex];
 };
 
+// Função para adicionar pedido simulado
+export const addSimulatedOrder = async (): Promise<Order> => {
+  await new Promise(resolve => setTimeout(resolve, 100));
+  const newId = `prod-${mockOrders.length + 1}`;
+  const newOrder = generateRandomOrder(newId, 'production');
+  mockOrders.unshift(newOrder); // Adiciona no início para aparecer primeiro
+  return newOrder;
+};
+
 // Função para remover pedido (expedição)
 export const expediteOrder = async (orderId: string): Promise<void> => {
   await new Promise(resolve => setTimeout(resolve, 200));

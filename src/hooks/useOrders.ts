@@ -1,12 +1,14 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Order } from '../types/order';
-import { fetchOrders, updateOrderStatus, expediteOrder } from '../data/mockOrders';
+import { fetchOrders, updateOrderStatus, expediteOrder, addSimulatedOrder } from '../data/mockOrders';
 import { toast } from './use-toast';
 
 export const useOrders = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [lastOrderNumber, setLastOrderNumber] = useState<string>('');
+  const [isSimulationActive, setIsSimulationActive] = useState(false);
+  const [simulationIntervalId, setSimulationIntervalId] = useState<NodeJS.Timeout | null>(null);
 
   const loadOrders = useCallback(async () => {
     try {
@@ -21,6 +23,8 @@ export const useOrders = () => {
           current.updatedAt > latest.updatedAt ? current : latest
         );
         setLastOrderNumber(latest.number);
+      } else {
+        setLastOrderNumber('');
       }
     } catch (error) {
       toast({
@@ -93,14 +97,56 @@ export const useOrders = () => {
     }
   }, [orders]);
 
+  const startSimulation = useCallback(() => {
+    if (simulationIntervalId) return; // Already active
+
+    setIsSimulationActive(true);
+    toast({
+      title: "Simulação Iniciada",
+      description: "Novos pedidos serão gerados automaticamente",
+    });
+
+    const interval = setInterval(async () => {
+      try {
+        await addSimulatedOrder();
+        loadOrders(); // Recarrega os pedidos para exibir o novo
+      } catch (error) {
+        toast({
+          title: "Erro na Simulação",
+          description: "Falha ao gerar pedido simulado",
+          variant: "destructive"
+        });
+      }
+    }, 5000); // Gera um novo pedido a cada 5 segundos
+
+    setSimulationIntervalId(interval);
+  }, [loadOrders, simulationIntervalId]);
+
+  const stopSimulation = useCallback(() => {
+    if (simulationIntervalId) {
+      clearInterval(simulationIntervalId);
+      setSimulationIntervalId(null);
+      setIsSimulationActive(false);
+      toast({
+        title: "Simulação Parada",
+        description: "A geração automática de pedidos foi interrompida",
+      });
+    }
+  }, [simulationIntervalId]);
+
   useEffect(() => {
     loadOrders();
     
     // Simula atualização em tempo real
     const interval = setInterval(loadOrders, 30000); // 30 segundos
     
-    return () => clearInterval(interval);
-  }, [loadOrders]);
+    return () => {
+      clearInterval(interval);
+      if (simulationIntervalId) {
+        clearInterval(simulationIntervalId);
+      }
+    };
+  }, [loadOrders, simulationIntervalId]);
 
   const productionOrders = orders.filter(order => order.status === 'production');
   const readyOrders = orders.filter(order => order.status === 'ready');
@@ -113,6 +159,9 @@ export const useOrders = () => {
     loading,
     moveToReady,
     expedite,
-    refresh: loadOrders
+    refresh: loadOrders,
+    startSimulation,
+    stopSimulation,
+    isSimulationActive
   };
 };

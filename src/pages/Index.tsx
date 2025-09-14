@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useOrders } from '../hooks/useOrders';
 import { OrderColumn } from '../components/OrderColumn';
 import { LastOrderDisplay } from '../components/LastOrderDisplay';
@@ -17,11 +17,24 @@ const Index = () => {
     loading,
     moveToReady,
     expedite,
-    refresh
+    refresh,
+    startSimulation,
+    stopSimulation,
+    isSimulationActive
   } = useOrders();
 
   const [config, setConfig] = useState<PanelConfig>(defaultConfig);
+  const [originalConfig, setOriginalConfig] = useState<PanelConfig>(defaultConfig);
   const [configOpen, setConfigOpen] = useState(false);
+
+  useEffect(() => {
+    const savedConfig = localStorage.getItem('oie-config');
+    if (savedConfig) {
+      const parsedConfig: PanelConfig = JSON.parse(savedConfig);
+      setConfig(parsedConfig);
+      setOriginalConfig(parsedConfig);
+    }
+  }, []);
 
   const handleOrderClick = (order: any) => {
     if (order.status === 'production') {
@@ -35,12 +48,30 @@ const Index = () => {
 
   const handleConfigChange = (newConfig: PanelConfig) => {
     setConfig(newConfig);
-    // Aqui você poderia salvar no localStorage ou enviar para uma API
-    localStorage.setItem('oie-config', JSON.stringify(newConfig));
+    // Não salva no localStorage aqui para permitir visualização em tempo real
+  };
+
+  const handleSaveConfig = () => {
+    localStorage.setItem('oie-config', JSON.stringify(config));
+    setOriginalConfig(config); // Atualiza a config original com a salva
+    setConfigOpen(false);
     toast({
       title: "Configurações Salvas",
       description: "As configurações foram atualizadas com sucesso"
     });
+  };
+
+  const handleCancelConfig = () => {
+    setConfig(originalConfig); // Reverte para a config original
+    setConfigOpen(false);
+  };
+
+  const handleToggleSimulation = () => {
+    if (isSimulationActive) {
+      stopSimulation();
+    } else {
+      startSimulation();
+    }
   };
 
   return (
@@ -175,14 +206,18 @@ const Index = () => {
         onExpedite={handleExpedite}
         onRefresh={refresh}
         loading={loading}
+        onToggleSimulation={handleToggleSimulation}
+        isSimulationActive={isSimulationActive}
       />
 
       {/* Painel de Configuração */}
       <ConfigurationPanel
         open={configOpen}
-        onOpenChange={setConfigOpen}
+        onOpenChange={handleCancelConfig} // Usa handleCancelConfig para fechar sem salvar
         config={config}
         onConfigChange={handleConfigChange}
+        onSave={handleSaveConfig}
+        onCancel={handleCancelConfig}
       />
     </div>
   );
