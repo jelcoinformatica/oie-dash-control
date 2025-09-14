@@ -4,10 +4,17 @@ import ordersData from '../data/orders.json';
 // Simulação de estado em memória para os dados JSON
 let orders: Order[] = ordersData.orders.map(order => ({
   ...order,
-  module: order.module as 'balcao' | 'mesa' | 'entrega' | 'ficha',
+  modulo: order.modulo as 'balcao' | 'mesa' | 'entrega' | 'ficha',
   status: order.status as 'production' | 'ready' | 'delivered',
-  createdAt: new Date(order.createdAt),
-  updatedAt: new Date(order.updatedAt)
+  ultimoConsumo: new Date(order.ultimoConsumo),
+  dataContabil: new Date(order.dataContabil),
+  // Campos de compatibilidade para não quebrar componentes existentes
+  number: order.numeroPedido,
+  nickname: order.nomeCliente,
+  createdAt: new Date(order.ultimoConsumo),
+  updatedAt: new Date(order.ultimoConsumo),
+  items: [`Local: ${order.localEntrega}`],
+  totalValue: 0
 }));
 
 // Função para buscar pedidos (simula chamada de API)
@@ -54,15 +61,22 @@ export const addSimulatedOrder = async (): Promise<Order> => {
 
   const newOrder: Order = {
     id: `sim-${Date.now()}`,
-    number: (Math.floor(Math.random() * 900) + 100).toString(),
-    module: modules[Math.floor(Math.random() * modules.length)],
+    numeroPedido: (Math.floor(Math.random() * 900) + 100).toString(),
+    ticket: (Math.floor(Math.random() * 900) + 100).toString(),
+    modulo: modules[Math.floor(Math.random() * modules.length)],
     status: 'production',
+    ultimoConsumo: new Date(),
+    dataContabil: new Date(),
+    localEntrega: `Local ${Math.floor(Math.random() * 20) + 1}`,
+    nomeCliente: nicknames[Math.floor(Math.random() * nicknames.length)],
+    // Campos de compatibilidade
+    number: (Math.floor(Math.random() * 900) + 100).toString(),
+    nickname: nicknames[Math.floor(Math.random() * nicknames.length)],
+    createdAt: new Date(),
+    updatedAt: new Date(),
     items: Array.from({ length: Math.floor(Math.random() * 3) + 1 }, () => 
       items[Math.floor(Math.random() * items.length)]
     ),
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    nickname: nicknames[Math.floor(Math.random() * nicknames.length)],
     totalValue: Math.floor(Math.random() * 5000) + 1000
   };
 

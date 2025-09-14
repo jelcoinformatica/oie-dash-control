@@ -16,15 +16,22 @@ const generateRandomOrder = (id: string, status: 'production' | 'ready'): Order 
 
   return {
     id,
-    number: (Math.floor(Math.random() * 900) + 100).toString(),
-    module: modules[Math.floor(Math.random() * modules.length)],
+    numeroPedido: (Math.floor(Math.random() * 900) + 100).toString(),
+    ticket: (Math.floor(Math.random() * 900) + 100).toString(),
+    modulo: modules[Math.floor(Math.random() * modules.length)],
     status,
+    ultimoConsumo: new Date(Date.now() - Math.random() * 3600000),
+    dataContabil: new Date(),
+    localEntrega: `Local ${Math.floor(Math.random() * 20) + 1}`,
+    nomeCliente: nicknames[Math.floor(Math.random() * nicknames.length)],
+    // Campos de compatibilidade
+    number: (Math.floor(Math.random() * 900) + 100).toString(),
+    nickname: nicknames[Math.floor(Math.random() * nicknames.length)],
+    createdAt: new Date(Date.now() - Math.random() * 3600000),
+    updatedAt: new Date(),
     items: Array.from({ length: Math.floor(Math.random() * 3) + 1 }, () => 
       items[Math.floor(Math.random() * items.length)]
     ),
-    createdAt: new Date(Date.now() - Math.random() * 3600000),
-    updatedAt: new Date(),
-    nickname: nicknames[Math.floor(Math.random() * nicknames.length)],
     totalValue: Math.floor(Math.random() * 5000) + 1000 // R$ 10,00 - R$ 60,00
   };
 };

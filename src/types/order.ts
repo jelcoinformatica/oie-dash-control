@@ -1,11 +1,18 @@
 export interface Order {
   id: string;
-  number: string;
-  module: 'balcao' | 'mesa' | 'entrega' | 'ficha';
+  numeroPedido: string;
+  ticket: string;
+  modulo: 'balcao' | 'mesa' | 'entrega' | 'ficha';
   status: 'production' | 'ready' | 'delivered';
-  items: string[];
-  createdAt: Date;
-  updatedAt: Date;
+  ultimoConsumo: Date;
+  dataContabil: Date;
+  localEntrega: string;
+  nomeCliente: string;
+  // Campos legados para compatibilidade
+  number?: string;
+  items?: string[];
+  createdAt?: Date;
+  updatedAt?: Date;
   nickname?: string;
   totalValue?: number;
 }

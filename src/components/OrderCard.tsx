@@ -42,7 +42,7 @@ export const OrderCard = ({
       {/* Colored Dot Indicator */}
       <div className={cn(
         "w-3 h-3 rounded-full",
-        moduleColors[order.module]
+        moduleColors[order.modulo]
       )} />
       
       {/* Hidden optional content */}
