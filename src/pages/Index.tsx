@@ -30,9 +30,28 @@ const Index = () => {
   useEffect(() => {
     const savedConfig = localStorage.getItem('oie-config');
     if (savedConfig) {
-      const parsedConfig: PanelConfig = JSON.parse(savedConfig);
-      setConfig(parsedConfig);
-      setOriginalConfig(parsedConfig);
+      try {
+        const parsedConfig: PanelConfig = JSON.parse(savedConfig);
+        // Merge com defaultConfig para garantir que todas as propriedades existam
+        const mergedConfig = { 
+          ...defaultConfig, 
+          ...parsedConfig, 
+          production: { ...defaultConfig.production, ...parsedConfig.production, cardConfig: { ...defaultConfig.production.cardConfig, ...parsedConfig.production.cardConfig } },
+          ready: { ...defaultConfig.ready, ...parsedConfig.ready, cardConfig: { ...defaultConfig.ready.cardConfig, ...parsedConfig.ready.cardConfig } },
+          advertising: { ...defaultConfig.advertising, ...parsedConfig.advertising },
+          lastOrder: { ...defaultConfig.lastOrder, ...parsedConfig.lastOrder },
+          cards: { ...defaultConfig.cards, ...parsedConfig.cards },
+          sounds: { ...defaultConfig.sounds, ...parsedConfig.sounds },
+          autoExpedition: { ...defaultConfig.autoExpedition, ...parsedConfig.autoExpedition },
+          modules: { ...defaultConfig.modules, ...parsedConfig.modules },
+        };
+        setConfig(mergedConfig);
+        setOriginalConfig(mergedConfig);
+      } catch (error) {
+        console.error("Error parsing saved config from localStorage", error);
+        setConfig(defaultConfig);
+        setOriginalConfig(defaultConfig);
+      }
     }
   }, []);
 
@@ -84,7 +103,10 @@ const Index = () => {
         {config.production.visible && (
           <div 
             className="border-r flex flex-col"
-            style={{ width: `${config.production.width}%` }}
+            style={{ 
+              width: `${config.production.width}%`,
+              backgroundColor: config.production.headerBg // Adiciona cor de fundo aqui
+            }}
           >
             <OrderColumn
               title={config.production.title}
@@ -101,10 +123,16 @@ const Index = () => {
         {config.ready.visible && (
           <div 
             className="border-r flex flex-col"
-            style={{ width: `${config.ready.width}%` }}
+            style={{
+              width: `${config.ready.width}%`,
+              backgroundColor: config.ready.headerBg // Adiciona cor de fundo aqui
+            }}
           >
             {/* Header Fixo */}
-            <div className="bg-ready text-ready-foreground px-4 py-3 font-bold text-lg shadow-sm border-b flex items-center justify-between flex-shrink-0">
+            <div 
+              className="bg-ready text-ready-foreground px-4 py-3 font-bold text-lg shadow-sm border-b flex items-center justify-between flex-shrink-0"
+              style={{ backgroundColor: config.ready.headerBg, color: config.ready.headerColor }}
+            >
               <span>{config.ready.title}</span>
               <span className="bg-white/20 px-2 py-1 rounded-full text-sm">
                 {readyOrders.length}
@@ -113,7 +141,10 @@ const Index = () => {
             
             {/* Último Pedido Fixo */}
             {lastOrderNumber && config.lastOrder.highlight && (
-              <div className="flex-shrink-0">
+              <div 
+                className="flex-shrink-0"
+                style={{ backgroundColor: config.lastOrder.backgroundColor, color: config.lastOrder.textColor, fontSize: `${config.lastOrder.fontSize}rem` }}
+              >
                 <LastOrderDisplay
                   orderNumber={lastOrderNumber}
                   animate={config.lastOrder.pulseAnimation}
@@ -129,6 +160,12 @@ const Index = () => {
                   <div
                     key={order.id}
                     className="bg-order-card border border-order-card-border rounded-lg p-3 cursor-pointer hover:shadow-md transition-all duration-200 hover:scale-[1.02] animate-card-appear min-h-[120px]"
+                    style={{
+                      backgroundColor: config.ready.cardConfig.backgroundColor,
+                      color: config.ready.cardConfig.textColor,
+                      fontFamily: config.ready.cardConfig.fontFamily,
+                      fontSize: `${config.ready.cardConfig.fontSize}rem`
+                    }}
                   >
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
@@ -182,7 +219,10 @@ const Index = () => {
         {config.advertising.visible && (
           <div 
             className="flex-1 flex flex-col"
-            style={{ width: `${config.advertising.width}%` }}
+            style={{ 
+              width: `${config.advertising.width}%`,
+              backgroundColor: config.advertising.backgroundColor // Adiciona cor de fundo aqui
+            }}
           >
             <AdvertisingColumn
               title={config.advertising.headerTitle}
