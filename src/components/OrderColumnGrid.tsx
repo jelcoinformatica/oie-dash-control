@@ -31,18 +31,20 @@ export const OrderColumnGrid = ({
   enabledModules,
   cardConfig
 }: OrderColumnGridProps) => {
-  // Calcular quantos cards cabem na tela baseado na altura e largura disponível
+  // Calcular quantos cards cabem no container baseado na altura e largura disponível
   const { visibleOrders, cardHeight, cardWidth, adjustedFontSize } = useMemo(() => {
     const baseFontSize = 16; // 1rem = 16px
     const requestedFontSize = cardConfig?.fontSize || 1.2;
     
-    // Obter dimensões do container pai (assumindo que o grid ocupa todo o espaço disponível)
+    // Usar uma largura fixa aproximada do container da coluna
+    // Assumindo que cada coluna ocupa aproximadamente 1/2 da tela (para 2 colunas principais)
+    const estimatedColumnWidth = window.innerWidth * 0.45; // 45% da largura da tela por coluna principal
     const containerHeight = window.innerHeight - 300; // Espaço para cabeçalho, controles, etc
-    const containerWidth = window.innerWidth; // Será dividido entre as colunas
     
-    // Calcular largura disponível por card (considerando gaps)
-    const totalGaps = 4 * (columns - 1); // 4px de gap entre colunas
-    const availableWidth = (containerWidth * 0.9) - totalGaps; // 90% da largura menos gaps
+    // Calcular largura disponível por card (considerando gaps e padding)
+    const totalGaps = 8 * (columns - 1); // 8px de gap entre colunas
+    const containerPadding = 16; // padding do container
+    const availableWidth = estimatedColumnWidth - totalGaps - containerPadding;
     const cardWidth = Math.floor(availableWidth / columns);
     
     // Ajustar fonte para caber na largura do card
