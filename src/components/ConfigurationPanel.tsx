@@ -1,30 +1,12 @@
 import { useState } from 'react';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from './ui/dialog';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from './ui/accordion';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Switch } from './ui/switch';
 import { Slider } from './ui/slider';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from './ui/select';
 import { PanelConfig } from '../types/order';
-import { Settings, Palette, Factory, CheckCircle, Monitor, Volume2, Clock, Puzzle, Cog } from 'lucide-react';
+import { Settings, Palette, Factory, CheckCircle, Monitor, Volume2, Clock, Puzzle, Cog, X, ChevronRight, ChevronDown } from 'lucide-react';
+import { cn } from '../lib/utils';
 
 interface ConfigurationPanelProps {
   open: boolean;
@@ -35,12 +17,40 @@ interface ConfigurationPanelProps {
   onCancel: () => void;
 }
 
-const fontOptions = [
-  'Arial', 'Arial Black', 'Calibri', 'Cambria', 'Candara',
-  'Comic Sans MS', 'Consolas', 'Constantia', 'Corbel',
-  'Courier New', 'Georgia', 'Impact', 'Lucida Console',
-  'Segoe UI', 'Tahoma', 'Times New Roman', 'Trebuchet MS', 'Verdana'
-];
+interface ConfigSectionProps {
+  title: string;
+  icon: React.ReactNode;
+  isOpen: boolean;
+  onToggle: () => void;
+  children: React.ReactNode;
+  colorClass?: string;
+}
+
+const ConfigSection = ({ title, icon, isOpen, onToggle, children, colorClass = "text-blue-600" }: ConfigSectionProps) => (
+  <div className="border-b border-gray-200">
+    <button
+      onClick={onToggle}
+      className="w-full px-4 py-3 flex items-center justify-between hover:bg-gray-50 transition-colors"
+    >
+      <div className="flex items-center gap-3">
+        <div className={cn("w-4 h-4", colorClass)}>
+          {icon}
+        </div>
+        <span className="text-sm font-medium text-gray-700">{title}</span>
+      </div>
+      {isOpen ? (
+        <ChevronDown className="w-4 h-4 text-gray-400" />
+      ) : (
+        <ChevronRight className="w-4 h-4 text-gray-400" />
+      )}
+    </button>
+    {isOpen && (
+      <div className="px-6 pb-4 space-y-4 bg-gray-50">
+        {children}
+      </div>
+    )}
+  </div>
+);
 
 export const ConfigurationPanel = ({
   open,
@@ -50,7 +60,23 @@ export const ConfigurationPanel = ({
   onSave,
   onCancel
 }: ConfigurationPanelProps) => {
-  const [activeTab, setActiveTab] = useState('production');
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>({
+    background: false,
+    production: false,
+    ready: false,
+    advertising: false,
+    sounds: false,
+    autoExpedition: false,
+    modules: false,
+    cards: false
+  });
+
+  const toggleSection = (section: string) => {
+    setOpenSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }));
+  };
 
   const updateConfig = (path: string, value: any) => {
     const keys = path.split('.');
@@ -66,364 +92,351 @@ export const ConfigurationPanel = ({
     onConfigChange(newConfig);
   };
 
+  if (!open) return null;
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Settings className="w-5 h-5" />
-            Configurações do Sistema
-          </DialogTitle>
-        </DialogHeader>
+    <div className="fixed right-0 top-0 h-full w-80 bg-white shadow-xl border-l border-gray-200 z-50 flex flex-col">
+      {/* Header */}
+      <div className="flex items-center justify-between p-4 border-b border-gray-200">
+        <div className="flex items-center gap-2">
+          <Settings className="w-5 h-5 text-gray-600" />
+          <h2 className="text-lg font-semibold text-gray-800">Configurações</h2>
+        </div>
+        <button
+          onClick={onCancel}
+          className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+        >
+          <X className="w-5 h-5 text-gray-500" />
+        </button>
+      </div>
 
-        <Accordion type="multiple" className="w-full">
-          {/* Fundo da Aplicação */}
-          <AccordionItem value="background">
-            <AccordionTrigger className="flex items-center gap-2">
-              <Palette className="w-4 h-4" />
-              Fundo da Aplicação
-            </AccordionTrigger>
-            <AccordionContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label>Cor de Fundo</Label>
-                  <Input
-                    type="color"
-                    value={config.backgroundColor}
-                    onChange={(e) => updateConfig('backgroundColor', e.target.value)}
-                  />
-                </div>
-              </div>
-            </AccordionContent>
-          </AccordionItem>
+      {/* Content */}
+      <div className="flex-1 overflow-y-auto">
+        {/* Fundo da Aplicação */}
+        <ConfigSection
+          title="Fundo da Aplicação"
+          icon={<Palette className="w-4 h-4" />}
+          isOpen={openSections.background}
+          onToggle={() => toggleSection('background')}
+          colorClass="text-purple-600"
+        >
+          <div>
+            <Label className="text-sm font-medium">Cor de Fundo</Label>
+            <Input
+              type="color"
+              value={config.backgroundColor}
+              onChange={(e) => updateConfig('backgroundColor', e.target.value)}
+              className="h-10 mt-1"
+            />
+          </div>
+        </ConfigSection>
 
-          {/* Coluna Produção */}
-          <AccordionItem value="production">
-            <AccordionTrigger className="flex items-center gap-2">
-              <Factory className="w-4 h-4" />
-              Coluna 1 - Produção
-            </AccordionTrigger>
-            <AccordionContent className="space-y-6">
+        {/* Coluna 1 - Produção */}
+        <ConfigSection
+          title="Coluna 1 - Produção"
+          icon={<Factory className="w-4 h-4" />}
+          isOpen={openSections.production}
+          onToggle={() => toggleSection('production')}
+          colorClass="text-blue-600"
+        >
+          <div className="flex items-center space-x-2">
+            <Switch
+              checked={config.production.visible}
+              onCheckedChange={(checked) => updateConfig('production.visible', checked)}
+            />
+            <Label className="text-sm">Exibir Coluna</Label>
+          </div>
+
+          <div>
+            <Label className="text-sm font-medium">Título da Coluna</Label>
+            <Input
+              value={config.production.title}
+              onChange={(e) => updateConfig('production.title', e.target.value)}
+              className="mt-1"
+            />
+          </div>
+
+          <div>
+            <Label className="text-sm font-medium">Largura (%): {config.production.width}</Label>
+            <Slider
+              value={[config.production.width]}
+              onValueChange={([value]) => updateConfig('production.width', value)}
+              max={50}
+              min={10}
+              step={1}
+              className="mt-1"
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-2">
+            <div>
+              <Label className="text-xs">Cor de Fundo</Label>
+              <Input
+                type="color"
+                value={config.production.headerBg}
+                onChange={(e) => updateConfig('production.headerBg', e.target.value)}
+                className="h-8 mt-1"
+              />
+            </div>
+            <div>
+              <Label className="text-xs">Cor da Fonte</Label>
+              <Input
+                type="color"
+                value={config.production.headerColor}
+                onChange={(e) => updateConfig('production.headerColor', e.target.value)}
+                className="h-8 mt-1"
+              />
+            </div>
+          </div>
+        </ConfigSection>
+
+        {/* Coluna 2 - Prontos */}
+        <ConfigSection
+          title="Coluna 2 - Prontos"
+          icon={<CheckCircle className="w-4 h-4" />}
+          isOpen={openSections.ready}
+          onToggle={() => toggleSection('ready')}
+          colorClass="text-green-600"
+        >
+          <div className="flex items-center space-x-2">
+            <Switch
+              checked={config.ready.visible}
+              onCheckedChange={(checked) => updateConfig('ready.visible', checked)}
+            />
+            <Label className="text-sm">Exibir Coluna</Label>
+          </div>
+
+          <div>
+            <Label className="text-sm font-medium">Título da Coluna</Label>
+            <Input
+              value={config.ready.title}
+              onChange={(e) => updateConfig('ready.title', e.target.value)}
+              className="mt-1"
+            />
+          </div>
+
+          <div>
+            <Label className="text-sm font-medium">Largura (%): {config.ready.width}</Label>
+            <Slider
+              value={[config.ready.width]}
+              onValueChange={([value]) => updateConfig('ready.width', value)}
+              max={60}
+              min={10}
+              step={1}
+              className="mt-1"
+            />
+          </div>
+
+          <div className="space-y-3">
+            <Label className="text-sm font-medium">Último Pedido</Label>
+            <div>
+              <Label className="text-xs">Altura: {config.lastOrder.height}px</Label>
+              <Slider
+                value={[config.lastOrder.height]}
+                onValueChange={([value]) => updateConfig('lastOrder.height', value)}
+                max={360}
+                min={40}
+                step={10}
+                className="mt-1"
+              />
+            </div>
+            <div>
+              <Label className="text-xs">Tamanho da Fonte: {config.lastOrder.fontSize}rem</Label>
+              <Slider
+                value={[config.lastOrder.fontSize]}
+                onValueChange={([value]) => updateConfig('lastOrder.fontSize', value)}
+                max={30}
+                min={1}
+                step={0.5}
+                className="mt-1"
+              />
+            </div>
+            <div className="space-y-2">
               <div className="flex items-center space-x-2">
                 <Switch
-                  checked={config.production.visible}
-                  onCheckedChange={(checked) => updateConfig('production.visible', checked)}
+                  checked={config.lastOrder.pulseAnimation}
+                  onCheckedChange={(checked) => updateConfig('lastOrder.pulseAnimation', checked)}
                 />
-                <Label>Exibir Coluna</Label>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label>Título da Coluna</Label>
-                  <Input
-                    value={config.production.title}
-                    onChange={(e) => updateConfig('production.title', e.target.value)}
-                  />
-                </div>
-                <div>
-                  <Label>Largura (%): {config.production.width}</Label>
-                  <Slider
-                    value={[config.production.width]}
-                    onValueChange={([value]) => updateConfig('production.width', value)}
-                    max={50}
-                    min={10}
-                    step={1}
-                  />
-                </div>
-              </div>
-
-              <div className="border-t pt-4">
-                <h4 className="font-semibold mb-3">Cabeçalho</h4>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label>Cor de Fundo</Label>
-                    <Input
-                      type="color"
-                      value={config.production.headerBg}
-                      onChange={(e) => updateConfig('production.headerBg', e.target.value)}
-                    />
-                  </div>
-                  <div>
-                    <Label>Cor da Fonte</Label>
-                    <Input
-                      type="color"
-                      value={config.production.headerColor}
-                      onChange={(e) => updateConfig('production.headerColor', e.target.value)}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="border-t pt-4">
-                <h4 className="font-semibold mb-3">Configurações dos Cards</h4>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label>Colunas: {config.production.cardConfig.columns}</Label>
-                    <Slider
-                      value={[config.production.cardConfig.columns]}
-                      onValueChange={([value]) => updateConfig('production.cardConfig.columns', value)}
-                      max={4}
-                      min={1}
-                      step={1}
-                    />
-                  </div>
-                  <div>
-                    <Label>Linhas: {config.production.cardConfig.rows}</Label>
-                    <Slider
-                      value={[config.production.cardConfig.rows]}
-                      onValueChange={([value]) => updateConfig('production.cardConfig.rows', value)}
-                      max={8}
-                      min={1}
-                      step={1}
-                    />
-                  </div>
-                </div>
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-
-          {/* Coluna Prontos */}
-          <AccordionItem value="ready">
-            <AccordionTrigger className="flex items-center gap-2">
-              <CheckCircle className="w-4 h-4" />
-              Coluna 2 - Prontos
-            </AccordionTrigger>
-            <AccordionContent className="space-y-6">
-              <div className="flex items-center space-x-2">
-                <Switch
-                  checked={config.ready.visible}
-                  onCheckedChange={(checked) => updateConfig('ready.visible', checked)}
-                />
-                <Label>Exibir Coluna</Label>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label>Título da Coluna</Label>
-                  <Input
-                    value={config.ready.title}
-                    onChange={(e) => updateConfig('ready.title', e.target.value)}
-                  />
-                </div>
-                <div>
-                  <Label>Largura (%): {config.ready.width}</Label>
-                  <Slider
-                    value={[config.ready.width]}
-                    onValueChange={([value]) => updateConfig('ready.width', value)}
-                    max={60}
-                    min={10}
-                    step={1}
-                  />
-                </div>
-              </div>
-
-              <div className="border-t pt-4">
-                <h4 className="font-semibold mb-3">Último Pedido</h4>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label>Altura: {config.lastOrder.height}px</Label>
-                    <Slider
-                      value={[config.lastOrder.height]}
-                      onValueChange={([value]) => updateConfig('lastOrder.height', value)}
-                      max={360}
-                      min={40}
-                      step={10}
-                    />
-                  </div>
-                  <div>
-                    <Label>Tamanho da Fonte: {config.lastOrder.fontSize}rem</Label>
-                    <Slider
-                      value={[config.lastOrder.fontSize]}
-                      onValueChange={([value]) => updateConfig('lastOrder.fontSize', value)}
-                      max={30}
-                      min={1}
-                      step={0.5}
-                    />
-                  </div>
-                </div>
-                <div className="flex items-center space-x-4 mt-4">
-                  <div className="flex items-center space-x-2">
-                    <Switch
-                      checked={config.lastOrder.pulseAnimation}
-                      onCheckedChange={(checked) => updateConfig('lastOrder.pulseAnimation', checked)}
-                    />
-                    <Label>Animação Pulsante</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Switch
-                      checked={config.lastOrder.highlight}
-                      onCheckedChange={(checked) => updateConfig('lastOrder.highlight', checked)}
-                    />
-                    <Label>Destacar Último Pedido</Label>
-                  </div>
-                </div>
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-
-          {/* Publicidade */}
-          <AccordionItem value="advertising">
-            <AccordionTrigger className="flex items-center gap-2">
-              <Monitor className="w-4 h-4" />
-              Coluna 3 - Publicidade
-            </AccordionTrigger>
-            <AccordionContent className="space-y-6">
-              <div className="flex items-center space-x-2">
-                <Switch
-                  checked={config.advertising.visible}
-                  onCheckedChange={(checked) => updateConfig('advertising.visible', checked)}
-                />
-                <Label>Exibir Coluna</Label>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label>Largura (%): {config.advertising.width}</Label>
-                  <Slider
-                    value={[config.advertising.width]}
-                    onValueChange={([value]) => updateConfig('advertising.width', value)}
-                    max={50}
-                    min={10}
-                    step={1}
-                  />
-                </div>
-                <div>
-                  <Label>URL da Imagem</Label>
-                  <Input
-                    value={config.advertising.imageUrl || ''}
-                    onChange={(e) => updateConfig('advertising.imageUrl', e.target.value)}
-                    placeholder="https://exemplo.com/imagem.jpg"
-                  />
-                </div>
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-
-          {/* Efeitos Sonoros */}
-          <AccordionItem value="sounds">
-            <AccordionTrigger className="flex items-center gap-2">
-              <Volume2 className="w-4 h-4" />
-              Efeitos Sonoros
-            </AccordionTrigger>
-            <AccordionContent className="space-y-4">
-              <div className="flex items-center space-x-2">
-                <Switch
-                  checked={config.sounds.production}
-                  onCheckedChange={(checked) => updateConfig('sounds.production', checked)}
-                />
-                <Label>Som para Produção</Label>
+                <Label className="text-xs">Animação Pulsante</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <Switch
-                  checked={config.sounds.ready}
-                  onCheckedChange={(checked) => updateConfig('sounds.ready', checked)}
+                  checked={config.lastOrder.highlight}
+                  onCheckedChange={(checked) => updateConfig('lastOrder.highlight', checked)}
                 />
-                <Label>Som para Pronto</Label>
+                <Label className="text-xs">Destacar Último Pedido</Label>
               </div>
-            </AccordionContent>
-          </AccordionItem>
+            </div>
+          </div>
+        </ConfigSection>
 
-          {/* Auto Expedição */}
-          <AccordionItem value="auto-expedition">
-            <AccordionTrigger className="flex items-center gap-2">
-              <Clock className="w-4 h-4" />
-              Auto Expedição
-            </AccordionTrigger>
-            <AccordionContent className="space-y-4">
-              <div className="flex items-center space-x-2">
-                <Switch
-                  checked={config.autoExpedition.enabled}
-                  onCheckedChange={(checked) => updateConfig('autoExpedition.enabled', checked)}
-                />
-                <Label>Utilizar Auto Expedição</Label>
-              </div>
-              <div>
-                <Label>Após quantos minutos: {config.autoExpedition.minutes}</Label>
-                <Slider
-                  value={[config.autoExpedition.minutes]}
-                  onValueChange={([value]) => updateConfig('autoExpedition.minutes', value)}
-                  max={60}
-                  min={1}
-                  step={1}
-                />
-              </div>
-            </AccordionContent>
-          </AccordionItem>
+        {/* Coluna 3 - Publicidade */}
+        <ConfigSection
+          title="Coluna 3 - Publicidade"
+          icon={<Monitor className="w-4 h-4" />}
+          isOpen={openSections.advertising}
+          onToggle={() => toggleSection('advertising')}
+          colorClass="text-cyan-600"
+        >
+          <div className="flex items-center space-x-2">
+            <Switch
+              checked={config.advertising.visible}
+              onCheckedChange={(checked) => updateConfig('advertising.visible', checked)}
+            />
+            <Label className="text-sm">Exibir Coluna</Label>
+          </div>
 
-          {/* Módulos */}
-          <AccordionItem value="modules">
-            <AccordionTrigger className="flex items-center gap-2">
-              <Puzzle className="w-4 h-4" />
-              Módulos
-            </AccordionTrigger>
-            <AccordionContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="flex items-center space-x-2">
-                  <Switch
-                    checked={config.modules.balcao}
-                    onCheckedChange={(checked) => updateConfig('modules.balcao', checked)}
-                  />
-                  <Label>Balcão</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Switch
-                    checked={config.modules.mesa}
-                    onCheckedChange={(checked) => updateConfig('modules.mesa', checked)}
-                  />
-                  <Label>Mesa</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Switch
-                    checked={config.modules.entrega}
-                    onCheckedChange={(checked) => updateConfig('modules.entrega', checked)}
-                  />
-                  <Label>Entrega</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Switch
-                    checked={config.modules.ficha}
-                    onCheckedChange={(checked) => updateConfig('modules.ficha', checked)}
-                  />
-                  <Label>Ficha</Label>
-                </div>
-              </div>
-            </AccordionContent>
-          </AccordionItem>
+          <div>
+            <Label className="text-sm font-medium">Largura (%): {config.advertising.width}</Label>
+            <Slider
+              value={[config.advertising.width]}
+              onValueChange={([value]) => updateConfig('advertising.width', value)}
+              max={50}
+              min={10}
+              step={1}
+              className="mt-1"
+            />
+          </div>
 
-          {/* Configurações dos Cards */}
-          <AccordionItem value="cards">
-            <AccordionTrigger className="flex items-center gap-2">
-              <Cog className="w-4 h-4" />
-              Configurações dos Cards
-            </AccordionTrigger>
-            <AccordionContent className="space-y-4">
-              <div className="flex items-center space-x-2">
-                <Switch
-                  checked={config.cards.showNickname}
-                  onCheckedChange={(checked) => updateConfig('cards.showNickname', checked)}
-                />
-                <Label>Exibir Nome nos Cards</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Switch
-                  checked={config.cards.showItems}
-                  onCheckedChange={(checked) => updateConfig('cards.showItems', checked)}
-                />
-                <Label>Exibir Produtos nos Cards</Label>
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
+          <div>
+            <Label className="text-sm font-medium">URL da Imagem</Label>
+            <Input
+              value={config.advertising.imageUrl || ''}
+              onChange={(e) => updateConfig('advertising.imageUrl', e.target.value)}
+              placeholder="https://exemplo.com/imagem.jpg"
+              className="mt-1"
+            />
+          </div>
+        </ConfigSection>
 
-        <div className="flex justify-end gap-2 mt-6">
-          <Button variant="outline" onClick={onCancel}>
+        {/* Efeitos Sonoros */}
+        <ConfigSection
+          title="Efeitos Sonoros"
+          icon={<Volume2 className="w-4 h-4" />}
+          isOpen={openSections.sounds}
+          onToggle={() => toggleSection('sounds')}
+          colorClass="text-yellow-600"
+        >
+          <div className="flex items-center space-x-2">
+            <Switch
+              checked={config.sounds.production}
+              onCheckedChange={(checked) => updateConfig('sounds.production', checked)}
+            />
+            <Label className="text-sm">Som para Produção</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Switch
+              checked={config.sounds.ready}
+              onCheckedChange={(checked) => updateConfig('sounds.ready', checked)}
+            />
+            <Label className="text-sm">Som para Pronto</Label>
+          </div>
+        </ConfigSection>
+
+        {/* Auto Expedição */}
+        <ConfigSection
+          title="Auto Expedição"
+          icon={<Clock className="w-4 h-4" />}
+          isOpen={openSections.autoExpedition}
+          onToggle={() => toggleSection('autoExpedition')}
+          colorClass="text-orange-600"
+        >
+          <div className="flex items-center space-x-2">
+            <Switch
+              checked={config.autoExpedition.enabled}
+              onCheckedChange={(checked) => updateConfig('autoExpedition.enabled', checked)}
+            />
+            <Label className="text-sm">Utilizar Auto Expedição</Label>
+          </div>
+          <div>
+            <Label className="text-sm font-medium">Após quantos minutos: {config.autoExpedition.minutes}</Label>
+            <Slider
+              value={[config.autoExpedition.minutes]}
+              onValueChange={([value]) => updateConfig('autoExpedition.minutes', value)}
+              max={60}
+              min={1}
+              step={1}
+              className="mt-1"
+            />
+          </div>
+        </ConfigSection>
+
+        {/* Módulos */}
+        <ConfigSection
+          title="Módulos"
+          icon={<Puzzle className="w-4 h-4" />}
+          isOpen={openSections.modules}
+          onToggle={() => toggleSection('modules')}
+          colorClass="text-indigo-600"
+        >
+          <div className="grid grid-cols-2 gap-2">
+            <div className="flex items-center space-x-2">
+              <Switch
+                checked={config.modules.balcao}
+                onCheckedChange={(checked) => updateConfig('modules.balcao', checked)}
+              />
+              <Label className="text-xs">Balcão</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Switch
+                checked={config.modules.mesa}
+                onCheckedChange={(checked) => updateConfig('modules.mesa', checked)}
+              />
+              <Label className="text-xs">Mesa</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Switch
+                checked={config.modules.entrega}
+                onCheckedChange={(checked) => updateConfig('modules.entrega', checked)}
+              />
+              <Label className="text-xs">Entrega</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Switch
+                checked={config.modules.ficha}
+                onCheckedChange={(checked) => updateConfig('modules.ficha', checked)}
+              />
+              <Label className="text-xs">Ficha</Label>
+            </div>
+          </div>
+        </ConfigSection>
+
+        {/* Diversos */}
+        <ConfigSection
+          title="Diversos"
+          icon={<Cog className="w-4 h-4" />}
+          isOpen={openSections.cards}
+          onToggle={() => toggleSection('cards')}
+          colorClass="text-gray-600"
+        >
+          <div className="flex items-center space-x-2">
+            <Switch
+              checked={config.cards?.showNickname ?? true}
+              onCheckedChange={(checked) => updateConfig('cards.showNickname', checked)}
+            />
+            <Label className="text-sm">Exibir Nome nos Cards</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Switch
+              checked={config.cards?.showItems ?? true}
+              onCheckedChange={(checked) => updateConfig('cards.showItems', checked)}
+            />
+            <Label className="text-sm">Exibir Produtos nos Cards</Label>
+          </div>
+        </ConfigSection>
+      </div>
+
+      {/* Footer */}
+      <div className="p-4 border-t border-gray-200 bg-gray-50">
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={onCancel} className="flex-1">
             Fechar
           </Button>
-          <Button onClick={onSave}>
-            Salvar Configurações
+          <Button onClick={onSave} className="flex-1">
+            Salvar
           </Button>
         </div>
-      </DialogContent>
-    </Dialog>
+      </div>
+    </div>
   );
 };

@@ -254,6 +254,14 @@ const Index = () => {
         onSave={handleSaveConfig}
         onCancel={handleCancelConfig}
       />
+      
+      {/* Overlay */}
+      {configOpen && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-40"
+          onClick={handleCancelConfig}
+        />
+      )}
     </div>
   );
 };
