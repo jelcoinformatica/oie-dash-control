@@ -5,6 +5,7 @@ import { Label } from './ui/label';
 import { Switch } from './ui/switch';
 import { Slider } from './ui/slider';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from './ui/alert-dialog';
 import { PanelConfig } from '../types/order';
 import { Settings, Palette, Factory, CheckCircle, Monitor, Volume2, Clock, Puzzle, Cog, X, ChevronRight, ChevronDown, Plus, Minus } from 'lucide-react';
 import { cn } from '../lib/utils';
@@ -82,6 +83,8 @@ export const ConfigurationPanel = ({
     cards: false,
     simulation: false
   });
+
+  const [showClearDialog, setShowClearDialog] = useState(false);
 
   const toggleAllSections = () => {
     const allOpen = Object.values(openSections).every(Boolean);
@@ -899,32 +902,51 @@ export const ConfigurationPanel = ({
         >
           <div className="space-y-4">
             <div className="flex flex-col gap-3">
-              <Button
-                onClick={() => {
-                  if (window.confirm('Deseja zerar todos os pedidos das 2 colunas?')) {
-                    clearAllOrders?.();
-                  }
-                }}
-                variant="destructive"
-                size="sm"
-                className="w-full"
-              >
-                Zerar Todos os Pedidos
-              </Button>
+              <AlertDialog open={showClearDialog} onOpenChange={setShowClearDialog}>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    className="w-full"
+                  >
+                    Zerar Todos os Pedidos
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Confirmar Ação</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Deseja zerar todos os pedidos das 2 colunas? Esta ação não pode ser desfeita.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={() => {
+                        clearAllOrders?.();
+                        setShowClearDialog(false);
+                      }}
+                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                    >
+                      Zerar Pedidos
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
               
               <div className="flex items-center gap-2">
                 <Input
                   type="number"
                   min="1"
-                  max="20"
-                  defaultValue="5"
+                  max="50"
+                  defaultValue="15"
                   id="newOrdersCount"
                   className="h-8 w-20"
                 />
                 <Button
                   onClick={() => {
                     const input = document.getElementById('newOrdersCount') as HTMLInputElement;
-                    const count = parseInt(input?.value || '5');
+                    const count = parseInt(input?.value || '15');
                     generateOrders?.(count);
                   }}
                   variant="outline"

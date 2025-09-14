@@ -243,10 +243,25 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
   const generateOrders = useCallback(async (count: number) => {
     try {
       const newOrders: Order[] = [];
+      
       for (let i = 0; i < count; i++) {
-        const newOrder = await addSimulatedOrder();
-        newOrders.push(newOrder);
+        // 30% dos pedidos serão iFood (IF-XXXXX)
+        const isIfoodOrder = Math.random() < 0.3;
+        
+        if (isIfoodOrder) {
+          // Gerar pedido iFood simulado
+          const ifoodNumber = `IF-${Math.floor(Math.random() * 90000) + 10000}`;
+          const ifoodOrder = await addSimulatedOrder();
+          ifoodOrder.numeroPedido = ifoodNumber;
+          ifoodOrder.number = ifoodNumber;
+          ifoodOrder.modulo = 'entrega'; // Usar modulo ao invés de tipoEntrega
+          newOrders.push(ifoodOrder);
+        } else {
+          const newOrder = await addSimulatedOrder();
+          newOrders.push(newOrder);
+        }
       }
+      
       await loadOrders(); // Recarregar para sincronizar
       toast({
         title: "Pedidos Gerados",

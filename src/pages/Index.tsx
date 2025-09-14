@@ -93,7 +93,7 @@ const Index = () => {
     toast({
       title: "Configurações Salvas",
       description: "As configurações foram atualizadas com sucesso",
-      duration: 2000 // Desaparece automaticamente após 2 segundos
+      duration: 1000 // Desaparece automaticamente após 1 segundo
     });
   };
 
