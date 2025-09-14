@@ -39,35 +39,37 @@ export const useTextToSpeech = () => {
     }
     
     try {
-      // Usar Web Speech API como fallback
       if ('speechSynthesis' in window) {
         const utterance = new SpeechSynthesisUtterance(finalText);
         
+        // Configurar voz em português-BR
+        const voices = speechSynthesis.getVoices();
+        let selectedVoice = null;
+        
         if (config.voice) {
-          const voices = speechSynthesis.getVoices();
-          // Tentar encontrar uma voz em português-BR primeiro
-          const selectedVoice = voices.find(voice => 
-            voice.lang === 'pt-BR' || voice.lang.includes('pt-BR')
-          ) || voices.find(voice => 
-            voice.name.includes('Portuguese') || voice.lang.includes('pt')
-          ) || voices.find(voice => 
-            voice.name.includes(config.voice!)
+          // Procurar pela voz específica configurada
+          selectedVoice = voices.find(voice => 
+            voice.name.includes(config.voice!) && (voice.lang === 'pt-BR' || voice.lang.includes('pt'))
           );
-          if (selectedVoice) utterance.voice = selectedVoice;
-        } else {
-          // Se não especificou voz, tentar português-BR por padrão
-          const voices = speechSynthesis.getVoices();
-          const ptBrVoice = voices.find(voice => 
+        }
+        
+        // Se não encontrou voz específica, usar primeira voz português-BR disponível
+        if (!selectedVoice) {
+          selectedVoice = voices.find(voice => 
             voice.lang === 'pt-BR' || voice.lang.includes('pt-BR')
           ) || voices.find(voice => 
             voice.name.includes('Portuguese') || voice.lang.includes('pt')
           );
-          if (ptBrVoice) utterance.voice = ptBrVoice;
+        }
+        
+        if (selectedVoice) {
+          utterance.voice = selectedVoice;
         }
         
         utterance.rate = config.rate || 1;
         utterance.pitch = config.pitch || 1;
         utterance.volume = config.volume || 0.8;
+        utterance.lang = 'pt-BR'; // Forçar idioma português-BR
         
         speechSynthesis.speak(utterance);
       }
@@ -76,5 +78,15 @@ export const useTextToSpeech = () => {
     }
   }, []);
 
-  return { speak };
+  const getAvailableVoices = useCallback(() => {
+    if ('speechSynthesis' in window) {
+      const voices = speechSynthesis.getVoices();
+      return voices.filter(voice => 
+        voice.lang === 'pt-BR' || voice.lang.includes('pt-BR') || voice.lang.includes('pt')
+      );
+    }
+    return [];
+  }, []);
+
+  return { speak, getAvailableVoices };
 };

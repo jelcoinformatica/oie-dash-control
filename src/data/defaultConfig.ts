@@ -77,7 +77,7 @@ export const defaultConfig: PanelConfig = {
   },
   textToSpeech: {
     enabled: false,
-    voice: 'Liam', // Voz masculina por padrão - TX3LPaxmHKxFdv7VOQHJ
+    voice: 'auto', // Voz automática em português-BR
     rate: 1,
     pitch: 1,
     volume: 0.8,

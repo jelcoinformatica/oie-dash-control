@@ -591,23 +591,17 @@ export const ConfigurationPanel = ({
               <>
                 <div className="space-y-2">
                   <Label className="text-xs">Tipo de Voz</Label>
-                  <Select value={config.textToSpeech.voice || 'Liam'} onValueChange={(value) => updateConfig('textToSpeech.voice', value)}>
+                  <Select value={config.textToSpeech.voice || 'auto'} onValueChange={(value) => updateConfig('textToSpeech.voice', value)}>
                     <SelectTrigger className="h-8">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Liam">Liam (Masculino)</SelectItem>
-                      <SelectItem value="Charlie">Charlie (Masculino)</SelectItem>
-                      <SelectItem value="George">George (Masculino)</SelectItem>
-                      <SelectItem value="Roger">Roger (Masculino)</SelectItem>
-                      <SelectItem value="Daniel">Daniel (Masculino)</SelectItem>
-                      <SelectItem value="Aria">Aria (Feminino)</SelectItem>
-                      <SelectItem value="Sarah">Sarah (Feminino)</SelectItem>
-                      <SelectItem value="Laura">Laura (Feminino)</SelectItem>
-                      <SelectItem value="Charlotte">Charlotte (Feminino)</SelectItem>
-                      <SelectItem value="Alice">Alice (Feminino)</SelectItem>
-                      <SelectItem value="Jessica">Jessica (Feminino)</SelectItem>
-                      <SelectItem value="Lily">Lily (Feminino)</SelectItem>
+                      <SelectItem value="auto">Automática (Português-BR)</SelectItem>
+                      <SelectItem value="Microsoft Maria">Maria (Feminino)</SelectItem>
+                      <SelectItem value="Microsoft Heloisa">Heloísa (Feminino)</SelectItem>
+                      <SelectItem value="Microsoft Daniel">Daniel (Masculino)</SelectItem>
+                      <SelectItem value="Google português">Google Português (Masculino)</SelectItem>
+                      <SelectItem value="Google português do Brasil">Google Português BR (Feminino)</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
