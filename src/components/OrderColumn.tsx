@@ -12,6 +12,8 @@ interface OrderColumnProps {
   variant?: 'production' | 'ready' | 'advertising';
   showNickname?: boolean;
   showItems?: boolean;
+  headerBg?: string;
+  headerColor?: string;
 }
 
 const variantStyles = {
@@ -38,15 +40,25 @@ export const OrderColumn = ({
   totalCount,
   variant = 'production',
   showNickname = true,
-  showItems = true
+  showItems = true,
+  headerBg,
+  headerColor
 }: OrderColumnProps) => {
   return (
     <div className={cn("flex flex-col h-full", className)}>
-      <div className={cn(
-        "flex items-center justify-between px-4 py-3 font-bold text-lg",
-        "shadow-sm border-b bg-gray-800 text-white rounded-t-lg",
-        headerClassName
-      )}>
+      <div 
+        className={cn(
+          "flex items-center justify-between px-4 py-3 font-bold text-lg",
+          "shadow-sm border-b rounded-t-lg",
+          !headerBg && "bg-gray-800",
+          !headerColor && "text-white",
+          headerClassName
+        )}
+        style={{
+          backgroundColor: headerBg,
+          color: headerColor
+        }}
+      >
         <span>{title}</span>
         <span className="bg-white/20 px-2 py-1 rounded-full text-sm">
           {totalCount ?? orders.length}

@@ -115,6 +115,8 @@ const Index = () => {
               variant="production"
               showNickname={config.cards?.showNickname ?? true}
               showItems={config.cards?.showItems ?? true}
+              headerBg={config.production.headerBg}
+              headerColor={config.production.headerColor}
             />
           </div>
         )}
