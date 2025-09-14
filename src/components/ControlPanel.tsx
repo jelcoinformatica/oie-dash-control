@@ -37,44 +37,46 @@ export const ControlPanel = ({
   };
 
   return (
-    <div className="bg-card border-t shadow-sm" style={{ height: '42px' }}>
-      <div className="container mx-auto px-4 py-1 flex items-center justify-center h-full">
-        <div className="flex items-center gap-2">
-          <Input
-            placeholder="No.Pedido"
-            value={expeditionInput}
-            onChange={(e) => setExpeditionInput(e.target.value)}
-            onKeyPress={handleKeyPress}
-            className="w-32 h-8"
-          />
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button 
-                  onClick={handleExpedite}
-                  size="sm"
-                  disabled={!expeditionInput.trim()}
-                  variant="ghost"
-                  className="h-8 w-8 p-0"
-                >
-                  <Send className="w-4 h-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Expedir pedido</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-          
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={onConfigClick}
-            className="h-8"
-          >
-            <Settings className="w-4 h-4" />
-          </Button>
+    <div className="bg-card border-t shadow-sm" style={{ height: '29px' }}>
+      <div className="container mx-auto px-4 py-0.5 flex items-center justify-between h-full">
+        <div className="flex-1 flex justify-center">
+          <div className="flex items-center gap-1">
+            <Input
+              placeholder="Pedido"
+              value={expeditionInput}
+              onChange={(e) => setExpeditionInput(e.target.value)}
+              onKeyPress={handleKeyPress}
+              className="w-24 h-6 text-xs text-center"
+            />
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button 
+                    onClick={handleExpedite}
+                    size="sm"
+                    disabled={!expeditionInput.trim()}
+                    variant="ghost"
+                    className="h-6 w-6 p-0"
+                  >
+                    <Send className="w-3 h-3" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Expedir</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
         </div>
+        
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={onConfigClick}
+          className="h-6 w-6 p-0"
+        >
+          <Settings className="w-3 h-3" />
+        </Button>
       </div>
     </div>
   );

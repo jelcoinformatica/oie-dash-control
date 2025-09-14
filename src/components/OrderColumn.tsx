@@ -82,7 +82,7 @@ export const OrderColumn = ({
         </span>
       </div>
       
-      <div className="flex-1 p-4 overflow-y-auto bg-gray-50">
+      <div className="flex-1 p-4 overflow-hidden bg-gray-50">
         <div className="grid grid-cols-2 gap-1">
           {orders.map((order) => (
             <OrderCard

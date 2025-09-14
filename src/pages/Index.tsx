@@ -41,7 +41,6 @@ const Index = () => {
           ready: { ...defaultConfig.ready, ...parsedConfig.ready, cardConfig: { ...defaultConfig.ready.cardConfig, ...parsedConfig.ready?.cardConfig } },
           advertising: { ...defaultConfig.advertising, ...parsedConfig.advertising },
           lastOrder: { ...defaultConfig.lastOrder, ...parsedConfig.lastOrder },
-          cards: { ...defaultConfig.cards, ...parsedConfig.cards },
           sounds: { ...defaultConfig.sounds, ...parsedConfig.sounds },
           autoExpedition: { ...defaultConfig.autoExpedition, ...parsedConfig.autoExpedition },
           modules: { ...defaultConfig.modules, ...parsedConfig.modules },
@@ -113,13 +112,13 @@ const Index = () => {
               orders={productionOrders}
               onOrderClick={handleOrderClick}
               variant="production"
-              showNickname={config.cards?.showNickname ?? true}
-              showItems={config.cards?.showItems ?? true}
+              showNickname={config.production?.cardConfig?.showNickname ?? true}
+              showItems={config.production?.cardConfig?.showItems ?? true}
               headerBg={config.production.headerBg}
               headerColor={config.production.headerColor}
               headerHeight={config.production.headerHeight}
               enabledModules={config.modules}
-              cardConfig={config.cards}
+              cardConfig={config.production?.cardConfig}
             />
           </div>
         )}
@@ -170,13 +169,13 @@ const Index = () => {
                       order={order}
                       onClick={() => handleExpedite(order.numeroPedido || order.number || '')}
                       className="flex-shrink-0"
-                      showNickname={config.cards?.showNickname ?? true}
-                      showItems={config.cards?.showItems ?? true}
+                      showNickname={config.ready?.cardConfig?.showNickname ?? true}
+                      showItems={config.ready?.cardConfig?.showItems ?? true}
                       enabledModules={config.modules}
-                      fontSize={config.cards?.fontSize}
-                      fontFamily={config.cards?.fontFamily}
-                      textColor={config.cards?.textColor}
-                      backgroundColor={config.cards?.backgroundColor}
+                      fontSize={config.ready?.cardConfig?.fontSize}
+                      fontFamily={config.ready?.cardConfig?.fontFamily}
+                      textColor={config.ready?.cardConfig?.textColor}
+                      backgroundColor={config.ready?.cardConfig?.backgroundColor}
                     />
                 ))}
               </div>
@@ -212,7 +211,7 @@ const Index = () => {
       </div>
 
       {/* Painel de Controle Fixo */}
-      <div className="flex-shrink-0" style={{ height: '42px' }}>
+      <div className="flex-shrink-0" style={{ height: '29px' }}>
         <ControlPanel
           onConfigClick={() => setConfigOpen(true)}
           onExpedite={handleExpedite}

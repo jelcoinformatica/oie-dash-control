@@ -19,7 +19,9 @@ export const defaultConfig: PanelConfig = {
       backgroundColor: '#f3f4f6',
       textColor: '#374151',
       fontFamily: 'Arial',
-      fontSize: 2
+      fontSize: 2,
+      showNickname: true,
+      showItems: true
     }
   },
   ready: {
@@ -39,7 +41,9 @@ export const defaultConfig: PanelConfig = {
       backgroundColor: '#f3f4f6',
       textColor: '#374151',
       fontFamily: 'Arial',
-      fontSize: 1.6
+      fontSize: 1.6,
+      showNickname: true,
+      showItems: true
     }
   },
   advertising: {
@@ -62,14 +66,6 @@ export const defaultConfig: PanelConfig = {
     textColor: '#ffffff',
     pulseAnimation: true,
     highlight: true
-  },
-  cards: {
-    showNickname: true,
-    showItems: true,
-    fontSize: 2,
-    fontFamily: 'Arial',
-    textColor: '#374151',
-    backgroundColor: '#ffffff'
   },
   sounds: {
     production: true,

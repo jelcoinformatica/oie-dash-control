@@ -20,9 +20,9 @@ export const useOrders = () => {
       const readyOrders = data.filter(order => order.status === 'ready');
       if (readyOrders.length > 0) {
         const latest = readyOrders.reduce((latest, current) => 
-          current.updatedAt > latest.updatedAt ? current : latest
+          (current.ultimoConsumo || current.updatedAt) > (latest.ultimoConsumo || latest.updatedAt) ? current : latest
         );
-        setLastOrderNumber(latest.number);
+        setLastOrderNumber(latest.numeroPedido || latest.number);
       } else {
         setLastOrderNumber('');
       }
@@ -39,16 +39,30 @@ export const useOrders = () => {
 
   const moveToReady = useCallback(async (orderId: string) => {
     try {
+      // Encontrar o pedido atual
+      const currentOrder = orders.find(o => o.id === orderId);
+      if (!currentOrder) return;
+
+      // Se já há um último pedido, mover para ready orders
+      if (lastOrderNumber) {
+        const currentLastOrder = orders.find(o => 
+          (o.numeroPedido || o.number) === lastOrderNumber
+        );
+        if (currentLastOrder) {
+          const movedToReady = await updateOrderStatus(currentLastOrder.id, 'ready');
+          setOrders(prev => prev.map(order => 
+            order.id === currentLastOrder.id ? movedToReady : order
+          ));
+        }
+      }
+
+      // Mover o pedido clicado para ready e definir como último pedido
       const updatedOrder = await updateOrderStatus(orderId, 'ready');
       setOrders(prev => prev.map(order => 
         order.id === orderId ? updatedOrder : order
       ));
-      setLastOrderNumber(updatedOrder.number);
+      setLastOrderNumber(updatedOrder.numeroPedido || updatedOrder.number);
       
-      toast({
-        title: "Pedido Pronto",
-        description: `Pedido #${updatedOrder.number} movido para prontos`
-      });
     } catch (error) {
       toast({
         title: "Erro",
@@ -56,11 +70,51 @@ export const useOrders = () => {
         variant: "destructive"
       });
     }
-  }, []);
+  }, [orders, lastOrderNumber]);
 
   const expedite = useCallback(async (orderNumber: string) => {
     try {
-      const order = orders.find(o => o.number === orderNumber);
+      // Verificar se começa com "-" para retornar para produção
+      if (orderNumber.startsWith('-')) {
+        const numOnly = orderNumber.slice(1);
+        const order = orders.find(o => {
+          const orderNum = o.numeroPedido || o.number || '';
+          return orderNum === numOnly || orderNum.replace(/[^\d]/g, '') === numOnly;
+        });
+        
+        if (order) {
+          const updatedOrder = await updateOrderStatus(order.id, 'production');
+          setOrders(prev => prev.map(o => 
+            o.id === order.id ? updatedOrder : o
+          ));
+          
+          // Se era o último pedido, atualizar
+          if ((order.numeroPedido || order.number) === lastOrderNumber) {
+            const remainingReady = orders.filter(o => o.status === 'ready' && o.id !== order.id);
+            if (remainingReady.length > 0) {
+              const latest = remainingReady.reduce((latest, current) => 
+                (current.ultimoConsumo || current.updatedAt) > (latest.ultimoConsumo || latest.updatedAt) ? current : latest
+              );
+              setLastOrderNumber(latest.numeroPedido || latest.number);
+            } else {
+              setLastOrderNumber('');
+            }
+          }
+        }
+        return;
+      }
+
+      // Lógica normal de expedição
+      let order = orders.find(o => (o.numeroPedido || o.number) === orderNumber);
+      
+      // Se não encontrou, tentar buscar apenas pelos números (para pedidos como IF-1234)
+      if (!order) {
+        order = orders.find(o => {
+          const orderNum = o.numeroPedido || o.number || '';
+          return orderNum.replace(/[^\d]/g, '') === orderNumber;
+        });
+      }
+
       if (!order) {
         toast({
           title: "Erro",
@@ -73,29 +127,26 @@ export const useOrders = () => {
       await expediteOrder(order.id);
       setOrders(prev => prev.filter(o => o.id !== order.id));
       
-      toast({
-        title: "Pedido Expedido",
-        description: `Pedido #${orderNumber} foi expedido`
-      });
-
-      // Atualiza último pedido se necessário
-      const remainingReady = orders.filter(o => o.status === 'ready' && o.id !== order.id);
-      if (remainingReady.length > 0) {
-        const latest = remainingReady.reduce((latest, current) => 
-          current.updatedAt > latest.updatedAt ? current : latest
-        );
-        setLastOrderNumber(latest.number);
-      } else {
-        setLastOrderNumber('');
+      // Se foi o último pedido expedido, mover o primeiro da coluna ready para último pedido
+      if ((order.numeroPedido || order.number) === lastOrderNumber) {
+        const remainingReady = orders.filter(o => o.status === 'ready' && o.id !== order.id);
+        if (remainingReady.length > 0) {
+          const latest = remainingReady.reduce((latest, current) => 
+            (current.ultimoConsumo || current.updatedAt) > (latest.ultimoConsumo || latest.updatedAt) ? current : latest
+          );
+          setLastOrderNumber(latest.numeroPedido || latest.number);
+        } else {
+          setLastOrderNumber('');
+        }
       }
     } catch (error) {
       toast({
         title: "Erro",
-        description: "Falha ao expedir pedido",
+        description: "Falha ao processar pedido",
         variant: "destructive"
       });
     }
-  }, [orders]);
+  }, [orders, lastOrderNumber]);
 
   const startSimulation = useCallback(() => {
     if (simulationIntervalId) return; // Already active

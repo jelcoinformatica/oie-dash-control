@@ -66,7 +66,7 @@ export const OrderCard = ({
       {/* Colored Dot Indicator - only show when more than 1 module enabled - top right corner */}
       {showModuleBullet && (
         <div className={cn(
-          "absolute top-1 right-1 w-2 h-2 rounded-full",
+          "absolute top-0.5 right-0.5 w-1.5 h-1.5 rounded-full",
           moduleColors[order.modulo]
         )} />
       )}
@@ -76,14 +76,18 @@ export const OrderCard = ({
         <div className="text-center w-full">
           <div 
             className="font-bold leading-tight"
-            style={{ fontSize: `${fontSize}rem` }}
+            style={{ 
+              fontSize: displayNumber.length > 8 ? `${fontSize * 0.8}rem` : `${fontSize}rem`
+            }}
           >
             {displayNumber}
           </div>
           {displayName && showNickname && (
             <div 
-              className="font-medium leading-tight mt-1"
-              style={{ fontSize: `${fontSize * 0.7}rem` }}
+              className="font-medium leading-tight mt-0.5"
+              style={{ 
+                fontSize: displayName.length > 12 ? `${fontSize * 0.5}rem` : `${fontSize * 0.7}rem`
+              }}
             >
               {displayName}
             </div>
@@ -92,7 +96,9 @@ export const OrderCard = ({
       ) : displayName ? (
         <div 
           className="font-bold text-center leading-tight"
-          style={{ fontSize: `${fontSize}rem` }}
+          style={{ 
+            fontSize: displayName.length > 8 ? `${fontSize * 0.8}rem` : `${fontSize}rem`
+          }}
         >
           {displayName}
         </div>

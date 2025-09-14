@@ -25,6 +25,8 @@ export interface OrderCardConfig {
   textColor: string;
   fontFamily: string;
   fontSize: number;
+  showNickname?: boolean;
+  showItems?: boolean;
 }
 
 export interface ColumnConfig {
@@ -64,14 +66,6 @@ export interface PanelConfig {
     textColor: string;
     pulseAnimation: boolean;
     highlight: boolean;
-  };
-  cards: {
-    showNickname: boolean;
-    showItems: boolean;
-    fontSize: number;
-    fontFamily: string;
-    textColor: string;
-    backgroundColor: string;
   };
   sounds: {
     production: boolean;
