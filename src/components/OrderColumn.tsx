@@ -10,6 +10,8 @@ interface OrderColumnProps {
   headerClassName?: string;
   totalCount?: number;
   variant?: 'production' | 'ready' | 'advertising';
+  showNickname?: boolean;
+  showItems?: boolean;
 }
 
 const variantStyles = {
@@ -34,7 +36,9 @@ export const OrderColumn = ({
   className,
   headerClassName,
   totalCount,
-  variant = 'production'
+  variant = 'production',
+  showNickname = true,
+  showItems = true
 }: OrderColumnProps) => {
   const styles = variantStyles[variant];
 
@@ -63,6 +67,8 @@ export const OrderColumn = ({
               order={order}
               onClick={() => onOrderClick?.(order)}
               className="min-h-[120px]"
+              showNickname={showNickname}
+              showItems={showItems}
             />
           ))}
         </div>

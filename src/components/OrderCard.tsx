@@ -5,6 +5,8 @@ interface OrderCardProps {
   order: Order;
   onClick?: () => void;
   className?: string;
+  showNickname?: boolean;
+  showItems?: boolean;
 }
 
 const moduleLabels = {
@@ -21,21 +23,13 @@ const moduleColors = {
   ficha: 'bg-purple-100 text-purple-800 border-purple-200'
 };
 
-export const OrderCard = ({ order, onClick, className }: OrderCardProps) => {
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL'
-    }).format(value / 100);
-  };
-
-  const formatTime = (date: Date) => {
-    return new Intl.DateTimeFormat('pt-BR', {
-      hour: '2-digit',
-      minute: '2-digit'
-    }).format(date);
-  };
-
+export const OrderCard = ({ 
+  order, 
+  onClick, 
+  className,
+  showNickname = true,
+  showItems = true
+}: OrderCardProps) => {
   return (
     <div
       className={cn(
@@ -58,12 +52,9 @@ export const OrderCard = ({ order, onClick, className }: OrderCardProps) => {
             {moduleLabels[order.module]}
           </div>
         </div>
-        <span className="text-xs text-muted-foreground">
-          {formatTime(order.createdAt)}
-        </span>
       </div>
       
-      {order.nickname && (
+      {showNickname && order.nickname && (
         <div className="mb-2">
           <span className="text-sm font-medium text-order-card-foreground">
             {order.nickname}
@@ -71,16 +62,10 @@ export const OrderCard = ({ order, onClick, className }: OrderCardProps) => {
         </div>
       )}
       
-      <div className="text-xs text-muted-foreground mb-2">
-        {order.items.slice(0, 2).join(', ')}
-        {order.items.length > 2 && ` +${order.items.length - 2} mais`}
-      </div>
-      
-      {order.totalValue && (
-        <div className="text-right">
-          <span className="text-sm font-bold text-primary">
-            {formatCurrency(order.totalValue)}
-          </span>
+      {showItems && (
+        <div className="text-xs text-muted-foreground mb-2">
+          {order.items.slice(0, 2).join(', ')}
+          {order.items.length > 2 && ` +${order.items.length - 2} mais`}
         </div>
       )}
     </div>

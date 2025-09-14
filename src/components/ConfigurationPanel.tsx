@@ -389,6 +389,30 @@ export const ConfigurationPanel = ({
               </div>
             </AccordionContent>
           </AccordionItem>
+
+          {/* Configurações dos Cards */}
+          <AccordionItem value="cards">
+            <AccordionTrigger className="flex items-center gap-2">
+              <Cog className="w-4 h-4" />
+              Configurações dos Cards
+            </AccordionTrigger>
+            <AccordionContent className="space-y-4">
+              <div className="flex items-center space-x-2">
+                <Switch
+                  checked={config.cards.showNickname}
+                  onCheckedChange={(checked) => updateConfig('cards.showNickname', checked)}
+                />
+                <Label>Exibir Nome nos Cards</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Switch
+                  checked={config.cards.showItems}
+                  onCheckedChange={(checked) => updateConfig('cards.showItems', checked)}
+                />
+                <Label>Exibir Produtos nos Cards</Label>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
         </Accordion>
 
         <div className="flex justify-end gap-2 mt-6">

@@ -91,6 +91,8 @@ const Index = () => {
               orders={productionOrders}
               onOrderClick={handleOrderClick}
               variant="production"
+              showNickname={config.cards.showNickname}
+              showItems={config.cards.showItems}
             />
           </div>
         )}
@@ -144,15 +146,9 @@ const Index = () => {
                            order.module === 'entrega' ? 'Entrega' : 'Ficha'}
                         </div>
                       </div>
-                      <span className="text-xs text-muted-foreground">
-                        {new Intl.DateTimeFormat('pt-BR', {
-                          hour: '2-digit',
-                          minute: '2-digit'
-                        }).format(order.createdAt)}
-                      </span>
                     </div>
                     
-                    {order.nickname && (
+                    {config.cards.showNickname && order.nickname && (
                       <div className="mb-2">
                         <span className="text-sm font-medium text-order-card-foreground">
                           {order.nickname}
@@ -160,19 +156,10 @@ const Index = () => {
                       </div>
                     )}
                     
-                    <div className="text-xs text-muted-foreground mb-2">
-                      {order.items.slice(0, 2).join(', ')}
-                      {order.items.length > 2 && ` +${order.items.length - 2} mais`}
-                    </div>
-                    
-                    {order.totalValue && (
-                      <div className="text-right">
-                        <span className="text-sm font-bold text-primary">
-                          {new Intl.NumberFormat('pt-BR', {
-                            style: 'currency',
-                            currency: 'BRL'
-                          }).format(order.totalValue / 100)}
-                        </span>
+                    {config.cards.showItems && (
+                      <div className="text-xs text-muted-foreground mb-2">
+                        {order.items.slice(0, 2).join(', ')}
+                        {order.items.length > 2 && ` +${order.items.length - 2} mais`}
                       </div>
                     )}
                   </div>

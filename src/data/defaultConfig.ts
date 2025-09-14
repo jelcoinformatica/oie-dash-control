@@ -63,6 +63,10 @@ export const defaultConfig: PanelConfig = {
     pulseAnimation: true,
     highlight: true
   },
+  cards: {
+    showNickname: true,
+    showItems: true
+  },
   sounds: {
     production: true,
     ready: true,

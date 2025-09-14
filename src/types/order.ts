@@ -58,6 +58,10 @@ export interface PanelConfig {
     pulseAnimation: boolean;
     highlight: boolean;
   };
+  cards: {
+    showNickname: boolean;
+    showItems: boolean;
+  };
   sounds: {
     production: boolean;
     ready: boolean;
