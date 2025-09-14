@@ -2,14 +2,14 @@
   "orders": [
     {
       "id": "prod-1",
-      "number": "234",
-      "module": "balcao",
+      "numeroPedido": "234",
+      "ticket": "101",
+      "modulo": "balcao",
       "status": "production",
-      "items": ["Pizza Margherita", "Refrigerante Cola"],
-      "createdAt": "2025-01-14T10:30:00.000Z",
-      "updatedAt": "2025-01-14T10:30:00.000Z",
-      "nickname": "João",
-      "totalValue": 2500
+      "ultimoConsumo": "2025-01-14T10:30:00.000Z",
+      "dataContabil": "2025-01-14T10:30:00.000Z",
+      "localEntrega": "Balcão",
+      "nomeCliente": "João"
     },
     {
       "id": "prod-2",
