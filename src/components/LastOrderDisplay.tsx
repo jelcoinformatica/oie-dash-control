@@ -2,6 +2,7 @@ import { cn } from '../lib/utils';
 
 interface LastOrderDisplayProps {
   orderNumber: string;
+  nickname?: string;
   config?: {
     height: number;
     fontSize: number;
@@ -17,6 +18,7 @@ interface LastOrderDisplayProps {
 
 export const LastOrderDisplay = ({ 
   orderNumber, 
+  nickname,
   config,
   className,
   onExpedite
@@ -42,9 +44,8 @@ export const LastOrderDisplay = ({
   return (
     <div 
       className={cn(
-        "p-4 border border-yellow-300 rounded-lg text-center cursor-pointer hover:opacity-80 transition-opacity",
+        "p-4 rounded-lg text-center cursor-pointer hover:opacity-80 transition-opacity",
         safeConfig.pulseAnimation && "animate-pulse",
-        safeConfig.highlight && "ring-2 ring-yellow-400",
         className
       )}
       style={{ 
@@ -58,6 +59,7 @@ export const LastOrderDisplay = ({
     >
       <div className="h-full flex flex-col items-center justify-center font-bold">
         <div>{orderNumber}</div>
+        {nickname && <div className="text-sm opacity-90 mt-1">{nickname}</div>}
       </div>
     </div>
   );

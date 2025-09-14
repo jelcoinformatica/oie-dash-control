@@ -68,8 +68,7 @@ export const OrderColumn = ({
     <div className={cn("flex flex-col h-full", className)}>
       <div 
         className={cn(
-          "bg-white rounded-lg shadow-lg border border-gray-300 flex flex-col overflow-hidden h-full",
-          variant === 'production' ? 'border-l-4 border-l-blue-500' : '',
+          "bg-white rounded-lg shadow-lg flex flex-col overflow-hidden h-full",
           showBorder ? 'ring-2 ring-blue-200' : ''
         )}
       >
