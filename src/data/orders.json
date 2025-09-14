@@ -1,0 +1,103 @@
+{
+  "orders": [
+    {
+      "id": "prod-1",
+      "number": "234",
+      "module": "balcao",
+      "status": "production",
+      "items": ["Pizza Margherita", "Refrigerante Cola"],
+      "createdAt": "2025-01-14T10:30:00.000Z",
+      "updatedAt": "2025-01-14T10:30:00.000Z",
+      "nickname": "João",
+      "totalValue": 2500
+    },
+    {
+      "id": "prod-2",
+      "number": "235",
+      "module": "mesa",
+      "status": "production",
+      "items": ["Hamburger Clássico", "Batata Frita"],
+      "createdAt": "2025-01-14T10:25:00.000Z",
+      "updatedAt": "2025-01-14T10:25:00.000Z",
+      "nickname": "Maria",
+      "totalValue": 3200
+    },
+    {
+      "id": "prod-3",
+      "number": "236",
+      "module": "entrega",
+      "status": "production",
+      "items": ["Pasta Carbonara"],
+      "createdAt": "2025-01-14T10:20:00.000Z",
+      "updatedAt": "2025-01-14T10:20:00.000Z",
+      "nickname": "Pedro",
+      "totalValue": 1800
+    },
+    {
+      "id": "prod-4",
+      "number": "237",
+      "module": "ficha",
+      "status": "production",
+      "items": ["Salada Caesar", "Suco Natural"],
+      "createdAt": "2025-01-14T10:15:00.000Z",
+      "updatedAt": "2025-01-14T10:15:00.000Z",
+      "nickname": "Ana",
+      "totalValue": 2100
+    },
+    {
+      "id": "prod-5",
+      "number": "238",
+      "module": "balcao",
+      "status": "production",
+      "items": ["Sanduíche Natural"],
+      "createdAt": "2025-01-14T10:10:00.000Z",
+      "updatedAt": "2025-01-14T10:10:00.000Z",
+      "nickname": "Carlos",
+      "totalValue": 1500
+    },
+    {
+      "id": "prod-6",
+      "number": "239",
+      "module": "mesa",
+      "status": "production",
+      "items": ["Pizza Margherita", "Refrigerante Cola", "Batata Frita"],
+      "createdAt": "2025-01-14T10:05:00.000Z",
+      "updatedAt": "2025-01-14T10:05:00.000Z",
+      "nickname": "Lucia",
+      "totalValue": 4200
+    },
+    {
+      "id": "ready-1",
+      "number": "479",
+      "module": "entrega",
+      "status": "ready",
+      "items": ["Hamburger Clássico", "Suco Natural"],
+      "createdAt": "2025-01-14T09:45:00.000Z",
+      "updatedAt": "2025-01-14T10:40:00.000Z",
+      "nickname": "Rafael",
+      "totalValue": 2800
+    },
+    {
+      "id": "ready-2",
+      "number": "477",
+      "module": "balcao",
+      "status": "ready",
+      "items": ["Pizza Margherita"],
+      "createdAt": "2025-01-14T09:30:00.000Z",
+      "updatedAt": "2025-01-14T10:35:00.000Z",
+      "nickname": "Fernanda",
+      "totalValue": 2200
+    },
+    {
+      "id": "ready-3",
+      "number": "475",
+      "module": "mesa",
+      "status": "ready",
+      "items": ["Salada Caesar", "Refrigerante Cola"],
+      "createdAt": "2025-01-14T09:15:00.000Z",
+      "updatedAt": "2025-01-14T10:30:00.000Z",
+      "nickname": "João",
+      "totalValue": 1900
+    }
+  ]
+}

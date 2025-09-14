@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Order } from '../types/order';
-import { fetchOrders, updateOrderStatus, expediteOrder, addSimulatedOrder } from '../data/mockOrders';
+import { fetchOrders, updateOrderStatus, expediteOrder, addSimulatedOrder } from '../services/orderService';
 import { toast } from './use-toast';
 
 export const useOrders = () => {
