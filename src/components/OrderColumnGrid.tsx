@@ -31,44 +31,34 @@ export const OrderColumnGrid = ({
   enabledModules,
   cardConfig
 }: OrderColumnGridProps) => {
-  // Calcular quantos cards cabem no container baseado na altura e largura disponível
+  // Calcular dimensões dos cards para caber perfeitamente
   const { visibleOrders, cardHeight, cardWidth, adjustedFontSize } = useMemo(() => {
-    const baseFontSize = 16; // 1rem = 16px
+    const baseFontSize = 16;
     const requestedFontSize = cardConfig?.fontSize || 1.2;
     
-    // Usar uma largura fixa aproximada do container da coluna
-    // Assumindo que cada coluna ocupa aproximadamente 1/2 da tela (para 2 colunas principais)
-    const estimatedColumnWidth = window.innerWidth * 0.45; // 45% da largura da tela por coluna principal
-    const containerHeight = window.innerHeight - 300; // Espaço para cabeçalho, controles, etc
-    
-    // Calcular largura disponível por card (considerando gaps e padding)
-    const totalGaps = 8 * (columns - 1); // 8px de gap entre colunas
-    const containerPadding = 16; // padding do container
-    const availableWidth = estimatedColumnWidth - totalGaps - containerPadding;
+    // Largura do card baseada no número de colunas
+    const gap = 4;
+    const padding = 16;
+    const containerWidth = 380; // Largura fixa da coluna
+    const availableWidth = containerWidth - padding - (gap * (columns - 1));
     const cardWidth = Math.floor(availableWidth / columns);
     
-    // Ajustar fonte para caber na largura do card
-    // Cada caractere ocupa aproximadamente 0.6 * fontSize pixels
-    const maxCharsPerLine = Math.floor(cardWidth / (requestedFontSize * baseFontSize * 0.6));
-    let adjustedFontSize = requestedFontSize;
+    // Altura fixa do card
+    const cardHeight = 90;
     
-    // Reduzir fonte se necessário para caber pelo menos 3 caracteres (número do pedido)
-    if (maxCharsPerLine < 3) {
-      adjustedFontSize = Math.max(0.6, (cardWidth / (3 * baseFontSize * 0.6)));
+    // Ajustar fonte para não ultrapassar a largura do card
+    let adjustedFontSize = requestedFontSize;
+    const estimatedTextWidth = 4 * adjustedFontSize * baseFontSize * 0.6; // ~4 caracteres
+    if (estimatedTextWidth > cardWidth - 20) { // 20px de padding interno
+      adjustedFontSize = Math.max(0.8, (cardWidth - 20) / (4 * baseFontSize * 0.6));
     }
     
-    // Altura do card baseada na fonte + padding
-    const cardHeight = Math.max(60, adjustedFontSize * baseFontSize * 3); // 3 linhas de altura
+    // Calcular quantas linhas cabem
+    const containerHeight = window.innerHeight - 250; // Altura disponível
+    const maxRows = Math.floor(containerHeight / (cardHeight + gap));
     
-    // Calcular quantas linhas de cards cabem na altura disponível
-    const totalVerticalGaps = 4; // gaps verticais
-    const availableHeight = containerHeight - totalVerticalGaps;
-    const maxRows = Math.floor(availableHeight / cardHeight);
-    
-    // Total de cards que cabem na tela
-    const maxVisibleCards = Math.max(1, maxRows * columns);
-    
-    // Limitar os pedidos aos que cabem na tela
+    // Limitar cards para caber sem cortes
+    const maxVisibleCards = Math.max(0, maxRows * columns);
     const visibleOrders = orders.slice(0, maxVisibleCards);
     
     return {

@@ -96,7 +96,7 @@ export const OrderColumn = ({
           </span>
         </div>
         
-        <div className="flex-1 p-2 bg-gray-50" style={{ overflow: 'hidden' }}>
+        <div className="order-column-content flex-1 p-2 bg-gray-50" style={{ overflow: 'hidden' }}>
           <OrderColumnGrid
             orders={orders}
             columns={columns}
