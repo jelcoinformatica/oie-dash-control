@@ -36,11 +36,40 @@ const generateRandomOrder = (id: string, status: 'production' | 'ready'): Order 
   };
 };
 
+// Gerar pedidos específicos do iFood
+const generateIfoodOrder = (id: string, status: 'production' | 'ready', orderNumber: string, customerName: string): Order => {
+  return {
+    id,
+    numeroPedido: orderNumber,
+    ticket: orderNumber,
+    modulo: 'entrega', // iFood é sempre entrega
+    status,
+    ultimoConsumo: new Date(Date.now() - Math.random() * 1800000), // Últimas 30min
+    dataContabil: new Date(),
+    localEntrega: 'iFood Delivery',
+    nomeCliente: customerName,
+    // Campos de compatibilidade
+    number: orderNumber,
+    nickname: customerName,
+    createdAt: new Date(Date.now() - Math.random() * 1800000),
+    updatedAt: new Date(),
+    items: ['Combo iFood', 'Taxa de Entrega'],
+    totalValue: Math.floor(Math.random() * 4000) + 2000 // R$ 20,00 - R$ 60,00
+  };
+};
+
 export const mockOrders: Order[] = [
+  // Pedidos iFood de exemplo
+  generateIfoodOrder('ifood-1', 'production', 'IF-12345', 'Marina'),
+  generateIfoodOrder('ifood-2', 'production', 'IF-67890', 'Roberto'),
+  generateIfoodOrder('ifood-3', 'ready', 'IF-54321', 'Amanda'),
+  generateIfoodOrder('ifood-4', 'ready', 'IF-98765', 'Diego'),
+  generateIfoodOrder('ifood-5', 'production', 'IF-11223', 'Patricia'),
+  
   // Pedidos em produção
-  ...Array.from({ length: 12 }, (_, i) => generateRandomOrder(`prod-${i + 1}`, 'production')),
+  ...Array.from({ length: 10 }, (_, i) => generateRandomOrder(`prod-${i + 1}`, 'production')),
   // Pedidos prontos
-  ...Array.from({ length: 6 }, (_, i) => generateRandomOrder(`ready-${i + 1}`, 'ready'))
+  ...Array.from({ length: 4 }, (_, i) => generateRandomOrder(`ready-${i + 1}`, 'ready'))
 ];
 
 // Função para buscar pedidos via API (simulação)

@@ -63,17 +63,17 @@ export const LastOrderDisplay = ({
     >
       <div className="relative h-full flex flex-col items-center justify-center font-bold">
         <span className="absolute top-1 right-1 w-2 h-2 bg-current rounded-full animate-pulse"></span>
-        <div className="flex flex-col items-center gap-0">
-          <span>{orderNumber}</span>
-          {nickname && (
-            <div 
-              className="opacity-90 leading-none -mt-1"
-              style={{ fontSize: `${nicknameFontSize}rem` }}
-            >
-              {nickname}
-            </div>
-          )}
-        </div>
+          <div className="flex flex-col items-center gap-0">
+            <span>{orderNumber}</span>
+            {nickname && (
+              <div 
+                className="opacity-90 leading-none -mt-2"
+                style={{ fontSize: `${nicknameFontSize}rem` }}
+              >
+                {nickname}
+              </div>
+            )}
+          </div>
       </div>
     </div>
   );

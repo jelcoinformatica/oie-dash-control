@@ -20,9 +20,9 @@ interface OrderCardProps {
 }
 
 const moduleColors = {
-  balcao: 'bg-blue-500',
-  mesa: 'bg-green-500',
-  entrega: 'bg-orange-500',
+  balcao: 'bg-green-500',
+  mesa: 'bg-blue-500',
+  entrega: 'bg-red-500',
   ficha: 'bg-purple-500'
 };
 
@@ -85,7 +85,7 @@ export const OrderCard = ({
           </div>
           {displayName && showNickname && (
             <div 
-              className="font-medium leading-none"
+              className="font-medium leading-none -mt-1"
               style={{ 
                 fontSize: `${fontSize * 0.5}rem`
               }}

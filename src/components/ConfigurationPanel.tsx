@@ -72,7 +72,7 @@ export const ConfigurationPanel = ({
     ready: false,
     advertising: false,
     sounds: false,
-    tts: false,
+    tts: true, // Deixar aberto por padrão para facilitar encontrar as opções
     autoExpedition: false,
     modules: false,
     cards: false
