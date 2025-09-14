@@ -21,6 +21,12 @@ interface OrderColumnProps {
     entrega: boolean;
     ficha: boolean;
   };
+  cardConfig?: {
+    fontSize?: number;
+    fontFamily?: string;
+    textColor?: string;
+    backgroundColor?: string;
+  };
 }
 
 const variantStyles = {
@@ -51,7 +57,8 @@ export const OrderColumn = ({
   headerBg,
   headerColor,
   headerHeight = 48,
-  enabledModules
+  enabledModules,
+  cardConfig
 }: OrderColumnProps) => {
   return (
     <div className={cn("flex flex-col h-full", className)}>
@@ -76,16 +83,20 @@ export const OrderColumn = ({
       </div>
       
       <div className="flex-1 p-4 overflow-y-auto bg-gray-50">
-        <div className="grid grid-cols-2 gap-2 lg:grid-cols-2 xl:grid-cols-2">
+        <div className="grid grid-cols-2 gap-1">
           {orders.map((order) => (
             <OrderCard
               key={order.id}
               order={order}
               onClick={() => onOrderClick?.(order)}
-              className="h-16"
+              className="flex-shrink-0"
               showNickname={showNickname}
               showItems={showItems}
               enabledModules={enabledModules}
+              fontSize={cardConfig?.fontSize}
+              fontFamily={cardConfig?.fontFamily}
+              textColor={cardConfig?.textColor}
+              backgroundColor={cardConfig?.backgroundColor}
             />
           ))}
         </div>

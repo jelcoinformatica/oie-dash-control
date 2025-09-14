@@ -99,7 +99,7 @@ const Index = () => {
       className="h-screen flex flex-col"
       style={{ backgroundColor: config.backgroundColor }}
     >
-      <div className="flex-1 flex gap-2 pl-2 pr-2 py-4 overflow-hidden">
+      <div className="flex-1 flex gap-0.5 px-1 py-4 overflow-hidden">
         {/* Coluna Produção */}
         {config.production.visible && (
           <div 
@@ -119,6 +119,7 @@ const Index = () => {
               headerColor={config.production.headerColor}
               headerHeight={config.production.headerHeight}
               enabledModules={config.modules}
+              cardConfig={config.cards}
             />
           </div>
         )}
@@ -162,16 +163,20 @@ const Index = () => {
             
             {/* Cards de Pedidos Prontos com Scroll */}
             <div className="flex-1 bg-gray-50 p-4 overflow-y-auto">
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-3 gap-1">
                 {readyOrders.map((order) => (
                     <OrderCard
                       key={order.id}
                       order={order}
-                      onClick={() => handleExpedite(order.number)}
-                      className="h-16"
+                      onClick={() => handleExpedite(order.numeroPedido || order.number || '')}
+                      className="flex-shrink-0"
                       showNickname={config.cards?.showNickname ?? true}
                       showItems={config.cards?.showItems ?? true}
                       enabledModules={config.modules}
+                      fontSize={config.cards?.fontSize}
+                      fontFamily={config.cards?.fontFamily}
+                      textColor={config.cards?.textColor}
+                      backgroundColor={config.cards?.backgroundColor}
                     />
                 ))}
               </div>
@@ -207,14 +212,10 @@ const Index = () => {
       </div>
 
       {/* Painel de Controle Fixo */}
-      <div className="flex-shrink-0">
+      <div className="flex-shrink-0" style={{ height: '42px' }}>
         <ControlPanel
           onConfigClick={() => setConfigOpen(true)}
           onExpedite={handleExpedite}
-          onRefresh={refresh}
-          loading={loading}
-          onToggleSimulation={handleToggleSimulation}
-          isSimulationActive={isSimulationActive}
         />
       </div>
 

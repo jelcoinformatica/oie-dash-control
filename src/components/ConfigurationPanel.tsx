@@ -204,19 +204,12 @@ export const ConfigurationPanel = ({
 
         {/* Coluna 2 - Prontos */}
         <ConfigSection
-          title="Coluna 2 - Prontos"
+          title="Coluna 2 - Prontos (Obrigatória)"
           icon={<CheckCircle className="w-4 h-4" />}
           isOpen={openSections.ready}
           onToggle={() => toggleSection('ready')}
           colorClass="text-green-600"
         >
-          <div className="flex items-center space-x-2">
-            <Switch
-              checked={config.ready.visible}
-              onCheckedChange={(checked) => updateConfig('ready.visible', checked)}
-            />
-            <Label className="text-sm">Exibir Coluna</Label>
-          </div>
 
           <div>
             <Label className="text-sm font-medium">Título da Coluna</Label>
@@ -320,6 +313,9 @@ export const ConfigurationPanel = ({
               step={1}
               className="mt-1"
             />
+            <div className="text-xs text-gray-500 mt-1">
+              Largura calculada: {Math.round((window.innerWidth || 1920) * config.advertising.width / 100)}px
+            </div>
           </div>
 
           <div>
@@ -437,9 +433,9 @@ export const ConfigurationPanel = ({
           </div>
         </ConfigSection>
 
-        {/* Diversos */}
+        {/* Cards */}
         <ConfigSection
-          title="Diversos"
+          title="Configuração dos Cards"
           icon={<Cog className="w-4 h-4" />}
           isOpen={openSections.cards}
           onToggle={() => toggleSection('cards')}
@@ -458,6 +454,57 @@ export const ConfigurationPanel = ({
               onCheckedChange={(checked) => updateConfig('cards.showItems', checked)}
             />
             <Label className="text-sm">Exibir Produtos nos Cards</Label>
+          </div>
+          
+          <div>
+            <Label className="text-sm font-medium">Tamanho da Fonte: {config.cards?.fontSize ?? 2}rem</Label>
+            <Slider
+              value={[config.cards?.fontSize ?? 2]}
+              onValueChange={([value]) => updateConfig('cards.fontSize', value)}
+              max={5}
+              min={0.5}
+              step={0.1}
+              className="mt-1"
+            />
+          </div>
+
+          <div>
+            <Label className="text-sm font-medium">Família da Fonte</Label>
+            <select
+              value={config.cards?.fontFamily ?? 'Arial'}
+              onChange={(e) => updateConfig('cards.fontFamily', e.target.value)}
+              className="w-full mt-1 px-3 py-2 text-sm border border-gray-300 rounded-md bg-white"
+            >
+              <option value="Arial">Arial</option>
+              <option value="Times New Roman">Times New Roman</option>
+              <option value="Courier New">Courier New</option>
+              <option value="Calibri">Calibri</option>
+              <option value="Verdana">Verdana</option>
+              <option value="Georgia">Georgia</option>
+              <option value="Tahoma">Tahoma</option>
+              <option value="Impact">Impact</option>
+            </select>
+          </div>
+
+          <div className="grid grid-cols-2 gap-2">
+            <div>
+              <Label className="text-xs">Cor da Fonte</Label>
+              <Input
+                type="color"
+                value={config.cards?.textColor ?? '#374151'}
+                onChange={(e) => updateConfig('cards.textColor', e.target.value)}
+                className="h-8 mt-1"
+              />
+            </div>
+            <div>
+              <Label className="text-xs">Cor de Fundo</Label>
+              <Input
+                type="color"
+                value={config.cards?.backgroundColor ?? '#ffffff'}
+                onChange={(e) => updateConfig('cards.backgroundColor', e.target.value)}
+                className="h-8 mt-1"
+              />
+            </div>
           </div>
         </ConfigSection>
       </div>

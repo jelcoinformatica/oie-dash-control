@@ -13,6 +13,10 @@ interface OrderCardProps {
     entrega: boolean;
     ficha: boolean;
   };
+  fontSize?: number;
+  fontFamily?: string;
+  textColor?: string;
+  backgroundColor?: string;
 }
 
 const moduleColors = {
@@ -28,47 +32,83 @@ export const OrderCard = ({
   className,
   showNickname = true,
   showItems = true,
-  enabledModules
+  enabledModules,
+  fontSize = 2,
+  fontFamily = 'Arial',
+  textColor = '#374151',
+  backgroundColor = '#ffffff'
 }: OrderCardProps) => {
   const enabledModuleCount = enabledModules ? 
     Object.values(enabledModules).filter(Boolean).length : 0;
   const showModuleBullet = enabledModuleCount > 1;
+  
+  const displayNumber = order.numeroPedido || order.number;
+  const displayName = order.nomeCliente || order.nickname;
+  
   return (
     <div
       className={cn(
-        "bg-white border border-gray-300 rounded-lg cursor-pointer",
+        "border border-gray-300 rounded-lg cursor-pointer relative",
         "hover:shadow-md transition-all duration-200 hover:scale-[1.02]",
-        "animate-card-appear relative",
-        "h-16 flex items-center justify-between px-4",
+        "animate-card-appear",
+        "flex flex-col items-center justify-center p-2 min-h-16",
         className
       )}
       onClick={onClick}
+      style={{
+        backgroundColor,
+        color: textColor,
+        fontFamily,
+        height: 'auto',
+        minHeight: '64px'
+      }}
     >
-      {/* Order Number */}
-      <span className="text-2xl font-bold text-gray-800">
-        {order.number}
-      </span>
-      
-      {/* Colored Dot Indicator - only show when more than 1 module enabled */}
+      {/* Colored Dot Indicator - only show when more than 1 module enabled - top right corner */}
       {showModuleBullet && (
         <div className={cn(
-          "w-3 h-3 rounded-full",
+          "absolute top-1 right-1 w-2 h-2 rounded-full",
           moduleColors[order.modulo]
         )} />
       )}
       
+      {/* Order Number or Name */}
+      {displayNumber ? (
+        <div className="text-center w-full">
+          <div 
+            className="font-bold leading-tight"
+            style={{ fontSize: `${fontSize}rem` }}
+          >
+            {displayNumber}
+          </div>
+          {displayName && showNickname && (
+            <div 
+              className="font-medium leading-tight mt-1"
+              style={{ fontSize: `${fontSize * 0.7}rem` }}
+            >
+              {displayName}
+            </div>
+          )}
+        </div>
+      ) : displayName ? (
+        <div 
+          className="font-bold text-center leading-tight"
+          style={{ fontSize: `${fontSize}rem` }}
+        >
+          {displayName}
+        </div>
+      ) : (
+        <span 
+          className="font-bold"
+          style={{ fontSize: `${fontSize}rem` }}
+        >
+          S/N
+        </span>
+      )}
+      
       {/* Hidden optional content */}
       <div className="hidden">
-        {showNickname && order.nickname && (
-          <div>
-            <span className="text-sm font-medium">
-              {order.nickname}
-            </span>
-          </div>
-        )}
-        
-        {showItems && (
-          <div className="text-xs text-gray-500">
+        {showItems && order.items && (
+          <div className="text-xs">
             {order.items.slice(0, 2).join(', ')}
             {order.items.length > 2 && ` +${order.items.length - 2} mais`}
           </div>

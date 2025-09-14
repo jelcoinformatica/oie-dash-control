@@ -5,7 +5,7 @@ export const defaultConfig: PanelConfig = {
   production: {
     visible: true,
     title: 'PRODUÇÃO',
-    width: 30,
+    width: 32,
     headerHeight: 48,
     headerBg: '#3b82f6',
     headerColor: '#ffffff',
@@ -25,7 +25,7 @@ export const defaultConfig: PanelConfig = {
   ready: {
     visible: true,
     title: 'PRONTOS',
-    width: 40,
+    width: 46,
     headerHeight: 48,
     headerBg: '#10b981',
     headerColor: '#ffffff',
@@ -65,7 +65,11 @@ export const defaultConfig: PanelConfig = {
   },
   cards: {
     showNickname: true,
-    showItems: true
+    showItems: true,
+    fontSize: 2,
+    fontFamily: 'Arial',
+    textColor: '#374151',
+    backgroundColor: '#ffffff'
   },
   sounds: {
     production: true,

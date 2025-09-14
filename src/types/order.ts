@@ -68,6 +68,10 @@ export interface PanelConfig {
   cards: {
     showNickname: boolean;
     showItems: boolean;
+    fontSize: number;
+    fontFamily: string;
+    textColor: string;
+    backgroundColor: string;
   };
   sounds: {
     production: boolean;

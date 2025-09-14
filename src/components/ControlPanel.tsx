@@ -1,26 +1,18 @@
 import { useState } from 'react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
-import { Settings, RefreshCw, Play, Pause, Send } from 'lucide-react';
+import { Settings, Send } from 'lucide-react';
 import { toast } from '../hooks/use-toast';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 
 interface ControlPanelProps {
   onConfigClick: () => void;
   onExpedite: (orderNumber: string) => void;
-  onRefresh: () => void;
-  loading?: boolean;
-  onToggleSimulation: () => void;
-  isSimulationActive: boolean;
 }
 
 export const ControlPanel = ({ 
   onConfigClick, 
-  onExpedite, 
-  onRefresh,
-  loading = false,
-  onToggleSimulation,
-  isSimulationActive
+  onExpedite
 }: ControlPanelProps) => {
   const [expeditionInput, setExpeditionInput] = useState('');
 
@@ -45,65 +37,43 @@ export const ControlPanel = ({
   };
 
   return (
-    <div className="bg-card border-t shadow-sm">
-      <div className="container mx-auto px-4 py-2">
-        <div className="flex items-center justify-between">
-          <div className="text-sm text-muted-foreground text-center flex-1">
-            Pedido
-          </div>
+    <div className="bg-card border-t shadow-sm" style={{ height: '42px' }}>
+      <div className="container mx-auto px-4 py-1 flex items-center justify-center h-full">
+        <div className="flex items-center gap-2">
+          <Input
+            placeholder="No.Pedido"
+            value={expeditionInput}
+            onChange={(e) => setExpeditionInput(e.target.value)}
+            onKeyPress={handleKeyPress}
+            className="w-32 h-8"
+          />
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button 
+                  onClick={handleExpedite}
+                  size="sm"
+                  disabled={!expeditionInput.trim()}
+                  variant="ghost"
+                  className="h-8 w-8 p-0"
+                >
+                  <Send className="w-4 h-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Expedir pedido</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
           
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2">
-              <Input
-                placeholder="Número do pedido"
-                value={expeditionInput}
-                onChange={(e) => setExpeditionInput(e.target.value)}
-                onKeyPress={handleKeyPress}
-                className="w-40"
-              />
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button 
-                      onClick={handleExpedite}
-                      size="sm"
-                      disabled={!expeditionInput.trim()}
-                    >
-                      <Send className="w-4 h-4" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Expedir pedido</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
-            
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={onRefresh}
-              disabled={loading}
-            >
-              <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-            </Button>
-            
-            <Button
-              variant={isSimulationActive ? "destructive" : "outline"}
-              size="sm"
-              onClick={onToggleSimulation}
-            >
-              {isSimulationActive ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
-            </Button>
-
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={onConfigClick}
-            >
-              <Settings className="w-4 h-4" />
-            </Button>
-          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onConfigClick}
+            className="h-8"
+          >
+            <Settings className="w-4 h-4" />
+          </Button>
         </div>
       </div>
     </div>
