@@ -76,14 +76,14 @@ const Index = () => {
 
   return (
     <div 
-      className="min-h-screen flex flex-col"
+      className="h-screen flex flex-col"
       style={{ backgroundColor: config.backgroundColor }}
     >
-      <div className="flex-1 flex">
+      <div className="flex-1 flex overflow-hidden">
         {/* Coluna Produção */}
         {config.production.visible && (
           <div 
-            className="border-r"
+            className="border-r flex flex-col"
             style={{ width: `${config.production.width}%` }}
           >
             <OrderColumn
@@ -101,23 +101,26 @@ const Index = () => {
             className="border-r flex flex-col"
             style={{ width: `${config.ready.width}%` }}
           >
-            <div className="bg-ready text-ready-foreground px-4 py-3 font-bold text-lg shadow-sm border-b flex items-center justify-between">
+            {/* Header Fixo */}
+            <div className="bg-ready text-ready-foreground px-4 py-3 font-bold text-lg shadow-sm border-b flex items-center justify-between flex-shrink-0">
               <span>{config.ready.title}</span>
               <span className="bg-white/20 px-2 py-1 rounded-full text-sm">
                 {readyOrders.length}
               </span>
             </div>
             
-            {/* Último Pedido */}
+            {/* Último Pedido Fixo */}
             {lastOrderNumber && config.lastOrder.highlight && (
-              <LastOrderDisplay
-                orderNumber={lastOrderNumber}
-                animate={config.lastOrder.pulseAnimation}
-                className={`min-h-[${config.lastOrder.height}px]`}
-              />
+              <div className="flex-shrink-0">
+                <LastOrderDisplay
+                  orderNumber={lastOrderNumber}
+                  animate={config.lastOrder.pulseAnimation}
+                  className={`min-h-[${config.lastOrder.height}px]`}
+                />
+              </div>
             )}
             
-            {/* Cards de Pedidos Prontos */}
+            {/* Cards de Pedidos Prontos com Scroll */}
             <div className="flex-1 bg-ready-light/50 p-4 overflow-y-auto">
               <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
                 {readyOrders.map((order) => (
@@ -191,7 +194,7 @@ const Index = () => {
         {/* Coluna Publicidade */}
         {config.advertising.visible && (
           <div 
-            className="flex-1"
+            className="flex-1 flex flex-col"
             style={{ width: `${config.advertising.width}%` }}
           >
             <AdvertisingColumn
@@ -203,15 +206,17 @@ const Index = () => {
         )}
       </div>
 
-      {/* Painel de Controle */}
-      <ControlPanel
-        onConfigClick={() => setConfigOpen(true)}
-        onExpedite={handleExpedite}
-        onRefresh={refresh}
-        loading={loading}
-        onToggleSimulation={handleToggleSimulation}
-        isSimulationActive={isSimulationActive}
-      />
+      {/* Painel de Controle Fixo */}
+      <div className="flex-shrink-0">
+        <ControlPanel
+          onConfigClick={() => setConfigOpen(true)}
+          onExpedite={handleExpedite}
+          onRefresh={refresh}
+          loading={loading}
+          onToggleSimulation={handleToggleSimulation}
+          isSimulationActive={isSimulationActive}
+        />
+      </div>
 
       {/* Painel de Configuração */}
       <ConfigurationPanel
