@@ -9,6 +9,13 @@ interface OrderCardProps {
   showItems?: boolean;
 }
 
+const moduleColors = {
+  balcao: 'bg-blue-500',
+  mesa: 'bg-green-500',
+  entrega: 'bg-orange-500',
+  ficha: 'bg-purple-500'
+};
+
 export const OrderCard = ({ 
   order, 
   onClick, 
@@ -22,15 +29,21 @@ export const OrderCard = ({
         "bg-white border border-gray-300 rounded-lg cursor-pointer",
         "hover:shadow-md transition-all duration-200 hover:scale-[1.02]",
         "animate-card-appear relative",
-        "h-16 flex items-center justify-center px-4",
+        "h-16 flex items-center justify-between px-4",
         className
       )}
       onClick={onClick}
     >
-      {/* Order Number Only */}
+      {/* Order Number */}
       <span className="text-2xl font-bold text-gray-800">
         {order.number}
       </span>
+      
+      {/* Colored Dot Indicator */}
+      <div className={cn(
+        "w-3 h-3 rounded-full",
+        moduleColors[order.module]
+      )} />
       
       {/* Hidden optional content */}
       <div className="hidden">

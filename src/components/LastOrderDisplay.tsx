@@ -13,14 +13,14 @@ export const LastOrderDisplay = ({
 }: LastOrderDisplayProps) => {
   return (
     <div className={cn(
-      "bg-last-order text-last-order-foreground rounded-lg",
-      "flex items-center justify-center font-bold text-4xl",
-      "shadow-lg border-2 border-last-order/20",
-      "min-h-[120px] m-4",
-      animate && "animate-pulse-glow",
+      "bg-amber-500 text-white rounded-3xl shadow-2xl",
+      "flex items-center justify-center font-bold text-6xl",
+      "min-h-[120px] m-4 relative",
+      "drop-shadow-[0_8px_32px_rgba(245,158,11,0.5)]",
+      animate && "animate-pulse",
       className
     )}>
-      <span className="drop-shadow-sm">
+      <span className="drop-shadow-md">
         {orderNumber}
       </span>
     </div>
