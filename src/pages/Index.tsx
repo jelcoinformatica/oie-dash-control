@@ -85,13 +85,9 @@ const Index = () => {
     setConfigOpen(false);
     toast({
       title: "Configurações Salvas",
-      description: "As configurações foram atualizadas com sucesso"
+      description: "As configurações foram atualizadas com sucesso",
+      duration: 2000 // Desaparece automaticamente após 2 segundos
     });
-    
-    // Auto dismiss after 5 seconds
-    setTimeout(() => {
-      // Toast will auto-dismiss
-    }, 5000);
   };
 
   const handleCancelConfig = () => {

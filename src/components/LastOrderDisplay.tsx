@@ -41,6 +41,20 @@ export const LastOrderDisplay = ({
     }
   };
 
+  // Calcular tamanho da fonte do apelido baseado no comprimento
+  const calculateNicknameFontSize = (nickname: string, baseFontSize: number) => {
+    if (!nickname) return baseFontSize;
+    
+    const maxChars = 15; // Número máximo de caracteres para tamanho normal
+    if (nickname.length <= maxChars) return baseFontSize;
+    
+    // Reduzir tamanho da fonte proporcionalmente ao comprimento
+    const reduction = Math.min(0.7, maxChars / nickname.length);
+    return baseFontSize * reduction;
+  };
+
+  const nicknameFontSize = nickname ? calculateNicknameFontSize(nickname, 0.8) : 0.8;
+
   return (
     <div 
       className={cn(
@@ -61,7 +75,14 @@ export const LastOrderDisplay = ({
         <span className="absolute top-2 right-2 w-3 h-3 bg-current rounded-full animate-pulse"></span>
         <div className="flex flex-col items-center">
           <span>{orderNumber}</span>
-          {nickname && <div className="text-sm opacity-90 mt-1">{nickname}</div>}
+          {nickname && (
+            <div 
+              className="opacity-90 mt-1 px-2 leading-tight"
+              style={{ fontSize: `${nicknameFontSize}rem` }}
+            >
+              {nickname}
+            </div>
+          )}
         </div>
       </div>
     </div>
