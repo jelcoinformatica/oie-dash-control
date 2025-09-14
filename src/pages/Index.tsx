@@ -76,7 +76,7 @@ const Index = () => {
 
   return (
     <div 
-      className="min-h-screen bg-background flex flex-col"
+      className="min-h-screen flex flex-col"
       style={{ backgroundColor: config.backgroundColor }}
     >
       <div className="flex-1 flex">
