@@ -97,7 +97,7 @@ export const OrderColumn = ({
             className="grid gap-1 h-full"
             style={{ 
               gridTemplateColumns: `repeat(${smartColumns}, 1fr)`,
-              gridAutoRows: 'minmax(60px, auto)',
+              gridAutoRows: `minmax(${Math.max(60, (cardConfig?.fontSize || 1.2) * 50)}px, auto)`,
               overflow: 'hidden'
             }}
           >

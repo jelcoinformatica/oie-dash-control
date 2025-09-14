@@ -111,28 +111,36 @@ const Index = () => {
     };
   };
   
-  const getSmartColumnCount = (fontSize: number, containerWidth: number) => {
-    // Calcular largura estimada do card baseado na fonte
+  const getSmartColumnCount = (fontSize: number, containerWidth: number, containerHeight: number = 400) => {
+    // Calcular dimensões baseadas no tamanho da fonte
     const baseFontSize = 16; // 1rem = 16px
     const actualFontSize = fontSize * baseFontSize;
     
-    // Estimativa de caracteres por linha (baseado no número do pedido + padding)
-    const averageCharWidth = actualFontSize * 0.6;
-    const cardPadding = 16; // 8px de cada lado
-    const minCardWidth = (4 * averageCharWidth) + cardPadding; // Mínimo para 4 dígitos
-    const idealCardWidth = minCardWidth * 1.5; // Um pouco mais de espaço
+    // Dimensões mínimas do card baseadas na fonte
+    const minCardWidth = Math.max(80, actualFontSize * 4); // Mínimo para 4 dígitos + padding
+    const minCardHeight = Math.max(60, actualFontSize * 2.5); // Altura baseada na fonte
     
-    // Considerar gap entre cards (4px)
+    // Espaçamento e padding
     const gap = 4;
-    const availableWidth = containerWidth - 16; // Padding do container
+    const containerPadding = 16; // 8px de cada lado
     
-    // Calcular quantas colunas cabem
-    let columns = Math.floor((availableWidth + gap) / (idealCardWidth + gap));
+    // Espaço disponível
+    const availableWidth = containerWidth - containerPadding;
+    const availableHeight = containerHeight - containerPadding;
     
-    // Limites mínimo e máximo
-    columns = Math.max(1, Math.min(columns, 6));
+    // Calcular máximo de colunas e linhas que cabem
+    const maxColumns = Math.floor((availableWidth + gap) / (minCardWidth + gap));
+    const maxRows = Math.floor((availableHeight + gap) / (minCardHeight + gap));
     
-    return columns;
+    // Otimizar para usar o máximo do espaço - priorizar mais colunas
+    let optimalColumns = Math.max(1, maxColumns);
+    
+    // Limites baseados no tamanho da fonte para evitar cards muito pequenos
+    if (fontSize >= 2.0) optimalColumns = Math.min(optimalColumns, 3);
+    else if (fontSize >= 1.5) optimalColumns = Math.min(optimalColumns, 4);
+    else optimalColumns = Math.min(optimalColumns, 6);
+    
+    return optimalColumns;
   };
   
   const columnWidths = getColumnWidths();
@@ -161,7 +169,11 @@ const Index = () => {
                 textColor: config.production.cardConfig.textColor,
                 backgroundColor: config.production.cardConfig.backgroundColor
               }}
-              smartColumns={getSmartColumnCount(config.production.cardConfig.fontSize, window.innerWidth * (columnWidths.production / 100))}
+              smartColumns={getSmartColumnCount(
+                config.production.cardConfig.fontSize, 
+                window.innerWidth * (columnWidths.production / 100),
+                window.innerHeight - 100 // Altura disponível menos header e footer
+              )}
               showBorder={config.production.showBorder}
             />
           </div>
@@ -202,8 +214,12 @@ const Index = () => {
               <div 
                 className="grid gap-1 h-full"
                 style={{ 
-                  gridTemplateColumns: `repeat(${getSmartColumnCount(config.ready.cardConfig.fontSize, window.innerWidth * (columnWidths.ready / 100))}, 1fr)`,
-                  gridAutoRows: 'minmax(60px, auto)',
+                  gridTemplateColumns: `repeat(${getSmartColumnCount(
+                    config.ready.cardConfig.fontSize, 
+                    window.innerWidth * (columnWidths.ready / 100),
+                    window.innerHeight - 150 // Altura disponível menos header, último pedido e footer
+                  )}, 1fr)`,
+                  gridAutoRows: `minmax(${Math.max(60, config.ready.cardConfig.fontSize * 50)}px, auto)`,
                   overflow: 'hidden'
                 }}
               >
