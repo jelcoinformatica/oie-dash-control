@@ -24,6 +24,12 @@ export const useOrders = (ttsConfig?: TTSConfig) => {
   
   const { speak } = useTextToSpeech();
   const previousLastOrderNumber = useRef<string>('');
+  const ttsConfigRef = useRef(ttsConfig);
+  
+  // Atualizar ref quando ttsConfig mudar
+  useEffect(() => {
+    ttsConfigRef.current = ttsConfig;
+  }, [ttsConfig]);
 
   const loadOrders = useCallback(async () => {
     try {
@@ -48,10 +54,10 @@ export const useOrders = (ttsConfig?: TTSConfig) => {
         setLastOrderData(lastReadyOrder);
         
         // Verificar se é um novo pedido e falar se TTS habilitado
-        if (newLastOrderNumber !== previousLastOrderNumber.current && previousLastOrderNumber.current !== '' && ttsConfig?.enabled) {
+        if (newLastOrderNumber !== previousLastOrderNumber.current && previousLastOrderNumber.current !== '' && ttsConfigRef.current?.enabled) {
           const nickname = lastReadyOrder.nomeCliente;
           const textToSpeak = nickname ? `Pedido ${newLastOrderNumber}, ${nickname}` : `Pedido ${newLastOrderNumber}`;
-          speak(textToSpeak, newLastOrderNumber, nickname || '', ttsConfig);
+          speak(textToSpeak, newLastOrderNumber, nickname || '', ttsConfigRef.current);
         }
         
         previousLastOrderNumber.current = newLastOrderNumber;
@@ -70,7 +76,7 @@ export const useOrders = (ttsConfig?: TTSConfig) => {
     } finally {
       setLoading(false);
     }
-  }, [ttsConfig, speak]);
+  }, [speak]); // Removido ttsConfig da dependência
 
   const moveToReady = useCallback(async (orderId: string) => {
     try {
@@ -85,10 +91,10 @@ export const useOrders = (ttsConfig?: TTSConfig) => {
       setLastOrderData(updatedOrder);
       
       // Falar o novo pedido se TTS habilitado
-      if (ttsConfig?.enabled && newOrderNumber !== previousLastOrderNumber.current) {
+      if (ttsConfigRef.current?.enabled && newOrderNumber !== previousLastOrderNumber.current) {
         const nickname = updatedOrder.nomeCliente;
         const textToSpeak = nickname ? `Pedido ${newOrderNumber}, ${nickname}` : `Pedido ${newOrderNumber}`;
-        speak(textToSpeak, newOrderNumber, nickname || '', ttsConfig);
+        speak(textToSpeak, newOrderNumber, nickname || '', ttsConfigRef.current);
       }
       
       previousLastOrderNumber.current = newOrderNumber;
@@ -101,7 +107,7 @@ export const useOrders = (ttsConfig?: TTSConfig) => {
         variant: "destructive"
       });
     }
-  }, [orders, lastOrderNumber, ttsConfig, speak]);
+  }, [orders, lastOrderNumber, speak]); // Removido ttsConfig da dependência
 
   const expedite = useCallback(async (orderNumber: string) => {
     try {

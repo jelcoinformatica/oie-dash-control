@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useOrders } from '../hooks/useOrders';
 import { OrderColumn } from '../components/OrderColumn';
 import { OrderCard } from '../components/OrderCard';
@@ -15,6 +15,12 @@ const Index = () => {
   const [originalConfig, setOriginalConfig] = useState<PanelConfig>(defaultConfig);
   const [configOpen, setConfigOpen] = useState(false);
   
+  // Estabilizar ttsConfig para evitar recriações desnecessárias
+  const ttsConfig = useMemo(() => 
+    config?.textToSpeech || defaultConfig.textToSpeech, 
+    [config?.textToSpeech]
+  );
+  
   const { 
     productionOrders, 
     readyOrders, 
@@ -27,7 +33,7 @@ const Index = () => {
     stopSimulation,
     isSimulationActive,
     expeditionLog
-  } = useOrders(config?.textToSpeech || defaultConfig.textToSpeech);
+  } = useOrders(ttsConfig);
 
   useEffect(() => {
     const savedConfig = localStorage.getItem('oie-config');
