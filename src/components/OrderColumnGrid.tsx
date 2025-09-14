@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useEffect, useState, useRef } from 'react';
 import { Order } from '../types/order';
 import { OrderCard } from './OrderCard';
 
@@ -31,78 +31,115 @@ export const OrderColumnGrid = ({
   enabledModules,
   cardConfig
 }: OrderColumnGridProps) => {
-  // Calcular dimensões dos cards para caber perfeitamente
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [containerDimensions, setContainerDimensions] = useState({ width: 0, height: 0 });
+
+  // Medir o container real
+  useEffect(() => {
+    const measureContainer = () => {
+      if (containerRef.current) {
+        const rect = containerRef.current.getBoundingClientRect();
+        setContainerDimensions({
+          width: rect.width,
+          height: rect.height
+        });
+      }
+    };
+
+    measureContainer();
+    
+    const resizeObserver = new ResizeObserver(measureContainer);
+    if (containerRef.current) {
+      resizeObserver.observe(containerRef.current);
+    }
+
+    return () => resizeObserver.disconnect();
+  }, []);
+
+  // Calcular dimensões baseadas na largura real do container
   const { visibleOrders, cardHeight, cardWidth, adjustedFontSize } = useMemo(() => {
+    if (containerDimensions.width === 0 || containerDimensions.height === 0) {
+      return {
+        visibleOrders: [],
+        cardHeight: 90,
+        cardWidth: 100,
+        adjustedFontSize: 1.2
+      };
+    }
+
     const baseFontSize = 16;
     const requestedFontSize = cardConfig?.fontSize || 1.2;
     
-    // Largura do card baseada no número de colunas
-    const gap = 4;
-    const padding = 16;
-    const containerWidth = 380; // Largura fixa da coluna
-    const availableWidth = containerWidth - padding - (gap * (columns - 1));
+    // Use a largura REAL do container
+    const gap = 4; // gap-1 = 4px
+    const totalGaps = gap * (columns - 1);
+    const availableWidth = containerDimensions.width - totalGaps;
     const cardWidth = Math.floor(availableWidth / columns);
     
     // Altura fixa do card
     const cardHeight = 90;
     
-    // Ajustar fonte para não ultrapassar a largura do card
+    // Ajustar fonte para caber na largura do card
     let adjustedFontSize = requestedFontSize;
-    const estimatedTextWidth = 4 * adjustedFontSize * baseFontSize * 0.6; // ~4 caracteres
-    if (estimatedTextWidth > cardWidth - 20) { // 20px de padding interno
-      adjustedFontSize = Math.max(0.8, (cardWidth - 20) / (4 * baseFontSize * 0.6));
+    const estimatedTextWidth = 4 * adjustedFontSize * baseFontSize * 0.6;
+    if (estimatedTextWidth > cardWidth - 16) { // 16px de padding interno
+      adjustedFontSize = Math.max(0.8, (cardWidth - 16) / (4 * baseFontSize * 0.6));
     }
     
-    // Calcular quantas linhas cabem
-    const containerHeight = window.innerHeight - 250; // Altura disponível
-    const maxRows = Math.floor(containerHeight / (cardHeight + gap));
+    // Calcular quantas linhas cabem perfeitamente
+    const totalVerticalGaps = gap;
+    const availableHeight = containerDimensions.height - totalVerticalGaps;
+    const maxRows = Math.floor(availableHeight / (cardHeight + gap));
     
-    // Limitar cards para caber sem cortes
+    // Limitar cards para não haver cortes
     const maxVisibleCards = Math.max(0, maxRows * columns);
     const visibleOrders = orders.slice(0, maxVisibleCards);
     
     return {
       visibleOrders,
-      cardHeight: Math.floor(cardHeight),
-      cardWidth: Math.floor(cardWidth),
+      cardHeight,
+      cardWidth,
       adjustedFontSize
     };
-  }, [orders, columns, cardConfig?.fontSize]);
+  }, [orders, columns, cardConfig?.fontSize, containerDimensions]);
 
   return (
     <div 
-      className="grid gap-1 h-full"
-      style={{ 
-        gridTemplateColumns: `repeat(${columns}, ${cardWidth}px)`,
-        gridTemplateRows: `repeat(auto-fit, ${cardHeight}px)`,
-        overflow: 'hidden', // Nunca mostrar scroll
-        justifyContent: 'start'
-      }}
+      ref={containerRef}
+      className="w-full h-full overflow-hidden"
     >
-      {visibleOrders.map((order) => (
-        <OrderCard
-          key={order.id}
-          order={order}
-          onClick={() => onOrderClick?.(order)}
-          className="flex-shrink-0"
-          showNickname={showNickname}
-          showItems={showItems}
-          enabledModules={enabledModules}
-          fontSize={adjustedFontSize}
-          fontFamily={cardConfig?.fontFamily}
-          textColor={cardConfig?.textColor}
-          backgroundColor={cardConfig?.backgroundColor}
-        />
-      ))}
-      
-      {visibleOrders.length === 0 && (
-        <div className="flex items-center justify-center h-32 text-muted-foreground col-span-full">
-          <div className="text-center">
-            <div className="text-2xl mb-2">📋</div>
-            <p>Nenhum pedido</p>
+      <div 
+        className="grid gap-1"
+        style={{ 
+          gridTemplateColumns: `repeat(${columns}, ${cardWidth}px)`,
+          gridTemplateRows: `repeat(auto-fit, ${cardHeight}px)`,
+        }}
+      >
+        {visibleOrders.map((order) => (
+          <OrderCard
+            key={order.id}
+            order={order}
+            onClick={() => onOrderClick?.(order)}
+            className="flex-shrink-0"
+            showNickname={showNickname}
+            showItems={showItems}
+            enabledModules={enabledModules}
+            fontSize={adjustedFontSize}
+            fontFamily={cardConfig?.fontFamily}
+            textColor={cardConfig?.textColor}
+            backgroundColor={cardConfig?.backgroundColor}
+          />
+        ))}
+        
+        {visibleOrders.length === 0 && (
+          <div className="flex items-center justify-center h-32 text-muted-foreground col-span-full">
+            <div className="text-center">
+              <div className="text-2xl mb-2">📋</div>
+              <p>Nenhum pedido</p>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };
