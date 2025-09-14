@@ -60,13 +60,13 @@ export const OrderColumn = ({
         "flex-1 p-4 overflow-y-auto",
         styles.container
       )}>
-        <div className="grid grid-cols-2 gap-3 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="grid grid-cols-2 gap-2 lg:grid-cols-2 xl:grid-cols-2">
           {orders.map((order) => (
             <OrderCard
               key={order.id}
               order={order}
               onClick={() => onOrderClick?.(order)}
-              className="min-h-[120px]"
+              className="h-16"
               showNickname={showNickname}
               showItems={showItems}
             />

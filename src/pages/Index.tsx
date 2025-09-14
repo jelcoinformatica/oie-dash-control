@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useOrders } from '../hooks/useOrders';
 import { OrderColumn } from '../components/OrderColumn';
+import { OrderCard } from '../components/OrderCard';
 import { LastOrderDisplay } from '../components/LastOrderDisplay';
 import { AdvertisingColumn } from '../components/AdvertisingColumn';
 import { ControlPanel } from '../components/ControlPanel';
@@ -155,51 +156,16 @@ const Index = () => {
             
             {/* Cards de Pedidos Prontos com Scroll */}
             <div className="flex-1 bg-ready-light/50 p-4 overflow-y-auto">
-              <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
+              <div className="grid grid-cols-3 gap-2">
                 {readyOrders.map((order) => (
-                  <div
+                  <OrderCard
                     key={order.id}
-                    className="bg-order-card border border-order-card-border rounded-lg p-3 cursor-pointer hover:shadow-md transition-all duration-200 hover:scale-[1.02] animate-card-appear min-h-[120px]"
-                    style={{
-                      backgroundColor: config.ready.cardConfig.backgroundColor,
-                      color: config.ready.cardConfig.textColor,
-                      fontFamily: config.ready.cardConfig.fontFamily,
-                      fontSize: `${config.ready.cardConfig.fontSize}rem`
-                    }}
-                  >
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-2">
-                        <span className="text-lg font-bold text-order-card-foreground">
-                          #{order.number}
-                        </span>
-                        <div className={`px-2 py-1 rounded-full text-xs font-medium border ${
-                          order.module === 'balcao' ? 'bg-blue-100 text-blue-800 border-blue-200' :
-                          order.module === 'mesa' ? 'bg-green-100 text-green-800 border-green-200' :
-                          order.module === 'entrega' ? 'bg-orange-100 text-orange-800 border-orange-200' :
-                          'bg-purple-100 text-purple-800 border-purple-200'
-                        }`}>
-                          {order.module === 'balcao' ? 'Balcão' :
-                           order.module === 'mesa' ? 'Mesa' :
-                           order.module === 'entrega' ? 'Entrega' : 'Ficha'}
-                        </div>
-                      </div>
-                    </div>
-                    
-                    {config.cards?.showNickname && order.nickname && (
-                      <div className="mb-2">
-                        <span className="text-sm font-medium text-order-card-foreground">
-                          {order.nickname}
-                        </span>
-                      </div>
-                    )}
-                    
-                    {config.cards?.showItems && (
-                      <div className="text-xs text-muted-foreground mb-2">
-                        {order.items.slice(0, 2).join(', ')}
-                        {order.items.length > 2 && ` +${order.items.length - 2} mais`}
-                      </div>
-                    )}
-                  </div>
+                    order={order}
+                    onClick={() => handleExpedite(order.number)}
+                    className="h-16"
+                    showNickname={config.cards?.showNickname ?? true}
+                    showItems={config.cards?.showItems ?? true}
+                  />
                 ))}
               </div>
               

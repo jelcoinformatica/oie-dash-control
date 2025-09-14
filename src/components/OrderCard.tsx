@@ -10,17 +10,17 @@ interface OrderCardProps {
 }
 
 const moduleLabels = {
-  balcao: 'Balcão',
-  mesa: 'Mesa',
-  entrega: 'Entrega',
-  ficha: 'Ficha'
+  balcao: 'B',
+  mesa: 'M',
+  entrega: 'E',
+  ficha: 'F'
 };
 
 const moduleColors = {
-  balcao: 'bg-blue-100 text-blue-800 border-blue-200',
-  mesa: 'bg-green-100 text-green-800 border-green-200',
-  entrega: 'bg-orange-100 text-orange-800 border-orange-200',
-  ficha: 'bg-purple-100 text-purple-800 border-purple-200'
+  balcao: 'bg-blue-500',
+  mesa: 'bg-green-500',
+  entrega: 'bg-orange-500',
+  ficha: 'bg-purple-500'
 };
 
 export const OrderCard = ({ 
@@ -33,41 +33,49 @@ export const OrderCard = ({
   return (
     <div
       className={cn(
-        "bg-order-card border border-order-card-border rounded-lg p-3 cursor-pointer",
+        "bg-white border border-gray-300 rounded-lg cursor-pointer",
         "hover:shadow-md transition-all duration-200 hover:scale-[1.02]",
-        "animate-card-appear",
+        "animate-card-appear relative",
+        "h-16 flex items-center justify-between px-4",
         className
       )}
       onClick={onClick}
     >
-      <div className="flex items-center justify-between mb-2">
-        <div className="flex items-center gap-2">
-          <span className="text-lg font-bold text-order-card-foreground">
-            #{order.number}
-          </span>
-          <div className={cn(
-            "px-2 py-1 rounded-full text-xs font-medium border",
-            moduleColors[order.module]
-          )}>
-            {moduleLabels[order.module]}
-          </div>
-        </div>
+      {/* Order Number */}
+      <div className="flex items-center gap-3">
+        <span className="text-2xl font-bold text-gray-800">
+          {order.number}
+        </span>
+        
+        {/* Module Letter */}
+        <span className="text-xs font-medium text-gray-600 bg-gray-100 px-2 py-1 rounded-full">
+          {moduleLabels[order.module]}
+        </span>
       </div>
       
-      {showNickname && order.nickname && (
-        <div className="mb-2">
-          <span className="text-sm font-medium text-order-card-foreground">
-            {order.nickname}
-          </span>
-        </div>
-      )}
+      {/* Colored Dot Indicator */}
+      <div className={cn(
+        "w-3 h-3 rounded-full",
+        moduleColors[order.module]
+      )} />
       
-      {showItems && (
-        <div className="text-xs text-muted-foreground mb-2">
-          {order.items.slice(0, 2).join(', ')}
-          {order.items.length > 2 && ` +${order.items.length - 2} mais`}
-        </div>
-      )}
+      {/* Optional content hidden in minimalist view */}
+      <div className="hidden">
+        {showNickname && order.nickname && (
+          <div>
+            <span className="text-sm font-medium">
+              {order.nickname}
+            </span>
+          </div>
+        )}
+        
+        {showItems && (
+          <div className="text-xs text-gray-500">
+            {order.items.slice(0, 2).join(', ')}
+            {order.items.length > 2 && ` +${order.items.length - 2} mais`}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
