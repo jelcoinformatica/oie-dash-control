@@ -81,6 +81,8 @@ export interface PanelConfig {
     rate?: number;
     pitch?: number;
     volume?: number;
+    textType?: 'number_only' | 'name_ready' | 'order_ready';
+    customText?: string;
   };
   autoExpedition: {
     enabled: boolean;

@@ -33,7 +33,7 @@ export const useOrders = (ttsConfig?: { enabled: boolean; voice?: string; rate?:
           const orderToSpeak = data.find(o => (o.numeroPedido || o.number) === newLastOrderNumber);
           const nickname = orderToSpeak?.nomeCliente;
           const textToSpeak = nickname ? `Pedido ${newLastOrderNumber}, ${nickname}` : `Pedido ${newLastOrderNumber}`;
-          speak(textToSpeak, ttsConfig);
+          speak(textToSpeak, newLastOrderNumber, nickname || '', ttsConfig);
         }
         
         previousLastOrderNumber.current = newLastOrderNumber;
@@ -83,7 +83,7 @@ export const useOrders = (ttsConfig?: { enabled: boolean; voice?: string; rate?:
       if (ttsConfig?.enabled && newOrderNumber !== previousLastOrderNumber.current) {
         const nickname = updatedOrder.nomeCliente;
         const textToSpeak = nickname ? `Pedido ${newOrderNumber}, ${nickname}` : `Pedido ${newOrderNumber}`;
-        speak(textToSpeak, ttsConfig);
+        speak(textToSpeak, newOrderNumber, nickname || '', ttsConfig);
       }
       
       previousLastOrderNumber.current = newOrderNumber;

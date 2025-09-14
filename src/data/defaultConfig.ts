@@ -80,7 +80,9 @@ export const defaultConfig: PanelConfig = {
     voice: 'pt-BR',
     rate: 1,
     pitch: 1,
-    volume: 0.8
+    volume: 0.8,
+    textType: 'number_only', // 'number_only', 'name_ready', 'order_ready'
+    customText: '' // Usado para textos personalizados
   },
   autoExpedition: {
     enabled: true,

@@ -4,6 +4,7 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Switch } from './ui/switch';
 import { Slider } from './ui/slider';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { PanelConfig } from '../types/order';
 import { Settings, Palette, Factory, CheckCircle, Monitor, Volume2, Clock, Puzzle, Cog, X, ChevronRight, ChevronDown } from 'lucide-react';
 import { cn } from '../lib/utils';
@@ -588,6 +589,20 @@ export const ConfigurationPanel = ({
             
             {config.textToSpeech.enabled && (
               <>
+                <div className="space-y-2">
+                  <Label className="text-xs">Tipo de Voz</Label>
+                  <Select value={config.textToSpeech.textType || 'number_only'} onValueChange={(value) => updateConfig('textToSpeech.textType', value)}>
+                    <SelectTrigger className="h-8">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="number_only">Só Número</SelectItem>
+                      <SelectItem value="name_ready">[Nome], seu pedido está pronto!</SelectItem>
+                      <SelectItem value="order_ready">O pedido [número] está pronto.</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
                 <div className="space-y-2">
                   <Label className="text-xs">Volume</Label>
                   <div className="flex items-center space-x-2">
