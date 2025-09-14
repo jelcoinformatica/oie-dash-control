@@ -40,14 +40,11 @@ export const OrderColumn = ({
   showNickname = true,
   showItems = true
 }: OrderColumnProps) => {
-  const styles = variantStyles[variant];
-
   return (
     <div className={cn("flex flex-col h-full", className)}>
       <div className={cn(
         "flex items-center justify-between px-4 py-3 font-bold text-lg",
-        "shadow-sm border-b",
-        styles.header,
+        "shadow-sm border-b bg-gray-800 text-white rounded-t-lg",
         headerClassName
       )}>
         <span>{title}</span>
@@ -56,10 +53,7 @@ export const OrderColumn = ({
         </span>
       </div>
       
-      <div className={cn(
-        "flex-1 p-4 overflow-y-auto",
-        styles.container
-      )}>
+      <div className="flex-1 p-4 overflow-y-auto bg-gray-50">
         <div className="grid grid-cols-2 gap-2 lg:grid-cols-2 xl:grid-cols-2">
           {orders.map((order) => (
             <OrderCard

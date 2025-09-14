@@ -99,14 +99,13 @@ const Index = () => {
       className="h-screen flex flex-col"
       style={{ backgroundColor: config.backgroundColor }}
     >
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex-1 flex gap-4 p-4 overflow-hidden">
         {/* Coluna Produção */}
         {config.production.visible && (
           <div 
-            className="border-r flex flex-col"
+            className="bg-white rounded-lg shadow-lg border border-gray-300 flex flex-col overflow-hidden"
             style={{ 
-              width: `${config.production.width}%`,
-              backgroundColor: config.production.headerBg // Adiciona cor de fundo aqui
+              width: `${config.production.width}%`
             }}
           >
             <OrderColumn
@@ -123,15 +122,14 @@ const Index = () => {
         {/* Coluna Prontos */}
         {config.ready.visible && (
           <div 
-            className="border-r flex flex-col"
+            className="bg-white rounded-lg shadow-lg border border-gray-300 flex flex-col overflow-hidden"
             style={{
-              width: `${config.ready.width}%`,
-              backgroundColor: config.ready.headerBg // Adiciona cor de fundo aqui
+              width: `${config.ready.width}%`
             }}
           >
             {/* Header Fixo */}
             <div 
-              className="bg-ready text-ready-foreground px-4 py-3 font-bold text-lg shadow-sm border-b flex items-center justify-between flex-shrink-0"
+              className="bg-ready text-ready-foreground px-4 py-3 font-bold text-lg shadow-sm border-b flex items-center justify-between flex-shrink-0 rounded-t-lg"
               style={{ backgroundColor: config.ready.headerBg, color: config.ready.headerColor }}
             >
               <span>{config.ready.title}</span>
@@ -155,7 +153,7 @@ const Index = () => {
             )}
             
             {/* Cards de Pedidos Prontos com Scroll */}
-            <div className="flex-1 bg-ready-light/50 p-4 overflow-y-auto">
+            <div className="flex-1 bg-gray-50 p-4 overflow-y-auto">
               <div className="grid grid-cols-3 gap-2">
                 {readyOrders.map((order) => (
                   <OrderCard
@@ -184,10 +182,9 @@ const Index = () => {
         {/* Coluna Publicidade */}
         {config.advertising.visible && (
           <div 
-            className="flex-1 flex flex-col"
+            className="bg-white rounded-lg shadow-lg border border-gray-300 flex flex-col overflow-hidden"
             style={{ 
-              width: `${config.advertising.width}%`,
-              backgroundColor: config.advertising.backgroundColor // Adiciona cor de fundo aqui
+              width: `${config.advertising.width}%`
             }}
           >
             <AdvertisingColumn
