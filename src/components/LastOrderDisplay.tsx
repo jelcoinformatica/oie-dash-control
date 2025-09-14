@@ -2,7 +2,7 @@ import { cn } from '../lib/utils';
 
 interface LastOrderDisplayProps {
   orderNumber: string;
-  config: {
+  config?: {
     height: number;
     fontSize: number;
     pulseAnimation: boolean;
@@ -19,20 +19,31 @@ export const LastOrderDisplay = ({
   config,
   className
 }: LastOrderDisplayProps) => {
+  // Safety check with default values
+  const safeConfig = {
+    height: config?.height || 120,
+    fontSize: config?.fontSize || 5,
+    pulseAnimation: config?.pulseAnimation || false,
+    highlight: config?.highlight || false,
+    fontFamily: config?.fontFamily || 'Arial',
+    textColor: config?.textColor || '#000000',
+    backgroundColor: config?.backgroundColor || '#fef3c7'
+  };
+
   return (
     <div 
       className={cn(
         "p-4 border border-yellow-300 rounded-lg text-center",
-        config.pulseAnimation && "animate-pulse",
-        config.highlight && "ring-2 ring-yellow-400",
+        safeConfig.pulseAnimation && "animate-pulse",
+        safeConfig.highlight && "ring-2 ring-yellow-400",
         className
       )}
       style={{ 
-        height: `${config.height}px`,
-        fontSize: `${config.fontSize}rem`,
-        fontFamily: config.fontFamily || 'Arial',
-        color: config.textColor || '#000000',
-        backgroundColor: config.backgroundColor || '#fef3c7'
+        height: `${safeConfig.height}px`,
+        fontSize: `${safeConfig.fontSize}rem`,
+        fontFamily: safeConfig.fontFamily,
+        color: safeConfig.textColor,
+        backgroundColor: safeConfig.backgroundColor
       }}
     >
       <div className="h-full flex items-center justify-center font-bold">

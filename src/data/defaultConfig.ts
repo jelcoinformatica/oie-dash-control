@@ -65,7 +65,8 @@ export const defaultConfig: PanelConfig = {
     backgroundColor: '#f59e0b',
     textColor: '#ffffff',
     pulseAnimation: true,
-    highlight: true
+    highlight: true,
+    fontFamily: 'Arial'
   },
   sounds: {
     production: true,
