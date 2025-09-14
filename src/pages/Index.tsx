@@ -33,11 +33,11 @@ const Index = () => {
       try {
         const parsedConfig: PanelConfig = JSON.parse(savedConfig);
         // Merge com defaultConfig para garantir que todas as propriedades existam
-        const mergedConfig = { 
+        const mergedConfig: PanelConfig = { 
           ...defaultConfig, 
           ...parsedConfig, 
-          production: { ...defaultConfig.production, ...parsedConfig.production, cardConfig: { ...defaultConfig.production.cardConfig, ...parsedConfig.production.cardConfig } },
-          ready: { ...defaultConfig.ready, ...parsedConfig.ready, cardConfig: { ...defaultConfig.ready.cardConfig, ...parsedConfig.ready.cardConfig } },
+          production: { ...defaultConfig.production, ...parsedConfig.production, cardConfig: { ...defaultConfig.production.cardConfig, ...parsedConfig.production?.cardConfig } },
+          ready: { ...defaultConfig.ready, ...parsedConfig.ready, cardConfig: { ...defaultConfig.ready.cardConfig, ...parsedConfig.ready?.cardConfig } },
           advertising: { ...defaultConfig.advertising, ...parsedConfig.advertising },
           lastOrder: { ...defaultConfig.lastOrder, ...parsedConfig.lastOrder },
           cards: { ...defaultConfig.cards, ...parsedConfig.cards },
@@ -113,8 +113,8 @@ const Index = () => {
               orders={productionOrders}
               onOrderClick={handleOrderClick}
               variant="production"
-              showNickname={config.cards.showNickname}
-              showItems={config.cards.showItems}
+              showNickname={config.cards?.showNickname ?? true}
+              showItems={config.cards?.showItems ?? true}
             />
           </div>
         )}
@@ -185,7 +185,7 @@ const Index = () => {
                       </div>
                     </div>
                     
-                    {config.cards.showNickname && order.nickname && (
+                    {config.cards?.showNickname && order.nickname && (
                       <div className="mb-2">
                         <span className="text-sm font-medium text-order-card-foreground">
                           {order.nickname}
@@ -193,7 +193,7 @@ const Index = () => {
                       </div>
                     )}
                     
-                    {config.cards.showItems && (
+                    {config.cards?.showItems && (
                       <div className="text-xs text-muted-foreground mb-2">
                         {order.items.slice(0, 2).join(', ')}
                         {order.items.length > 2 && ` +${order.items.length - 2} mais`}
