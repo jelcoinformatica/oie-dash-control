@@ -66,6 +66,7 @@ export const ConfigurationPanel = ({
     ready: false,
     advertising: false,
     sounds: false,
+    tts: false,
     autoExpedition: false,
     modules: false,
     cards: false
@@ -566,6 +567,62 @@ export const ConfigurationPanel = ({
               step={1}
               className="mt-1"
             />
+          </div>
+        </ConfigSection>
+
+        {/* Text-to-Speech */}
+        <ConfigSection
+          title="Controle de Voz"
+          icon={<div className="w-4 h-4 bg-current rounded-full opacity-60" />}
+          isOpen={openSections.tts}
+          onToggle={() => toggleSection('tts')}
+        >
+          <div className="space-y-4">
+            <div className="flex items-center space-x-2">
+              <Switch
+                checked={config.textToSpeech.enabled}
+                onCheckedChange={(checked) => updateConfig('textToSpeech.enabled', checked)}
+              />
+              <Label className="text-xs">Ativar Voz</Label>
+            </div>
+            
+            {config.textToSpeech.enabled && (
+              <>
+                <div className="space-y-2">
+                  <Label className="text-xs">Volume</Label>
+                  <div className="flex items-center space-x-2">
+                    <Slider
+                      value={[config.textToSpeech.volume || 0.8]}
+                      onValueChange={(value) => updateConfig('textToSpeech.volume', value[0])}
+                      min={0}
+                      max={1}
+                      step={0.1}
+                      className="flex-1"
+                    />
+                    <span className="text-xs text-muted-foreground w-8">
+                      {Math.round((config.textToSpeech.volume || 0.8) * 100)}%
+                    </span>
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label className="text-xs">Velocidade</Label>
+                  <div className="flex items-center space-x-2">
+                    <Slider
+                      value={[config.textToSpeech.rate || 1]}
+                      onValueChange={(value) => updateConfig('textToSpeech.rate', value[0])}
+                      min={0.5}
+                      max={2}
+                      step={0.1}
+                      className="flex-1"
+                    />
+                    <span className="text-xs text-muted-foreground w-8">
+                      {config.textToSpeech.rate || 1}x
+                    </span>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </ConfigSection>
 

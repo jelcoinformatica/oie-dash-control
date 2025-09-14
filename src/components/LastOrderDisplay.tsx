@@ -58,7 +58,10 @@ export const LastOrderDisplay = ({
       onClick={handleClick}
     >
       <div className="h-full flex flex-col items-center justify-center font-bold">
-        <div>{orderNumber}</div>
+        <div className="flex items-center gap-2">
+          <span className="w-3 h-3 bg-current rounded-full animate-pulse"></span>
+          <span>{orderNumber}</span>
+        </div>
         {nickname && <div className="text-sm opacity-90 mt-1">{nickname}</div>}
       </div>
     </div>

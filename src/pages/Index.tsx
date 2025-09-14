@@ -11,6 +11,10 @@ import { PanelConfig } from '../types/order';
 import { toast } from '../hooks/use-toast';
 
 const Index = () => {
+  const [config, setConfig] = useState<PanelConfig>(defaultConfig);
+  const [originalConfig, setOriginalConfig] = useState<PanelConfig>(defaultConfig);
+  const [configOpen, setConfigOpen] = useState(false);
+  
   const { 
     productionOrders, 
     readyOrders, 
@@ -22,11 +26,7 @@ const Index = () => {
     stopSimulation,
     isSimulationActive,
     expeditionLog
-  } = useOrders();
-
-  const [config, setConfig] = useState<PanelConfig>(defaultConfig);
-  const [originalConfig, setOriginalConfig] = useState<PanelConfig>(defaultConfig);
-  const [configOpen, setConfigOpen] = useState(false);
+  } = useOrders(config.textToSpeech);
 
   useEffect(() => {
     const savedConfig = localStorage.getItem('oie-config');
@@ -42,6 +42,7 @@ const Index = () => {
           advertising: { ...defaultConfig.advertising, ...parsedConfig.advertising },
           lastOrder: { ...defaultConfig.lastOrder, ...parsedConfig.lastOrder },
           sounds: { ...defaultConfig.sounds, ...parsedConfig.sounds },
+          textToSpeech: { ...defaultConfig.textToSpeech, ...parsedConfig.textToSpeech },
           autoExpedition: { ...defaultConfig.autoExpedition, ...parsedConfig.autoExpedition },
           modules: { ...defaultConfig.modules, ...parsedConfig.modules },
         };
@@ -165,7 +166,7 @@ const Index = () => {
               <div className="flex-shrink-0">
               <LastOrderDisplay
                 orderNumber={lastOrderNumber}
-                nickname={[...productionOrders, ...readyOrders].find(o => o.numeroPedido === lastOrderNumber)?.nomeCliente}
+                nickname={[...productionOrders, ...readyOrders].find(o => (o.numeroPedido || o.number) === lastOrderNumber)?.nomeCliente}
                 config={config.lastOrder}
                 onExpedite={handleExpedite}
               />

@@ -72,8 +72,15 @@ export interface PanelConfig {
   sounds: {
     production: boolean;
     ready: boolean;
-    productionFile?: File;
-    readyFile?: File;
+    productionFile?: string;
+    readyFile?: string;
+  };
+  textToSpeech: {
+    enabled: boolean;
+    voice?: string;
+    rate?: number;
+    pitch?: number;
+    volume?: number;
   };
   autoExpedition: {
     enabled: boolean;

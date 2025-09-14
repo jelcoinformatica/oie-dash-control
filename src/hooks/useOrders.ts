@@ -1,15 +1,18 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { Order } from '../types/order';
 import { fetchOrders, updateOrderStatus, expediteOrder, addSimulatedOrder } from '../services/orderService';
 import { toast } from './use-toast';
+import { useTextToSpeech } from './useTextToSpeech';
 
-export const useOrders = () => {
+export const useOrders = (ttsConfig?: { enabled: boolean; voice?: string; rate?: number; pitch?: number; volume?: number }) => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [lastOrderNumber, setLastOrderNumber] = useState<string>('');
   const [isSimulationActive, setIsSimulationActive] = useState(false);
   const [simulationIntervalId, setSimulationIntervalId] = useState<NodeJS.Timeout | null>(null);
   const [expeditionLog, setExpeditionLog] = useState<string[]>([]);
+  const previousLastOrderNumber = useRef<string>('');
+  const { speak } = useTextToSpeech();
 
   const loadOrders = useCallback(async () => {
     try {
@@ -23,9 +26,21 @@ export const useOrders = () => {
         const latest = readyOrders.reduce((latest, current) => 
           (current.ultimoConsumo || current.updatedAt) > (latest.ultimoConsumo || latest.updatedAt) ? current : latest
         );
-        setLastOrderNumber(latest.numeroPedido || latest.number);
+        const newLastOrderNumber = latest.numeroPedido || latest.number;
+        
+        // Verificar se é um novo pedido e falar se TTS habilitado
+        if (newLastOrderNumber !== previousLastOrderNumber.current && previousLastOrderNumber.current !== '' && ttsConfig?.enabled) {
+          const orderToSpeak = data.find(o => (o.numeroPedido || o.number) === newLastOrderNumber);
+          const nickname = orderToSpeak?.nomeCliente;
+          const textToSpeak = nickname ? `Pedido ${newLastOrderNumber}, ${nickname}` : `Pedido ${newLastOrderNumber}`;
+          speak(textToSpeak, ttsConfig);
+        }
+        
+        previousLastOrderNumber.current = newLastOrderNumber;
+        setLastOrderNumber(newLastOrderNumber);
       } else {
         setLastOrderNumber('');
+        previousLastOrderNumber.current = '';
       }
     } catch (error) {
       toast({
@@ -62,7 +77,17 @@ export const useOrders = () => {
       setOrders(prev => prev.map(order => 
         order.id === orderId ? updatedOrder : order
       ));
-      setLastOrderNumber(updatedOrder.numeroPedido || updatedOrder.number);
+      const newOrderNumber = updatedOrder.numeroPedido || updatedOrder.number;
+      
+      // Falar o novo pedido se TTS habilitado
+      if (ttsConfig?.enabled && newOrderNumber !== previousLastOrderNumber.current) {
+        const nickname = updatedOrder.nomeCliente;
+        const textToSpeak = nickname ? `Pedido ${newOrderNumber}, ${nickname}` : `Pedido ${newOrderNumber}`;
+        speak(textToSpeak, ttsConfig);
+      }
+      
+      previousLastOrderNumber.current = newOrderNumber;
+      setLastOrderNumber(newOrderNumber);
       
     } catch (error) {
       toast({
