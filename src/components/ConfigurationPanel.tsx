@@ -16,6 +16,8 @@ interface ConfigurationPanelProps {
   onConfigChange: (config: PanelConfig) => void;
   onSave: () => void;
   onCancel: () => void;
+  clearAllOrders?: () => void;
+  generateOrders?: (count: number) => void;
 }
 
 interface ConfigSectionProps {
@@ -64,7 +66,9 @@ export const ConfigurationPanel = ({
   config,
   onConfigChange,
   onSave,
-  onCancel
+  onCancel,
+  clearAllOrders,
+  generateOrders
 }: ConfigurationPanelProps) => {
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
     background: false,
@@ -75,7 +79,8 @@ export const ConfigurationPanel = ({
     tts: true, // Deixar aberto por padrão para facilitar encontrar as opções
     autoExpedition: false,
     modules: false,
-    cards: false
+    cards: false,
+    simulation: false
   });
 
   const toggleAllSections = () => {
@@ -90,7 +95,8 @@ export const ConfigurationPanel = ({
       tts: newState,
       autoExpedition: newState,
       modules: newState,
-      cards: newState
+      cards: newState,
+      simulation: newState
     });
   };
 
@@ -878,6 +884,86 @@ export const ConfigurationPanel = ({
               />
               <div className="w-1.5 h-1.5 bg-purple-500 rounded-full"></div>
               <Label className="text-xs">Ficha</Label>
+            </div>
+          </div>
+        </ConfigSection>
+
+        
+        {/* Simulação */}
+        <ConfigSection
+          title="Simulação"
+          icon={<Cog className="w-4 h-4" />}
+          isOpen={openSections.simulation}
+          onToggle={() => toggleSection('simulation')}
+          colorClass="text-teal-600"
+        >
+          <div className="space-y-4">
+            <div className="flex flex-col gap-3">
+              <Button
+                onClick={() => {
+                  if (window.confirm('Deseja zerar todos os pedidos das 2 colunas?')) {
+                    clearAllOrders?.();
+                  }
+                }}
+                variant="destructive"
+                size="sm"
+                className="w-full"
+              >
+                Zerar Todos os Pedidos
+              </Button>
+              
+              <div className="flex items-center gap-2">
+                <Input
+                  type="number"
+                  min="1"
+                  max="20"
+                  defaultValue="5"
+                  id="newOrdersCount"
+                  className="h-8 w-20"
+                />
+                <Button
+                  onClick={() => {
+                    const input = document.getElementById('newOrdersCount') as HTMLInputElement;
+                    const count = parseInt(input?.value || '5');
+                    generateOrders?.(count);
+                  }}
+                  variant="outline"
+                  size="sm"
+                  className="flex-1"
+                >
+                  Gerar Novos Pedidos
+                </Button>
+              </div>
+            </div>
+            
+            <div className="space-y-2 border-t pt-3">
+              <Label className="text-xs font-medium">Módulos Ativos:</Label>
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                {config.modules.balcao && (
+                  <div className="flex items-center gap-1">
+                    <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
+                    <span>Balcão</span>
+                  </div>
+                )}
+                {config.modules.mesa && (
+                  <div className="flex items-center gap-1">
+                    <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
+                    <span>Mesa</span>
+                  </div>
+                )}
+                {config.modules.entrega && (
+                  <div className="flex items-center gap-1">
+                    <div className="w-1.5 h-1.5 bg-red-500 rounded-full"></div>
+                    <span>Entrega</span>
+                  </div>
+                )}
+                {config.modules.ficha && (
+                  <div className="flex items-center gap-1">
+                    <div className="w-1.5 h-1.5 bg-purple-500 rounded-full"></div>
+                    <span>Ficha</span>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </ConfigSection>

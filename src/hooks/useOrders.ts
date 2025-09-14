@@ -17,7 +17,12 @@ interface TTSConfig {
   repeatInterval?: number;
 }
 
-export const useOrders = (ttsConfig?: TTSConfig) => {
+interface AutoExpeditionConfig {
+  enabled: boolean;
+  minutes: number;
+}
+
+export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpeditionConfig) => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [lastOrderNumber, setLastOrderNumber] = useState<string>('');
   const [lastOrderData, setLastOrderData] = useState<Order | null>(null);
@@ -28,11 +33,13 @@ export const useOrders = (ttsConfig?: TTSConfig) => {
   const { speak } = useTextToSpeech();
   const previousLastOrderNumber = useRef<string>('');
   const ttsConfigRef = useRef(ttsConfig);
+  const autoExpeditionConfigRef = useRef(autoExpeditionConfig);
   
-  // Atualizar ref quando ttsConfig mudar
+  // Atualizar refs quando configs mudarem
   useEffect(() => {
     ttsConfigRef.current = ttsConfig;
-  }, [ttsConfig]);
+    autoExpeditionConfigRef.current = autoExpeditionConfig;
+  }, [ttsConfig, autoExpeditionConfig]);
 
   const loadOrders = useCallback(async () => {
     try {
@@ -79,7 +86,7 @@ export const useOrders = (ttsConfig?: TTSConfig) => {
     } finally {
       setLoading(false);
     }
-  }, [speak]); // Removido ttsConfig da dependência
+  }, [speak]);
 
   const moveToReady = useCallback(async (orderId: string) => {
     try {
@@ -110,7 +117,7 @@ export const useOrders = (ttsConfig?: TTSConfig) => {
         variant: "destructive"
       });
     }
-  }, [orders, lastOrderNumber, speak]); // Removido ttsConfig da dependência
+  }, [orders, lastOrderNumber, speak]);
 
   const expedite = useCallback(async (orderNumber: string) => {
     try {
@@ -201,6 +208,59 @@ export const useOrders = (ttsConfig?: TTSConfig) => {
       });
     }
   }, [orders, lastOrderNumber]);
+  
+  // Auto-expedição
+  useEffect(() => {
+    if (!autoExpeditionConfigRef.current?.enabled || !lastOrderData) return;
+    
+    const autoExpediteTimeout = setTimeout(() => {
+      if (lastOrderNumber && lastOrderData) {
+        expedite(lastOrderNumber);
+        toast({
+          title: "Auto Expedição",
+          description: `Pedido ${lastOrderNumber} foi automaticamente expedido`,
+          variant: "default"
+        });
+      }
+    }, (autoExpeditionConfigRef.current.minutes || 10) * 60 * 1000);
+    
+    return () => clearTimeout(autoExpediteTimeout);
+  }, [lastOrderData, expedite]);
+  
+  // Funções para simulação
+  const clearAllOrders = useCallback(async () => {
+    setOrders([]);
+    setLastOrderNumber('');
+    setLastOrderData(null);
+    setExpeditionLog([]);
+    toast({
+      title: "Pedidos Zerados",
+      description: "Todos os pedidos foram removidos",
+      variant: "default"
+    });
+  }, []);
+  
+  const generateOrders = useCallback(async (count: number) => {
+    try {
+      const newOrders: Order[] = [];
+      for (let i = 0; i < count; i++) {
+        const newOrder = await addSimulatedOrder();
+        newOrders.push(newOrder);
+      }
+      await loadOrders(); // Recarregar para sincronizar
+      toast({
+        title: "Pedidos Gerados",
+        description: `${count} novos pedidos foram criados`,
+        variant: "default"
+      });
+    } catch (error) {
+      toast({
+        title: "Erro",
+        description: "Falha ao gerar pedidos",
+        variant: "destructive"
+      });
+    }
+  }, [loadOrders]);
 
   const startSimulation = useCallback(() => {
     setIsSimulationActive(true);
@@ -236,6 +296,8 @@ export const useOrders = (ttsConfig?: TTSConfig) => {
     startSimulation,
     stopSimulation,
     isSimulationActive,
-    expeditionLog
+    expeditionLog,
+    clearAllOrders,
+    generateOrders
   };
 };

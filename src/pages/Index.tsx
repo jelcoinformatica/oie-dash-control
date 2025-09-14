@@ -22,6 +22,11 @@ const Index = () => {
     [config?.textToSpeech]
   );
   
+  const autoExpeditionConfig = useMemo(() => 
+    config?.autoExpedition || defaultConfig.autoExpedition, 
+    [config?.autoExpedition]
+  );
+  
   const { 
     productionOrders, 
     readyOrders, 
@@ -33,8 +38,10 @@ const Index = () => {
     startSimulation,
     stopSimulation,
     isSimulationActive,
-    expeditionLog
-  } = useOrders(ttsConfig);
+    expeditionLog,
+    clearAllOrders,
+    generateOrders
+  } = useOrders(ttsConfig, autoExpeditionConfig);
 
   useEffect(() => {
     const savedConfig = localStorage.getItem('oie-config');
@@ -226,6 +233,8 @@ const Index = () => {
         onConfigChange={handleConfigChange}
         onSave={handleSaveConfig}
         onCancel={handleCancelConfig}
+        clearAllOrders={clearAllOrders}
+        generateOrders={generateOrders}
       />
       
       {/* Overlay */}
