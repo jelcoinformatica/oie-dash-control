@@ -75,7 +75,10 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div 
+      className="min-h-screen bg-background flex flex-col"
+      style={{ backgroundColor: config.backgroundColor }}
+    >
       <div className="flex-1 flex">
         {/* Coluna Produção */}
         {config.production.visible && (
