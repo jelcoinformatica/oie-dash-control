@@ -136,13 +136,23 @@ export const ConfigurationPanel = ({
           onToggle={() => toggleSection('production')}
           colorClass="text-blue-600"
         >
-          <div className="flex items-center gap-2">
-            <Switch 
-              checked={config.production.visible} 
-              onCheckedChange={(checked) => updateConfig('production.visible', checked)}
-              className="scale-75"
-            />
-            <Label className="text-sm">Exibir Coluna</Label>
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <Switch 
+                checked={config.production.visible} 
+                onCheckedChange={(checked) => updateConfig('production.visible', checked)}
+                className="scale-75"
+              />
+              <Label className="text-sm">Exibir Coluna</Label>
+            </div>
+            <div className="flex items-center gap-2">
+              <Switch 
+                checked={config.production.showBorder || false} 
+                onCheckedChange={(checked) => updateConfig('production.showBorder', checked)}
+                className="scale-75"
+              />
+              <Label className="text-sm">Tem Borda</Label>
+            </div>
           </div>
 
           <div>
@@ -263,6 +273,14 @@ export const ConfigurationPanel = ({
           onToggle={() => toggleSection('ready')}
           colorClass="text-green-600"
         >
+          <div className="flex items-center gap-2">
+            <Switch 
+              checked={config.ready.showBorder || false} 
+              onCheckedChange={(checked) => updateConfig('ready.showBorder', checked)}
+              className="scale-75"
+            />
+            <Label className="text-sm">Tem Borda</Label>
+          </div>
 
           <div>
             <Label className="text-sm font-medium">Título da Coluna</Label>
@@ -442,13 +460,23 @@ export const ConfigurationPanel = ({
           onToggle={() => toggleSection('advertising')}
           colorClass="text-cyan-600"
         >
-          <div className="flex items-center gap-2">
-            <Switch 
-              checked={config.advertising.visible} 
-              onCheckedChange={(checked) => updateConfig('advertising.visible', checked)}
-              className="scale-75"
-            />
-            <Label className="text-sm">Exibir Coluna</Label>
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <Switch 
+                checked={config.advertising.visible} 
+                onCheckedChange={(checked) => updateConfig('advertising.visible', checked)}
+                className="scale-75"
+              />
+              <Label className="text-sm">Exibir Coluna</Label>
+            </div>
+            <div className="flex items-center gap-2">
+              <Switch 
+                checked={config.advertising.showBorder || false} 
+                onCheckedChange={(checked) => updateConfig('advertising.showBorder', checked)}
+                className="scale-75"
+              />
+              <Label className="text-sm">Tem Borda</Label>
+            </div>
           </div>
 
             <div>

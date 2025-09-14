@@ -28,6 +28,7 @@ interface OrderColumnProps {
     backgroundColor?: string;
   };
   smartColumns?: number;
+  showBorder?: boolean;
 }
 
 const variantStyles = {
@@ -60,62 +61,71 @@ export const OrderColumn = ({
   headerHeight = 48,
   enabledModules,
   cardConfig,
-  smartColumns = 3
+  smartColumns = 3,
+  showBorder = false
 }: OrderColumnProps) => {
   return (
     <div className={cn("flex flex-col h-full", className)}>
       <div 
         className={cn(
-          "flex items-center justify-between px-4 font-bold text-lg",
-          "shadow-sm border-b rounded-t-lg",
-          !headerBg && "bg-gray-800",
-          !headerColor && "text-white",
-          headerClassName
+          "bg-white rounded-lg shadow-lg border border-gray-300 flex flex-col overflow-hidden h-full",
+          variant === 'production' ? 'border-l-4 border-l-blue-500' : '',
+          showBorder ? 'ring-2 ring-blue-200' : ''
         )}
-        style={{
-          backgroundColor: headerBg,
-          color: headerColor,
-          height: `${headerHeight}px`
-        }}
       >
-        <span>{title}</span>
-        <span className="bg-white/20 px-2 py-1 rounded-full text-sm">
-          {totalCount ?? orders.length}
-        </span>
-      </div>
-      
-      <div className="flex-1 p-2 overflow-hidden bg-gray-50">
         <div 
-          className={`grid gap-1 overflow-hidden`}
-          style={{ 
-            gridTemplateColumns: `repeat(${smartColumns}, 1fr)`
+          className={cn(
+            "flex items-center justify-between px-4 font-bold text-lg",
+            "shadow-sm border-b rounded-t-lg",
+            !headerBg && "bg-gray-800",
+            !headerColor && "text-white",
+            headerClassName
+          )}
+          style={{
+            backgroundColor: headerBg,
+            color: headerColor,
+            height: `${headerHeight}px`
           }}
         >
-          {orders.map((order) => (
-            <OrderCard
-              key={order.id}
-              order={order}
-              onClick={() => onOrderClick?.(order)}
-              className="flex-shrink-0"
-              showNickname={showNickname}
-              showItems={showItems}
-              enabledModules={enabledModules}
-              fontSize={cardConfig?.fontSize}
-              fontFamily={cardConfig?.fontFamily}
-              textColor={cardConfig?.textColor}
-              backgroundColor={cardConfig?.backgroundColor}
-            />
-          ))}
+          <span>{title}</span>
+          <span className="bg-white/20 px-2 py-1 rounded-full text-sm">
+            {totalCount ?? orders.length}
+          </span>
         </div>
         
-        {orders.length === 0 && (
-          <div className="flex items-center justify-center h-32 text-muted-foreground">
-            <div className="text-center">
-              <div className="text-2xl mb-2">📋</div>
-              <p>Nenhum pedido</p>
-            </div>
+        <div className="flex-1 p-2 overflow-hidden bg-gray-50">
+          <div 
+            className={`grid gap-1 overflow-hidden`}
+            style={{ 
+              gridTemplateColumns: `repeat(${smartColumns}, 1fr)`
+            }}
+          >
+            {orders.map((order) => (
+              <OrderCard
+                key={order.id}
+                order={order}
+                onClick={() => onOrderClick?.(order)}
+                className="flex-shrink-0"
+                showNickname={showNickname}
+                showItems={showItems}
+                enabledModules={enabledModules}
+                fontSize={cardConfig?.fontSize}
+                fontFamily={cardConfig?.fontFamily}
+                textColor={cardConfig?.textColor}
+                backgroundColor={cardConfig?.backgroundColor}
+              />
+            ))}
           </div>
-        )}
+          
+          {orders.length === 0 && (
+            <div className="flex items-center justify-center h-32 text-muted-foreground">
+              <div className="text-center">
+                <div className="text-2xl mb-2">📋</div>
+                <p>Nenhum pedido</p>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

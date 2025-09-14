@@ -78,6 +78,11 @@ const Index = () => {
       title: "Configurações Salvas",
       description: "As configurações foram atualizadas com sucesso"
     });
+    
+    // Auto dismiss after 5 seconds
+    setTimeout(() => {
+      // Toast will auto-dismiss
+    }, 5000);
   };
 
   const handleCancelConfig = () => {
@@ -99,8 +104,10 @@ const Index = () => {
   };
   
   const getSmartColumnCount = (fontSize: number) => {
-    // Se a fonte for muito grande, usar 2 colunas, senão 3
-    return fontSize >= 2.5 ? 2 : 3;
+    // Layout inteligente baseado no tamanho da fonte
+    if (fontSize <= 1.2) return 4; // Fonte pequena = 4x4 ou 4x3
+    if (fontSize <= 1.8) return 3; // Fonte média = 3x3
+    return 2; // Fonte grande = 2 colunas
   };
   
   const columnWidths = getColumnWidths();
@@ -110,7 +117,7 @@ const Index = () => {
       className="h-screen flex flex-col"
       style={{ backgroundColor: config.backgroundColor }}
     >
-      <div className="flex-1 flex gap-0.5 p-1 pt-4">
+      <div className="flex-1 flex gap-0.5 p-1 pt-1">
         {/* Coluna 1 - Produção */}
         {config.production.visible && (
           <div style={{ width: `${columnWidths.production}%` }}>
@@ -130,13 +137,14 @@ const Index = () => {
                 backgroundColor: config.production.cardConfig.backgroundColor
               }}
               smartColumns={getSmartColumnCount(config.production.cardConfig.fontSize)}
+              showBorder={config.production.showBorder}
             />
           </div>
         )}
 
         {/* Coluna 2 - Prontos */}
         <div style={{ width: `${columnWidths.ready}%` }}>
-          <div className="bg-white rounded-lg shadow-lg border border-gray-300 flex flex-col overflow-hidden h-full">
+          <div className={`bg-white rounded-lg shadow-lg border border-gray-300 flex flex-col overflow-hidden h-full ${config.ready.showBorder ? 'ring-2 ring-blue-200' : ''}`}>
             {/* Header Fixo */}
             <div 
               className="bg-ready text-ready-foreground px-4 font-bold text-lg shadow-sm border-b flex items-center justify-between flex-shrink-0 rounded-t-lg"
@@ -158,6 +166,7 @@ const Index = () => {
                 <LastOrderDisplay
                   orderNumber={lastOrderNumber}
                   config={config.lastOrder}
+                  onExpedite={handleExpedite}
                 />
               </div>
             )}
@@ -216,7 +225,7 @@ const Index = () => {
       </div>
 
       {/* Painel de Controle Fixo */}
-      <div className="flex-shrink-0" style={{ height: '22px' }}>
+      <div className="flex-shrink-0" style={{ height: '26px' }}>
         <ControlPanel
           onConfigClick={() => setConfigOpen(true)}
           onExpedite={expedite}

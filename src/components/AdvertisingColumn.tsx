@@ -9,6 +9,7 @@ interface AdvertisingColumnProps {
   headerBg?: string;
   headerColor?: string;
   backgroundColor?: string;
+  showBorder?: boolean;
 }
 
 export const AdvertisingColumn = ({
@@ -19,11 +20,12 @@ export const AdvertisingColumn = ({
   headerHeight = 48,
   headerBg = "#8b5cf6",
   headerColor = "#ffffff", 
-  backgroundColor = "#ffffff"
+  backgroundColor = "#ffffff",
+  showBorder = false
 }: AdvertisingColumnProps) => {
   return (
     <div className={cn("flex flex-col h-full", className)}>
-      <div className="bg-white shadow-lg h-full flex flex-col border border-gray-200 rounded-t-lg">
+      <div className={`bg-white shadow-lg h-full flex flex-col border border-gray-200 rounded-t-lg ${showBorder ? 'ring-2 ring-blue-200' : ''}`}>
         {showHeader && (
           <div 
             className="flex items-center justify-center text-white font-bold text-lg rounded-t-lg"
@@ -60,7 +62,7 @@ export const AdvertisingColumn = ({
               </div>
               <div className="mt-4 text-sm">
                 <div>Dimensões sugeridas:</div>
-                <div>{Math.round((window.innerWidth || 1920) * 0.25)} x {Math.round((window.innerHeight || 1080) * 0.6)}px</div>
+                <div>{Math.round((window.innerWidth || 1920) * 0.22)} x {Math.round((window.innerHeight || 1080) * 0.6)}px</div>
               </div>
             </div>
           )}

@@ -38,7 +38,7 @@ export interface ColumnConfig {
   headerColor: string;
   headerFontFamily: string;
   headerFontSize: number;
-  showBorder: boolean;
+  showBorder?: boolean;
   cardConfig: OrderCardConfig;
 }
 
@@ -58,6 +58,7 @@ export interface PanelConfig {
     headerFontSize: number;
     backgroundColor: string;
     imageUrl?: string;
+    showBorder?: boolean;
   };
   lastOrder: {
     height: number;

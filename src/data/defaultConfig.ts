@@ -57,7 +57,8 @@ export const defaultConfig: PanelConfig = {
     headerFontFamily: 'Arial',
     headerFontSize: 1.2,
     backgroundColor: '#ffffff',
-    imageUrl: undefined
+    imageUrl: undefined,
+    showBorder: false
   },
   lastOrder: {
     height: 120,

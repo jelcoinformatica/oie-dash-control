@@ -129,7 +129,7 @@ export const useOrders = () => {
       setOrders(prev => prev.filter(o => o.id !== order.id));
       
       // Adicionar ao log de expedição
-      setExpeditionLog(prev => [orderNumber, ...prev].slice(0, 3));
+      setExpeditionLog(prev => [orderNumber, ...prev].slice(0, 5));
       
       // Se foi o último pedido expedido, mover o primeiro da coluna ready para último pedido
       if ((order.numeroPedido || order.number) === lastOrderNumber) {

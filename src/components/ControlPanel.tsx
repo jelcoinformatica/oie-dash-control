@@ -39,7 +39,7 @@ export const ControlPanel = ({
   };
 
   return (
-    <div className="bg-card border-t shadow-sm" style={{ height: '22px' }}>
+    <div className="bg-card border-t shadow-sm" style={{ height: '26px' }}>
       <div className="container mx-auto px-2 py-0.5 flex items-center justify-between h-full">
         <div className="text-xs text-muted-foreground">
           Oie! v.5.0
@@ -52,7 +52,7 @@ export const ControlPanel = ({
               value={expeditionInput}
               onChange={(e) => setExpeditionInput(e.target.value)}
               onKeyPress={handleKeyPress}
-              className="w-20 h-5 text-xs text-center placeholder:opacity-20"
+              className="w-20 h-5 text-xs text-center placeholder:opacity-30"
             />
             <TooltipProvider>
               <Tooltip>

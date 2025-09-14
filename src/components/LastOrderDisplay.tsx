@@ -12,12 +12,14 @@ interface LastOrderDisplayProps {
     backgroundColor?: string;
   };
   className?: string;
+  onExpedite?: (orderNumber: string) => void;
 }
 
 export const LastOrderDisplay = ({ 
   orderNumber, 
   config,
-  className
+  className,
+  onExpedite
 }: LastOrderDisplayProps) => {
   // Safety check with default values
   const safeConfig = {
@@ -30,10 +32,17 @@ export const LastOrderDisplay = ({
     backgroundColor: config?.backgroundColor || '#fef3c7'
   };
 
+  // Get order details to show nickname
+  const handleClick = () => {
+    if (onExpedite) {
+      onExpedite(orderNumber);
+    }
+  };
+
   return (
     <div 
       className={cn(
-        "p-4 border border-yellow-300 rounded-lg text-center",
+        "p-4 border border-yellow-300 rounded-lg text-center cursor-pointer hover:opacity-80 transition-opacity",
         safeConfig.pulseAnimation && "animate-pulse",
         safeConfig.highlight && "ring-2 ring-yellow-400",
         className
@@ -45,9 +54,10 @@ export const LastOrderDisplay = ({
         color: safeConfig.textColor,
         backgroundColor: safeConfig.backgroundColor
       }}
+      onClick={handleClick}
     >
-      <div className="h-full flex items-center justify-center font-bold">
-        {orderNumber}
+      <div className="h-full flex flex-col items-center justify-center font-bold">
+        <div>{orderNumber}</div>
       </div>
     </div>
   );
