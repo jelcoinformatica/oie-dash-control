@@ -171,27 +171,17 @@ const Index = () => {
                 config={config.lastOrder}
                 onExpedite={handleExpedite}
               />
-              {/* Debug temporário */}
-              {process.env.NODE_ENV === 'development' && (
-                <div className="text-xs p-2 bg-yellow-100">
-                  Debug: lastOrderData = {JSON.stringify({
-                    nomeCliente: lastOrderData?.nomeCliente,
-                    nickname: lastOrderData?.nickname,
-                    numeroPedido: lastOrderData?.numeroPedido
-                  })}
-                </div>
-              )}
               </div>
             )}
             
             {/* Cards de Pedidos Prontos sem Scroll */}
-            <div className="flex-1 bg-gray-50 p-2 overflow-hidden">
+            <div className="flex-1 bg-gray-50 p-2" style={{ overflow: 'hidden' }}>
               <div 
-                className="grid gap-1 overflow-hidden"
+                className="grid gap-1 h-full"
                 style={{ 
                   gridTemplateColumns: `repeat(${getSmartColumnCount(config.ready.cardConfig.fontSize)}, 1fr)`,
-                  height: '100%',
-                  gridTemplateRows: 'repeat(auto-fit, minmax(60px, 1fr))'
+                  gridAutoRows: 'minmax(60px, auto)',
+                  overflow: 'hidden'
                 }}
               >
                 {readyOrders.map((order) => (

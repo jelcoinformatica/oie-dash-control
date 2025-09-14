@@ -591,7 +591,30 @@ export const ConfigurationPanel = ({
               <>
                 <div className="space-y-2">
                   <Label className="text-xs">Tipo de Voz</Label>
-                  <Select value={config.textToSpeech.textType || 'number_only'} onValueChange={(value) => updateConfig('textToSpeech.textType', value)}>
+                  <Select value={config.textToSpeech.voice || 'Liam'} onValueChange={(value) => updateConfig('textToSpeech.voice', value)}>
+                    <SelectTrigger className="h-8">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Liam">Liam (Masculino)</SelectItem>
+                      <SelectItem value="Charlie">Charlie (Masculino)</SelectItem>
+                      <SelectItem value="George">George (Masculino)</SelectItem>
+                      <SelectItem value="Roger">Roger (Masculino)</SelectItem>
+                      <SelectItem value="Daniel">Daniel (Masculino)</SelectItem>
+                      <SelectItem value="Aria">Aria (Feminino)</SelectItem>
+                      <SelectItem value="Sarah">Sarah (Feminino)</SelectItem>
+                      <SelectItem value="Laura">Laura (Feminino)</SelectItem>
+                      <SelectItem value="Charlotte">Charlotte (Feminino)</SelectItem>
+                      <SelectItem value="Alice">Alice (Feminino)</SelectItem>
+                      <SelectItem value="Jessica">Jessica (Feminino)</SelectItem>
+                      <SelectItem value="Lily">Lily (Feminino)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-xs">Tipo de Mensagem</Label>
+                  <Select value={config.textToSpeech.textType || 'name_ready'} onValueChange={(value) => updateConfig('textToSpeech.textType', value)}>
                     <SelectTrigger className="h-8">
                       <SelectValue />
                     </SelectTrigger>

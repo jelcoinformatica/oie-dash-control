@@ -92,12 +92,13 @@ export const OrderColumn = ({
           </span>
         </div>
         
-        <div className="flex-1 p-2 overflow-hidden bg-gray-50">
+        <div className="flex-1 p-2 bg-gray-50" style={{ overflow: 'hidden' }}>
           <div 
-            className="grid gap-1 overflow-hidden h-full"
+            className="grid gap-1 h-full"
             style={{ 
               gridTemplateColumns: `repeat(${smartColumns}, 1fr)`,
-              gridTemplateRows: 'repeat(auto-fit, minmax(60px, 1fr))'
+              gridAutoRows: 'minmax(60px, auto)',
+              overflow: 'hidden'
             }}
           >
             {orders.map((order) => (

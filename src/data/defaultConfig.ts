@@ -77,12 +77,12 @@ export const defaultConfig: PanelConfig = {
   },
   textToSpeech: {
     enabled: false,
-    voice: 'pt-BR',
+    voice: 'Liam', // Voz masculina por padrão - TX3LPaxmHKxFdv7VOQHJ
     rate: 1,
     pitch: 1,
     volume: 0.8,
-    textType: 'name_ready', // 'number_only', 'name_ready', 'order_ready'
-    customText: '' // Usado para textos personalizados
+    textType: 'name_ready',
+    customText: ''
   },
   autoExpedition: {
     enabled: true,
