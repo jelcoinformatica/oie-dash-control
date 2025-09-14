@@ -167,19 +167,31 @@ const Index = () => {
               <div className="flex-shrink-0">
               <LastOrderDisplay
                 orderNumber={lastOrderNumber}
-                nickname={lastOrderData?.nomeCliente} // Usar dados diretos do último pedido
+                nickname={lastOrderData?.nomeCliente || lastOrderData?.nickname}
                 config={config.lastOrder}
                 onExpedite={handleExpedite}
               />
+              {/* Debug temporário */}
+              {process.env.NODE_ENV === 'development' && (
+                <div className="text-xs p-2 bg-yellow-100">
+                  Debug: lastOrderData = {JSON.stringify({
+                    nomeCliente: lastOrderData?.nomeCliente,
+                    nickname: lastOrderData?.nickname,
+                    numeroPedido: lastOrderData?.numeroPedido
+                  })}
+                </div>
+              )}
               </div>
             )}
             
             {/* Cards de Pedidos Prontos sem Scroll */}
             <div className="flex-1 bg-gray-50 p-2 overflow-hidden">
               <div 
-                className="grid gap-1 h-full"
+                className="grid gap-1 overflow-hidden"
                 style={{ 
-                  gridTemplateColumns: `repeat(${getSmartColumnCount(config.ready.cardConfig.fontSize)}, 1fr)` 
+                  gridTemplateColumns: `repeat(${getSmartColumnCount(config.ready.cardConfig.fontSize)}, 1fr)`,
+                  height: '100%',
+                  gridTemplateRows: 'repeat(auto-fit, minmax(60px, 1fr))'
                 }}
               >
                 {readyOrders.map((order) => (

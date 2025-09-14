@@ -6,7 +6,7 @@ interface TTSConfig {
   rate?: number;
   pitch?: number;
   volume?: number;
-  textType?: 'number_only' | 'name_ready' | 'order_ready';
+  textType?: 'number_only' | 'name_ready' | 'order_ready' | 'custom';
   customText?: string;
 }
 
@@ -30,6 +30,9 @@ export const useTextToSpeech = () => {
         case 'order_ready':
           finalText = `O pedido ${orderNumber} está pronto.`;
           break;
+        case 'custom':
+          finalText = config.customText || text;
+          break;
         default:
           finalText = text;
       }
@@ -42,10 +45,24 @@ export const useTextToSpeech = () => {
         
         if (config.voice) {
           const voices = speechSynthesis.getVoices();
+          // Tentar encontrar uma voz em português-BR primeiro
           const selectedVoice = voices.find(voice => 
-            voice.name.includes(config.voice!) || voice.lang.includes('pt-BR')
+            voice.lang === 'pt-BR' || voice.lang.includes('pt-BR')
+          ) || voices.find(voice => 
+            voice.name.includes('Portuguese') || voice.lang.includes('pt')
+          ) || voices.find(voice => 
+            voice.name.includes(config.voice!)
           );
           if (selectedVoice) utterance.voice = selectedVoice;
+        } else {
+          // Se não especificou voz, tentar português-BR por padrão
+          const voices = speechSynthesis.getVoices();
+          const ptBrVoice = voices.find(voice => 
+            voice.lang === 'pt-BR' || voice.lang.includes('pt-BR')
+          ) || voices.find(voice => 
+            voice.name.includes('Portuguese') || voice.lang.includes('pt')
+          );
+          if (ptBrVoice) utterance.voice = ptBrVoice;
         }
         
         utterance.rate = config.rate || 1;

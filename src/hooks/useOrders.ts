@@ -10,7 +10,7 @@ interface TTSConfig {
   rate?: number;
   pitch?: number;
   volume?: number;
-  textType?: 'number_only' | 'name_ready' | 'order_ready';
+  textType?: 'number_only' | 'name_ready' | 'order_ready' | 'custom';
   customText?: string;
 }
 

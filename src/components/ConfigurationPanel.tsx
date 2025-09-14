@@ -599,6 +599,7 @@ export const ConfigurationPanel = ({
                       <SelectItem value="number_only">Só Número</SelectItem>
                       <SelectItem value="name_ready">[Nome], seu pedido está pronto!</SelectItem>
                       <SelectItem value="order_ready">O pedido [número] está pronto.</SelectItem>
+                      <SelectItem value="custom">Texto Personalizado</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -636,6 +637,18 @@ export const ConfigurationPanel = ({
                     </span>
                   </div>
                 </div>
+
+                {config.textToSpeech.textType === 'custom' && (
+                  <div className="space-y-2">
+                    <Label className="text-xs">Texto Personalizado</Label>
+                    <Input
+                      value={config.textToSpeech.customText || ''}
+                      onChange={(e) => updateConfig('textToSpeech.customText', e.target.value)}
+                      placeholder="Digite o texto personalizado..."
+                      className="h-8"
+                    />
+                  </div>
+                )}
               </>
             )}
           </div>
