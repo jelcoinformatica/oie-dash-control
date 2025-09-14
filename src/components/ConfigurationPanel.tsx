@@ -71,9 +71,6 @@ export const ConfigurationPanel = ({
     cards: false
   });
 
-  const [position, setPosition] = useState({ x: 50, y: 50 });
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
 
   const toggleSection = (section: string) => {
     setOpenSections(prev => ({
@@ -96,54 +93,14 @@ export const ConfigurationPanel = ({
     onConfigChange(newConfig);
   };
 
-  const handleMouseDown = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) {
-      setIsDragging(true);
-      setDragStart({
-        x: e.clientX - position.x,
-        y: e.clientY - position.y
-      });
-    }
-  };
-
-  const handleMouseMove = (e: MouseEvent) => {
-    if (isDragging) {
-      setPosition({
-        x: e.clientX - dragStart.x,
-        y: e.clientY - dragStart.y
-      });
-    }
-  };
-
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
-
-  useEffect(() => {
-    if (isDragging) {
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleMouseUp);
-      return () => {
-        document.removeEventListener('mousemove', handleMouseMove);
-        document.removeEventListener('mouseup', handleMouseUp);
-      };
-    }
-  }, [isDragging, dragStart]);
 
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/20 z-50 pointer-events-none">
-      <div 
-        className="bg-white rounded-lg shadow-xl w-[480px] h-[500px] flex flex-col pointer-events-auto cursor-move"
-        style={{
-          position: 'absolute',
-          left: `${position.x}px`,
-          top: `${position.y}px`,
-        }}
-        onMouseDown={handleMouseDown}
-      >
-        <div className="flex items-center justify-between p-3 border-b bg-gray-50 rounded-t-lg">
+    <div 
+      className="fixed top-0 right-0 w-[400px] h-full bg-white/95 backdrop-blur-sm shadow-xl z-50 flex flex-col border-l border-gray-200"
+    >
+        <div className="flex items-center justify-between p-3 border-b bg-gray-50/80">
           <h2 className="text-lg font-semibold">Configurações</h2>
           <Button variant="ghost" size="sm" onClick={onCancel}>
             <X className="w-4 h-4" />
@@ -419,6 +376,45 @@ export const ConfigurationPanel = ({
                 className="mt-1"
               />
             </div>
+
+            <div>
+              <Label className="text-xs">Família da Fonte</Label>
+              <select
+                value={config.lastOrder.fontFamily || 'Arial'}
+                onChange={(e) => updateConfig('lastOrder.fontFamily', e.target.value)}
+                className="w-full mt-1 px-3 py-1 text-xs border border-gray-300 rounded-md bg-white"
+              >
+                <option value="Arial">Arial</option>
+                <option value="Times New Roman">Times New Roman</option>
+                <option value="Courier New">Courier New</option>
+                <option value="Calibri">Calibri</option>
+                <option value="Verdana">Verdana</option>
+                <option value="Georgia">Georgia</option>
+                <option value="Tahoma">Tahoma</option>
+                <option value="Impact">Impact</option>
+              </select>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <Label className="text-xs">Cor da Fonte</Label>
+                <Input
+                  type="color"
+                  value={config.lastOrder.textColor || '#000000'}
+                  onChange={(e) => updateConfig('lastOrder.textColor', e.target.value)}
+                  className="h-6 mt-1"
+                />
+              </div>
+              <div>
+                <Label className="text-xs">Cor de Fundo</Label>
+                <Input
+                  type="color"
+                  value={config.lastOrder.backgroundColor || '#ffffff'}
+                  onChange={(e) => updateConfig('lastOrder.backgroundColor', e.target.value)}
+                  className="h-6 mt-1"
+                />
+              </div>
+            </div>
             <div className="space-y-2">
               <div className="flex items-center space-x-2">
                 <Switch
@@ -588,7 +584,7 @@ export const ConfigurationPanel = ({
         </div>
         
         {/* Footer */}
-        <div className="p-4 border-t border-gray-200 bg-gray-50">
+        <div className="p-4 border-t border-gray-200 bg-gray-50/80">
           <div className="flex gap-2">
             <Button variant="outline" onClick={onCancel} className="flex-1">
               Fechar
@@ -599,6 +595,5 @@ export const ConfigurationPanel = ({
           </div>
         </div>
       </div>
-    </div>
-  );
+    );
 };

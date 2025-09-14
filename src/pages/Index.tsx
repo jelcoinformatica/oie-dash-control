@@ -157,11 +157,7 @@ const Index = () => {
               <div className="flex-shrink-0">
                 <LastOrderDisplay
                   orderNumber={lastOrderNumber}
-                  animate={config.lastOrder.pulseAnimation}
-                  height={config.lastOrder.height}
-                  fontSize={config.lastOrder.fontSize}
-                  backgroundColor={config.lastOrder.backgroundColor}
-                  textColor={config.lastOrder.textColor}
+                  config={config.lastOrder}
                 />
               </div>
             )}

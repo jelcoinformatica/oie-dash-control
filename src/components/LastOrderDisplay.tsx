@@ -2,42 +2,42 @@ import { cn } from '../lib/utils';
 
 interface LastOrderDisplayProps {
   orderNumber: string;
-  animate?: boolean;
+  config: {
+    height: number;
+    fontSize: number;
+    pulseAnimation: boolean;
+    highlight: boolean;
+    fontFamily?: string;
+    textColor?: string;
+    backgroundColor?: string;
+  };
   className?: string;
-  height?: number;
-  fontSize?: number;
-  backgroundColor?: string;
-  textColor?: string;
 }
 
 export const LastOrderDisplay = ({ 
   orderNumber, 
-  animate = true, 
-  className,
-  height = 120,
-  fontSize = 5,
-  backgroundColor = '#f59e0b',
-  textColor = '#ffffff'
+  config,
+  className
 }: LastOrderDisplayProps) => {
   return (
     <div 
       className={cn(
-        "rounded-3xl shadow-2xl flex items-center justify-center font-bold relative",
-        "drop-shadow-[0_8px_32px_rgba(245,158,11,0.5)]",
-        animate && "animate-pulse",
+        "p-4 border border-yellow-300 rounded-lg text-center",
+        config.pulseAnimation && "animate-pulse",
+        config.highlight && "ring-2 ring-yellow-400",
         className
       )}
-      style={{
-        backgroundColor,
-        color: textColor,
-        height: `${height}px`,
-        fontSize: `${fontSize}rem`,
-        margin: '8px'
+      style={{ 
+        height: `${config.height}px`,
+        fontSize: `${config.fontSize}rem`,
+        fontFamily: config.fontFamily || 'Arial',
+        color: config.textColor || '#000000',
+        backgroundColor: config.backgroundColor || '#fef3c7'
       }}
     >
-      <span className="drop-shadow-md">
+      <div className="h-full flex items-center justify-center font-bold">
         {orderNumber}
-      </span>
+      </div>
     </div>
   );
 };

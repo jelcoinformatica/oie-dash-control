@@ -66,6 +66,7 @@ export interface PanelConfig {
     textColor: string;
     pulseAnimation: boolean;
     highlight: boolean;
+    fontFamily?: string;
   };
   sounds: {
     production: boolean;
