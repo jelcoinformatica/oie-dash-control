@@ -26,7 +26,7 @@ const Index = () => {
     stopSimulation,
     isSimulationActive,
     expeditionLog
-  } = useOrders(config.textToSpeech);
+  } = useOrders(config?.textToSpeech || defaultConfig.textToSpeech);
 
   useEffect(() => {
     const savedConfig = localStorage.getItem('oie-config');
