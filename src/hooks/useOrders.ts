@@ -143,8 +143,8 @@ export const useOrders = (ttsConfig?: TTSConfig) => {
             }
           }
           
-          // Adicionar ao log de expedição
-          setExpeditionLog(prev => [...prev.slice(-4), `${order.numeroPedido || order.number} → PRODUÇÃO`]);
+        // Adicionar ao log de expedição
+        setExpeditionLog(prev => [...prev.slice(-4), `${order.numeroPedido || order.number}`]);
           
           toast({
             title: "Pedido Retornado",
@@ -183,7 +183,7 @@ export const useOrders = (ttsConfig?: TTSConfig) => {
         }
         
         // Adicionar ao log de expedição
-        setExpeditionLog(prev => [...prev.slice(-4), `${order.numeroPedido || order.number} → EXPEDIDO`]);
+        setExpeditionLog(prev => [...prev.slice(-4), `${order.numeroPedido || order.number}`]);
         
         toast({
           title: "Pedido Expedido",

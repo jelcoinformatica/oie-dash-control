@@ -27,7 +27,7 @@ interface OrderColumnProps {
     textColor?: string;
     backgroundColor?: string;
   };
-  smartColumns?: number;
+  smartColumns: number;
   showBorder?: boolean;
 }
 
@@ -61,7 +61,7 @@ export const OrderColumn = ({
   headerHeight = 48,
   enabledModules,
   cardConfig,
-  smartColumns = 3,
+  smartColumns,
   showBorder = false
 }: OrderColumnProps) => {
   return (

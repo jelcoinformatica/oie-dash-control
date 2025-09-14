@@ -111,11 +111,28 @@ const Index = () => {
     };
   };
   
-  const getSmartColumnCount = (fontSize: number) => {
-    // Layout inteligente baseado no tamanho da fonte
-    if (fontSize <= 1.2) return 4; // Fonte pequena = 4x4 ou 4x3
-    if (fontSize <= 1.8) return 3; // Fonte média = 3x3
-    return 2; // Fonte grande = 2 colunas
+  const getSmartColumnCount = (fontSize: number, containerWidth: number) => {
+    // Calcular largura estimada do card baseado na fonte
+    const baseFontSize = 16; // 1rem = 16px
+    const actualFontSize = fontSize * baseFontSize;
+    
+    // Estimativa de caracteres por linha (baseado no número do pedido + padding)
+    const averageCharWidth = actualFontSize * 0.6;
+    const cardPadding = 16; // 8px de cada lado
+    const minCardWidth = (4 * averageCharWidth) + cardPadding; // Mínimo para 4 dígitos
+    const idealCardWidth = minCardWidth * 1.5; // Um pouco mais de espaço
+    
+    // Considerar gap entre cards (4px)
+    const gap = 4;
+    const availableWidth = containerWidth - 16; // Padding do container
+    
+    // Calcular quantas colunas cabem
+    let columns = Math.floor((availableWidth + gap) / (idealCardWidth + gap));
+    
+    // Limites mínimo e máximo
+    columns = Math.max(1, Math.min(columns, 6));
+    
+    return columns;
   };
   
   const columnWidths = getColumnWidths();
@@ -144,7 +161,7 @@ const Index = () => {
                 textColor: config.production.cardConfig.textColor,
                 backgroundColor: config.production.cardConfig.backgroundColor
               }}
-              smartColumns={getSmartColumnCount(config.production.cardConfig.fontSize)}
+              smartColumns={getSmartColumnCount(config.production.cardConfig.fontSize, window.innerWidth * (columnWidths.production / 100))}
               showBorder={config.production.showBorder}
             />
           </div>
@@ -173,7 +190,7 @@ const Index = () => {
               <div className="flex-shrink-0">
               <LastOrderDisplay
                 orderNumber={lastOrderNumber}
-                nickname={lastOrderData?.nomeCliente || lastOrderData?.nickname}
+                nickname={lastOrderData?.nomeCliente}
                 config={config.lastOrder}
                 onExpedite={handleExpedite}
               />
@@ -185,7 +202,7 @@ const Index = () => {
               <div 
                 className="grid gap-1 h-full"
                 style={{ 
-                  gridTemplateColumns: `repeat(${getSmartColumnCount(config.ready.cardConfig.fontSize)}, 1fr)`,
+                  gridTemplateColumns: `repeat(${getSmartColumnCount(config.ready.cardConfig.fontSize, window.innerWidth * (columnWidths.ready / 100))}, 1fr)`,
                   gridAutoRows: 'minmax(60px, auto)',
                   overflow: 'hidden'
                 }}
