@@ -685,8 +685,16 @@ export const ConfigurationPanel = ({
                       size="sm"
                       onClick={() => {
                         if (config.sounds.productionFile) {
-                          const audio = new Audio(config.sounds.productionFile);
-                          audio.play();
+                          try {
+                            const audio = new Audio(config.sounds.productionFile);
+                            audio.play().catch(error => {
+                              console.error('Erro ao tocar som:', error);
+                              alert('Erro ao tocar o som. Verifique se o arquivo existe e é válido.');
+                            });
+                          } catch (error) {
+                            console.error('Erro ao criar Audio:', error);
+                            alert('Caminho do arquivo inválido.');
+                          }
                         }
                       }}
                       disabled={!config.sounds.productionFile}
@@ -742,8 +750,16 @@ export const ConfigurationPanel = ({
                       size="sm"
                       onClick={() => {
                         if (config.sounds.readyFile) {
-                          const audio = new Audio(config.sounds.readyFile);
-                          audio.play();
+                          try {
+                            const audio = new Audio(config.sounds.readyFile);
+                            audio.play().catch(error => {
+                              console.error('Erro ao tocar som:', error);
+                              alert('Erro ao tocar o som. Verifique se o arquivo existe e é válido.');
+                            });
+                          } catch (error) {
+                            console.error('Erro ao criar Audio:', error);
+                            alert('Caminho do arquivo inválido.');
+                          }
                         }
                       }}
                       disabled={!config.sounds.readyFile}
