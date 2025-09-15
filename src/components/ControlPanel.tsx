@@ -30,11 +30,6 @@ export const ControlPanel = ({
 
   const handleExpedite = () => {
     if (!expeditionInput.trim()) {
-      toast({
-        title: "Erro",
-        description: "Digite o número do pedido para expedir",
-        variant: "destructive"
-      });
       return;
     }
 
