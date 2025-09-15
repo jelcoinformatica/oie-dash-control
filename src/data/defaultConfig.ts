@@ -10,7 +10,7 @@ export const defaultConfig: PanelConfig = {
     headerBg: '#636363',
     headerColor: '#ffffff',
     headerFontFamily: 'Tahoma',
-    headerFontSize: 2.5,
+    headerFontSize: 2,
     showBorder: false,
     cardConfig: {
       columns: 2,
@@ -32,7 +32,7 @@ export const defaultConfig: PanelConfig = {
     headerBg: '#0011FA',
     headerColor: '#ffffff',
     headerFontFamily: 'Tahoma',
-    headerFontSize: 2.5,
+    headerFontSize: 2,
     showBorder: true,
     cardConfig: {
       columns: 10,
@@ -55,7 +55,7 @@ export const defaultConfig: PanelConfig = {
     headerBg: '#636363',
     headerColor: '#ffffff',
     headerFontFamily: 'Tahoma',
-    headerFontSize: 2.5,
+    headerFontSize: 2,
     backgroundColor: '#ffffff',
     imageUrl: undefined,
     showBorder: false

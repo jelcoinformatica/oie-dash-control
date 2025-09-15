@@ -98,17 +98,6 @@
       "dataContabil": "2025-01-14T09:15:00.000Z",
       "localEntrega": "Mesa 8",
       "nomeCliente": "João"
-    },
-    {
-      "id": "ready-4",
-      "numeroPedido": "473",
-      "ticket": "204",
-      "modulo": "ficha",
-      "status": "ready",
-      "ultimoConsumo": "2025-01-14T09:00:00.000Z",
-      "dataContabil": "2025-01-14T09:00:00.000Z",
-      "localEntrega": "Ficha",
-      "nomeCliente": "Mariana"
     }
   ]
 }
