@@ -20,6 +20,16 @@ interface OrderColumnGridProps {
     textColor?: string;
     backgroundColor?: string;
   };
+  lastOrderNumber?: string;
+  lastOrderConfig?: {
+    height: number;
+    fontSize: number;
+    backgroundColor: string;
+    textColor: string;
+    pulseAnimation: boolean;
+    highlight: boolean;
+    fontFamily?: string;
+  };
 }
 
 export const OrderColumnGrid = ({
@@ -29,7 +39,9 @@ export const OrderColumnGrid = ({
   showNickname = true,
   showItems = true,
   enabledModules,
-  cardConfig
+  cardConfig,
+  lastOrderNumber,
+  lastOrderConfig
 }: OrderColumnGridProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerDimensions, setContainerDimensions] = useState({ width: 0, height: 0 });
@@ -115,21 +127,27 @@ export const OrderColumnGrid = ({
           gridTemplateRows: `repeat(auto-fit, ${cardHeight}px)`,
         }}
       >
-        {visibleOrders.map((order) => (
-          <OrderCard
-            key={order.id}
-            order={order}
-            onClick={() => onOrderClick?.(order)}
-            className="flex-shrink-0"
-            showNickname={showNickname}
-            showItems={showItems}
-            enabledModules={enabledModules}
-            fontSize={adjustedFontSize}
-            fontFamily={cardConfig?.fontFamily}
-            textColor={cardConfig?.textColor}
-            backgroundColor={cardConfig?.backgroundColor}
-          />
-        ))}
+        {visibleOrders.map((order) => {
+          const isLastOrder = lastOrderNumber && 
+            (order.numeroPedido || order.number) === lastOrderNumber &&
+            !lastOrderConfig?.highlight;
+            
+          return (
+            <OrderCard
+              key={order.id}
+              order={order}
+              onClick={() => onOrderClick?.(order)}
+              className={`flex-shrink-0 ${isLastOrder && lastOrderConfig?.pulseAnimation ? 'animate-pulse' : ''}`}
+              showNickname={showNickname}
+              showItems={showItems}
+              enabledModules={enabledModules}
+              fontSize={adjustedFontSize}
+              fontFamily={cardConfig?.fontFamily}
+              textColor={isLastOrder ? lastOrderConfig?.textColor : cardConfig?.textColor}
+              backgroundColor={isLastOrder ? lastOrderConfig?.backgroundColor : cardConfig?.backgroundColor}
+            />
+          );
+        })}
         
         {visibleOrders.length === 0 && (
           <div className="flex items-center justify-center h-full col-span-full">

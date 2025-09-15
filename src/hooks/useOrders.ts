@@ -320,12 +320,18 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
     return () => clearInterval(interval);
   }, [loadOrders]);
 
-  // Filtrar pedidos por status, excluindo o último pedido dos prontos se for destacado
+  // Filtrar pedidos por status, excluindo o último pedido dos prontos apenas se for destacado
   const productionOrders = orders.filter(order => order.status === 'production');
-  const readyOrders = orders.filter(order => 
-    order.status === 'ready' && 
-    (order.numeroPedido || order.number) !== lastOrderNumber
-  );
+  const readyOrders = orders.filter(order => {
+    if (order.status !== 'ready') return false;
+    
+    // Se highlight está ativado, excluir o último pedido (será exibido no container especial)
+    // Se highlight está desativado, incluir o último pedido na lista normal
+    const isLastOrder = (order.numeroPedido || order.number) === lastOrderNumber;
+    const shouldHighlight = config?.lastOrder?.highlight ?? true;
+    
+    return shouldHighlight ? !isLastOrder : true;
+  });
 
   return {
     orders,

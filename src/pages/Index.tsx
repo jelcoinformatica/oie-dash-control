@@ -195,7 +195,7 @@ const Index = () => {
             >
               <span>{config.ready.title}</span>
               <span className="bg-white/20 px-2 py-1 rounded-full text-sm">
-                {readyOrders.length + (lastOrderNumber && config.lastOrder.highlight ? 1 : 0)}
+                {readyOrders.length}
               </span>
             </div>
             
@@ -226,6 +226,8 @@ const Index = () => {
                   textColor: config.ready?.cardConfig?.textColor,
                   backgroundColor: config.ready?.cardConfig?.backgroundColor
                 }}
+                lastOrderNumber={lastOrderNumber}
+                lastOrderConfig={config.lastOrder}
               />
             </div>
           </div>
