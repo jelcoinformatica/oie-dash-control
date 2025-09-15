@@ -135,9 +135,9 @@ export const ConfigurationPanel = ({
 
   return (
     <div 
-      className="fixed top-0 right-0 w-1/4 h-full bg-white/95 backdrop-blur-sm shadow-xl z-50 flex flex-col border-l border-gray-200"
+      className="fixed top-0 right-0 w-1/4 h-full bg-white/30 backdrop-blur-sm shadow-xl z-50 flex flex-col border-l border-gray-200"
     >
-        <div className="flex items-center justify-between p-3 border-b bg-gray-50/80">
+        <div className="flex items-center justify-between p-3 border-b bg-gray-50/30">
           <h2 className="text-lg font-semibold">Configurações</h2>
           <div className="flex items-center gap-2">
             <Button
