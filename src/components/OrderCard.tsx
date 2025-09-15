@@ -59,9 +59,8 @@ export const OrderCard = ({
         backgroundColor,
         color: textColor,
         fontFamily,
-        height: 'auto',
-        minHeight: '64px',
-        aspectRatio: '1.5/1'
+        height: '100%',
+        width: '100%'
       }}
     >
       {/* Colored Dot Indicator - only show when more than 1 module enabled - top right corner */}
