@@ -92,11 +92,7 @@ const Index = () => {
     localStorage.setItem('oie-config', JSON.stringify(config));
     setOriginalConfig(config); // Atualiza a config original com a salva
     setConfigOpen(false);
-    toast({
-      title: "Configurações Salvas",
-      description: "As configurações foram atualizadas com sucesso",
-      duration: 1000 // Desaparece automaticamente após 1 segundo
-    });
+    // Sem mensagens de toast
   };
 
   const handleCancelConfig = () => {

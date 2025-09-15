@@ -81,11 +81,7 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
         previousLastOrderNumber.current = '';
       }
     } catch (error) {
-      toast({
-        title: "Erro",
-        description: "Falha ao carregar pedidos",
-        variant: "destructive"
-      });
+      // Erro silencioso, sem toast  
     } finally {
       setLoading(false);
     }
@@ -117,11 +113,7 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
       setLastOrderNumber(newOrderNumber);
       
     } catch (error) {
-      toast({
-        title: "Erro",
-        description: "Falha ao mover pedido",
-        variant: "destructive"
-      });
+      // Erro silencioso, sem toast
     }
   }, [orders, lastOrderNumber, speak]);
 
@@ -197,11 +189,7 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
         setExpeditionLog(prev => [...prev.slice(-4), `${order.numeroPedido || order.number}`]);
       }
     } catch (error) {
-      toast({
-        title: "Erro",
-        description: "Falha ao expedir pedido",
-        variant: "destructive"
-      });
+      // Erro silencioso, sem toast
     }
   }, [orders, lastOrderNumber]);
   
@@ -265,11 +253,7 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
       
       await loadOrders(); // Recarregar para sincronizar
     } catch (error) {
-      toast({
-        title: "Erro",
-        description: "Falha ao gerar pedidos",
-        variant: "destructive"
-      });
+      // Erro silencioso, sem toast
     }
   }, [loadOrders]);
 

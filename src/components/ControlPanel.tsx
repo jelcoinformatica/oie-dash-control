@@ -50,8 +50,8 @@ export const ControlPanel = ({
           Oie! v.5.0 | Jelco Informática (2025)
         </div>
         
-        {/* Prompt fixo no centro */}
-        <div className="fixed left-1/2 transform -translate-x-1/2 flex items-center gap-1">
+        {/* Prompt centralizado fixo */}
+        <div className="absolute left-1/2 transform -translate-x-1/2 flex items-center gap-1">
           <Input
             ref={inputRef}
             placeholder="No.Pedido"
@@ -81,10 +81,20 @@ export const ControlPanel = ({
           </TooltipProvider>
         </div>
         
-        {/* Log visual dos últimos pedidos expedidos - posição fixa à direita do prompt */}
+        {/* Log dos últimos 5 pedidos expedidos - posicionado separadamente à direita */}
         {expeditionLog.length > 0 && (
-          <div className="fixed left-1/2 transform -translate-x-1/2 ml-32 text-xs" style={{ color: 'rgba(0,0,0,0.5)' }}>
-            {expeditionLog.map((order, index) => order.replace(/[^\d]/g, '')).join(', ')}
+          <div className="absolute right-16 top-1/2 transform -translate-y-1/2">
+            <div className="flex gap-1 text-xs">
+              {expeditionLog.slice(-5).map((order, index) => (
+                <span 
+                  key={`${order}-${index}`}
+                  className="px-1 rounded"
+                  style={{ color: 'rgba(0,0,0,0.6)' }}
+                >
+                  {order.replace(/[^\d]/g, '')}
+                </span>
+              ))}
+            </div>
           </div>
         )}
         
