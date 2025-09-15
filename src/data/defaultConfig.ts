@@ -17,9 +17,9 @@ export const defaultConfig: PanelConfig = {
       rows: 4,
       height: 60,
       backgroundColor: '#f3f4f6',
-      textColor: '#374151',
+      textColor: '#828282',
       fontFamily: 'Tahoma',
-      fontSize: 2,
+      fontSize: 2.5,
       showNickname: true,
       showItems: true
     }
