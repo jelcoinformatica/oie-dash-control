@@ -1106,27 +1106,32 @@ export const ConfigurationPanel = ({
                   <div className="space-y-1">
                     <div className="flex gap-2">
                       <Input
-                        value={(() => {
-                          const cnpj = config.store?.cnpj || '';
-                          if (cnpj.length === 14) {
-                            return cnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
-                          }
-                          return cnpj;
-                        })()}
+                        value={config.store?.cnpj || ''}
                         onChange={(e) => {
-                          // Remove formatação e atualiza
-                          const cnpj = e.target.value.replace(/\D/g, '');
-                          updateConfig('store.cnpj', cnpj);
-                          updateConfig('store.cnpjError', null);
-                          updateConfig('store.cnpjLoading', false);
+                          // Permite edição livre
+                          let value = e.target.value;
+                          
+                          // Se o usuário digitou apenas números ou está formatado, permite
+                          if (/^[\d.\-/]*$/.test(value)) {
+                            // Remove formatação para armazenar apenas números
+                            const cnpj = value.replace(/\D/g, '');
+                            updateConfig('store.cnpj', value); // Mantém o valor como digitado
+                            updateConfig('store.cnpjError', null);
+                            updateConfig('store.cnpjLoading', false);
+                          }
                         }}
                         className={`h-8 flex-1 ${config.store?.cnpjError ? 'border-red-500' : ''}`}
                         placeholder="00.000.000/0000-00"
                         maxLength={18}
                         onBlur={async (e) => {
-                          const cnpj = e.target.value.replace(/\D/g, '');
+                          let inputValue = e.target.value;
+                          const cnpj = inputValue.replace(/\D/g, '');
                           
+                          // Formatar visualmente se tiver 14 dígitos
                           if (cnpj.length === 14) {
+                            const formatted = cnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
+                            updateConfig('store.cnpj', formatted);
+                            
                             // Validação DV
                             const validateCnpj = (cnpj: string) => {
                               if (cnpj.length !== 14) return false;
