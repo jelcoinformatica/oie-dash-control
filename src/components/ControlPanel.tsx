@@ -45,56 +45,55 @@ export const ControlPanel = ({
 
   return (
     <div className="bg-card border-t shadow-sm" style={{ height: '26px' }}>
-      <div className="container mx-auto px-2 py-0.5 flex items-center justify-between h-full">
+      <div className="container mx-auto px-2 py-0.5 flex items-center justify-between h-full relative">
         <div className="text-xs text-muted-foreground">
           Oie! v.5.0 | Jelco Informática (2025)
         </div>
         
-        <div className="absolute left-1/2 transform -translate-x-1/2">
-          <div className="flex items-center gap-1">
-            <Input
-              ref={inputRef}
-              placeholder="No.Pedido"
-              value={expeditionInput}
-              onChange={(e) => setExpeditionInput(e.target.value)}
-              onKeyPress={handleKeyPress}
-              className="w-20 h-5 text-xs text-center placeholder:opacity-30"
-            />
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button 
-                    onClick={handleExpedite}
-                    size="sm"
-                    disabled={!expeditionInput.trim()}
-                    variant="ghost"
-                    className="h-5 w-5 p-0 border-0"
-                  >
-                    <Send className="w-3 h-3" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Expedir</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-            
-            {/* Log visual dos últimos pedidos expedidos */}
-            {expeditionLog.length > 0 && (
-              <div className="flex items-center gap-1 ml-2">
-                {expeditionLog.map((order, index) => (
-                  <span 
-                    key={`${order}-${index}`}
-                    className="text-xs bg-muted px-1 rounded opacity-50"
-                    style={{ opacity: 0.8 - (index * 0.2) }}
-                  >
-                    {order.replace(/[^\d]/g, '')}
-                  </span>
-                ))}
-              </div>
-            )}
-          </div>
+        {/* Prompt de expedição fixo no centro */}
+        <div className="absolute left-1/2 transform -translate-x-1/2 flex items-center gap-1">
+          <Input
+            ref={inputRef}
+            placeholder="No.Pedido"
+            value={expeditionInput}
+            onChange={(e) => setExpeditionInput(e.target.value)}
+            onKeyPress={handleKeyPress}
+            className="w-20 h-5 text-xs text-center placeholder:opacity-30"
+          />
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button 
+                  onClick={handleExpedite}
+                  size="sm"
+                  disabled={!expeditionInput.trim()}
+                  variant="ghost"
+                  className="h-5 w-5 p-0 border-0"
+                >
+                  <Send className="w-3 h-3" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Expedir</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
+
+        {/* Log dos últimos pedidos expedidos - posicionado à direita */}
+        {expeditionLog.length > 0 && (
+          <div className="flex items-center gap-1 mr-12">
+            {expeditionLog.slice(-5).map((order, index) => (
+              <span 
+                key={`${order}-${index}`}
+                className="text-xs px-1 rounded"
+                style={{ color: 'rgba(0, 0, 0, 0.6)' }}
+              >
+                {order.replace(/[^\d]/g, '')}
+              </span>
+            ))}
+          </div>
+        )}
         
         <Button
           variant="ghost"
