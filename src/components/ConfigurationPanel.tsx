@@ -124,7 +124,7 @@ export const ConfigurationPanel = ({
     toast({
       title: "Backup exportado",
       description: "Configurações exportadas com sucesso",
-      duration: 3000,
+      duration: 1000,
     });
   };
 
@@ -143,14 +143,14 @@ export const ConfigurationPanel = ({
             toast({
               title: "Backup importado",
               description: "Configurações restauradas com sucesso",
-              duration: 3000,
+              duration: 1000,
             });
           } catch (error) {
             toast({
               title: "Erro no backup",
               description: "Arquivo de backup inválido",
               variant: "destructive",
-              duration: 3000,
+              duration: 1000,
             });
           }
         };
@@ -165,7 +165,7 @@ export const ConfigurationPanel = ({
     toast({
       title: "Configurações restauradas",
       description: "Todas as configurações foram restauradas para os valores de fábrica",
-      duration: 3000,
+      duration: 1000,
     });
   };
 

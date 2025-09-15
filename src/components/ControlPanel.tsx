@@ -59,6 +59,7 @@ export const ControlPanel = ({
             onChange={(e) => setExpeditionInput(e.target.value)}
             onKeyPress={handleKeyPress}
             className="w-20 h-5 text-xs text-center placeholder:opacity-30"
+            autoComplete="off"
           />
           <TooltipProvider>
             <Tooltip>

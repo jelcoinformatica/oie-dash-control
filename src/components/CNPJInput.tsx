@@ -53,8 +53,10 @@ export const CNPJInput = ({
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
+    
+    // Permitir digitação livre, incluindo apagar (backspace/delete)
     setLocalValue(newValue);
-    onValueChange(newValue); // Chama onValueChange imediatamente para permitir digitação livre
+    onValueChange(newValue);
     onError(null);
     onLoading(false);
   };

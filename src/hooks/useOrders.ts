@@ -161,11 +161,6 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
           
         // Adicionar ao log de expedição
         setExpeditionLog(prev => [...prev.slice(-4), `${order.numeroPedido || order.number}`]);
-          
-          toast({
-            title: "Pedido Retornado",
-            description: `Pedido ${order.numeroPedido || order.number} voltou para produção`
-          });
         }
         return;
       }
@@ -200,11 +195,6 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
         
         // Adicionar ao log de expedição
         setExpeditionLog(prev => [...prev.slice(-4), `${order.numeroPedido || order.number}`]);
-        
-        toast({
-          title: "Pedido Expedido",
-          description: `Pedido ${order.numeroPedido || order.number} foi entregue`
-        });
       }
     } catch (error) {
       toast({
@@ -222,11 +212,6 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
     const autoExpediteTimeout = setTimeout(() => {
       if (lastOrderNumber && lastOrderData) {
         expedite(lastOrderNumber);
-        toast({
-          title: "Auto Expedição",
-          description: `Pedido ${lastOrderNumber} foi automaticamente expedido`,
-          variant: "default"
-        });
       }
     }, (autoExpeditionConfigRef.current.minutes || 10) * 60 * 1000);
     
@@ -239,11 +224,6 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
     setLastOrderNumber('');
     setLastOrderData(null);
     setExpeditionLog([]);
-    toast({
-      title: "Pedidos Zerados",
-      description: "Todos os pedidos foram removidos",
-      variant: "default"
-    });
   }, []);
   
   const generateOrders = useCallback(async (count: number, config?: any) => {
@@ -284,11 +264,6 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
       }
       
       await loadOrders(); // Recarregar para sincronizar
-      toast({
-        title: "Pedidos Gerados",
-        description: `${count} novos pedidos foram criados`,
-        variant: "default"
-      });
     } catch (error) {
       toast({
         title: "Erro",
