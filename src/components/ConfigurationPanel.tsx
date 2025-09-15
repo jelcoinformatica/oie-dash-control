@@ -623,12 +623,35 @@ export const ConfigurationPanel = ({
 
           <div>
             <Label className="text-sm font-medium">URL ou Path da Imagem</Label>
-            <Input
-              value={config.advertising.imageUrl || ''}
-              onChange={(e) => updateConfig('advertising.imageUrl', e.target.value)}
-              placeholder="https://exemplo.com/imagem.jpg ou /assets/imagem.jpg"
-              className="mt-1 text-sm"
-            />
+            <div className="flex items-center gap-2 mt-1">
+              <Input
+                value={config.advertising.imageUrl || ''}
+                onChange={(e) => updateConfig('advertising.imageUrl', e.target.value)}
+                placeholder="https://exemplo.com/imagem.jpg ou /assets/imagem.jpg"
+                className="text-sm flex-1"
+              />
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  const input = document.createElement('input');
+                  input.type = 'file';
+                  input.accept = 'image/*';
+                  input.onchange = (e) => {
+                    const file = (e.target as HTMLInputElement).files?.[0];
+                    if (file) {
+                      // Criar URL temporária para visualização
+                      const fileUrl = URL.createObjectURL(file);
+                      updateConfig('advertising.imageUrl', fileUrl);
+                    }
+                  };
+                  input.click();
+                }}
+              >
+                ...
+              </Button>
+            </div>
           </div>
         </ConfigSection>
 
