@@ -79,7 +79,7 @@ export const ConfigurationPanel = ({
     lastOrder: false,
     advertising: false,
     sounds: false,
-    tts: true, // Deixar aberto por padrão para facilitar encontrar as opções
+    tts: false,
     autoExpedition: false,
     modules: false,
     cards: false,
@@ -914,8 +914,8 @@ export const ConfigurationPanel = ({
                 onCheckedChange={(checked) => updateConfig('modules.balcao', checked)}
                 className="scale-75"
               />
-              <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
-              <Label className="text-sm">Balcão</Label>
+              <div className="w-2.5 h-2.5 bg-green-500 rounded-full"></div>
+              <Label className="text-base">Balcão</Label>
             </div>
             <div className="flex items-center space-x-2">
               <Switch
@@ -923,8 +923,8 @@ export const ConfigurationPanel = ({
                 onCheckedChange={(checked) => updateConfig('modules.mesa', checked)}
                 className="scale-75"
               />
-              <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
-              <Label className="text-sm">Mesa</Label>
+              <div className="w-2.5 h-2.5 bg-blue-500 rounded-full"></div>
+              <Label className="text-base">Mesa</Label>
             </div>
             <div className="flex items-center space-x-2">
               <Switch
@@ -932,8 +932,8 @@ export const ConfigurationPanel = ({
                 onCheckedChange={(checked) => updateConfig('modules.entrega', checked)}
                 className="scale-75"
               />
-              <div className="w-1.5 h-1.5 bg-red-500 rounded-full"></div>
-              <Label className="text-sm">Entrega</Label>
+              <div className="w-2.5 h-2.5 bg-red-500 rounded-full"></div>
+              <Label className="text-base">Entrega</Label>
             </div>
             <div className="flex items-center space-x-2">
               <Switch
@@ -941,8 +941,8 @@ export const ConfigurationPanel = ({
                 onCheckedChange={(checked) => updateConfig('modules.ficha', checked)}
                 className="scale-75"
               />
-              <div className="w-1.5 h-1.5 bg-purple-500 rounded-full"></div>
-              <Label className="text-sm">Ficha</Label>
+              <div className="w-2.5 h-2.5 bg-purple-500 rounded-full"></div>
+              <Label className="text-base">Ficha</Label>
             </div>
           </div>
         </ConfigSection>
