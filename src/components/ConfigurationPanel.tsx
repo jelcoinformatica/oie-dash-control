@@ -10,6 +10,7 @@ import { PanelConfig } from '../types/order';
 import { Settings, Palette, Factory, CheckCircle, Monitor, Volume2, Clock, Puzzle, Cog, X, ChevronRight, ChevronDown, Plus, Minus } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { defaultConfig } from '../data/defaultConfig';
+import { toast } from '../hooks/use-toast';
 
 interface ConfigurationPanelProps {
   open: boolean;
@@ -1103,67 +1104,109 @@ export const ConfigurationPanel = ({
                 <div className="space-y-1">
                   <Label className="text-xs">CNPJ</Label>
                   <div className="space-y-1">
-                    <Input
-                      value={config.store?.cnpj || ''}
-                      onChange={(e) => {
-                        // Remove formatação e valida
-                        const cnpj = e.target.value.replace(/\D/g, '');
-                        updateConfig('store.cnpj', cnpj);
-                        updateConfig('store.cnpjError', null); // Reset error on typing
-                      }}
-                      className={`h-8 ${config.store?.cnpjError ? 'border-red-500' : ''}`}
-                      placeholder="00.000.000/0000-00"
-                      maxLength={18}
-                      onBlur={(e) => {
-                        const cnpj = e.target.value.replace(/\D/g, '');
-                        
-                        // Formatação para exibição
-                        if (cnpj.length === 14) {
-                          const formatted = cnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
-                          e.target.value = formatted;
+                    <div className="flex gap-2">
+                      <Input
+                        value={(() => {
+                          const cnpj = config.store?.cnpj || '';
+                          if (cnpj.length === 14) {
+                            return cnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
+                          }
+                          return cnpj;
+                        })()}
+                        onChange={(e) => {
+                          // Remove formatação e atualiza
+                          const cnpj = e.target.value.replace(/\D/g, '');
+                          updateConfig('store.cnpj', cnpj);
+                          updateConfig('store.cnpjError', null);
+                          updateConfig('store.cnpjLoading', false);
+                        }}
+                        className={`h-8 flex-1 ${config.store?.cnpjError ? 'border-red-500' : ''}`}
+                        placeholder="00.000.000/0000-00"
+                        maxLength={18}
+                        onBlur={async (e) => {
+                          const cnpj = e.target.value.replace(/\D/g, '');
                           
-                          // Validação DV
-                          const validateCnpj = (cnpj: string) => {
-                            if (cnpj.length !== 14) return false;
+                          if (cnpj.length === 14) {
+                            // Validação DV
+                            const validateCnpj = (cnpj: string) => {
+                              if (cnpj.length !== 14) return false;
+                              
+                              // Verifica se todos os dígitos são iguais
+                              if (/^(\d)\1{13}$/.test(cnpj)) return false;
+                              
+                              // Cálculo do primeiro dígito verificador
+                              const weights1 = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+                              let sum1 = 0;
+                              for (let i = 0; i < 12; i++) {
+                                sum1 += parseInt(cnpj[i]) * weights1[i];
+                              }
+                              const remainder1 = sum1 % 11;
+                              const dv1 = remainder1 < 2 ? 0 : 11 - remainder1;
+                              
+                              // Cálculo do segundo dígito verificador
+                              const weights2 = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+                              let sum2 = 0;
+                              for (let i = 0; i < 13; i++) {
+                                sum2 += parseInt(cnpj[i]) * weights2[i];
+                              }
+                              const remainder2 = sum2 % 11;
+                              const dv2 = remainder2 < 2 ? 0 : 11 - remainder2;
+                              
+                              return parseInt(cnpj[12]) === dv1 && parseInt(cnpj[13]) === dv2;
+                            };
                             
-                            // Verifica se todos os dígitos são iguais
-                            if (/^(\d)\1{13}$/.test(cnpj)) return false;
-                            
-                            // Cálculo do primeiro dígito verificador
-                            const weights1 = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
-                            let sum1 = 0;
-                            for (let i = 0; i < 12; i++) {
-                              sum1 += parseInt(cnpj[i]) * weights1[i];
+                            if (!validateCnpj(cnpj)) {
+                              updateConfig('store.cnpjError', 'CNPJ inválido - Dígitos verificadores incorretos');
+                              return;
                             }
-                            const remainder1 = sum1 % 11;
-                            const dv1 = remainder1 < 2 ? 0 : 11 - remainder1;
                             
-                            // Cálculo do segundo dígito verificador
-                            const weights2 = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
-                            let sum2 = 0;
-                            for (let i = 0; i < 13; i++) {
-                              sum2 += parseInt(cnpj[i]) * weights2[i];
+                            // Consulta à Receita Federal
+                            updateConfig('store.cnpjLoading', true);
+                            updateConfig('store.cnpjError', null);
+                            
+                            try {
+                              const response = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${cnpj}`);
+                              
+                              if (response.ok) {
+                                const data = await response.json();
+                                
+                                // Preenche os dados automaticamente
+                                updateConfig('store.razaoSocial', data.legal_name || data.company_name || '');
+                                updateConfig('store.nomeFantasia', data.trade_name || data.fantasy_name || '');
+                                updateConfig('store.cnpjError', null);
+                                
+                                // Toast de sucesso
+                                toast({
+                                  title: "CNPJ consultado com sucesso",
+                                  description: `Dados da empresa ${data.legal_name || data.company_name} foram preenchidos automaticamente.`,
+                                  duration: 3000,
+                                });
+                              } else {
+                                throw new Error('CNPJ não encontrado na Receita Federal');
+                              }
+                            } catch (error) {
+                              updateConfig('store.cnpjError', `Erro ao consultar: ${error instanceof Error ? error.message : 'Erro desconhecido'}`);
+                            } finally {
+                              updateConfig('store.cnpjLoading', false);
                             }
-                            const remainder2 = sum2 % 11;
-                            const dv2 = remainder2 < 2 ? 0 : 11 - remainder2;
-                            
-                            return parseInt(cnpj[12]) === dv1 && parseInt(cnpj[13]) === dv2;
-                          };
-                          
-                          if (!validateCnpj(cnpj)) {
-                            updateConfig('store.cnpjError', 'CNPJ inválido - Dígitos verificadores incorretos');
+                          } else if (cnpj.length > 0) {
+                            updateConfig('store.cnpjError', 'CNPJ deve ter 14 dígitos');
                           } else {
                             updateConfig('store.cnpjError', null);
                           }
-                        } else if (cnpj.length > 0) {
-                          updateConfig('store.cnpjError', 'CNPJ deve ter 14 dígitos');
-                        } else {
-                          updateConfig('store.cnpjError', null);
-                        }
-                      }}
-                    />
+                        }}
+                      />
+                      {config.store?.cnpjLoading && (
+                        <div className="flex items-center px-2">
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
+                        </div>
+                      )}
+                    </div>
                     {config.store?.cnpjError && (
                       <span className="text-xs text-red-500">{config.store.cnpjError}</span>
+                    )}
+                    {config.store?.cnpjLoading && (
+                      <span className="text-xs text-blue-500">Consultando Receita Federal...</span>
                     )}
                   </div>
                 </div>

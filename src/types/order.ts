@@ -108,6 +108,7 @@ export interface PanelConfig {
   store?: {
     cnpj?: string;
     cnpjError?: string;
+    cnpjLoading?: boolean;
     razaoSocial?: string;
     nomeFantasia?: string;
     numeroLicenca?: string;
