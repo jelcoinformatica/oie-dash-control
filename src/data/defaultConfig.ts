@@ -35,7 +35,7 @@ export const defaultConfig: PanelConfig = {
     headerFontSize: 2.5,
     showBorder: true,
     cardConfig: {
-      columns: 3,
+      columns: 10,
       rows: 2,
       height: 60,
       backgroundColor: '#FAFAFA',
