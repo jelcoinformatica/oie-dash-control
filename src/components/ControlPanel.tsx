@@ -19,12 +19,6 @@ export const ControlPanel = ({
   const [expeditionInput, setExpeditionInput] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Auto-focus no campo de expedição
-  useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, []);
 
   const handleExpedite = () => {
     if (!expeditionInput.trim()) {
@@ -61,10 +55,6 @@ export const ControlPanel = ({
               value={expeditionInput}
               onChange={(e) => setExpeditionInput(e.target.value)}
               onKeyPress={handleKeyPress}
-              onBlur={() => {
-                // Re-focus após perder foco (para facilitar uso via teclado)
-                setTimeout(() => inputRef.current?.focus(), 100);
-              }}
               className="w-20 h-5 text-xs text-center placeholder:opacity-30"
             />
             <TooltipProvider>
