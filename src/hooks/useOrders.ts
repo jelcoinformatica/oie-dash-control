@@ -270,9 +270,9 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
       const modulesToUse = activeModules.length > 0 ? activeModules : ['balcao', 'mesa', 'entrega', 'ficha'];
       
       for (let i = 0; i < count; i++) {
-        // 30% dos pedidos de entrega serão iFood (IF-XXXXX) se entrega estiver ativa
+        // 40% dos pedidos de entrega serão iFood (IF-XXXXX) se entrega estiver ativa
         const isEntregaActive = modulesToUse.includes('entrega');
-        const isIfoodOrder = isEntregaActive && Math.random() < 0.3;
+        const isIfoodOrder = isEntregaActive && Math.random() < 0.4;
         
         if (isIfoodOrder) {
           // Gerar pedido iFood simulado
@@ -284,8 +284,9 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
           newOrders.push(ifoodOrder);
         } else {
           const newOrder = await addSimulatedOrder();
-          // Definir módulo baseado nos módulos ativos
-          newOrder.modulo = modulesToUse[Math.floor(Math.random() * modulesToUse.length)] as 'balcao' | 'mesa' | 'entrega' | 'ficha';
+          // Definir módulo baseado apenas nos módulos ativos
+          const randomModule = modulesToUse[Math.floor(Math.random() * modulesToUse.length)];
+          newOrder.modulo = randomModule as 'balcao' | 'mesa' | 'entrega' | 'ficha';
           newOrders.push(newOrder);
         }
       }
@@ -293,7 +294,7 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
       await loadOrders(); // Recarregar para sincronizar
       // toast({
       //   title: "Pedidos Gerados",
-      //   description: `${count} novos pedidos foram criados`,
+      //   description: `${count} novos pedidos foram criados respeitando os módulos ativos`,
       //   variant: "default"
       // });
     } catch (error) {

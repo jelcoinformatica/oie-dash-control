@@ -1151,16 +1151,38 @@ export const ConfigurationPanel = ({
                 </Button>
               </div>
               
-              <Button
-                onClick={() => {
-                  onConfigChange(defaultConfig);
-                }}
-                variant="destructive"
-                size="sm"
-                className="w-full"
-              >
-                Restaurar Configurações de Fábrica
-              </Button>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    className="w-full"
+                  >
+                    Restaurar Configurações de Fábrica
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Restaurar Configurações</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Tem certeza que deseja restaurar as configurações de fábrica? 
+                      Todas as suas configurações personalizadas serão perdidas.
+                      Os pedidos existentes não serão afetados.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={() => {
+                        onConfigChange(defaultConfig);
+                      }}
+                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                    >
+                      Restaurar
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </div>
 
             {/* Dados da Loja */}
