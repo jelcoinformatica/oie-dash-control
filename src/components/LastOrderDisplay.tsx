@@ -47,12 +47,12 @@ export const LastOrderDisplay = ({
   return (
     <div 
       className={cn(
-        "p-4 rounded-lg text-center cursor-pointer hover:opacity-80 transition-opacity",
+        "p-3 mx-4 rounded-lg text-center cursor-pointer hover:opacity-80 transition-opacity",
         safeConfig.pulseAnimation && "animate-pulse",
         className
       )}
       style={{ 
-        height: `${safeConfig.height}px`,
+        height: `${safeConfig.height * 0.85}px`,
         fontSize: `${safeConfig.fontSize}rem`,
         fontFamily: safeConfig.fontFamily,
         color: safeConfig.textColor,
