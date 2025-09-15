@@ -19,7 +19,7 @@ export const defaultConfig: PanelConfig = {
       backgroundColor: '#f3f4f6',
       textColor: '#828282',
       fontFamily: 'Tahoma',
-      fontSize: 2.5,
+      fontSize: 3,
       showNickname: true,
       showItems: true
     }
@@ -77,7 +77,7 @@ export const defaultConfig: PanelConfig = {
   },
   textToSpeech: {
     enabled: false,
-    voice: 'Heloisa',
+    voice: 'Microsoft Heloisa',
     rate: 1.5,
     pitch: 1,
     volume: 1.0,

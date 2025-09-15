@@ -51,36 +51,65 @@ export const useTextToSpeech = () => {
         if ('speechSynthesis' in window) {
           const utterance = new SpeechSynthesisUtterance(finalText);
           
-          // Configurar voz em português-BR
+          // Função para executar após vozes carregarem
+          const executeWithVoices = () => {
+            const voices = speechSynthesis.getVoices();
+            let selectedVoice = null;
+            
+            if (config.voice && config.voice !== 'auto') {
+              // Procurar pela voz específica configurada
+              selectedVoice = voices.find(voice => 
+                voice.name === config.voice || 
+                voice.name.includes(config.voice!) || 
+                config.voice!.includes(voice.name)
+              );
+              
+              // Se não encontrou, tentar busca mais específica
+              if (!selectedVoice) {
+                const voiceSearchTerm = config.voice.toLowerCase().replace('microsoft ', '');
+                selectedVoice = voices.find(voice => 
+                  voice.name.toLowerCase().includes(voiceSearchTerm) && 
+                  (voice.lang === 'pt-BR' || voice.lang.includes('pt'))
+                );
+              }
+            }
+            
+            // Se não encontrou voz específica, usar primeira voz português-BR disponível
+            if (!selectedVoice) {
+              selectedVoice = voices.find(voice => 
+                voice.lang === 'pt-BR' || voice.lang.includes('pt-BR')
+              ) || voices.find(voice => 
+                voice.name.includes('Portuguese') || voice.lang.includes('pt')
+              );
+            }
+            
+            if (selectedVoice) {
+              utterance.voice = selectedVoice;
+            }
+            
+            utterance.rate = config.rate || 1;
+            utterance.pitch = config.pitch || 1;
+            utterance.volume = config.volume || 0.8;
+            utterance.lang = 'pt-BR';
+            
+            speechSynthesis.speak(utterance);
+          };
+          
+          // Aguardar vozes carregarem se necessário
           const voices = speechSynthesis.getVoices();
-          let selectedVoice = null;
-          
-          if (config.voice) {
-            // Procurar pela voz específica configurada
-            selectedVoice = voices.find(voice => 
-              voice.name.includes(config.voice!) && (voice.lang === 'pt-BR' || voice.lang.includes('pt'))
-            );
+          if (voices.length > 0) {
+            executeWithVoices();
+          } else {
+            // Aguardar evento de carregamento das vozes
+            const onVoicesChanged = () => {
+              speechSynthesis.removeEventListener('voiceschanged', onVoicesChanged);
+              executeWithVoices();
+            };
+            speechSynthesis.addEventListener('voiceschanged', onVoicesChanged);
+            
+            // Fallback: executar após 500ms mesmo sem vozes
+            setTimeout(executeWithVoices, 500);
           }
-          
-          // Se não encontrou voz específica, usar primeira voz português-BR disponível
-          if (!selectedVoice) {
-            selectedVoice = voices.find(voice => 
-              voice.lang === 'pt-BR' || voice.lang.includes('pt-BR')
-            ) || voices.find(voice => 
-              voice.name.includes('Portuguese') || voice.lang.includes('pt')
-            );
-          }
-          
-          if (selectedVoice) {
-            utterance.voice = selectedVoice;
-          }
-          
-          utterance.rate = config.rate || 1;
-          utterance.pitch = config.pitch || 1;
-          utterance.volume = config.volume || 0.8;
-          utterance.lang = 'pt-BR'; // Forçar idioma português-BR
-          
-          speechSynthesis.speak(utterance);
         }
       } catch (error) {
         console.error('Erro no Text-to-Speech:', error);
