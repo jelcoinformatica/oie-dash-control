@@ -42,7 +42,7 @@ export const LastOrderDisplay = ({
   };
 
   // Calcular tamanho da fonte baseado no tipo de pedido
-  const adjustedFontSize = orderNumber.startsWith('IF-') && orderNumber.length > 6 
+  const adjustedFontSize = orderNumber.match(/^(IF|DD|RA|UB)-/) && orderNumber.length > 6 
     ? safeConfig.fontSize * 0.6 
     : safeConfig.fontSize;
   
@@ -68,7 +68,19 @@ export const LastOrderDisplay = ({
     >
       <div className="relative h-full flex flex-col items-center justify-center font-bold">
           <div className="flex flex-col items-center">
-            <span className="leading-none">{orderNumber}</span>
+            <span className="leading-none">
+              {orderNumber.match(/^(IF|DD|RA|UB)-/) ? (
+                <>
+                  <span style={{ fontStyle: 'italic' }}>
+                    {orderNumber.split('-')[0]}
+                  </span>
+                  {' '}
+                  {orderNumber.split('-')[1]}
+                </>
+              ) : (
+                orderNumber
+              )}
+            </span>
             {nickname && (
               <div 
                 className="opacity-90 leading-none -mt-1"
