@@ -70,6 +70,7 @@ export const ConfigurationPanel = ({
   const [orderCount, setOrderCount] = useState(15);
   const [openSections, setOpenSections] = useState({
     general: false,
+    background: false,
     production: false,
     ready: false,
     lastOrder: false,
@@ -196,6 +197,27 @@ export const ConfigurationPanel = ({
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-4">
           <div className="space-y-4">
+
+            {/* Configurações de Fundo */}
+            <ConfigSection
+              title="Configurações de Fundo"
+              icon={<Palette className="w-4 h-4" />}
+              isOpen={openSections.background}
+              onToggle={() => toggleSection('background')}
+              colorClass="text-slate-600"
+            >
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label>Cor de Fundo da Aplicação</Label>
+                  <Input
+                    type="color"
+                    value={config.backgroundColor || '#ffffff'}
+                    onChange={(e) => updateConfig('backgroundColor', e.target.value)}
+                    className="h-8"
+                  />
+                </div>
+              </div>
+            </ConfigSection>
 
             {/* Coluna Produção */}
             <ConfigSection
