@@ -71,6 +71,23 @@ const Index = () => {
     }
   }, []);
 
+  // Modo Kiosk automático
+  useEffect(() => {
+    const enterKioskMode = async () => {
+      try {
+        if (document.documentElement.requestFullscreen) {
+          await document.documentElement.requestFullscreen();
+        }
+      } catch (error) {
+        console.warn('Não foi possível entrar em modo tela cheia:', error);
+      }
+    };
+
+    // Pequeno delay para garantir que a página carregou completamente
+    const timer = setTimeout(enterKioskMode, 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
   const handleOrderClick = (order: any) => {
     if (order.status === 'production') {
       moveToReady(order.id);

@@ -40,15 +40,16 @@ export const AdvertisingColumn = ({
         )}
         
         <div 
-          className="flex-1 p-4 flex flex-col items-center justify-center"
+          className="flex-1 p-4 flex flex-col items-center justify-center overflow-hidden"
           style={{ backgroundColor }}
         >
           {imageUrl ? (
-            <div className="w-full h-full flex items-center justify-center">
+            <div className="w-full h-full flex items-center justify-center min-h-0">
               <img
                 src={imageUrl}
                 alt="Publicidade"
                 className="max-w-full max-h-full object-contain rounded-lg shadow-sm"
+                style={{ maxHeight: '100%', maxWidth: '100%' }}
               />
             </div>
           ) : (
