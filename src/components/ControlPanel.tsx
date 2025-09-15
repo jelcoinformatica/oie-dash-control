@@ -55,7 +55,7 @@ export const ControlPanel = ({
           Oie! v.5.0 | Jelco Informática (2025)
         </div>
         
-        <div className="flex-1 flex justify-center">
+        <div className="absolute left-1/2 transform -translate-x-1/2">
           <div className="flex items-center gap-1">
             <Input
               ref={inputRef}
