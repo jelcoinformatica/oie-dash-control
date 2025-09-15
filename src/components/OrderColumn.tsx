@@ -79,7 +79,7 @@ export const OrderColumn = ({
       >
         <div 
           className={cn(
-            "flex items-center justify-between px-4 font-bold",
+            "flex items-center justify-center px-4 font-bold relative",
             "shadow-sm border-b rounded-t-lg",
             !headerBg && "bg-gray-800",
             !headerColor && "text-white",
@@ -94,9 +94,9 @@ export const OrderColumn = ({
           }}
         >
           <span>{title}</span>
-          <span className="bg-white/20 px-2 py-1 rounded-full text-sm">
+          <div className="absolute right-4 bg-white/20 px-2 py-1 rounded-full text-sm">
             {totalCount ?? orders.length}
-          </span>
+          </div>
         </div>
         
         <div className="order-column-content flex-1 p-2 bg-gray-50" style={{ overflow: 'hidden' }}>

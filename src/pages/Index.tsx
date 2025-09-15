@@ -184,7 +184,7 @@ const Index = () => {
           <div className={`bg-white rounded-lg shadow-lg border border-gray-300 flex flex-col overflow-hidden h-full ${config.ready.showBorder ? 'ring-2 ring-blue-200' : ''}`}>
             {/* Header Fixo */}
             <div 
-              className="bg-ready text-ready-foreground px-4 font-bold text-lg shadow-sm border-b flex items-center justify-between flex-shrink-0 rounded-t-lg"
+              className="bg-ready text-ready-foreground px-4 font-bold text-lg shadow-sm border-b flex items-center justify-center flex-shrink-0 rounded-t-lg relative"
               style={{ 
                 backgroundColor: config.ready.headerBg, 
                 color: config.ready.headerColor,
@@ -193,10 +193,18 @@ const Index = () => {
                 fontFamily: config.ready.headerFontFamily
               }}
             >
+              {/* Contador de produção quando coluna 1 está desativada */}
+              {!config.production.visible && productionOrders.length > 0 && (
+                <div className="absolute left-4 bg-gray-700 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">
+                  {productionOrders.length}
+                </div>
+              )}
+              
               <span>{config.ready.title}</span>
-              <span className="bg-white/20 px-2 py-1 rounded-full text-sm">
+              
+              <div className="absolute right-4 bg-white/20 px-2 py-1 rounded-full text-sm">
                 {readyOrders.length + (lastOrderNumber && config.lastOrder.highlight ? 1 : 0)}
-              </span>
+              </div>
             </div>
             
             {/* Último Pedido Fixo */}
