@@ -95,7 +95,25 @@ const Index = () => {
   };
 
   const handleExpedite = (orderNumber: string) => {
-    expedite(orderNumber);
+    console.log('handleExpedite chamado com:', orderNumber);
+    
+    // Primeiro, verificar se o pedido está em produção
+    const productionOrder = productionOrders.find(order => {
+      const orderNum = order.numeroPedido || order.number || '';
+      return orderNum === orderNumber || orderNum.replace(/[^\d]/g, '') === orderNumber;
+    });
+    
+    console.log('Pedido encontrado em produção:', productionOrder);
+    
+    if (productionOrder) {
+      console.log('Movendo pedido para prontos:', productionOrder.id);
+      // Se está em produção, mover para prontos
+      moveToReady(productionOrder.id);
+    } else {
+      console.log('Fazendo expedição do pedido:', orderNumber);
+      // Se não está em produção, fazer expedição normal
+      expedite(orderNumber);
+    }
   };
 
   const handleConfigChange = (newConfig: PanelConfig) => {
