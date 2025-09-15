@@ -62,7 +62,6 @@ export const LastOrderDisplay = ({
       onClick={handleClick}
     >
       <div className="relative h-full flex flex-col items-center justify-center font-bold">
-        <span className="absolute top-1 right-1 w-2 h-2 bg-current rounded-full animate-pulse"></span>
           <div className="flex flex-col items-center">
             <span className="leading-none">{orderNumber}</span>
             {nickname && (

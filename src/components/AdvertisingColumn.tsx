@@ -53,9 +53,6 @@ export const AdvertisingColumn = ({
             </div>
           ) : (
             <div className="text-center text-muted-foreground">
-              <div className="w-24 h-24 mx-auto mb-4 bg-muted rounded-lg flex items-center justify-center">
-                <div className="text-2xl">📺</div>
-              </div>
               <div className="space-y-2">
                 <div className="text-lg font-semibold">ESPAÇO</div>
                 <div className="text-lg font-semibold">PUBLICITÁRIO</div>

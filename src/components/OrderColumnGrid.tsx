@@ -132,11 +132,8 @@ export const OrderColumnGrid = ({
         ))}
         
         {visibleOrders.length === 0 && (
-          <div className="flex items-center justify-center h-32 text-muted-foreground col-span-full">
-            <div className="text-center">
-              <div className="text-2xl mb-2">📋</div>
-              <p>Nenhum pedido</p>
-            </div>
+          <div className="flex items-center justify-center h-full text-muted-foreground col-span-full">
+            <p className="text-lg">SEM PEDIDOS</p>
           </div>
         )}
       </div>
