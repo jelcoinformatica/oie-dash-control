@@ -407,7 +407,7 @@ export const ConfigurationPanel = ({
               <Slider
                 value={[config.ready.cardConfig.columns]}
                 onValueChange={([value]) => updateConfig('ready.cardConfig.columns', value)}
-                max={5}
+                max={10}
                 min={2}
                 step={1}
                 className="mt-1"
