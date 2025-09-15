@@ -1108,17 +1108,11 @@ export const ConfigurationPanel = ({
                       <Input
                         value={config.store?.cnpj || ''}
                         onChange={(e) => {
-                          // Permite edição livre
-                          let value = e.target.value;
-                          
-                          // Se o usuário digitou apenas números ou está formatado, permite
-                          if (/^[\d.\-/]*$/.test(value)) {
-                            // Remove formatação para armazenar apenas números
-                            const cnpj = value.replace(/\D/g, '');
-                            updateConfig('store.cnpj', value); // Mantém o valor como digitado
-                            updateConfig('store.cnpjError', null);
-                            updateConfig('store.cnpjLoading', false);
-                          }
+                          // Permite edição livre - mantém o valor exatamente como digitado
+                          const value = e.target.value;
+                          updateConfig('store.cnpj', value);
+                          updateConfig('store.cnpjError', null);
+                          updateConfig('store.cnpjLoading', false);
                         }}
                         className={`h-8 flex-1 ${config.store?.cnpjError ? 'border-red-500' : ''}`}
                         placeholder="00.000.000/0000-00"
