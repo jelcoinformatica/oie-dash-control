@@ -150,7 +150,7 @@ export const OrderColumnGrid = ({
           );
         })}
         
-        {visibleOrders.length === 0 && (
+        {visibleOrders.length === 0 && !(lastOrderNumber && lastOrderConfig?.highlight) && (
           <div className="flex items-center justify-center h-full col-span-full">
             <p className="text-4xl font-black text-black/10 tracking-wider select-none">SEM PEDIDOS</p>
           </div>
