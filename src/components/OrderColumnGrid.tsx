@@ -127,10 +127,11 @@ export const OrderColumnGrid = ({
           gridTemplateRows: `repeat(auto-fit, ${cardHeight}px)`,
         }}
       >
-        {visibleOrders.map((order) => {
+        {visibleOrders.map((order, index) => {
           const isLastOrder = lastOrderNumber && 
             (order.numeroPedido || order.number) === lastOrderNumber &&
-            !lastOrderConfig?.highlight;
+            !lastOrderConfig?.highlight &&
+            index === 0; // Apenas na primeira posição
             
           return (
             <OrderCard
