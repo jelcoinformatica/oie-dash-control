@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from 'react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Settings, Send } from 'lucide-react';
-import { toast } from '../hooks/use-toast';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 
 interface ControlPanelProps {
@@ -78,22 +77,22 @@ export const ControlPanel = ({
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
-        </div>
 
-        {/* Log dos últimos pedidos expedidos - posicionado à direita */}
-        {expeditionLog.length > 0 && (
-          <div className="flex items-center gap-1 mr-12">
-            {expeditionLog.slice(-5).map((order, index) => (
-              <span 
-                key={`${order}-${index}`}
-                className="text-xs px-1 rounded"
-                style={{ color: 'rgba(0, 0, 0, 0.6)' }}
-              >
-                {order.replace(/[^\d]/g, '')}
-              </span>
-            ))}
-          </div>
-        )}
+          {/* Log dos últimos pedidos expedidos - após o ícone */}
+          {expeditionLog.length > 0 && (
+            <div className="flex items-center gap-1 ml-2">
+              {expeditionLog.slice(-5).map((order, index) => (
+                <span 
+                  key={`${order}-${index}`}
+                  className="text-xs px-1 rounded"
+                  style={{ color: 'rgba(0, 0, 0, 0.6)' }}
+                >
+                  {order.replace(/[^\d]/g, '')}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
         
         <Button
           variant="ghost"
