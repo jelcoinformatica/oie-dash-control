@@ -195,7 +195,10 @@ const Index = () => {
             >
               {/* Contador de produção quando coluna 1 está desativada */}
               {!config.production.visible && productionOrders.length > 0 && (
-                <div className="absolute left-4 bg-gray-700 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">
+                <div 
+                  className="absolute left-4 bg-gray-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold cursor-help"
+                  title="Pedidos em Produção"
+                >
                   {productionOrders.length}
                 </div>
               )}
