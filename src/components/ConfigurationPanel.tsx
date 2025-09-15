@@ -121,11 +121,7 @@ export const ConfigurationPanel = ({
     linkElement.setAttribute('download', exportFileDefaultName);
     linkElement.click();
     
-    toast({
-      title: "Backup exportado",
-      description: "Configurações exportadas com sucesso",
-      duration: 1000,
-    });
+    // Backup exportado silenciosamente
   };
 
   const handleBackupImport = () => {
@@ -140,18 +136,9 @@ export const ConfigurationPanel = ({
           try {
             const importedConfig = JSON.parse(e.target?.result as string);
             onConfigChange(importedConfig);
-            toast({
-              title: "Backup importado",
-              description: "Configurações restauradas com sucesso",
-              duration: 1000,
-            });
+            // Backup importado silenciosamente
           } catch (error) {
-            toast({
-              title: "Erro no backup",
-              description: "Arquivo de backup inválido",
-              variant: "destructive",
-              duration: 1000,
-            });
+            // Erro silencioso
           }
         };
         reader.readAsText(file);
@@ -162,11 +149,7 @@ export const ConfigurationPanel = ({
 
   const handleFactoryReset = () => {
     onConfigChange(defaultConfig);
-    toast({
-      title: "Configurações restauradas",
-      description: "Todas as configurações foram restauradas para os valores de fábrica",
-      duration: 1000,
-    });
+    // Configurações restauradas silenciosamente
   };
 
   if (!open) return null;
