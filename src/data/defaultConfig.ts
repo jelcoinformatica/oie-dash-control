@@ -72,8 +72,8 @@ export const defaultConfig: PanelConfig = {
   sounds: {
     production: false,
     ready: true,
-    productionFile: 'c:\\kds\\sons\\kds_sound_bell1.wav',
-    readyFile: 'c:\\kds\\sons\\kds_sound_bell2.wav'
+    productionFile: 'C:\\kds\\sons\\kds_sound_bell1.wav',
+    readyFile: 'C:\\kds\\sons\\kds_sound_bell2.wav'
   },
   textToSpeech: {
     enabled: false,

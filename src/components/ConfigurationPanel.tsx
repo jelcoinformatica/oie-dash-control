@@ -655,17 +655,31 @@ export const ConfigurationPanel = ({
                 <div className="ml-6 space-y-2">
                   <div className="flex gap-2">
                     <Input
-                      type="file"
-                      accept="audio/*"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) {
-                          const url = URL.createObjectURL(file);
-                          updateConfig('sounds.productionFile', url);
-                        }
-                      }}
-                      className="text-xs bg-muted hover:bg-background border-2 border-dashed"
+                      type="text"
+                      value={config.sounds.productionFile}
+                      onChange={(e) => updateConfig('sounds.productionFile', e.target.value)}
+                      placeholder="Caminho do arquivo de som"
+                      className="text-xs flex-1"
                     />
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        const input = document.createElement('input');
+                        input.type = 'file';
+                        input.accept = 'audio/*';
+                        input.onchange = (e) => {
+                          const file = (e.target as HTMLInputElement).files?.[0];
+                          if (file) {
+                            updateConfig('sounds.productionFile', file.name);
+                          }
+                        };
+                        input.click();
+                      }}
+                      className="px-2"
+                    >
+                      ...
+                    </Button>
                     <Button
                       variant="outline"
                       size="sm"
@@ -698,17 +712,31 @@ export const ConfigurationPanel = ({
                 <div className="ml-6 space-y-2">
                   <div className="flex gap-2">
                     <Input
-                      type="file"
-                      accept="audio/*"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) {
-                          const url = URL.createObjectURL(file);
-                          updateConfig('sounds.readyFile', url);
-                        }
-                      }}
-                      className="text-xs bg-muted hover:bg-background border-2 border-dashed"
+                      type="text"
+                      value={config.sounds.readyFile}
+                      onChange={(e) => updateConfig('sounds.readyFile', e.target.value)}
+                      placeholder="Caminho do arquivo de som"
+                      className="text-xs flex-1"
                     />
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        const input = document.createElement('input');
+                        input.type = 'file';
+                        input.accept = 'audio/*';
+                        input.onchange = (e) => {
+                          const file = (e.target as HTMLInputElement).files?.[0];
+                          if (file) {
+                            updateConfig('sounds.readyFile', file.name);
+                          }
+                        };
+                        input.click();
+                      }}
+                      className="px-2"
+                    >
+                      ...
+                    </Button>
                     <Button
                       variant="outline"
                       size="sm"
