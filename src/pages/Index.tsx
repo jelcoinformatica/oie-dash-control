@@ -214,12 +214,12 @@ const Index = () => {
             {/* Último Pedido Fixo */}
             {lastOrderNumber && config.lastOrder.highlight && (
               <div className="flex-shrink-0">
-              <LastOrderDisplay
-                orderNumber={lastOrderNumber}
-                nickname={lastOrderData?.nomeCliente}
-                config={config.lastOrder}
-                onExpedite={handleExpedite}
-              />
+                <LastOrderDisplay
+                  orderNumber={lastOrderNumber}
+                  nickname={lastOrderData?.nomeCliente}
+                  config={config.lastOrder}
+                  onExpedite={handleExpedite}
+                />
               </div>
             )}
             

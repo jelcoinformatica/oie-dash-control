@@ -77,7 +77,11 @@ export const OrderCard = ({
           <div 
             className="font-bold leading-tight"
             style={{ 
-              fontSize: displayNumber.length > 8 ? `${fontSize * 0.8}rem` : `${fontSize}rem`
+              fontSize: displayNumber.startsWith('IF-') && displayNumber.length > 6 
+                ? `${fontSize * 0.6}rem` 
+                : displayNumber.length > 8 
+                ? `${fontSize * 0.8}rem` 
+                : `${fontSize}rem`
             }}
           >
             {displayNumber}
