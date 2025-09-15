@@ -50,11 +50,11 @@ export const ControlPanel = ({
           Oie! v.5.0 | Jelco Informática (2025)
         </div>
         
-        {/* PROMPT FIXO NO CENTRO ABSOLUTO - NÃO SE MOVE */}
-        <div className="fixed bottom-1 left-1/2 transform -translate-x-1/2 flex items-center gap-1 z-10">
+        {/* Prompt centralizado no rodapé */}
+        <div className="absolute left-1/2 transform -translate-x-1/2 flex items-center gap-1">
           <Input
             ref={inputRef}
-            placeholder="No.Pedido"
+            placeholder="Expedição"
             value={expeditionInput}
             onChange={(e) => setExpeditionInput(e.target.value)}
             onKeyPress={handleKeyPress}
@@ -79,12 +79,10 @@ export const ControlPanel = ({
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
-        </div>
-        
-        {/* LOG FIXO À DIREITA - COR FIXA PRETA 60% */}
-        {expeditionLog.length > 0 && (
-          <div className="fixed bottom-1 right-16 z-10">
-            <div className="flex gap-2 text-xs">
+          
+          {/* Log dos últimos 5 pedidos - colado ao ícone de expedição */}
+          {expeditionLog.length > 0 && (
+            <div className="ml-2 flex gap-1 text-xs">
               {expeditionLog.slice(-5).map((order, index) => (
                 <span 
                   key={`${order}-${index}`}
@@ -94,8 +92,8 @@ export const ControlPanel = ({
                 </span>
               ))}
             </div>
-          </div>
-        )}
+          )}
+        </div>
         
         <Button
           variant="ghost"
