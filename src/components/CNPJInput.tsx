@@ -54,6 +54,7 @@ export const CNPJInput = ({
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     setLocalValue(newValue);
+    onValueChange(newValue); // Chama onValueChange imediatamente para permitir digitação livre
     onError(null);
     onLoading(false);
   };
@@ -87,11 +88,7 @@ export const CNPJInput = ({
             });
           }
           
-          toast({
-            title: "CNPJ consultado com sucesso",
-            description: `Dados da empresa ${data.legal_name || data.company_name} foram preenchidos automaticamente.`,
-            duration: 3000,
-          });
+          // Remover mensagem de sucesso
         } else {
           throw new Error('CNPJ não encontrado na Receita Federal');
         }

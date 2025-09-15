@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from 'react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Settings, Send } from 'lucide-react';
-import { toast } from '../hooks/use-toast';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 
 interface ControlPanelProps {
@@ -30,11 +29,7 @@ export const ControlPanel = ({
 
   const handleExpedite = () => {
     if (!expeditionInput.trim()) {
-      toast({
-        title: "Erro",
-        description: "Digite o número do pedido para expedir",
-        variant: "destructive"
-      });
+      // Não exibe toast para erro de expedição
       return;
     }
 
@@ -55,7 +50,8 @@ export const ControlPanel = ({
           Oie! v.5.0 | Jelco Informática (2025)
         </div>
         
-        <div className="absolute left-1/2 transform -translate-x-1/2 flex items-center gap-1">
+        {/* Prompt fixo no centro */}
+        <div className="fixed left-1/2 transform -translate-x-1/2 flex items-center gap-1">
           <Input
             ref={inputRef}
             placeholder="No.Pedido"
@@ -84,18 +80,10 @@ export const ControlPanel = ({
           </TooltipProvider>
         </div>
         
-        {/* Log visual dos últimos pedidos expedidos - posicionado à direita do centro */}
+        {/* Log visual dos últimos pedidos expedidos - posição fixa à direita do prompt */}
         {expeditionLog.length > 0 && (
-          <div className="absolute left-1/2 transform -translate-x-1/2 ml-28 flex items-center gap-1">
-            {expeditionLog.map((order, index) => (
-              <span 
-                key={`${order}-${index}`}
-                className="text-xs bg-muted px-1 rounded opacity-50"
-                style={{ opacity: 0.8 - (index * 0.2) }}
-              >
-                {order.replace(/[^\d]/g, '')}
-              </span>
-            ))}
+          <div className="fixed left-1/2 transform -translate-x-1/2 ml-32 text-xs" style={{ color: 'rgba(0,0,0,0.5)' }}>
+            {expeditionLog.map((order, index) => order.replace(/[^\d]/g, '')).join(', ')}
           </div>
         )}
         

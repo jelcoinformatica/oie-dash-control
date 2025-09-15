@@ -74,11 +74,13 @@ const Index = () => {
   const handleOrderClick = (order: any) => {
     if (order.status === 'production') {
       moveToReady(order.id);
+      // Não exibir mensagem de sucesso para mover pedido
     }
   };
 
   const handleExpedite = (orderNumber: string) => {
     expedite(orderNumber);
+    // Não exibir mensagem de sucesso para expedição
   };
 
   const handleConfigChange = (newConfig: PanelConfig) => {
