@@ -41,8 +41,13 @@ export const LastOrderDisplay = ({
     }
   };
 
-  // Calcular tamanho da fonte do apelido como 50% do número
-  const nicknameFontSize = safeConfig.fontSize * 0.5;
+  // Calcular tamanho da fonte baseado no tipo de pedido
+  const adjustedFontSize = orderNumber.startsWith('IF-') && orderNumber.length > 6 
+    ? safeConfig.fontSize * 0.6 
+    : safeConfig.fontSize;
+  
+  // Calcular tamanho da fonte do apelido como 50% do número ajustado
+  const nicknameFontSize = adjustedFontSize * 0.5;
 
   return (
     <div 
@@ -53,7 +58,7 @@ export const LastOrderDisplay = ({
       )}
       style={{ 
         height: `${safeConfig.height * 0.85}px`,
-        fontSize: `${safeConfig.fontSize}rem`,
+        fontSize: `${adjustedFontSize}rem`,
         fontFamily: safeConfig.fontFamily,
         color: safeConfig.textColor,
         backgroundColor: safeConfig.backgroundColor,
