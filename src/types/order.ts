@@ -107,6 +107,7 @@ export interface PanelConfig {
   };
   store?: {
     cnpj?: string;
+    cnpjError?: string;
     razaoSocial?: string;
     nomeFantasia?: string;
     numeroLicenca?: string;

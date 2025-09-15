@@ -1102,25 +1102,70 @@ export const ConfigurationPanel = ({
               <div className="space-y-3">
                 <div className="space-y-1">
                   <Label className="text-xs">CNPJ</Label>
-                  <Input
-                    value={config.store?.cnpj || ''}
-                    onChange={(e) => {
-                      // Remove formatação e valida
-                      const cnpj = e.target.value.replace(/\D/g, '');
-                      updateConfig('store.cnpj', cnpj);
-                    }}
-                    className="h-8"
-                    placeholder="00.000.000/0000-00"
-                    maxLength={18}
-                    onBlur={(e) => {
-                      // Formatação para exibição
-                      const cnpj = e.target.value.replace(/\D/g, '');
-                      if (cnpj.length === 14) {
-                        const formatted = cnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
-                        e.target.value = formatted;
-                      }
-                    }}
-                  />
+                  <div className="space-y-1">
+                    <Input
+                      value={config.store?.cnpj || ''}
+                      onChange={(e) => {
+                        // Remove formatação e valida
+                        const cnpj = e.target.value.replace(/\D/g, '');
+                        updateConfig('store.cnpj', cnpj);
+                        updateConfig('store.cnpjError', null); // Reset error on typing
+                      }}
+                      className={`h-8 ${config.store?.cnpjError ? 'border-red-500' : ''}`}
+                      placeholder="00.000.000/0000-00"
+                      maxLength={18}
+                      onBlur={(e) => {
+                        const cnpj = e.target.value.replace(/\D/g, '');
+                        
+                        // Formatação para exibição
+                        if (cnpj.length === 14) {
+                          const formatted = cnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
+                          e.target.value = formatted;
+                          
+                          // Validação DV
+                          const validateCnpj = (cnpj: string) => {
+                            if (cnpj.length !== 14) return false;
+                            
+                            // Verifica se todos os dígitos são iguais
+                            if (/^(\d)\1{13}$/.test(cnpj)) return false;
+                            
+                            // Cálculo do primeiro dígito verificador
+                            const weights1 = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+                            let sum1 = 0;
+                            for (let i = 0; i < 12; i++) {
+                              sum1 += parseInt(cnpj[i]) * weights1[i];
+                            }
+                            const remainder1 = sum1 % 11;
+                            const dv1 = remainder1 < 2 ? 0 : 11 - remainder1;
+                            
+                            // Cálculo do segundo dígito verificador
+                            const weights2 = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+                            let sum2 = 0;
+                            for (let i = 0; i < 13; i++) {
+                              sum2 += parseInt(cnpj[i]) * weights2[i];
+                            }
+                            const remainder2 = sum2 % 11;
+                            const dv2 = remainder2 < 2 ? 0 : 11 - remainder2;
+                            
+                            return parseInt(cnpj[12]) === dv1 && parseInt(cnpj[13]) === dv2;
+                          };
+                          
+                          if (!validateCnpj(cnpj)) {
+                            updateConfig('store.cnpjError', 'CNPJ inválido - Dígitos verificadores incorretos');
+                          } else {
+                            updateConfig('store.cnpjError', null);
+                          }
+                        } else if (cnpj.length > 0) {
+                          updateConfig('store.cnpjError', 'CNPJ deve ter 14 dígitos');
+                        } else {
+                          updateConfig('store.cnpjError', null);
+                        }
+                      }}
+                    />
+                    {config.store?.cnpjError && (
+                      <span className="text-xs text-red-500">{config.store.cnpjError}</span>
+                    )}
+                  </div>
                 </div>
                 <div className="space-y-1">
                   <Label className="text-xs">Razão Social</Label>
