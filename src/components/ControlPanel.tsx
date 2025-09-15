@@ -50,14 +50,14 @@ export const ControlPanel = ({
         </div>
         
         {/* Prompt de expedição fixo no centro */}
-        <div className="absolute left-1/2 transform -translate-x-1/2 flex items-center gap-2">
+        <div className="absolute left-1/2 transform -translate-x-1/2 flex items-center gap-1">
           <Input
             ref={inputRef}
             placeholder="No.Pedido"
             value={expeditionInput}
             onChange={(e) => setExpeditionInput(e.target.value)}
             onKeyPress={handleKeyPress}
-            className="w-25 h-5 text-xs text-center placeholder:opacity-30 border-slate-600 focus:border-slate-700"
+            className="w-20 h-5 text-xs text-center placeholder:opacity-30"
           />
           <TooltipProvider>
             <Tooltip>
