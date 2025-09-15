@@ -2,7 +2,13 @@ import { Order } from '../types/order';
 
 const generateRandomOrder = (id: string, status: 'production' | 'ready'): Order => {
   const modules = ['balcao', 'mesa', 'entrega', 'ficha'] as const;
-  const nicknames = ['João', 'Maria', 'Pedro', 'Ana', 'Carlos', 'Lucia', 'Rafael', 'Fernanda'];
+  const nicknames = [
+    'João', 'Maria', 'Pedro', 'Ana', 'Carlos', 'Lucia', 'Rafael', 'Fernanda',
+    'Alessandro', 'Cristiane', 'Rodrigo', 'Mariana', 'Fernando', 'Gabriela',
+    'Leonardo', 'Stephanie', 'Francisco', 'Alessandra', 'Guilherme', 'Caroline',
+    'Marcelo', 'Patricia', 'Eduardo', 'Juliana', 'Alexandre', 'Andressa',
+    'Mauricio', 'Daniela', 'Henrique', 'Franciele', 'Leandro', 'Priscila'
+  ];
   const items = [
     'Pizza Margherita',
     'Hamburger Clássico', 
@@ -14,24 +20,42 @@ const generateRandomOrder = (id: string, status: 'production' | 'ready'): Order 
     'Pasta Carbonara'
   ];
 
+  const selectedModule = modules[Math.floor(Math.random() * modules.length)];
+  
+  // Para pedidos de entrega, 70% devem ter prefixo "IF-" com 5 dígitos
+  let orderNumber: string;
+  if (selectedModule === 'entrega' && Math.random() < 0.7) {
+    // Gerar número com 5 dígitos para iFood
+    orderNumber = `IF-${Math.floor(Math.random() * 90000) + 10000}`;
+  } else {
+    // Número padrão de 3 dígitos
+    orderNumber = (Math.floor(Math.random() * 900) + 100).toString();
+  }
+
+  const selectedNickname = nicknames[Math.floor(Math.random() * nicknames.length)];
+
   return {
     id,
-    numeroPedido: (Math.floor(Math.random() * 900) + 100).toString(),
-    ticket: (Math.floor(Math.random() * 900) + 100).toString(),
-    modulo: modules[Math.floor(Math.random() * modules.length)],
+    numeroPedido: orderNumber,
+    ticket: orderNumber,
+    modulo: selectedModule,
     status,
     ultimoConsumo: new Date(Date.now() - Math.random() * 3600000),
     dataContabil: new Date(),
-    localEntrega: `Local ${Math.floor(Math.random() * 20) + 1}`,
-    nomeCliente: nicknames[Math.floor(Math.random() * nicknames.length)],
+    localEntrega: selectedModule === 'entrega' && orderNumber.startsWith('IF-') 
+      ? 'iFood Delivery' 
+      : `Local ${Math.floor(Math.random() * 20) + 1}`,
+    nomeCliente: selectedNickname,
     // Campos de compatibilidade
-    number: (Math.floor(Math.random() * 900) + 100).toString(),
-    nickname: nicknames[Math.floor(Math.random() * nicknames.length)],
+    number: orderNumber,
+    nickname: selectedNickname,
     createdAt: new Date(Date.now() - Math.random() * 3600000),
     updatedAt: new Date(),
-    items: Array.from({ length: Math.floor(Math.random() * 3) + 1 }, () => 
-      items[Math.floor(Math.random() * items.length)]
-    ),
+    items: selectedModule === 'entrega' && orderNumber.startsWith('IF-')
+      ? ['Combo iFood', 'Taxa de Entrega']
+      : Array.from({ length: Math.floor(Math.random() * 3) + 1 }, () => 
+          items[Math.floor(Math.random() * items.length)]
+        ),
     totalValue: Math.floor(Math.random() * 5000) + 1000 // R$ 10,00 - R$ 60,00
   };
 };
