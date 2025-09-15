@@ -194,9 +194,10 @@ const Index = () => {
               }}
             >
               {/* Contador de produção quando coluna 1 está desativada */}
-              {!config.production.visible && productionOrders.length > 0 && (
+              {!config.production.visible && (
                 <div 
-                  className="absolute left-4 bg-gray-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold cursor-help"
+                  className="absolute left-4 bg-gray-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold cursor-help"
+                  style={{ fontSize: '16px' }}
                   title="Pedidos em Produção"
                 >
                   {productionOrders.length}
@@ -205,7 +206,7 @@ const Index = () => {
               
               <span>{config.ready.title}</span>
               
-              <div className="absolute right-4 bg-white/20 px-2 py-1 rounded-full text-sm">
+              <div className="absolute right-4 bg-white/20 px-2 py-1 rounded-full font-bold" style={{ fontSize: '16px' }}>
                 {readyOrders.length + (lastOrderNumber && config.lastOrder.highlight ? 1 : 0)}
               </div>
             </div>
