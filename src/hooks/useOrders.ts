@@ -27,7 +27,7 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
   const [lastOrderData, setLastOrderData] = useState<Order | null>(null);
   const [loading, setLoading] = useState(false);
   const [isSimulationActive, setIsSimulationActive] = useState(false);
-  const [expeditionLog, setExpeditionLog] = useState<string[]>([]);
+  const [expeditionLog, setExpeditionLog] = useState<Array<{orderNumber: string, nickname?: string, expeditionTime: Date}>>([]);
   
   const { speak } = useTextToSpeech();
   const previousLastOrderNumber = useRef<string>('');
@@ -159,7 +159,11 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
           }
           
         // Adicionar ao log de expedição
-        setExpeditionLog(prev => [...prev.slice(-4), `${order.numeroPedido || order.number}`]);
+        setExpeditionLog(prev => [...prev.slice(-4), {
+          orderNumber: order.numeroPedido || order.number || '',
+          nickname: order.nomeCliente,
+          expeditionTime: new Date()
+        }]);
           
           // toast({
           //   title: "Pedido Retornado",
@@ -198,7 +202,11 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
         }
         
         // Adicionar ao log de expedição
-        setExpeditionLog(prev => [...prev.slice(-4), `${order.numeroPedido || order.number}`]);
+        setExpeditionLog(prev => [...prev.slice(-4), {
+          orderNumber: order.numeroPedido || order.number || '',
+          nickname: order.nomeCliente,
+          expeditionTime: new Date()
+        }]);
         
         // toast({
         //   title: "Pedido Expedido",

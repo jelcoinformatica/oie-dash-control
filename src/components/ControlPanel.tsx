@@ -7,7 +7,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/t
 interface ControlPanelProps {
   onConfigClick: () => void;
   onExpedite: (orderNumber: string) => void;
-  expeditionLog?: string[];
+  expeditionLog?: Array<{orderNumber: string, nickname?: string, expeditionTime: Date}>;
   configOpen?: boolean;
 }
 
@@ -81,14 +81,25 @@ export const ControlPanel = ({
           {/* Log dos últimos pedidos expedidos - após o ícone */}
           {expeditionLog.length > 0 && (
             <div className="flex items-center gap-1 ml-2">
-              {expeditionLog.slice(-5).reverse().map((order, index) => (
-                <span 
-                  key={`${order}-${index}`}
-                  className="text-xs px-1 rounded"
-                  style={{ color: 'rgba(0, 0, 0, 0.6)' }}
-                >
-                  {order.replace(/[^\d]/g, '')}
-                </span>
+              {expeditionLog.slice(-5).reverse().map((logEntry, index) => (
+                <TooltipProvider key={`${logEntry.orderNumber}-${index}`}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span 
+                        className="text-xs px-1 rounded cursor-help"
+                        style={{ color: 'rgba(0, 0, 0, 0.6)' }}
+                      >
+                        {logEntry.orderNumber.replace(/[^\d]/g, '')}
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <div className="text-xs">
+                        {logEntry.nickname && <div>Apelido: {logEntry.nickname}</div>}
+                        <div>Expedido: {logEntry.expeditionTime.toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'})}</div>
+                      </div>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               ))}
             </div>
           )}
