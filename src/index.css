@@ -140,11 +140,15 @@
 
   body {
     @apply bg-background text-foreground font-sans;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
     overflow: hidden; /* Remove a barra de rolagem do body */
   }
 
   /* Remove scroll global */
   html {
+    height: 100vh;
     overflow: hidden;
     scrollbar-width: none;
   }

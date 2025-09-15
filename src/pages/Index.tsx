@@ -120,8 +120,8 @@ const Index = () => {
 
   return (
     <div 
-      className="h-screen flex flex-col"
-      style={{ backgroundColor: config.backgroundColor }}
+      className="min-h-screen h-screen flex flex-col"
+      style={{ backgroundColor: config.backgroundColor, position: 'relative' }}
     >
       <div className="flex-1 flex gap-0.5 p-1 pt-1">
         {/* Coluna 1 - Produção */}
