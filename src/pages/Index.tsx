@@ -195,7 +195,7 @@ const Index = () => {
             >
               <span>{config.ready.title}</span>
               <span className="bg-white/20 px-2 py-1 rounded-full text-sm">
-                {readyOrders.length}
+                {readyOrders.length + (lastOrderNumber && config.lastOrder.highlight ? 1 : 0)}
               </span>
             </div>
             
