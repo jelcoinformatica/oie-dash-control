@@ -7,7 +7,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/t
 interface ControlPanelProps {
   onConfigClick: () => void;
   onExpedite: (orderNumber: string) => void;
-  expeditionLog?: Array<{orderNumber: string, nickname?: string, expeditionTime: Date}>;
+  expeditionLog?: Array<{orderNumber: string, nickname?: string, expeditionTime: Date, isAutoExpedition?: boolean}>;
   configOpen?: boolean;
 }
 
@@ -87,7 +87,11 @@ export const ControlPanel = ({
                     <TooltipTrigger asChild>
                       <span 
                         className="text-xs px-1 rounded cursor-help"
-                        style={{ color: 'rgba(0, 0, 0, 0.6)' }}
+                        style={{ 
+                          color: logEntry.isAutoExpedition 
+                            ? 'rgba(220, 38, 127, 0.8)' // Rosa pastel para autoexpedição
+                            : 'rgba(0, 0, 0, 0.6)' // Cor normal
+                        }}
                       >
                         {logEntry.orderNumber.replace(/[^\d]/g, '')}
                       </span>
@@ -96,6 +100,7 @@ export const ControlPanel = ({
                       <div className="text-xs">
                         {logEntry.nickname && <div>Apelido: {logEntry.nickname}</div>}
                         <div>Expedido: {logEntry.expeditionTime.toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'})}</div>
+                        {logEntry.isAutoExpedition && <div className="text-red-400">Auto-expedição</div>}
                       </div>
                     </TooltipContent>
                   </Tooltip>

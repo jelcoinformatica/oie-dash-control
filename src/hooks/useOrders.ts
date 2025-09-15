@@ -27,7 +27,7 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
   const [lastOrderData, setLastOrderData] = useState<Order | null>(null);
   const [loading, setLoading] = useState(false);
   const [isSimulationActive, setIsSimulationActive] = useState(false);
-  const [expeditionLog, setExpeditionLog] = useState<Array<{orderNumber: string, nickname?: string, expeditionTime: Date}>>([]);
+  const [expeditionLog, setExpeditionLog] = useState<Array<{orderNumber: string, nickname?: string, expeditionTime: Date, isAutoExpedition?: boolean}>>([]);
   
   const { speak } = useTextToSpeech();
   const previousLastOrderNumber = useRef<string>('');
@@ -162,7 +162,8 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
         setExpeditionLog(prev => [...prev.slice(-4), {
           orderNumber: order.numeroPedido || order.number || '',
           nickname: order.nomeCliente,
-          expeditionTime: new Date()
+          expeditionTime: new Date(),
+          isAutoExpedition: false
         }]);
           
           // toast({
@@ -205,7 +206,8 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
         setExpeditionLog(prev => [...prev.slice(-4), {
           orderNumber: order.numeroPedido || order.number || '',
           nickname: order.nomeCliente,
-          expeditionTime: new Date()
+          expeditionTime: new Date(),
+          isAutoExpedition: false
         }]);
         
         // toast({
@@ -224,21 +226,52 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
   
   // Auto-expedição
   useEffect(() => {
-    if (!autoExpeditionConfigRef.current?.enabled || !lastOrderData) return;
+    if (!autoExpeditionConfigRef.current?.enabled || !lastOrderNumber || !lastOrderData) return;
+    
+    const expediteTime = (autoExpeditionConfigRef.current.minutes || 10) * 60 * 1000;
     
     const autoExpediteTimeout = setTimeout(() => {
       if (lastOrderNumber && lastOrderData) {
-        expedite(lastOrderNumber);
-        // toast({
-        //   title: "Auto Expedição",
-        //   description: `Pedido ${lastOrderNumber} foi automaticamente expedido`,
-        //   variant: "default"
-        // });
+        // Expedir automaticamente
+        const order = orders.find(o => {
+          const orderNum = o.numeroPedido || o.number || '';
+          return orderNum === lastOrderNumber;
+        });
+        
+        if (order) {
+          expediteOrder(order.id).then(() => {
+            setOrders(prev => prev.filter(o => o.id !== order.id));
+            
+            // Atualizar último pedido
+            const remainingReady = orders.filter(o => o.status === 'ready' && (o.numeroPedido || o.number) !== lastOrderNumber);
+            if (remainingReady.length > 0) {
+              const newLastOrder = remainingReady.sort((a, b) => {
+                const dateA = new Date(a.updatedAt || a.ultimoConsumo || 0);
+                const dateB = new Date(b.updatedAt || b.ultimoConsumo || 0);
+                return dateB.getTime() - dateA.getTime();
+              })[0];
+              const newLastOrderNumber = newLastOrder.numeroPedido || newLastOrder.number || '';
+              setLastOrderNumber(newLastOrderNumber);
+              setLastOrderData(newLastOrder);
+            } else {
+              setLastOrderNumber('');
+              setLastOrderData(null);
+            }
+            
+            // Adicionar ao log de expedição como autoexpedição
+            setExpeditionLog(prev => [...prev.slice(-4), {
+              orderNumber: order.numeroPedido || order.number || '',
+              nickname: order.nomeCliente,
+              expeditionTime: new Date(),
+              isAutoExpedition: true
+            }]);
+          });
+        }
       }
-    }, (autoExpeditionConfigRef.current.minutes || 10) * 60 * 1000);
+    }, expediteTime);
     
     return () => clearTimeout(autoExpediteTimeout);
-  }, [lastOrderData, expedite]);
+  }, [lastOrderNumber, lastOrderData, orders]);
   
   // Funções para simulação
   const clearAllOrders = useCallback(async () => {
@@ -253,7 +286,7 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
     // });
   }, []);
   
-  const generateOrders = useCallback(async (count: number, config?: any) => {
+   const generateOrders = useCallback(async (count: number, config?: any) => {
     try {
       const newOrders: Order[] = [];
       
@@ -270,18 +303,21 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
       const modulesToUse = activeModules.length > 0 ? activeModules : ['balcao', 'mesa', 'entrega', 'ficha'];
       
       for (let i = 0; i < count; i++) {
-        // 40% dos pedidos de entrega serão iFood (IF-XXXXX) se entrega estiver ativa
+        // 60% dos pedidos de entrega serão de delivery online se entrega estiver ativa
         const isEntregaActive = modulesToUse.includes('entrega');
-        const isIfoodOrder = isEntregaActive && Math.random() < 0.4;
+        const isDeliveryOnline = isEntregaActive && Math.random() < 0.6;
         
-        if (isIfoodOrder) {
-          // Gerar pedido iFood simulado
-          const ifoodNumber = `IF-${Math.floor(Math.random() * 90000) + 10000}`;
-          const ifoodOrder = await addSimulatedOrder();
-          ifoodOrder.numeroPedido = ifoodNumber;
-          ifoodOrder.number = ifoodNumber;
-          ifoodOrder.modulo = 'entrega' as 'balcao' | 'mesa' | 'entrega' | 'ficha';
-          newOrders.push(ifoodOrder);
+        if (isDeliveryOnline) {
+          // Gerar pedido de delivery online com diferentes siglas
+          const deliveryTypes = ['IF', 'DD', 'RA', 'UB', 'RJ']; // iFood, Delivery Direto, Rappi, Uber, Rapidão Júnior
+          const randomType = deliveryTypes[Math.floor(Math.random() * deliveryTypes.length)];
+          const deliveryNumber = `${randomType}-${Math.floor(Math.random() * 90000) + 10000}`;
+          
+          const deliveryOrder = await addSimulatedOrder();
+          deliveryOrder.numeroPedido = deliveryNumber;
+          deliveryOrder.number = deliveryNumber;
+          deliveryOrder.modulo = 'entrega' as 'balcao' | 'mesa' | 'entrega' | 'ficha';
+          newOrders.push(deliveryOrder);
         } else {
           const newOrder = await addSimulatedOrder();
           // Definir módulo baseado apenas nos módulos ativos
