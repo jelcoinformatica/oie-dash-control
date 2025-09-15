@@ -97,4 +97,18 @@ export interface PanelConfig {
     entrega: boolean;
     ficha: boolean;
   };
+  database?: {
+    type: 'none' | 'mssql' | 'mysql' | 'postgre' | 'other';
+    host?: string;
+    database?: string;
+    username?: string;
+    password?: string;
+    port?: string;
+  };
+  store?: {
+    cnpj?: string;
+    razaoSocial?: string;
+    nomeFantasia?: string;
+    numeroLicenca?: string;
+  };
 }

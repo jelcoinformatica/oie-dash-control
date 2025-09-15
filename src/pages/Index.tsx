@@ -136,6 +136,7 @@ const Index = () => {
               headerColor={config.production.headerColor}
               headerHeight={config.production.headerHeight}
               headerFontSize={config.production.headerFontSize}
+              headerFontFamily={config.production.headerFontFamily}
               enabledModules={config.modules}
               cardConfig={{
                 fontSize: config.production.cardConfig.fontSize,
@@ -159,12 +160,13 @@ const Index = () => {
                 backgroundColor: config.ready.headerBg, 
                 color: config.ready.headerColor,
                 height: `${config.ready.headerHeight}px`,
-                fontSize: `${config.ready.headerFontSize}rem`
+                fontSize: `${config.ready.headerFontSize}rem`,
+                fontFamily: config.ready.headerFontFamily
               }}
             >
               <span>{config.ready.title}</span>
               <span className="bg-white/20 px-2 py-1 rounded-full text-sm">
-                {readyOrders.length + (lastOrderNumber && !config.lastOrder.highlight ? 0 : 1)}
+                {readyOrders.length + (lastOrderNumber && config.lastOrder.highlight ? 1 : 0)}
               </span>
             </div>
             
@@ -222,6 +224,7 @@ const Index = () => {
           onConfigClick={() => setConfigOpen(true)}
           onExpedite={expedite}
           expeditionLog={expeditionLog}
+          configOpen={configOpen}
         />
       </div>
 

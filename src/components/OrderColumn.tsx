@@ -17,6 +17,7 @@ interface OrderColumnProps {
   headerColor?: string;
   headerHeight?: number;
   headerFontSize?: number;
+  headerFontFamily?: string;
   enabledModules?: {
     balcao: boolean;
     mesa: boolean;
@@ -62,6 +63,7 @@ export const OrderColumn = ({
   headerColor,
   headerHeight = 48,
   headerFontSize = 1.2,
+  headerFontFamily = 'Arial',
   enabledModules,
   cardConfig,
   columns,
@@ -87,7 +89,8 @@ export const OrderColumn = ({
             backgroundColor: headerBg,
             color: headerColor,
             height: `${headerHeight}px`,
-            fontSize: `${headerFontSize}rem`
+            fontSize: `${headerFontSize}rem`,
+            fontFamily: headerFontFamily
           }}
         >
           <span>{title}</span>

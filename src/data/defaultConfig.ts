@@ -4,13 +4,13 @@ export const defaultConfig: PanelConfig = {
   backgroundColor: '#ffffff',
   production: {
     visible: true,
-    title: 'PRODUÇÃO',
-    width: 32,
-    headerHeight: 48,
-    headerBg: '#3b82f6',
+    title: 'EM PRODUÇÃO',
+    width: 30,
+    headerHeight: 72,
+    headerBg: '#636363',
     headerColor: '#ffffff',
-    headerFontFamily: 'Arial',
-    headerFontSize: 1.2,
+    headerFontFamily: 'Tahoma',
+    headerFontSize: 2.5,
     showBorder: false,
     cardConfig: {
       columns: 2,
@@ -18,7 +18,7 @@ export const defaultConfig: PanelConfig = {
       height: 60,
       backgroundColor: '#f3f4f6',
       textColor: '#374151',
-      fontFamily: 'Arial',
+      fontFamily: 'Tahoma',
       fontSize: 2,
       showNickname: true,
       showItems: true
@@ -27,60 +27,60 @@ export const defaultConfig: PanelConfig = {
   ready: {
     visible: true,
     title: 'PRONTOS',
-    width: 46,
-    headerHeight: 48,
-    headerBg: '#10b981',
+    width: 40,
+    headerHeight: 72,
+    headerBg: '#0011FA',
     headerColor: '#ffffff',
-    headerFontFamily: 'Arial',
-    headerFontSize: 1.2,
-    showBorder: false,
+    headerFontFamily: 'Tahoma',
+    headerFontSize: 2.5,
+    showBorder: true,
     cardConfig: {
       columns: 3,
       rows: 2,
       height: 60,
-      backgroundColor: '#f3f4f6',
-      textColor: '#374151',
-      fontFamily: 'Arial',
-      fontSize: 1.6,
+      backgroundColor: '#FAFAFA',
+      textColor: '#000000',
+      fontFamily: 'Tahoma',
+      fontSize: 4,
       showNickname: true,
       showItems: true
     }
   },
   advertising: {
-    visible: true,
-    width: 22,
+    visible: false,
+    width: 30,
     headerVisible: true,
-    headerHeight: 48,
+    headerHeight: 72,
     headerTitle: 'PUBLICIDADE',
-    headerBg: '#8b5cf6',
+    headerBg: '#636363',
     headerColor: '#ffffff',
-    headerFontFamily: 'Arial',
-    headerFontSize: 1.2,
+    headerFontFamily: 'Tahoma',
+    headerFontSize: 2.5,
     backgroundColor: '#ffffff',
     imageUrl: undefined,
     showBorder: false
   },
   lastOrder: {
-    height: 120,
-    fontSize: 5,
-    backgroundColor: '#f59e0b',
-    textColor: '#ffffff',
+    height: 180,
+    fontSize: 8,
+    backgroundColor: '#ffffff',
+    textColor: '#0011FA',
     pulseAnimation: true,
     highlight: true,
-    fontFamily: 'Arial'
+    fontFamily: 'Tahoma'
   },
   sounds: {
-    production: true,
+    production: false,
     ready: true,
-    productionFile: undefined,
-    readyFile: undefined
+    productionFile: 'c:\\kds\\sons\\kds_sound_bell1.wav',
+    readyFile: 'c:\\kds\\sons\\kds_sound_bell2.wav'
   },
   textToSpeech: {
     enabled: false,
-    voice: 'auto', // Voz automática em português-BR
-    rate: 1,
+    voice: 'Heloisa',
+    rate: 1.5,
     pitch: 1,
-    volume: 0.8,
+    volume: 1.0,
     textType: 'name_order_ready',
     customText: '',
     repeatEnabled: false,
@@ -88,7 +88,7 @@ export const defaultConfig: PanelConfig = {
     repeatInterval: 15
   },
   autoExpedition: {
-    enabled: true,
+    enabled: false,
     minutes: 10
   },
   modules: {
@@ -96,5 +96,19 @@ export const defaultConfig: PanelConfig = {
     mesa: true,
     entrega: true,
     ficha: true
+  },
+  database: {
+    type: 'none',
+    host: '',
+    database: '',
+    username: '',
+    password: '',
+    port: ''
+  },
+  store: {
+    cnpj: '',
+    razaoSocial: '',
+    nomeFantasia: '',
+    numeroLicenca: ''
   }
 };

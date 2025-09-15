@@ -9,6 +9,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { PanelConfig } from '../types/order';
 import { Settings, Palette, Factory, CheckCircle, Monitor, Volume2, Clock, Puzzle, Cog, X, ChevronRight, ChevronDown, Plus, Minus } from 'lucide-react';
 import { cn } from '../lib/utils';
+import { defaultConfig } from '../data/defaultConfig';
 
 interface ConfigurationPanelProps {
   open: boolean;
@@ -82,6 +83,7 @@ export const ConfigurationPanel = ({
     autoExpedition: false,
     modules: false,
     cards: false,
+    diversos: false,
     simulation: false
   });
 
@@ -101,6 +103,7 @@ export const ConfigurationPanel = ({
       autoExpedition: newState,
       modules: newState,
       cards: newState,
+      diversos: newState,
       simulation: newState
     });
   };
@@ -940,6 +943,213 @@ export const ConfigurationPanel = ({
               />
               <div className="w-1.5 h-1.5 bg-purple-500 rounded-full"></div>
               <Label className="text-sm">Ficha</Label>
+            </div>
+          </div>
+        </ConfigSection>
+
+        {/* Diversos */}
+        <ConfigSection
+          title="Diversos"
+          icon={<Settings className="w-4 h-4" />}
+          isOpen={openSections.diversos}
+          onToggle={() => toggleSection('diversos')}
+          colorClass="text-gray-600"
+        >
+          <div className="space-y-6">
+            {/* Conexão com Banco de Dados */}
+            <div className="space-y-3">
+              <Label className="text-sm font-medium">Conexão com Banco de Dados</Label>
+              <div className="space-y-3">
+                <div className="space-y-2">
+                  <Label className="text-xs">Tipo de Banco</Label>
+                  <Select
+                    value={config.database?.type || 'none'}
+                    onValueChange={(value) => updateConfig('database.type', value)}
+                  >
+                    <SelectTrigger className="h-8">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">Nenhum</SelectItem>
+                      <SelectItem value="mssql">MSSQL</SelectItem>
+                      <SelectItem value="mysql">MYSQL</SelectItem>
+                      <SelectItem value="postgre">POSTGRE</SelectItem>
+                      <SelectItem value="other">OUTRO</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {config.database?.type && config.database.type !== 'none' && (
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1">
+                      <Label className="text-xs">Host</Label>
+                      <Input
+                        value={config.database?.host || ''}
+                        onChange={(e) => updateConfig('database.host', e.target.value)}
+                        className="h-8"
+                        placeholder="localhost"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs">Porta</Label>
+                      <Input
+                        value={config.database?.port || ''}
+                        onChange={(e) => updateConfig('database.port', e.target.value)}
+                        className="h-8"
+                        placeholder="5432"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs">Database</Label>
+                      <Input
+                        value={config.database?.database || ''}
+                        onChange={(e) => updateConfig('database.database', e.target.value)}
+                        className="h-8"
+                        placeholder="database_name"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs">Usuário</Label>
+                      <Input
+                        value={config.database?.username || ''}
+                        onChange={(e) => updateConfig('database.username', e.target.value)}
+                        className="h-8"
+                        placeholder="username"
+                      />
+                    </div>
+                    <div className="col-span-2 space-y-1">
+                      <Label className="text-xs">Senha</Label>
+                      <Input
+                        type="password"
+                        value={config.database?.password || ''}
+                        onChange={(e) => updateConfig('database.password', e.target.value)}
+                        className="h-8"
+                        placeholder="password"
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Backup */}
+            <div className="space-y-3 border-t pt-4">
+              <Label className="text-sm font-medium">Backup</Label>
+              <div className="flex gap-2">
+                <Button
+                  onClick={() => {
+                    const dataStr = JSON.stringify(config, null, 2);
+                    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                    const url = URL.createObjectURL(dataBlob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = `oie-config-${new Date().toISOString().split('T')[0]}.json`;
+                    link.click();
+                    URL.revokeObjectURL(url);
+                  }}
+                  variant="outline"
+                  size="sm"
+                  className="flex-1"
+                >
+                  Exportar Configurações
+                </Button>
+                <input
+                  type="file"
+                  accept=".json"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      const reader = new FileReader();
+                      reader.onload = (event) => {
+                        try {
+                          const importedConfig = JSON.parse(event.target?.result as string);
+                          onConfigChange(importedConfig);
+                        } catch (error) {
+                          console.error('Erro ao importar configurações:', error);
+                        }
+                      };
+                      reader.readAsText(file);
+                    }
+                  }}
+                  style={{ display: 'none' }}
+                  id="import-config"
+                />
+                <Button
+                  onClick={() => document.getElementById('import-config')?.click()}
+                  variant="outline"
+                  size="sm"
+                  className="flex-1"
+                >
+                  Restaurar Backup
+                </Button>
+              </div>
+              
+              <Button
+                onClick={() => {
+                  onConfigChange(defaultConfig);
+                }}
+                variant="destructive"
+                size="sm"
+                className="w-full"
+              >
+                Restaurar Configurações de Fábrica
+              </Button>
+            </div>
+
+            {/* Dados da Loja */}
+            <div className="space-y-3 border-t pt-4">
+              <Label className="text-sm font-medium">Dados da Loja</Label>
+              <div className="space-y-3">
+                <div className="space-y-1">
+                  <Label className="text-xs">CNPJ</Label>
+                  <Input
+                    value={config.store?.cnpj || ''}
+                    onChange={(e) => {
+                      // Remove formatação e valida
+                      const cnpj = e.target.value.replace(/\D/g, '');
+                      updateConfig('store.cnpj', cnpj);
+                    }}
+                    className="h-8"
+                    placeholder="00.000.000/0000-00"
+                    maxLength={18}
+                    onBlur={(e) => {
+                      // Formatação para exibição
+                      const cnpj = e.target.value.replace(/\D/g, '');
+                      if (cnpj.length === 14) {
+                        const formatted = cnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
+                        e.target.value = formatted;
+                      }
+                    }}
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs">Razão Social</Label>
+                  <Input
+                    value={config.store?.razaoSocial || ''}
+                    onChange={(e) => updateConfig('store.razaoSocial', e.target.value)}
+                    className="h-8"
+                    placeholder="Empresa Ltda"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs">Nome Fantasia</Label>
+                  <Input
+                    value={config.store?.nomeFantasia || ''}
+                    onChange={(e) => updateConfig('store.nomeFantasia', e.target.value)}
+                    className="h-8"
+                    placeholder="Nome da Loja"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs">Número da Licença</Label>
+                  <Input
+                    value={config.store?.numeroLicenca || ''}
+                    onChange={(e) => updateConfig('store.numeroLicenca', e.target.value)}
+                    className="h-8"
+                    placeholder="LIC-12345"
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </ConfigSection>

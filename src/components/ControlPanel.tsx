@@ -9,16 +9,24 @@ interface ControlPanelProps {
   onConfigClick: () => void;
   onExpedite: (orderNumber: string) => void;
   expeditionLog?: string[];
+  configOpen?: boolean;
 }
 
 export const ControlPanel = ({ 
   onConfigClick, 
   onExpedite,
-  expeditionLog = []
+  expeditionLog = [],
+  configOpen = false
 }: ControlPanelProps) => {
   const [expeditionInput, setExpeditionInput] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // Auto-focus no campo de expedição quando não estiver em configuração
+  useEffect(() => {
+    if (!configOpen && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [configOpen]);
 
   const handleExpedite = () => {
     if (!expeditionInput.trim()) {
