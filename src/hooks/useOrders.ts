@@ -81,7 +81,11 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
         previousLastOrderNumber.current = '';
       }
     } catch (error) {
-      // Erro silencioso, sem toast  
+      toast({
+        title: "Erro",
+        description: "Falha ao carregar pedidos",
+        variant: "destructive"
+      });
     } finally {
       setLoading(false);
     }
@@ -113,7 +117,11 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
       setLastOrderNumber(newOrderNumber);
       
     } catch (error) {
-      // Erro silencioso, sem toast
+      toast({
+        title: "Erro",
+        description: "Falha ao mover pedido",
+        variant: "destructive"
+      });
     }
   }, [orders, lastOrderNumber, speak]);
 
@@ -153,6 +161,11 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
           
         // Adicionar ao log de expedição
         setExpeditionLog(prev => [...prev.slice(-4), `${order.numeroPedido || order.number}`]);
+          
+          toast({
+            title: "Pedido Retornado",
+            description: `Pedido ${order.numeroPedido || order.number} voltou para produção`
+          });
         }
         return;
       }
@@ -187,9 +200,18 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
         
         // Adicionar ao log de expedição
         setExpeditionLog(prev => [...prev.slice(-4), `${order.numeroPedido || order.number}`]);
+        
+        toast({
+          title: "Pedido Expedido",
+          description: `Pedido ${order.numeroPedido || order.number} foi entregue`
+        });
       }
     } catch (error) {
-      // Erro silencioso, sem toast
+      toast({
+        title: "Erro",
+        description: "Falha ao expedir pedido",
+        variant: "destructive"
+      });
     }
   }, [orders, lastOrderNumber]);
   
@@ -200,6 +222,11 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
     const autoExpediteTimeout = setTimeout(() => {
       if (lastOrderNumber && lastOrderData) {
         expedite(lastOrderNumber);
+        toast({
+          title: "Auto Expedição",
+          description: `Pedido ${lastOrderNumber} foi automaticamente expedido`,
+          variant: "default"
+        });
       }
     }, (autoExpeditionConfigRef.current.minutes || 10) * 60 * 1000);
     
@@ -212,6 +239,11 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
     setLastOrderNumber('');
     setLastOrderData(null);
     setExpeditionLog([]);
+    toast({
+      title: "Pedidos Zerados",
+      description: "Todos os pedidos foram removidos",
+      variant: "default"
+    });
   }, []);
   
   const generateOrders = useCallback(async (count: number, config?: any) => {
@@ -252,8 +284,17 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
       }
       
       await loadOrders(); // Recarregar para sincronizar
+      toast({
+        title: "Pedidos Gerados",
+        description: `${count} novos pedidos foram criados`,
+        variant: "default"
+      });
     } catch (error) {
-      // Erro silencioso, sem toast
+      toast({
+        title: "Erro",
+        description: "Falha ao gerar pedidos",
+        variant: "destructive"
+      });
     }
   }, [loadOrders]);
 

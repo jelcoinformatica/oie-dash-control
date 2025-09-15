@@ -10,8 +10,6 @@ import { PanelConfig } from '../types/order';
 import { Settings, Palette, Factory, CheckCircle, Monitor, Volume2, Clock, Puzzle, Cog, X, ChevronRight, ChevronDown, Plus, Minus } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { defaultConfig } from '../data/defaultConfig';
-import { toast } from '../hooks/use-toast';
-import { CNPJInput } from './CNPJInput';
 
 interface ConfigurationPanelProps {
   open: boolean;
@@ -34,23 +32,30 @@ interface ConfigSectionProps {
 }
 
 const ConfigSection = ({ title, icon, isOpen, onToggle, children, colorClass = "text-blue-600" }: ConfigSectionProps) => (
-  <div className="border border-gray-200 rounded-lg overflow-hidden">
+  <div className="border-b-2 border-gray-300 shadow-sm">
     <button
       onClick={onToggle}
-      className="w-full p-3 bg-white hover:bg-gray-50 flex items-center justify-between transition-colors"
+      className={cn(
+        "w-full px-4 py-4 flex items-center justify-between transition-all duration-200",
+        isOpen 
+          ? "bg-gradient-to-r from-blue-50 to-blue-100 shadow-lg border-l-4 border-blue-400" 
+          : "bg-white hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100"
+      )}
     >
-      <div className="flex items-center gap-2">
-        <span className={colorClass}>{icon}</span>
-        <span className="font-medium text-gray-700">{title}</span>
+      <div className="flex items-center gap-3">
+        <div className={cn("w-5 h-5", colorClass)}>
+          {icon}
+        </div>
+        <span className="text-sm font-semibold text-gray-800">{title}</span>
       </div>
       {isOpen ? (
-        <ChevronDown className="w-4 h-4 text-gray-400" />
+        <ChevronDown className="w-5 h-5 text-gray-600" />
       ) : (
-        <ChevronRight className="w-4 h-4 text-gray-400" />
+        <ChevronRight className="w-5 h-5 text-gray-600" />
       )}
     </button>
     {isOpen && (
-      <div className="p-4 bg-white border-t border-gray-200">
+      <div className="px-6 pb-6 pt-4 space-y-4 bg-gradient-to-b from-blue-25 to-white border-t border-blue-200 shadow-inner">
         {children}
       </div>
     )}
@@ -67,31 +72,57 @@ export const ConfigurationPanel = ({
   clearAllOrders,
   generateOrders
 }: ConfigurationPanelProps) => {
-  const [orderCount, setOrderCount] = useState(15);
-  const [openSections, setOpenSections] = useState({
-    general: false,
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>({
     background: false,
     production: false,
     ready: false,
     lastOrder: false,
     advertising: false,
     sounds: false,
-    textToSpeech: false,
+    tts: true, // Deixar aberto por padrão para facilitar encontrar as opções
     autoExpedition: false,
     modules: false,
+    cards: false,
     diversos: false,
     simulation: false
   });
 
+  const [showClearDialog, setShowClearDialog] = useState(false);
+
+  const toggleAllSections = () => {
+    const allOpen = Object.values(openSections).every(Boolean);
+    const newState = !allOpen;
+    setOpenSections({
+      background: newState,
+      production: newState,
+      ready: newState,
+      lastOrder: newState,
+      advertising: newState,
+      sounds: newState,
+      tts: newState,
+      autoExpedition: newState,
+      modules: newState,
+      cards: newState,
+      diversos: newState,
+      simulation: newState
+    });
+  };
+
+
+  const toggleSection = (section: string) => {
+    setOpenSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }));
+  };
+
   const updateConfig = (path: string, value: any) => {
     const keys = path.split('.');
     const newConfig = { ...config };
-    let current = newConfig as any;
+    let current: any = newConfig;
     
     for (let i = 0; i < keys.length - 1; i++) {
-      if (!current[keys[i]]) {
-        current[keys[i]] = {};
-      }
+      current[keys[i]] = { ...current[keys[i]] };
       current = current[keys[i]];
     }
     
@@ -99,736 +130,858 @@ export const ConfigurationPanel = ({
     onConfigChange(newConfig);
   };
 
-  const toggleSection = (section: keyof typeof openSections) => {
-    setOpenSections(prev => ({ ...prev, [section]: !prev[section] }));
-  };
-
-  const toggleAllSections = () => {
-    const allOpen = Object.values(openSections).every(isOpen => isOpen);
-    const newState = Object.keys(openSections).reduce((acc, key) => {
-      acc[key as keyof typeof openSections] = !allOpen;
-      return acc;
-    }, {} as typeof openSections);
-    setOpenSections(newState);
-  };
-
-  const handleBackupExport = () => {
-    const dataStr = JSON.stringify(config, null, 2);
-    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-    const exportFileDefaultName = `oie-config-backup-${new Date().toISOString().split('T')[0]}.json`;
-    
-    const linkElement = document.createElement('a');
-    linkElement.setAttribute('href', dataUri);
-    linkElement.setAttribute('download', exportFileDefaultName);
-    linkElement.click();
-    
-    // Backup exportado silenciosamente
-  };
-
-  const handleBackupImport = () => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.json';
-    input.onchange = (e) => {
-      const file = (e.target as HTMLInputElement).files?.[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          try {
-            const importedConfig = JSON.parse(e.target?.result as string);
-            onConfigChange(importedConfig);
-            // Backup importado silenciosamente
-          } catch (error) {
-            // Erro silencioso
-          }
-        };
-        reader.readAsText(file);
-      }
-    };
-    input.click();
-  };
-
-  const handleFactoryReset = () => {
-    onConfigChange(defaultConfig);
-    // Configurações restauradas silenciosamente
-  };
 
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/50 flex items-start justify-end p-4">
-      <div className="bg-white rounded-lg w-96 max-h-[90vh] overflow-hidden flex flex-col shadow-2xl">
-        {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gray-50/80">
+    <div 
+      className="fixed top-0 right-0 w-[400px] h-full bg-white/95 backdrop-blur-sm shadow-xl z-50 flex flex-col border-l border-gray-200"
+    >
+        <div className="flex items-center justify-between p-3 border-b bg-gray-50/80">
+          <h2 className="text-lg font-semibold">Configurações</h2>
           <div className="flex items-center gap-2">
-            <Settings className="w-5 h-5 text-blue-600" />
-            <h2 className="text-lg font-semibold text-gray-800">Configurações</h2>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={toggleAllSections}
-              className="flex items-center gap-1 h-8"
-            >
-              {Object.values(openSections).every(isOpen => isOpen) ? (
-                <>
-                  <Minus className="w-3 h-3" />
-                  Colapsar Tudo
-                </>
-              ) : (
-                <>
-                  <Plus className="w-3 h-3" />
-                  Expandir Tudo
-                </>
-              )}
-            </Button>
             <Button
               variant="ghost"
-              size="sm"  
-              onClick={() => onOpenChange(false)}
-              className="h-8 w-8 p-0"
+              size="sm"
+              onClick={toggleAllSections}
+              className="h-6 w-6 p-0"
+              title={Object.values(openSections).every(Boolean) ? "Colapsar todas" : "Expandir todas"}
             >
+              {Object.values(openSections).every(Boolean) ? <Minus className="h-3 w-3" /> : <Plus className="h-3 w-3" />}
+            </Button>
+            <Button variant="ghost" size="sm" onClick={onCancel}>
               <X className="w-4 h-4" />
             </Button>
           </div>
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto p-4">
+        <div className="flex-1 overflow-y-auto">
+        {/* Fundo da Aplicação */}
+        <ConfigSection
+          title="Fundo da Aplicação"
+          icon={<Palette className="w-4 h-4" />}
+          isOpen={openSections.background}
+          onToggle={() => toggleSection('background')}
+          colorClass="text-purple-600"
+        >
+          <div>
+            <Label className="text-sm font-medium">Cor de Fundo</Label>
+            <Input
+              type="color"
+              value={config.backgroundColor}
+              onChange={(e) => updateConfig('backgroundColor', e.target.value)}
+              className="h-12 mt-1 border-2"
+            />
+          </div>
+        </ConfigSection>
+
+        {/* Coluna 1 - Produção */}
+        <ConfigSection
+          title="Coluna 1 - Produção"
+          icon={<Factory className="w-4 h-4" />}
+          isOpen={openSections.production}
+          onToggle={() => toggleSection('production')}
+          colorClass="text-blue-600"
+        >
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <Switch 
+                checked={config.production.visible} 
+                onCheckedChange={(checked) => updateConfig('production.visible', checked)}
+                className="scale-75"
+              />
+              <Label className="text-sm">Exibir Coluna</Label>
+            </div>
+            <div className="flex items-center gap-2">
+              <Switch 
+                checked={config.production.showBorder || false} 
+                onCheckedChange={(checked) => updateConfig('production.showBorder', checked)}
+                className="scale-75"
+              />
+              <Label className="text-sm">Tem Borda</Label>
+            </div>
+          </div>
+
+          <div>
+            <Label className="text-sm font-medium">Título da Coluna</Label>
+            <Input
+              value={config.production.title}
+              onChange={(e) => updateConfig('production.title', e.target.value)}
+              className="mt-1"
+            />
+          </div>
+
+          <div>
+            <Label className="text-sm font-medium">Largura (%): {config.production.width}</Label>
+            <Slider
+              value={[config.production.width]}
+              onValueChange={([value]) => updateConfig('production.width', value)}
+              max={50}
+              min={10}
+              step={1}
+              className="mt-1"
+            />
+          </div>
+
+          <div>
+            <Label className="text-sm font-medium">Altura do Cabeçalho: {config.production.headerHeight}px</Label>
+            <Slider
+              value={[config.production.headerHeight]}
+              onValueChange={([value]) => updateConfig('production.headerHeight', value)}
+              max={180}
+              min={32}
+              step={4}
+              className="mt-1"
+            />
+          </div>
+
+          <div>
+            <Label className="text-sm font-medium">Tamanho da Fonte do Cabeçalho: {config.production.headerFontSize}rem</Label>
+            <Slider
+              value={[config.production.headerFontSize]}
+              onValueChange={([value]) => updateConfig('production.headerFontSize', value)}
+              max={3}
+              min={0.8}
+              step={0.1}
+              className="mt-1"
+            />
+          </div>
+
+            <div className="space-y-3 border-t pt-3">
+            <Label className="text-sm font-medium">Configuração dos Cards - Produção</Label>
+            
+            <div>
+              <Label className="text-xs">Colunas: {config.production.cardConfig.columns}</Label>
+              <Slider
+                value={[config.production.cardConfig.columns]}
+                onValueChange={([value]) => updateConfig('production.cardConfig.columns', value)}
+                max={5}
+                min={2}
+                step={1}
+                className="mt-1"
+              />
+            </div>
+            
+            <div>
+              <Label className="text-xs">Tamanho da Fonte: {config.production.cardConfig.fontSize}rem</Label>
+              <Slider
+                value={[config.production.cardConfig.fontSize]}
+              onValueChange={([value]) => updateConfig('production.cardConfig.fontSize', value)}
+              max={8}
+              min={0.5}
+                step={0.1}
+                className="mt-1"
+              />
+            </div>
+
+            <div>
+              <Label className="text-xs">Família da Fonte</Label>
+              <select
+                value={config.production.cardConfig.fontFamily}
+                onChange={(e) => updateConfig('production.cardConfig.fontFamily', e.target.value)}
+                className="w-full mt-1 px-3 py-1 text-xs border border-gray-300 rounded-md bg-white"
+              >
+                <option value="Arial">Arial</option>
+                <option value="Times New Roman">Times New Roman</option>
+                <option value="Courier New">Courier New</option>
+                <option value="Calibri">Calibri</option>
+                <option value="Verdana">Verdana</option>
+                <option value="Georgia">Georgia</option>
+                <option value="Tahoma">Tahoma</option>
+                <option value="Impact">Impact</option>
+              </select>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <Label className="text-xs">Cor da Fonte</Label>
+                <Input
+                  type="color"
+                  value={config.production.cardConfig.textColor}
+                  onChange={(e) => updateConfig('production.cardConfig.textColor', e.target.value)}
+                  className="h-10 mt-1 border-2"
+                />
+              </div>
+              <div>
+                <Label className="text-xs">Cor de Fundo</Label>
+                <Input
+                  type="color"
+                  value={config.production.cardConfig.backgroundColor}
+                  onChange={(e) => updateConfig('production.cardConfig.backgroundColor', e.target.value)}
+                  className="h-10 mt-1 border-2"
+                />
+              </div>
+            </div>
+          </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <Label className="text-xs">Cor de Fundo</Label>
+                <Input
+                  type="color"
+                  value={config.production.headerBg}
+                  onChange={(e) => updateConfig('production.headerBg', e.target.value)}
+                  className="h-12 mt-1 border-2"
+                />
+              </div>
+              <div>
+                <Label className="text-xs">Cor da Fonte</Label>
+                <Input
+                  type="color"
+                  value={config.production.headerColor}
+                  onChange={(e) => updateConfig('production.headerColor', e.target.value)}
+                  className="h-12 mt-1 border-2"
+                />
+              </div>
+            </div>
+        </ConfigSection>
+
+        {/* Coluna 2 - Prontos */}
+        <ConfigSection
+          title="Coluna 2 - Prontos (Obrigatória)"
+          icon={<CheckCircle className="w-4 h-4" />}
+          isOpen={openSections.ready}
+          onToggle={() => toggleSection('ready')}
+          colorClass="text-green-600"
+        >
+          <div className="flex items-center gap-2">
+            <Switch 
+              checked={config.ready.showBorder || false} 
+              onCheckedChange={(checked) => updateConfig('ready.showBorder', checked)}
+              className="scale-75"
+            />
+            <Label className="text-sm">Tem Borda</Label>
+          </div>
+
+          <div>
+            <Label className="text-sm font-medium">Título da Coluna</Label>
+            <Input
+              value={config.ready.title}
+              onChange={(e) => updateConfig('ready.title', e.target.value)}
+              className="mt-1"
+            />
+          </div>
+
+          <div>
+            <Label className="text-sm font-medium">Largura (%): {config.ready.width}</Label>
+            <Slider
+              value={[config.ready.width]}
+              onValueChange={([value]) => updateConfig('ready.width', value)}
+              max={60}
+              min={10}
+              step={1}
+              className="mt-1"
+            />
+          </div>
+
+          <div>
+            <Label className="text-sm font-medium">Altura do Cabeçalho: {config.ready.headerHeight}px</Label>
+            <Slider
+              value={[config.ready.headerHeight]}
+              onValueChange={([value]) => updateConfig('ready.headerHeight', value)}
+              max={180}
+              min={32}
+              step={4}
+              className="mt-1"
+            />
+          </div>
+
+          <div>
+            <Label className="text-sm font-medium">Tamanho da Fonte do Cabeçalho: {config.ready.headerFontSize}rem</Label>
+            <Slider
+              value={[config.ready.headerFontSize]}
+              onValueChange={([value]) => updateConfig('ready.headerFontSize', value)}
+              max={3}
+              min={0.8}
+              step={0.1}
+              className="mt-1"
+            />
+          </div>
+
+          <div className="space-y-3 border-t pt-3">
+            <Label className="text-sm font-medium">Configuração dos Cards - Prontos</Label>
+            
+            <div>
+              <Label className="text-xs">Colunas: {config.ready.cardConfig.columns}</Label>
+              <Slider
+                value={[config.ready.cardConfig.columns]}
+                onValueChange={([value]) => updateConfig('ready.cardConfig.columns', value)}
+                max={5}
+                min={2}
+                step={1}
+                className="mt-1"
+              />
+            </div>
+            
+            <div>
+              <Label className="text-xs">Tamanho da Fonte: {config.ready.cardConfig.fontSize}rem</Label>
+              <Slider
+                value={[config.ready.cardConfig.fontSize]}
+              onValueChange={([value]) => updateConfig('ready.cardConfig.fontSize', value)}
+              max={8}
+              min={0.5}
+                step={0.1}
+                className="mt-1"
+              />
+            </div>
+
+            <div>
+              <Label className="text-xs">Família da Fonte</Label>
+              <select
+                value={config.ready.cardConfig.fontFamily}
+                onChange={(e) => updateConfig('ready.cardConfig.fontFamily', e.target.value)}
+                className="w-full mt-1 px-3 py-1 text-xs border border-gray-300 rounded-md bg-white"
+              >
+                <option value="Arial">Arial</option>
+                <option value="Times New Roman">Times New Roman</option>
+                <option value="Courier New">Courier New</option>
+                <option value="Calibri">Calibri</option>
+                <option value="Verdana">Verdana</option>
+                <option value="Georgia">Georgia</option>
+                <option value="Tahoma">Tahoma</option>
+                <option value="Impact">Impact</option>
+              </select>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <Label className="text-xs">Cor da Fonte</Label>
+                <Input
+                  type="color"
+                  value={config.ready.cardConfig.textColor}
+                  onChange={(e) => updateConfig('ready.cardConfig.textColor', e.target.value)}
+                  className="h-10 mt-1 border-2"
+                />
+              </div>
+              <div>
+                <Label className="text-xs">Cor de Fundo</Label>
+                <Input
+                  type="color"
+                  value={config.ready.cardConfig.backgroundColor}
+                  onChange={(e) => updateConfig('ready.cardConfig.backgroundColor', e.target.value)}
+                  className="h-10 mt-1 border-2"
+                />
+              </div>
+            </div>
+          </div>
+
+        </ConfigSection>
+
+        {/* Último Pedido */}
+        <ConfigSection
+          title="Último Pedido"
+          icon={<Monitor className="w-4 h-4" />}
+          isOpen={openSections.lastOrder}
+          onToggle={() => toggleSection('lastOrder')}
+          colorClass="text-amber-600"
+        >
+          <div>
+            <Label className="text-sm font-medium">Altura: {config.lastOrder.height}px</Label>
+            <Slider
+              value={[config.lastOrder.height]}
+              onValueChange={([value]) => updateConfig('lastOrder.height', value)}
+              max={360}
+              min={40}
+              step={10}
+              className="mt-1 h-3"
+              style={{
+                '--tw-bg-opacity': '1',
+                background: `linear-gradient(to right, ${config.lastOrder.backgroundColor} 0%, ${config.lastOrder.backgroundColor} 100%)`
+              } as React.CSSProperties}
+            />
+          </div>
+          
+          <div>
+            <Label className="text-sm font-medium">Tamanho da Fonte: {config.lastOrder.fontSize}rem</Label>
+            <Slider
+              value={[config.lastOrder.fontSize]}
+              onValueChange={([value]) => updateConfig('lastOrder.fontSize', value)}
+              max={30}
+              min={1}
+              step={0.5}
+              className="mt-1 h-3"
+              style={{
+                '--tw-bg-opacity': '1',
+                background: `linear-gradient(to right, ${config.lastOrder.textColor || '#000000'} 0%, ${config.lastOrder.textColor || '#000000'} 100%)`
+              } as React.CSSProperties}
+            />
+          </div>
+
+          <div>
+            <Label className="text-sm font-medium">Família da Fonte</Label>
+            <select
+              value={config.lastOrder.fontFamily || 'Arial'}
+              onChange={(e) => updateConfig('lastOrder.fontFamily', e.target.value)}
+              className="w-full mt-1 px-3 py-2 text-sm border border-gray-300 rounded-md bg-white"
+            >
+              <option value="Arial">Arial</option>
+              <option value="Times New Roman">Times New Roman</option>
+              <option value="Courier New">Courier New</option>
+              <option value="Calibri">Calibri</option>
+              <option value="Verdana">Verdana</option>
+              <option value="Georgia">Georgia</option>
+              <option value="Tahoma">Tahoma</option>
+              <option value="Impact">Impact</option>
+            </select>
+          </div>
+
+          <div className="grid grid-cols-2 gap-2">
+            <div>
+              <Label className="text-sm font-medium">Cor da Fonte</Label>
+              <Input
+                type="color"
+                value={config.lastOrder.textColor || '#000000'}
+                onChange={(e) => updateConfig('lastOrder.textColor', e.target.value)}
+                className="h-12 mt-1 border-2"
+              />
+            </div>
+            <div>
+              <Label className="text-sm font-medium">Cor de Fundo</Label>
+              <Input
+                type="color"
+                value={config.lastOrder.backgroundColor || '#ffffff'}
+                onChange={(e) => updateConfig('lastOrder.backgroundColor', e.target.value)}
+                className="h-12 mt-1 border-2"
+              />
+            </div>
+          </div>
+          
+          <div className="space-y-3">
+            <div className="flex items-center space-x-2">
+              <Switch
+                checked={config.lastOrder.pulseAnimation}
+                onCheckedChange={(checked) => updateConfig('lastOrder.pulseAnimation', checked)}
+                className="scale-75"
+              />
+              <Label className="text-sm">Animação Pulsante</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Switch
+                checked={config.lastOrder.highlight}
+                onCheckedChange={(checked) => updateConfig('lastOrder.highlight', checked)}
+                className="scale-75"
+              />
+              <Label className="text-sm">Destacar Último Pedido</Label>
+            </div>
+          </div>
+        </ConfigSection>
+
+        {/* Coluna 3 - Publicidade */}
+        <ConfigSection
+          title="Coluna 3 - Publicidade"
+          icon={<Monitor className="w-4 h-4" />}
+          isOpen={openSections.advertising}
+          onToggle={() => toggleSection('advertising')}
+          colorClass="text-cyan-600"
+        >
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <Switch 
+                checked={config.advertising.visible} 
+                onCheckedChange={(checked) => updateConfig('advertising.visible', checked)}
+                className="scale-75"
+              />
+              <Label className="text-sm">Exibir Coluna</Label>
+            </div>
+            <div className="flex items-center gap-2">
+              <Switch 
+                checked={config.advertising.showBorder || false} 
+                onCheckedChange={(checked) => updateConfig('advertising.showBorder', checked)}
+                className="scale-75"
+              />
+              <Label className="text-sm">Tem Borda</Label>
+            </div>
+          </div>
+
+            <div>
+              <Label className="text-sm font-medium">Largura (%): {config.advertising.width}</Label>
+              <Slider
+                value={[config.advertising.width]}
+                onValueChange={([value]) => updateConfig('advertising.width', value)}
+                max={50}
+                min={10}
+                step={1}
+                className="mt-1"
+              />
+            </div>
+
+          <div>
+            <Label className="text-sm font-medium">Altura do Cabeçalho: {config.advertising.headerHeight}px</Label>
+            <Slider
+              value={[config.advertising.headerHeight]}
+              onValueChange={([value]) => updateConfig('advertising.headerHeight', value)}
+              max={180}
+              min={32}
+              step={4}
+              className="mt-1"
+            />
+            <div className="text-xs text-gray-500 mt-1">
+              Dimensões sugeridas: {Math.round((window.innerWidth || 1920) * config.advertising.width / 100)} x {Math.round((window.innerHeight || 1080) * 0.6)}px
+            </div>
+          </div>
+
+          <div>
+            <Label className="text-sm font-medium">URL ou Path da Imagem</Label>
+            <Input
+              value={config.advertising.imageUrl || ''}
+              onChange={(e) => updateConfig('advertising.imageUrl', e.target.value)}
+              placeholder="https://exemplo.com/imagem.jpg ou /assets/imagem.jpg"
+              className="mt-1 text-sm"
+            />
+          </div>
+        </ConfigSection>
+
+        {/* Efeitos Sonoros */}
+        <ConfigSection
+          title="Efeitos Sonoros"
+          icon={<Volume2 className="w-4 h-4" />}
+          isOpen={openSections.sounds}
+          onToggle={() => toggleSection('sounds')}
+          colorClass="text-yellow-600"
+        >
           <div className="space-y-4">
-
-            {/* Configurações de Fundo */}
-            <ConfigSection
-              title="Configurações de Fundo"
-              icon={<Palette className="w-4 h-4" />}
-              isOpen={openSections.background}
-              onToggle={() => toggleSection('background')}
-              colorClass="text-slate-600"
-            >
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label>Cor de Fundo da Aplicação</Label>
-                  <Input
-                    type="color"
-                    value={config.backgroundColor || '#ffffff'}
-                    onChange={(e) => updateConfig('backgroundColor', e.target.value)}
-                    className="h-8"
-                  />
-                </div>
+            <div className="space-y-3">
+              <div className="flex items-center space-x-2">
+                <Switch
+                  checked={config.sounds.production}
+                  onCheckedChange={(checked) => updateConfig('sounds.production', checked)}
+                  className="scale-75"
+                />
+                <Label className="text-sm">Som para Produção</Label>
               </div>
-            </ConfigSection>
-
-            {/* Coluna Produção */}
-            <ConfigSection
-              title="Coluna Produção"
-              icon={<Factory className="w-4 h-4" />}
-              isOpen={openSections.production}
-              onToggle={() => toggleSection('production')}
-              colorClass="text-orange-600"
-            >
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <Label>Exibir Coluna</Label>
-                  <Switch
-                    checked={config.production?.visible || false}
-                    onCheckedChange={(checked) => updateConfig('production.visible', checked)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Título da Coluna</Label>
-                  <Input
-                    value={config.production?.title || 'Produção'}
-                    onChange={(e) => updateConfig('production.title', e.target.value)}
-                    className="h-8"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Largura (%): {config.production?.width || 30}</Label>
-                  <Slider
-                    value={[config.production?.width || 30]}
-                    onValueChange={([value]) => updateConfig('production.width', value)}
-                    min={20}
-                    max={60}
-                    step={5}
-                    className="w-full"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Altura do Cabeçalho: {config.production?.headerHeight || 72}px</Label>
-                  <Slider
-                    value={[config.production?.headerHeight || 72]}
-                    onValueChange={([value]) => updateConfig('production.headerHeight', value)}
-                    min={40}
-                    max={120}
-                    step={4}
-                    className="w-full"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Tamanho da Fonte do Cabeçalho: {config.production?.headerFontSize || 2.5}rem</Label>
-                  <Slider
-                    value={[config.production?.headerFontSize || 2.5]}
-                    onValueChange={([value]) => updateConfig('production.headerFontSize', value)}
-                    min={1}
-                    max={5}
-                    step={0.1}
-                    className="w-full"
-                  />
-                </div>
-                <div className="space-y-3">
-                  <Label className="text-sm font-medium">Configuração dos Cards - Produção</Label>
-                  <div className="space-y-3">
-                    <div className="space-y-2">
-                      <Label>Colunas: {config.production?.cardConfig?.columns || 2}</Label>
-                      <Slider
-                        value={[config.production?.cardConfig?.columns || 2]}
-                        onValueChange={([value]) => updateConfig('production.cardConfig.columns', value)}
-                        min={1}
-                        max={5}
-                        step={1}
-                        className="w-full"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Tamanho da Fonte: {config.production?.cardConfig?.fontSize || 2}rem</Label>
-                      <Slider
-                        value={[config.production?.cardConfig?.fontSize || 2]}
-                        onValueChange={([value]) => updateConfig('production.cardConfig.fontSize', value)}
-                        min={1}
-                        max={6}
-                        step={0.1}
-                        className="w-full"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Família da Fonte</Label>
-                      <Select 
-                        value={config.production?.cardConfig?.fontFamily || 'Tahoma'} 
-                        onValueChange={(value) => updateConfig('production.cardConfig.fontFamily', value)}
-                      >
-                        <SelectTrigger className="h-8">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="Tahoma">Tahoma</SelectItem>
-                          <SelectItem value="Arial">Arial</SelectItem>
-                          <SelectItem value="Helvetica">Helvetica</SelectItem>
-                          <SelectItem value="Times New Roman">Times New Roman</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="grid grid-cols-2 gap-3">
-                      <div className="space-y-2">
-                        <Label>Cor da Fonte</Label>
-                        <Input
-                          type="color"
-                          value={config.production?.cardConfig?.textColor || '#374151'}
-                          onChange={(e) => updateConfig('production.cardConfig.textColor', e.target.value)}
-                          className="h-8"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label>Cor de Fundo</Label>
-                        <Input
-                          type="color"
-                          value={config.production?.cardConfig?.backgroundColor || '#f3f4f6'}
-                          onChange={(e) => updateConfig('production.cardConfig.backgroundColor', e.target.value)}
-                          className="h-8"
-                        />
-                      </div>
-                    </div>
+              
+              {config.sounds.production && (
+                <div className="ml-6 space-y-2">
+                  <div className="flex gap-2">
+                    <Input
+                      type="file"
+                      accept="audio/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          const url = URL.createObjectURL(file);
+                          updateConfig('sounds.productionFile', url);
+                        }
+                      }}
+                      className="text-xs bg-muted hover:bg-background border-2 border-dashed"
+                    />
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        if (config.sounds.productionFile) {
+                          const audio = new Audio(config.sounds.productionFile);
+                          audio.play();
+                        }
+                      }}
+                      disabled={!config.sounds.productionFile}
+                    >
+                      Testar
+                    </Button>
                   </div>
                 </div>
-              </div>
-            </ConfigSection>
+              )}
+            </div>
 
-            {/* Coluna Pronto */}
-            <ConfigSection
-              title="Coluna Pronto"
-              icon={<CheckCircle className="w-4 h-4" />}
-              isOpen={openSections.ready}
-              onToggle={() => toggleSection('ready')}
-              colorClass="text-green-600"
-            >
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <Label>Exibir Coluna</Label>
-                  <Switch
-                    checked={config.ready?.visible || false}
-                    onCheckedChange={(checked) => updateConfig('ready.visible', checked)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Título da Coluna</Label>
-                  <Input
-                    value={config.ready?.title || 'Pronto'}
-                    onChange={(e) => updateConfig('ready.title', e.target.value)}
-                    className="h-8"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Largura (%): {config.ready?.width || 40}</Label>
-                  <Slider
-                    value={[config.ready?.width || 40]}
-                    onValueChange={([value]) => updateConfig('ready.width', value)}
-                    min={20}
-                    max={60}
-                    step={5}
-                    className="w-full"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Altura do Cabeçalho: {config.ready?.headerHeight || 72}px</Label>
-                  <Slider
-                    value={[config.ready?.headerHeight || 72]}
-                    onValueChange={([value]) => updateConfig('ready.headerHeight', value)}
-                    min={40}
-                    max={120}
-                    step={4}
-                    className="w-full"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Tamanho da Fonte do Cabeçalho: {config.ready?.headerFontSize || 2.5}rem</Label>
-                  <Slider
-                    value={[config.ready?.headerFontSize || 2.5]}
-                    onValueChange={([value]) => updateConfig('ready.headerFontSize', value)}
-                    min={1}
-                    max={5}
-                    step={0.1}
-                    className="w-full"
-                  />
-                </div>
-                <div className="space-y-3">
-                  <Label className="text-sm font-medium">Configuração dos Cards - Prontos</Label>
-                  <div className="space-y-3">
-                    <div className="space-y-2">
-                      <Label>Colunas: {config.ready?.cardConfig?.columns || 3}</Label>
-                      <Slider
-                        value={[config.ready?.cardConfig?.columns || 3]}
-                        onValueChange={([value]) => updateConfig('ready.cardConfig.columns', value)}
-                        min={1}
-                        max={5}
-                        step={1}
-                        className="w-full"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Tamanho da Fonte: {config.ready?.cardConfig?.fontSize || 4}rem</Label>
-                      <Slider
-                        value={[config.ready?.cardConfig?.fontSize || 4]}
-                        onValueChange={([value]) => updateConfig('ready.cardConfig.fontSize', value)}
-                        min={1}
-                        max={6}
-                        step={0.1}
-                        className="w-full"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Família da Fonte</Label>
-                      <Select 
-                        value={config.ready?.cardConfig?.fontFamily || 'Tahoma'} 
-                        onValueChange={(value) => updateConfig('ready.cardConfig.fontFamily', value)}
-                      >
-                        <SelectTrigger className="h-8">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="Tahoma">Tahoma</SelectItem>
-                          <SelectItem value="Arial">Arial</SelectItem>
-                          <SelectItem value="Helvetica">Helvetica</SelectItem>
-                          <SelectItem value="Times New Roman">Times New Roman</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="grid grid-cols-2 gap-3">
-                      <div className="space-y-2">
-                        <Label>Cor da Fonte</Label>
-                        <Input
-                          type="color"
-                          value={config.ready?.cardConfig?.textColor || '#000000'}
-                          onChange={(e) => updateConfig('ready.cardConfig.textColor', e.target.value)}
-                          className="h-8"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label>Cor de Fundo</Label>
-                        <Input
-                          type="color"
-                          value={config.ready?.cardConfig?.backgroundColor || '#FAFAFA'}
-                          onChange={(e) => updateConfig('ready.cardConfig.backgroundColor', e.target.value)}
-                          className="h-8"
-                        />
-                      </div>
-                    </div>
+            <div className="space-y-3">
+              <div className="flex items-center space-x-2">
+                <Switch
+                  checked={config.sounds.ready}
+                  onCheckedChange={(checked) => updateConfig('sounds.ready', checked)}
+                  className="scale-75"
+                />
+                <Label className="text-sm">Som para Pronto</Label>
+              </div>
+              
+              {config.sounds.ready && (
+                <div className="ml-6 space-y-2">
+                  <div className="flex gap-2">
+                    <Input
+                      type="file"
+                      accept="audio/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          const url = URL.createObjectURL(file);
+                          updateConfig('sounds.readyFile', url);
+                        }
+                      }}
+                      className="text-xs bg-muted hover:bg-background border-2 border-dashed"
+                    />
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        if (config.sounds.readyFile) {
+                          const audio = new Audio(config.sounds.readyFile);
+                          audio.play();
+                        }
+                      }}
+                      disabled={!config.sounds.readyFile}
+                    >
+                      Testar
+                    </Button>
                   </div>
                 </div>
-              </div>
-            </ConfigSection>
+              )}
+            </div>
+          </div>
+        </ConfigSection>
 
-            {/* Último Pedido */}
-            <ConfigSection
-              title="Último Pedido"
-              icon={<Clock className="w-4 h-4" />}
-              isOpen={openSections.lastOrder}
-              onToggle={() => toggleSection('lastOrder')}
-              colorClass="text-purple-600"
-            >
-              <div className="space-y-4">
+        {/* Auto Expedição */}
+        <ConfigSection
+          title="Auto Expedição"
+          icon={<Clock className="w-4 h-4" />}
+          isOpen={openSections.autoExpedition}
+          onToggle={() => toggleSection('autoExpedition')}
+          colorClass="text-orange-600"
+        >
+          <div className="flex items-center space-x-2">
+            <Switch
+              checked={config.autoExpedition.enabled}
+              onCheckedChange={(checked) => updateConfig('autoExpedition.enabled', checked)}
+              className="scale-75"
+            />
+            <Label className="text-sm">Utilizar Auto Expedição</Label>
+          </div>
+          <div>
+            <Label className="text-sm font-medium">Após quantos minutos: {config.autoExpedition.minutes}</Label>
+            <Slider
+              value={[config.autoExpedition.minutes]}
+              onValueChange={([value]) => updateConfig('autoExpedition.minutes', value)}
+              max={60}
+              min={1}
+              step={1}
+              className="mt-1"
+            />
+          </div>
+        </ConfigSection>
+
+        {/* Text-to-Speech */}
+        <ConfigSection
+          title="Controle de Voz"
+          icon={<div className="w-4 h-4 bg-current rounded-full opacity-60" />}
+          isOpen={openSections.tts}
+          onToggle={() => toggleSection('tts')}
+        >
+          <div className="space-y-4">
+            <div className="flex items-center space-x-2">
+              <Switch
+                checked={config.textToSpeech.enabled}
+                onCheckedChange={(checked) => updateConfig('textToSpeech.enabled', checked)}
+                className="scale-75"
+              />
+              <Label className="text-sm">Ativar Voz</Label>
+            </div>
+            
+            {config.textToSpeech.enabled && (
+              <>
                 <div className="space-y-2">
-                  <Label>Altura: {config.lastOrder?.height || 180}px</Label>
-                  <Slider
-                    value={[config.lastOrder?.height || 180]}
-                    onValueChange={([value]) => updateConfig('lastOrder.height', value)}
-                    min={60}
-                    max={300}
-                    step={10}
-                    className="w-full"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Tamanho da Fonte: {config.lastOrder?.fontSize || 8}rem</Label>
-                  <Slider
-                    value={[config.lastOrder?.fontSize || 8]}
-                    onValueChange={([value]) => updateConfig('lastOrder.fontSize', value)}
-                    min={2}
-                    max={12}
-                    step={0.1}
-                    className="w-full"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Família da Fonte</Label>
-                  <Select 
-                    value={config.lastOrder?.fontFamily || 'Tahoma'} 
-                    onValueChange={(value) => updateConfig('lastOrder.fontFamily', value)}
-                  >
+                  <Label className="text-xs">Tipo de Voz</Label>
+                  <Select value={config.textToSpeech.voice || 'auto'} onValueChange={(value) => updateConfig('textToSpeech.voice', value)}>
                     <SelectTrigger className="h-8">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Tahoma">Tahoma</SelectItem>
-                      <SelectItem value="Arial">Arial</SelectItem>
-                      <SelectItem value="Helvetica">Helvetica</SelectItem>
-                      <SelectItem value="Times New Roman">Times New Roman</SelectItem>
+                      <SelectItem value="auto">Automática (Português-BR)</SelectItem>
+                      <SelectItem value="Microsoft Maria">Maria (Feminino)</SelectItem>
+                      <SelectItem value="Microsoft Heloisa">Heloísa (Feminino)</SelectItem>
+                      <SelectItem value="Microsoft Daniel">Daniel (Masculino)</SelectItem>
+                      <SelectItem value="Google português">Google Português (Masculino)</SelectItem>
+                      <SelectItem value="Google português do Brasil">Google Português BR (Feminino)</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="space-y-2">
-                    <Label>Cor do Texto</Label>
-                    <Input
-                      type="color"
-                      value={config.lastOrder?.textColor || '#0011FA'}
-                      onChange={(e) => updateConfig('lastOrder.textColor', e.target.value)}
-                      className="h-8"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Cor de Fundo</Label>
-                    <Input
-                      type="color"
-                      value={config.lastOrder?.backgroundColor || '#ffffff'}
-                      onChange={(e) => updateConfig('lastOrder.backgroundColor', e.target.value)}
-                      className="h-8"
-                    />
-                  </div>
-                </div>
-                <div className="flex items-center justify-between">
-                  <Label>Animação de Pulso</Label>
-                  <Switch
-                    checked={config.lastOrder?.pulseAnimation || false}
-                    onCheckedChange={(checked) => updateConfig('lastOrder.pulseAnimation', checked)}
-                  />
-                </div>
-                <div className="flex items-center justify-between">
-                  <Label>Destacar</Label>
-                  <Switch
-                    checked={config.lastOrder?.highlight || false}
-                    onCheckedChange={(checked) => updateConfig('lastOrder.highlight', checked)}
-                  />
-                </div>
-              </div>
-            </ConfigSection>
 
-            {/* Publicidade */}
-            <ConfigSection
-              title="Publicidade"
-              icon={<Palette className="w-4 h-4" />}
-              isOpen={openSections.advertising}
-              onToggle={() => toggleSection('advertising')}
-              colorClass="text-pink-600"
-            >
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <Label>Exibir Publicidade</Label>
-                  <Switch
-                    checked={config.advertising?.visible || false}
-                    onCheckedChange={(checked) => updateConfig('advertising.visible', checked)}
-                  />
-                </div>
                 <div className="space-y-2">
-                  <Label>Largura (%): {config.advertising?.width || 30}</Label>
-                  <Slider
-                    value={[config.advertising?.width || 30]}
-                    onValueChange={([value]) => updateConfig('advertising.width', value)}
-                    min={20}
-                    max={50}
-                    step={5}
-                    className="w-full"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Título do Cabeçalho</Label>
-                  <Input
-                    value={config.advertising?.headerTitle || 'Publicidade'}
-                    onChange={(e) => updateConfig('advertising.headerTitle', e.target.value)}
-                    className="h-8"
-                  />
-                </div>
-                <div className="flex items-center justify-between">
-                  <Label>Exibir Cabeçalho</Label>
-                  <Switch
-                    checked={config.advertising?.headerVisible || false}
-                    onCheckedChange={(checked) => updateConfig('advertising.headerVisible', checked)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>URL da Imagem</Label>
-                  <Input
-                    value={config.advertising?.imageUrl || ''}
-                    onChange={(e) => updateConfig('advertising.imageUrl', e.target.value)}
-                    className="h-8"
-                    placeholder="https://..."
-                  />
-                </div>
-              </div>
-            </ConfigSection>
-
-            {/* Sons */}
-            <ConfigSection
-              title="Sons"
-              icon={<Volume2 className="w-4 h-4" />}
-              isOpen={openSections.sounds}
-              onToggle={() => toggleSection('sounds')}
-              colorClass="text-blue-600"
-            >
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <Label>Som Produção</Label>
-                  <Switch
-                    checked={config.sounds?.production || false}
-                    onCheckedChange={(checked) => updateConfig('sounds.production', checked)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Arquivo de Som - Produção</Label>
-                  <Input
-                    value={config.sounds?.productionFile || ''}
-                    onChange={(e) => updateConfig('sounds.productionFile', e.target.value)}
-                    className="h-8"
-                    placeholder="arquivo.wav"
-                  />
-                </div>
-                <div className="flex items-center justify-between">
-                  <Label>Som Pronto</Label>
-                  <Switch
-                    checked={config.sounds?.ready || false}
-                    onCheckedChange={(checked) => updateConfig('sounds.ready', checked)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Arquivo de Som - Pronto</Label>
-                  <Input
-                    value={config.sounds?.readyFile || ''}
-                    onChange={(e) => updateConfig('sounds.readyFile', e.target.value)}
-                    className="h-8"
-                    placeholder="arquivo.wav"
-                  />
-                </div>
-              </div>
-            </ConfigSection>
-
-            {/* Text-to-Speech */}
-            <ConfigSection
-              title="Text-to-Speech"
-              icon={<Volume2 className="w-4 h-4" />}
-              isOpen={openSections.textToSpeech}
-              onToggle={() => toggleSection('textToSpeech')}
-              colorClass="text-indigo-600"
-            >
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <Label>Ativar TTS</Label>
-                  <Switch
-                    checked={config.textToSpeech?.enabled || false}
-                    onCheckedChange={(checked) => updateConfig('textToSpeech.enabled', checked)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Voz</Label>
-                  <Input
-                    value={config.textToSpeech?.voice || ''}
-                    onChange={(e) => updateConfig('textToSpeech.voice', e.target.value)}
-                    className="h-8"
-                    placeholder="Voz do sistema"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Velocidade: {config.textToSpeech?.rate || 1}x</Label>
-                  <Slider
-                    value={[config.textToSpeech?.rate || 1]}
-                    onValueChange={([value]) => updateConfig('textToSpeech.rate', value)}
-                    min={0.5}
-                    max={2}
-                    step={0.1}
-                    className="w-full"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Volume: {Math.round((config.textToSpeech?.volume || 1) * 100)}%</Label>
-                  <Slider
-                    value={[config.textToSpeech?.volume || 1]}
-                    onValueChange={([value]) => updateConfig('textToSpeech.volume', value)}
-                    min={0}
-                    max={1}
-                    step={0.1}
-                    className="w-full"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Tipo de Texto</Label>
-                  <Select 
-                    value={config.textToSpeech?.textType || 'number_only'} 
-                    onValueChange={(value) => updateConfig('textToSpeech.textType', value)}
-                  >
+                  <Label className="text-xs">Tipo de Mensagem</Label>
+                  <Select value={config.textToSpeech.textType || 'name_ready'} onValueChange={(value) => updateConfig('textToSpeech.textType', value)}>
                     <SelectTrigger className="h-8">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="number_only">Apenas Número</SelectItem>
-                      <SelectItem value="name_ready">Nome + Pronto</SelectItem>
-                      <SelectItem value="order_ready">Pedido + Pronto</SelectItem>
-                      <SelectItem value="name_order_ready">Nome + Pedido + Pronto</SelectItem>
-                      <SelectItem value="custom">Personalizado</SelectItem>
+                      <SelectItem value="number_only">Só Número</SelectItem>
+                      <SelectItem value="name_ready">[Nome], seu pedido está pronto!</SelectItem>
+                      <SelectItem value="order_ready">O pedido [número] está pronto.</SelectItem>
+                      <SelectItem value="name_order_ready">[Nome], o pedido [número] está pronto!</SelectItem>
+                      <SelectItem value="custom">Texto Personalizado</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
-                {config.textToSpeech?.textType === 'custom' && (
+
+                <div className="space-y-2">
+                  <Label className="text-xs">Volume</Label>
+                  <div className="flex items-center space-x-2">
+                    <Slider
+                      value={[config.textToSpeech.volume || 0.8]}
+                      onValueChange={(value) => updateConfig('textToSpeech.volume', value[0])}
+                      min={0}
+                      max={1}
+                      step={0.1}
+                      className="flex-1"
+                    />
+                    <span className="text-xs text-muted-foreground w-8">
+                      {Math.round((config.textToSpeech.volume || 0.8) * 100)}%
+                    </span>
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label className="text-xs">Velocidade</Label>
+                  <div className="flex items-center space-x-2">
+                    <Slider
+                      value={[config.textToSpeech.rate || 1]}
+                      onValueChange={(value) => updateConfig('textToSpeech.rate', value[0])}
+                      min={0.5}
+                      max={2}
+                      step={0.1}
+                      className="flex-1"
+                    />
+                    <span className="text-xs text-muted-foreground w-8">
+                      {config.textToSpeech.rate || 1}x
+                    </span>
+                  </div>
+                </div>
+
+                {config.textToSpeech.textType === 'custom' && (
                   <div className="space-y-2">
-                    <Label>Texto Personalizado</Label>
+                    <Label className="text-xs">Texto Personalizado</Label>
                     <Input
-                      value={config.textToSpeech?.customText || ''}
+                      value={config.textToSpeech.customText || ''}
                       onChange={(e) => updateConfig('textToSpeech.customText', e.target.value)}
+                      placeholder="Digite o texto personalizado..."
                       className="h-8"
-                      placeholder="Seu pedido está pronto"
                     />
                   </div>
                 )}
-              </div>
-            </ConfigSection>
 
-            {/* Auto Expedição */}
-            <ConfigSection
-              title="Auto Expedição"
-              icon={<CheckCircle className="w-4 h-4" />}
-              isOpen={openSections.autoExpedition}
-              onToggle={() => toggleSection('autoExpedition')}
-              colorClass="text-green-600"
-            >
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <Label>Ativar Auto Expedição</Label>
-                  <Switch
-                    checked={config.autoExpedition?.enabled || false}
-                    onCheckedChange={(checked) => updateConfig('autoExpedition.enabled', checked)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Tempo para Auto Expedição (minutos)</Label>
-                  <Input
-                    type="number"
-                    value={config.autoExpedition?.minutes || 30}
-                    onChange={(e) => updateConfig('autoExpedition.minutes', parseInt(e.target.value))}
-                    className="h-8"
-                  />
-                </div>
-              </div>
-            </ConfigSection>
+                {/* Configurações de Repetição */}
+                <div className="space-y-4 pt-2 border-t border-gray-200">
+                  <div className="flex items-center space-x-2">
+                    <Switch
+                      checked={config.textToSpeech.repeatEnabled || false}
+                      onCheckedChange={(checked) => updateConfig('textToSpeech.repeatEnabled', checked)}
+                      className="scale-75"
+                    />
+                    <Label className="text-sm">Repetir fala</Label>
+                  </div>
 
-            {/* Módulos */}
-            <ConfigSection
-              title="Módulos"
-              icon={<Puzzle className="w-4 h-4" />}
-              isOpen={openSections.modules}
-              onToggle={() => toggleSection('modules')}
-              colorClass="text-cyan-600"
-            >
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <Label>Módulo Balcão</Label>
-                  <Switch
-                    checked={config.modules?.balcao || false}
-                    onCheckedChange={(checked) => updateConfig('modules.balcao', checked)}
-                  />
-                </div>
-                <div className="flex items-center justify-between">
-                  <Label>Módulo Mesa</Label>
-                  <Switch
-                    checked={config.modules?.mesa || false}
-                    onCheckedChange={(checked) => updateConfig('modules.mesa', checked)}
-                  />
-                </div>
-                <div className="flex items-center justify-between">
-                  <Label>Módulo Entrega</Label>
-                  <Switch
-                    checked={config.modules?.entrega || false}
-                    onCheckedChange={(checked) => updateConfig('modules.entrega', checked)}
-                  />
-                </div>
-                <div className="flex items-center justify-between">
-                  <Label>Módulo Ficha</Label>
-                  <Switch
-                    checked={config.modules?.ficha || false}
-                    onCheckedChange={(checked) => updateConfig('modules.ficha', checked)}
-                  />
-                </div>
-              </div>
-            </ConfigSection>
-
-            {/* Diversos */}
-            <ConfigSection
-              title="Diversos"
-              icon={<Settings className="w-4 h-4" />}
-              isOpen={openSections.diversos}
-              onToggle={() => toggleSection('diversos')}
-              colorClass="text-gray-600"
-            >
-              <div className="space-y-6">
-                {/* Conexão com Banco de Dados */}
-                <div className="space-y-3">
-                  <Label className="text-sm font-medium">Conexão com Banco de Dados</Label>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-2">
-                      <Label className="text-xs">Tipo</Label>
-                      <Select 
-                        value={config.database?.type || 'none'} 
-                        onValueChange={(value) => updateConfig('database.type', value)}
-                      >
-                        <SelectTrigger className="h-8">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="none">Nenhum</SelectItem>
-                          <SelectItem value="mssql">MSSQL</SelectItem>
-                          <SelectItem value="mysql">MYSQL</SelectItem>
-                          <SelectItem value="postgre">POSTGRE</SelectItem>
-                          <SelectItem value="other">OUTRO</SelectItem>
-                        </SelectContent>
-                      </Select>
+                  {config.textToSpeech.repeatEnabled && (
+                    <div className="grid grid-cols-2 gap-4 ml-4">
+                      <div className="space-y-1">
+                        <Label className="text-sm">Repetições</Label>
+                        <Input
+                          type="number"
+                          min="1"
+                          max="10"
+                          value={config.textToSpeech.repeatCount || 2}
+                          onChange={(e) => updateConfig('textToSpeech.repeatCount', parseInt(e.target.value))}
+                          className="h-8"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <Label className="text-sm">Intervalo (s)</Label>
+                        <Input
+                          type="number"
+                          min="5"
+                          max="60"
+                          value={config.textToSpeech.repeatInterval || 15}
+                          onChange={(e) => updateConfig('textToSpeech.repeatInterval', parseInt(e.target.value))}
+                          className="h-8"
+                        />
+                      </div>
                     </div>
-                    <div className="space-y-2">
+                  )}
+                </div>
+              </>
+            )}
+          </div>
+        </ConfigSection>
+
+        {/* Módulos */}
+        <ConfigSection
+          title="Módulos"
+          icon={<Puzzle className="w-4 h-4" />}
+          isOpen={openSections.modules}
+          onToggle={() => toggleSection('modules')}
+          colorClass="text-indigo-600"
+        >
+          <div className="grid grid-cols-2 gap-3">
+            <div className="flex items-center space-x-2">
+              <Switch
+                checked={config.modules.balcao}
+                onCheckedChange={(checked) => updateConfig('modules.balcao', checked)}
+                className="scale-75"
+              />
+              <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
+              <Label className="text-sm">Balcão</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Switch
+                checked={config.modules.mesa}
+                onCheckedChange={(checked) => updateConfig('modules.mesa', checked)}
+                className="scale-75"
+              />
+              <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
+              <Label className="text-sm">Mesa</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Switch
+                checked={config.modules.entrega}
+                onCheckedChange={(checked) => updateConfig('modules.entrega', checked)}
+                className="scale-75"
+              />
+              <div className="w-1.5 h-1.5 bg-red-500 rounded-full"></div>
+              <Label className="text-sm">Entrega</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Switch
+                checked={config.modules.ficha}
+                onCheckedChange={(checked) => updateConfig('modules.ficha', checked)}
+                className="scale-75"
+              />
+              <div className="w-1.5 h-1.5 bg-purple-500 rounded-full"></div>
+              <Label className="text-sm">Ficha</Label>
+            </div>
+          </div>
+        </ConfigSection>
+
+        {/* Diversos */}
+        <ConfigSection
+          title="Diversos"
+          icon={<Settings className="w-4 h-4" />}
+          isOpen={openSections.diversos}
+          onToggle={() => toggleSection('diversos')}
+          colorClass="text-gray-600"
+        >
+          <div className="space-y-6">
+            {/* Conexão com Banco de Dados */}
+            <div className="space-y-3">
+              <Label className="text-sm font-medium">Conexão com Banco de Dados</Label>
+              <div className="space-y-3">
+                <div className="space-y-2">
+                  <Label className="text-xs">Tipo de Banco</Label>
+                  <Select
+                    value={config.database?.type || 'none'}
+                    onValueChange={(value) => updateConfig('database.type', value)}
+                  >
+                    <SelectTrigger className="h-8">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">Nenhum</SelectItem>
+                      <SelectItem value="mssql">MSSQL</SelectItem>
+                      <SelectItem value="mysql">MYSQL</SelectItem>
+                      <SelectItem value="postgre">POSTGRE</SelectItem>
+                      <SelectItem value="other">OUTRO</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {config.database?.type && config.database.type !== 'none' && (
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1">
                       <Label className="text-xs">Host</Label>
                       <Input
                         value={config.database?.host || ''}
@@ -837,190 +990,269 @@ export const ConfigurationPanel = ({
                         placeholder="localhost"
                       />
                     </div>
-                    <div className="space-y-2">
-                      <Label className="text-xs">Banco</Label>
-                      <Input
-                        value={config.database?.database || ''}
-                        onChange={(e) => updateConfig('database.database', e.target.value)}
-                        className="h-8"
-                        placeholder="oie"
-                      />
-                    </div>
-                    <div className="space-y-2">
+                    <div className="space-y-1">
                       <Label className="text-xs">Porta</Label>
                       <Input
                         value={config.database?.port || ''}
                         onChange={(e) => updateConfig('database.port', e.target.value)}
                         className="h-8"
-                        placeholder="1433"
+                        placeholder="5432"
                       />
                     </div>
-                    <div className="space-y-2">
+                    <div className="space-y-1">
+                      <Label className="text-xs">Database</Label>
+                      <Input
+                        value={config.database?.database || ''}
+                        onChange={(e) => updateConfig('database.database', e.target.value)}
+                        className="h-8"
+                        placeholder="database_name"
+                      />
+                    </div>
+                    <div className="space-y-1">
                       <Label className="text-xs">Usuário</Label>
                       <Input
                         value={config.database?.username || ''}
                         onChange={(e) => updateConfig('database.username', e.target.value)}
                         className="h-8"
-                        placeholder="user"
+                        placeholder="username"
                       />
                     </div>
-                    <div className="space-y-2">
+                    <div className="col-span-2 space-y-1">
                       <Label className="text-xs">Senha</Label>
                       <Input
                         type="password"
                         value={config.database?.password || ''}
                         onChange={(e) => updateConfig('database.password', e.target.value)}
                         className="h-8"
-                        placeholder="••••••••"
+                        placeholder="password"
                       />
                     </div>
                   </div>
-                </div>
-
-                {/* Backup e Restauração */}
-                <div className="space-y-3 border-t pt-4">
-                  <Label className="text-sm font-medium">Backup e Restauração</Label>
-                  <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      onClick={handleBackupExport}
-                      className="flex-1 h-8"
-                    >
-                      Exportar Backup
-                    </Button>
-                    <Button
-                      variant="outline"
-                      onClick={handleBackupImport}
-                      className="flex-1 h-8"
-                    >
-                      Importar Backup
-                    </Button>
-                  </div>
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button variant="destructive" className="w-full h-8">
-                        Restaurar Configurações de Fábrica
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Restaurar Configurações de Fábrica</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          Esta ação irá restaurar todas as configurações para os valores padrão. Todas as personalizações serão perdidas.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                        <AlertDialogAction onClick={handleFactoryReset}>
-                          Restaurar
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
-                </div>
-
-                {/* Dados da Loja */}
-                <div className="space-y-3 border-t pt-4">
-                  <Label className="text-sm font-medium">Dados da Loja</Label>
-                  <div className="space-y-3">
-                    <CNPJInput
-                      value={config.store?.cnpj || ''}
-                      onValueChange={(value) => updateConfig('store.cnpj', value)}
-                      onDataLoaded={(data) => {
-                        updateConfig('store.razaoSocial', data.razaoSocial);
-                        updateConfig('store.nomeFantasia', data.nomeFantasia);
-                      }}
-                      onError={(error) => updateConfig('store.cnpjError', error)}
-                      onLoading={(loading) => updateConfig('store.cnpjLoading', loading)}
-                      error={config.store?.cnpjError}
-                      loading={config.store?.cnpjLoading}
-                    />
-                    <div className="space-y-1">
-                      <Label className="text-xs">Razão Social</Label>
-                      <Input
-                        value={config.store?.razaoSocial || ''}
-                        onChange={(e) => updateConfig('store.razaoSocial', e.target.value)}
-                        className="h-8"
-                        placeholder="Empresa Ltda"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <Label className="text-xs">Nome Fantasia</Label>
-                      <Input
-                        value={config.store?.nomeFantasia || ''}
-                        onChange={(e) => updateConfig('store.nomeFantasia', e.target.value)}
-                        className="h-8"
-                        placeholder="Nome da Loja"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <Label className="text-xs">Número da Licença</Label>
-                      <Input
-                        value={config.store?.numeroLicenca || ''}
-                        onChange={(e) => updateConfig('store.numeroLicenca', e.target.value)}
-                        className="h-8"
-                        placeholder="LIC-12345"
-                      />
-                    </div>
-                  </div>
-                </div>
+                )}
               </div>
-            </ConfigSection>
+            </div>
 
-            {/* Simulação */}
-            <ConfigSection
-              title="Simulação"
-              icon={<Cog className="w-4 h-4" />}
-              isOpen={openSections.simulation}
-              onToggle={() => toggleSection('simulation')}
-              colorClass="text-yellow-600"
-            >
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label>Quantidade de Pedidos para Gerar</Label>
+            {/* Backup */}
+            <div className="space-y-3 border-t pt-4">
+              <Label className="text-sm font-medium">Backup</Label>
+              <div className="flex gap-2">
+                <Button
+                  onClick={() => {
+                    const dataStr = JSON.stringify(config, null, 2);
+                    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                    const url = URL.createObjectURL(dataBlob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = `oie-config-${new Date().toISOString().split('T')[0]}.json`;
+                    link.click();
+                    URL.revokeObjectURL(url);
+                  }}
+                  variant="outline"
+                  size="sm"
+                  className="flex-1"
+                >
+                  Exportar Configurações
+                </Button>
+                <input
+                  type="file"
+                  accept=".json"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      const reader = new FileReader();
+                      reader.onload = (event) => {
+                        try {
+                          const importedConfig = JSON.parse(event.target?.result as string);
+                          onConfigChange(importedConfig);
+                        } catch (error) {
+                          console.error('Erro ao importar configurações:', error);
+                        }
+                      };
+                      reader.readAsText(file);
+                    }
+                  }}
+                  style={{ display: 'none' }}
+                  id="import-config"
+                />
+                <Button
+                  onClick={() => document.getElementById('import-config')?.click()}
+                  variant="outline"
+                  size="sm"
+                  className="flex-1"
+                >
+                  Restaurar Backup
+                </Button>
+              </div>
+              
+              <Button
+                onClick={() => {
+                  onConfigChange(defaultConfig);
+                }}
+                variant="destructive"
+                size="sm"
+                className="w-full"
+              >
+                Restaurar Configurações de Fábrica
+              </Button>
+            </div>
+
+            {/* Dados da Loja */}
+            <div className="space-y-3 border-t pt-4">
+              <Label className="text-sm font-medium">Dados da Loja</Label>
+              <div className="space-y-3">
+                <div className="space-y-1">
+                  <Label className="text-xs">CNPJ</Label>
                   <Input
-                    type="number"
-                    value={orderCount}
-                    onChange={(e) => setOrderCount(parseInt(e.target.value) || 1)}
-                    min={1}
-                    max={100}
+                    value={config.store?.cnpj || ''}
+                    onChange={(e) => {
+                      // Remove formatação e valida
+                      const cnpj = e.target.value.replace(/\D/g, '');
+                      updateConfig('store.cnpj', cnpj);
+                    }}
                     className="h-8"
+                    placeholder="00.000.000/0000-00"
+                    maxLength={18}
+                    onBlur={(e) => {
+                      // Formatação para exibição
+                      const cnpj = e.target.value.replace(/\D/g, '');
+                      if (cnpj.length === 14) {
+                        const formatted = cnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
+                        e.target.value = formatted;
+                      }
+                    }}
                   />
                 </div>
-                <div className="flex gap-2">
-                  <Button
-                    variant="outline"
-                    onClick={() => generateOrders?.(orderCount)}
-                    className="flex-1 h-8"
-                  >
-                    Gerar Pedidos
-                  </Button>
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button variant="destructive" className="flex-1 h-8">
-                        Limpar Todos os Pedidos
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Limpar Todos os Pedidos</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          Esta ação irá remover todos os pedidos atuais da tela. Esta ação não pode ser desfeita.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                        <AlertDialogAction onClick={clearAllOrders}>
-                          Limpar Pedidos
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
+                <div className="space-y-1">
+                  <Label className="text-xs">Razão Social</Label>
+                  <Input
+                    value={config.store?.razaoSocial || ''}
+                    onChange={(e) => updateConfig('store.razaoSocial', e.target.value)}
+                    className="h-8"
+                    placeholder="Empresa Ltda"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs">Nome Fantasia</Label>
+                  <Input
+                    value={config.store?.nomeFantasia || ''}
+                    onChange={(e) => updateConfig('store.nomeFantasia', e.target.value)}
+                    className="h-8"
+                    placeholder="Nome da Loja"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs">Número da Licença</Label>
+                  <Input
+                    value={config.store?.numeroLicenca || ''}
+                    onChange={(e) => updateConfig('store.numeroLicenca', e.target.value)}
+                    className="h-8"
+                    placeholder="LIC-12345"
+                  />
                 </div>
               </div>
-            </ConfigSection>
-
+            </div>
           </div>
+        </ConfigSection>
+
+        
+        {/* Simulação */}
+        <ConfigSection
+          title="Simulação"
+          icon={<Cog className="w-4 h-4" />}
+          isOpen={openSections.simulation}
+          onToggle={() => toggleSection('simulation')}
+          colorClass="text-teal-600"
+        >
+          <div className="space-y-4">
+            <div className="flex flex-col gap-3">
+              <AlertDialog open={showClearDialog} onOpenChange={setShowClearDialog}>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    className="w-full"
+                  >
+                    Zerar Todos os Pedidos
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Confirmar Ação</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Deseja zerar todos os pedidos das 2 colunas? Esta ação não pode ser desfeita.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={() => {
+                        clearAllOrders?.();
+                        setShowClearDialog(false);
+                      }}
+                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                    >
+                      Zerar Pedidos
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+              
+              <div className="flex items-center gap-2">
+                <Input
+                  type="number"
+                  min="1"
+                  max="50"
+                  defaultValue="15"
+                  id="newOrdersCount"
+                  className="h-8 w-20"
+                />
+                <Button
+                  onClick={() => {
+                    const input = document.getElementById('newOrdersCount') as HTMLInputElement;
+                    const count = parseInt(input?.value || '15');
+                    generateOrders?.(count);
+                  }}
+                  variant="outline"
+                  size="sm"
+                  className="flex-1"
+                >
+                  Gerar Novos Pedidos
+                </Button>
+              </div>
+            </div>
+            
+            <div className="space-y-2 border-t pt-3">
+              <Label className="text-xs font-medium">Módulos Ativos:</Label>
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                {config.modules.balcao && (
+                  <div className="flex items-center gap-1">
+                    <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
+                    <span>Balcão</span>
+                  </div>
+                )}
+                {config.modules.mesa && (
+                  <div className="flex items-center gap-1">
+                    <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
+                    <span>Mesa</span>
+                  </div>
+                )}
+                {config.modules.entrega && (
+                  <div className="flex items-center gap-1">
+                    <div className="w-1.5 h-1.5 bg-red-500 rounded-full"></div>
+                    <span>Entrega</span>
+                  </div>
+                )}
+                {config.modules.ficha && (
+                  <div className="flex items-center gap-1">
+                    <div className="w-1.5 h-1.5 bg-purple-500 rounded-full"></div>
+                    <span>Ficha</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </ConfigSection>
+
         </div>
         
         {/* Footer */}
@@ -1035,6 +1267,5 @@ export const ConfigurationPanel = ({
           </div>
         </div>
       </div>
-    </div>
-  );
+    );
 };

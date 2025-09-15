@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Settings, Send } from 'lucide-react';
+import { toast } from '../hooks/use-toast';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 
 interface ControlPanelProps {
@@ -29,7 +30,11 @@ export const ControlPanel = ({
 
   const handleExpedite = () => {
     if (!expeditionInput.trim()) {
-      // Não exibe toast para erro de expedição
+      toast({
+        title: "Erro",
+        description: "Digite o número do pedido para expedir",
+        variant: "destructive"
+      });
       return;
     }
 
@@ -50,49 +55,50 @@ export const ControlPanel = ({
           Oie! v.5.0 | Jelco Informática (2025)
         </div>
         
-        {/* Prompt centralizado no rodapé */}
-        <div className="absolute left-1/2 transform -translate-x-1/2 flex items-center gap-1">
-          <Input
-            ref={inputRef}
-            placeholder="Expedição"
-            value={expeditionInput}
-            onChange={(e) => setExpeditionInput(e.target.value)}
-            onKeyPress={handleKeyPress}
-            className="w-20 h-5 text-xs text-center placeholder:opacity-30"
-            autoComplete="off"
-          />
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button 
-                  onClick={handleExpedite}
-                  size="sm"
-                  disabled={!expeditionInput.trim()}
-                  variant="ghost"
-                  className="h-5 w-5 p-0 border-0"
-                >
-                  <Send className="w-3 h-3" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Expedir</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-          
-          {/* Log dos últimos 5 pedidos - colado ao ícone de expedição */}
-          {expeditionLog.length > 0 && (
-            <div className="ml-2 flex gap-1 text-xs">
-              {expeditionLog.slice(-5).map((order, index) => (
-                <span 
-                  key={`${order}-${index}`}
-                  className="text-black opacity-60 font-mono"
-                >
-                  {order.replace(/[^\d]/g, '')}
-                </span>
-              ))}
-            </div>
-          )}
+        <div className="absolute left-1/2 transform -translate-x-1/2">
+          <div className="flex items-center gap-1">
+            <Input
+              ref={inputRef}
+              placeholder="No.Pedido"
+              value={expeditionInput}
+              onChange={(e) => setExpeditionInput(e.target.value)}
+              onKeyPress={handleKeyPress}
+              className="w-20 h-5 text-xs text-center placeholder:opacity-30"
+            />
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button 
+                    onClick={handleExpedite}
+                    size="sm"
+                    disabled={!expeditionInput.trim()}
+                    variant="ghost"
+                    className="h-5 w-5 p-0 border-0"
+                  >
+                    <Send className="w-3 h-3" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Expedir</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            
+            {/* Log visual dos últimos pedidos expedidos */}
+            {expeditionLog.length > 0 && (
+              <div className="flex items-center gap-1 ml-2">
+                {expeditionLog.map((order, index) => (
+                  <span 
+                    key={`${order}-${index}`}
+                    className="text-xs bg-muted px-1 rounded opacity-50"
+                    style={{ opacity: 0.8 - (index * 0.2) }}
+                  >
+                    {order.replace(/[^\d]/g, '')}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
         
         <Button

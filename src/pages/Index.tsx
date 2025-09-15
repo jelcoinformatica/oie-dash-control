@@ -74,13 +74,11 @@ const Index = () => {
   const handleOrderClick = (order: any) => {
     if (order.status === 'production') {
       moveToReady(order.id);
-      // Não exibir mensagem de sucesso para mover pedido
     }
   };
 
   const handleExpedite = (orderNumber: string) => {
     expedite(orderNumber);
-    // Não exibir mensagem de sucesso para expedição
   };
 
   const handleConfigChange = (newConfig: PanelConfig) => {
@@ -92,7 +90,11 @@ const Index = () => {
     localStorage.setItem('oie-config', JSON.stringify(config));
     setOriginalConfig(config); // Atualiza a config original com a salva
     setConfigOpen(false);
-    // Sem mensagens de toast
+    toast({
+      title: "Configurações Salvas",
+      description: "As configurações foram atualizadas com sucesso",
+      duration: 1000 // Desaparece automaticamente após 1 segundo
+    });
   };
 
   const handleCancelConfig = () => {

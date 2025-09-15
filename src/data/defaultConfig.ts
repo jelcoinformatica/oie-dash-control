@@ -47,7 +47,7 @@ export const defaultConfig: PanelConfig = {
     }
   },
   advertising: {
-    visible: true,
+    visible: false,
     width: 30,
     headerVisible: true,
     headerHeight: 72,
