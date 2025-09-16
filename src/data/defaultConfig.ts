@@ -59,6 +59,7 @@ export const defaultConfig: PanelConfig = {
     backgroundColor: '#ffffff',
     imageUrl: undefined,
     websiteUrl: undefined,
+    newsMode: false, // Nova propriedade para modo notícias
     showBorder: false
   },
   lastOrder: {

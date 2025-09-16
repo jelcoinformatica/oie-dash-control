@@ -59,6 +59,7 @@ export interface PanelConfig {
     backgroundColor: string;
     imageUrl?: string;
     websiteUrl?: string;
+    newsMode?: boolean; // Nova propriedade para modo notícias
     showBorder?: boolean;
   };
   lastOrder: {

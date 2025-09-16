@@ -1,4 +1,5 @@
 import { cn } from '../lib/utils';
+import { NewsDisplay } from './NewsDisplay';
 
 interface AdvertisingColumnProps {
   title?: string;
@@ -11,6 +12,7 @@ interface AdvertisingColumnProps {
   headerColor?: string;
   backgroundColor?: string;
   showBorder?: boolean;
+  newsMode?: boolean; // Nova prop para modo notícias
   onToggleHeader?: () => void;
 }
 
@@ -25,6 +27,7 @@ export const AdvertisingColumn = ({
   headerColor = "#ffffff", 
   backgroundColor = "#ffffff",
   showBorder = false,
+  newsMode = false,
   onToggleHeader
 }: AdvertisingColumnProps) => {
 
@@ -56,9 +59,16 @@ export const AdvertisingColumn = ({
         
         <div 
           className="flex-1 flex items-center justify-center overflow-hidden p-2"
-          style={{ backgroundColor }}
+          style={{ backgroundColor: newsMode ? 'transparent' : backgroundColor }}
         >
-          {websiteUrl ? (
+          {newsMode ? (
+            <NewsDisplay 
+              className="w-full h-full"
+              autoRotate={true}
+              rotationInterval={25000} // 25 segundos
+              showSource={true}
+            />
+          ) : websiteUrl ? (
             <iframe
               src={websiteUrl}
               className="w-full h-full border-0"
@@ -91,7 +101,7 @@ export const AdvertisingColumn = ({
                 <div className="text-lg font-semibold">PUBLICITÁRIO</div>
               </div>
               <div className="mt-4 text-sm opacity-70">
-                <div>Configure uma imagem/vídeo/url</div>
+                <div>Configure imagem/vídeo/url/notícias</div>
                 <div>nas configurações</div>
               </div>
             </div>

@@ -313,6 +313,7 @@ const Index = () => {
               backgroundColor={config.advertising.backgroundColor}
               imageUrl={config.advertising.imageUrl}
               websiteUrl={config.advertising.websiteUrl}
+              newsMode={config.advertising.newsMode}
               className="h-full"
               onToggleHeader={() => {
                 const newConfig = {

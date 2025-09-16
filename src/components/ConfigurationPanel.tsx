@@ -773,6 +773,47 @@ export const ConfigurationPanel = ({
             </div>
           </div>
 
+          <div className="space-y-2 border-t pt-3">
+            <div className="flex items-center gap-2">
+              <Switch 
+                checked={config.advertising.newsMode || false} 
+                onCheckedChange={(checked) => {
+                  updateConfig('advertising.newsMode', checked);
+                  // Limpar outras configurações quando ativar notícias
+                  if (checked) {
+                    updateConfig('advertising.websiteUrl', '');
+                    updateConfig('advertising.imageUrl', '');
+                  }
+                }}
+                className="scale-75"
+              />
+              <Label className="text-sm font-medium">Exibir Feed de Notícias</Label>
+            </div>
+            {config.advertising.newsMode && (
+              <div className="ml-6 text-xs text-blue-600 bg-blue-50 p-2 rounded">
+                ✓ Feed automático de manchetes será exibido<br/>
+                ✓ Rotação automática a cada 25 segundos<br/>
+                ✓ Layout otimizado para espaço disponível
+              </div>
+            )}
+            {config.advertising.newsMode && (
+              <div className="ml-6 space-y-2">
+                <div className="text-xs text-gray-600">
+                  🌐 <strong>URL Standalone:</strong> <code>{window.location.origin}/news</code>
+                </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => window.open(`${window.location.origin}/news`, '_blank')}
+                  className="text-xs h-8"
+                >
+                  Abrir URL de Notícias ↗
+                </Button>
+              </div>
+            )}
+          </div>
+
           <div>
             <Label className="text-sm font-medium">Cor do Fundo</Label>
             <Input
