@@ -123,9 +123,9 @@ export const useTextToSpeech = () => {
         // Tentar tocar arquivo de som primeiro
         const audio = new Audio(soundFile);
         audio.play().then(() => {
-          // Aguardar som terminar + pausa de 0.5s antes de falar
+          // Aguardar som terminar + pausa de 1s antes de falar
           audio.addEventListener('ended', () => {
-            setTimeout(performSpeech, 500);
+            setTimeout(performSpeech, 1000);
           });
         }).catch(async () => {
           // Se falhar ao tocar arquivo, usar som gerado
@@ -135,7 +135,7 @@ export const useTextToSpeech = () => {
           } catch (soundError) {
             console.error('Erro ao tocar som gerado:', soundError);
           }
-          setTimeout(performSpeech, 500);
+          setTimeout(performSpeech, 1000);
         });
       } else {
         // Usar som gerado se nenhum arquivo especificado
@@ -144,7 +144,7 @@ export const useTextToSpeech = () => {
         } catch (soundError) {
           console.error('Erro ao tocar som gerado:', soundError);
         }
-        setTimeout(performSpeech, 500);
+        setTimeout(performSpeech, 1000);
       }
 
       // Implementar repetição se configurado
@@ -155,7 +155,7 @@ export const useTextToSpeech = () => {
               const audio = new Audio(soundFile);
               audio.play().then(() => {
                 audio.addEventListener('ended', () => {
-                  setTimeout(performSpeech, 500);
+                  setTimeout(performSpeech, 1000);
                 });
               }).catch(async () => {
                 try {
@@ -163,7 +163,7 @@ export const useTextToSpeech = () => {
                 } catch (soundError) {
                   console.error('Erro ao tocar som gerado:', soundError);
                 }
-                setTimeout(performSpeech, 500);
+                setTimeout(performSpeech, 1000);
               });
             } else {
               try {
@@ -171,7 +171,7 @@ export const useTextToSpeech = () => {
               } catch (soundError) {
                 console.error('Erro ao tocar som gerado:', soundError);
               }
-              setTimeout(performSpeech, 500);
+              setTimeout(performSpeech, 1000);
             }
           }, i * config.repeatInterval * 1000);
         }
