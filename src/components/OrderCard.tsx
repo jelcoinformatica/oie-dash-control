@@ -82,40 +82,63 @@ export const OrderCard = ({
         )} />
       )}
       
-      {/* Order Number or Name */}
-      {displayNumber ? (
-        <div className="text-center w-full">
-          <div className="font-bold leading-tight">
-            {displayNumber.match(/^(IF|DD|RA|UB)-/) ? (
-              <div className="flex flex-col items-center">
-                <span style={{ 
-                  fontStyle: 'italic', 
-                  fontWeight: 'normal',
-                  fontSize: `${fontSize * 0.4}rem`,
-                  lineHeight: '0.9'
-                }}>
-                  {displayNumber.split('-')[0]}
-                </span>
+      {/* Layout com posições fixas */}
+      <div className="w-full h-full flex flex-col justify-between items-center py-1">
+        {/* Prefixo no topo */}
+        <div className="flex-shrink-0 h-4 flex items-start justify-center">
+          {displayNumber?.match(/^(IF|DD|RA|UB)-/) && (
+            <span style={{ 
+              fontStyle: 'italic', 
+              fontWeight: 'normal',
+              fontSize: `${fontSize * 0.4}rem`,
+              lineHeight: '1'
+            }}>
+              {displayNumber.split('-')[0]}
+            </span>
+          )}
+        </div>
+
+        {/* Número principal no centro */}
+        <div className="flex-1 flex items-center justify-center">
+          <div className="font-bold text-center">
+            {displayNumber ? (
+              displayNumber.match(/^(IF|DD|RA|UB)-/) ? (
                 <span style={{ 
                   fontSize: `${fontSize}rem`,
                   lineHeight: '1'
                 }}>
                   {displayNumber.split('-')[1]}
                 </span>
-              </div>
-            ) : (
+              ) : (
+                <span style={{ 
+                  fontSize: displayNumber.length > 8 
+                    ? `${fontSize * 0.8}rem` 
+                    : `${fontSize}rem`,
+                  lineHeight: '1'
+                }}>
+                  {displayNumber}
+                </span>
+              )
+            ) : displayName ? (
               <span style={{ 
-                fontSize: displayNumber.length > 8 
-                  ? `${fontSize * 0.8}rem` 
-                  : `${fontSize}rem`
+                fontSize: displayName.length > 8 ? `${fontSize * 0.8}rem` : `${fontSize}rem`,
+                lineHeight: '1'
               }}>
-                {displayNumber}
+                {displayName}
+              </span>
+            ) : (
+              <span style={{ fontSize: `${fontSize}rem`, lineHeight: '1' }}>
+                S/N
               </span>
             )}
           </div>
-          {displayName && showNickname && (
+        </div>
+
+        {/* Apelido embaixo */}
+        <div className="flex-shrink-0 h-4 flex items-end justify-center">
+          {displayName && showNickname && displayNumber && (
             <div 
-              className="font-medium leading-none -mt-1"
+              className="font-medium text-center leading-none"
               style={{ 
                 fontSize: `${fontSize * 0.5}rem`
               }}
@@ -124,23 +147,7 @@ export const OrderCard = ({
             </div>
           )}
         </div>
-      ) : displayName ? (
-        <div 
-          className="font-bold text-center leading-tight"
-          style={{ 
-            fontSize: displayName.length > 8 ? `${fontSize * 0.8}rem` : `${fontSize}rem`
-          }}
-        >
-          {displayName}
-        </div>
-      ) : (
-        <span 
-          className="font-bold"
-          style={{ fontSize: `${fontSize}rem` }}
-        >
-          S/N
-        </span>
-      )}
+      </div>
       
       {/* Hidden optional content */}
       <div className="hidden">
