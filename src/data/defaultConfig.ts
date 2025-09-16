@@ -59,7 +59,7 @@ export const defaultConfig: PanelConfig = {
     backgroundColor: '#ffffff',
     imageUrl: undefined,
     websiteUrl: undefined,
-    newsMode: false, // Nova propriedade para modo notícias
+    newsMode: true, // Ativado por padrão para testes
     newsSource: 'g1', // Fonte padrão das notícias
     showBorder: false
   },
