@@ -79,7 +79,7 @@ export const ControlPanel = ({
     <div className="bg-card border-t shadow-sm relative" style={{ height: '32px', minHeight: '32px' }}>
       <div className="container mx-auto px-2 py-1 flex items-center justify-between h-full relative">
         <div className="text-xs text-muted-foreground flex-shrink-0">
-          Oie! v.5.0 | Jelco Informática (2025)
+          Oie! v.5.0 | Banco: &lt;colibri&gt; | Usuário: sa
         </div>
         
         {/* Prompt de expedição fixo no centro */}
@@ -170,7 +170,7 @@ export const ControlPanel = ({
         
         <div className="flex items-center gap-2">
           <div className="text-xs text-muted-foreground">
-            Ctrl+K para configurações
+            Jelco Informática (2025)
           </div>
           <Button
             variant="ghost"
