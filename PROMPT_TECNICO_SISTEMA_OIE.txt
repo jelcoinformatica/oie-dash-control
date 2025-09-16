@@ -1,0 +1,427 @@
+# PROMPT TÉCNICO: Sistema OIE! v5.0 - Kitchen Display System (KDS)
+
+## ESCOPO GERAL
+Desenvolver um sistema completo de gerenciamento de pedidos (Kitchen Display System) em React + TypeScript + Tailwind CSS, voltado para restaurantes, com funcionalidades avançadas de configuração, notificações sonoras, Text-to-Speech e interface otimizada para uso em modo kiosk.
+
+## ARQUITETURA TÉCNICA
+
+### Stack Tecnológica
+- **Frontend**: React 18.3.1 + TypeScript + Vite
+- **Styling**: Tailwind CSS + shadcn/ui components
+- **Estado**: React Hooks (useState, useEffect, useMemo, useCallback)
+- **Roteamento**: React Router DOM
+- **Notificações**: Sonner toast system
+- **Ícones**: Lucide React
+
+### Estrutura de Diretórios
+```
+src/
+├── components/          # Componentes reutilizáveis
+│   ├── ui/             # Componentes base shadcn/ui
+│   ├── OrderCard.tsx   # Card individual do pedido
+│   ├── OrderColumn.tsx # Coluna de pedidos
+│   ├── OrderColumnGrid.tsx # Grid responsivo de cards
+│   ├── LastOrderDisplay.tsx # Display do último pedido
+│   ├── AdvertisingColumn.tsx # Coluna de publicidade
+│   ├── ControlPanel.tsx # Painel de controle inferior
+│   └── ConfigurationPanel.tsx # Painel de configurações
+├── data/               # Dados e configurações
+│   ├── defaultConfig.ts # Configuração padrão de fábrica
+│   ├── mockOrders.ts   # Dados simulados
+│   └── orders.json     # Dados de exemplo
+├── hooks/              # Hooks customizados
+│   ├── useOrders.ts    # Gerenciamento de pedidos
+│   ├── useTextToSpeech.ts # Text-to-Speech
+│   └── use-toast.ts    # Sistema de notificações
+├── pages/              # Páginas da aplicação
+│   ├── Index.tsx       # Página principal (dashboard)
+│   └── NotFound.tsx    # Página 404
+├── services/           # Serviços externos
+│   └── orderService.ts # Integração com API/Database
+├── types/              # Definições TypeScript
+│   └── order.ts        # Interfaces Order e PanelConfig
+└── lib/                # Utilitários
+    └── utils.ts        # Funções auxiliares
+```
+
+## SISTEMA DE MÓDULOS
+
+### Configuração dos Módulos (OBRIGATÓRIA)
+Implementar sistema de 4 módulos com toggles sempre ativados por padrão:
+
+#### 1. Módulo BALCÃO
+- **Toggle**: Habilitado por padrão (enabled: true)
+- **Opções de exibição** (radio buttons):
+  - `numeroVenda`: "Nº da venda" (padrão)
+  - `numeroChamada`: "Nº de chamada"
+  - `apelido`: "Apelido"
+  - `apelidoNumeroVenda`: "Apelido + Nº da venda"
+
+#### 2. Módulo MESA
+- **Toggle**: Habilitado por padrão (enabled: true)
+- **Opções de exibição** (radio buttons):
+  - `numeroMesa`: "Nº da mesa"
+  - `apelidoNumeroMesa`: "Apelido + Nº da mesa" (padrão)
+
+#### 3. Módulo ENTREGA
+- **Toggle**: Habilitado por padrão (enabled: true)
+- **Opções de exibição** (radio buttons):
+  - `numeroEntrega`: "Nº da entrega"
+  - `numeroVenda`: "Nº da venda + iFood" (padrão)
+
+#### 4. Módulo FICHA
+- **Toggle**: Habilitado por padrão (enabled: true)
+- **Opções de exibição** (radio buttons):
+  - `numeroFicha`: "Nº da ficha"
+  - `numeroChamada`: "Nº de chamada"
+  - `nomeCliente`: "Nome do cliente"
+  - `fichaCliente`: "Nº da ficha + Nome do cliente" (padrão)
+  - `localEntregaFicha`: "Local entrega + Ficha"
+
+### Regras de Negócio dos Módulos
+1. **Validação obrigatória**: Pelo menos um módulo deve permanecer ativo
+2. **Bloqueio de desativação**: Se tentar desativar o último módulo ativo, exibir toast de erro
+3. **Seleção obrigatória**: Cada módulo ativo deve ter uma opção de exibição selecionada
+4. **Persistência**: Salvar no localStorage as configurações
+
+## INTERFACE E LAYOUT
+
+### Estrutura de Layout Principal
+```
+┌─────────────────────────────────────────────────────────────┐
+│  Layout Principal (100vh, sem scroll)                      │
+├─────────────────────────────────────────────────────────────┤
+│ ┌─────────┐ ┌────────────────────┐ ┌──────────────────────┐ │
+│ │ Coluna  │ │     Coluna 2       │ │      Coluna 3        │ │
+│ │   1     │ │    PRONTOS         │ │   PUBLICIDADE        │ │
+│ │PRODUÇÃO │ │  (Obrigatória)     │ │   (Opcional)         │ │
+│ │(Opcional│ │                    │ │                      │ │
+│ │  30%)   │ │      (40%)         │ │       (30%)          │ │
+│ │         │ │                    │ │                      │ │
+│ └─────────┘ └────────────────────┘ └──────────────────────┘ │
+├─────────────────────────────────────────────────────────────┤
+│           Painel de Controle (32px altura fixa)            │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Sistema de Grid Responsivo
+- **Grid baseado em `1fr`**: Layout dinâmico que se adapta às colunas visíveis
+- **Espaçamentos reduzidos**: gap-0.5 entre colunas, p-1 no container
+- **Centralização vertical**: Textos centralizados usando flexbox
+- **Overflow hidden**: Sem scroll em nenhuma área (h-screen overflow-hidden)
+
+### Configurações de Layout Padrão
+- **Coluna 1 (Produção)**: 30% largura, 2 colunas x N linhas
+- **Coluna 2 (Prontos)**: 40% largura, 10 colunas x 2 linhas
+- **Coluna 3 (Publicidade)**: 30% largura
+- **Altura dos cabeçalhos**: 72px padrão
+- **Fonte do título Coluna 1**: 2rem por padrão
+
+## DESIGN SYSTEM E ESTILO VISUAL
+
+### Sistema de Cores (HSL - index.css)
+```css
+:root {
+  /* Cores principais do sistema */
+  --production: 217 91% 60%;      /* Azul produção */
+  --ready: 142 76% 36%;           /* Verde prontos */
+  --advertising: 271 81% 56%;     /* Roxo publicidade */
+  --last-order: 38 92% 50%;       /* Laranja último pedido */
+  
+  /* Cores dos módulos */
+  --balcao-color: 142 76% 36%;    /* Verdão */
+  --entrega-color: 0 84% 60%;     /* Vermelhão */
+  --mesa-color: 217 91% 60%;      /* Azulão */
+  --ficha-color: 271 81% 56%;     /* Roxão */
+}
+```
+
+### Bullets Coloridos dos Módulos
+- **Implementação**: Círculos coloridos com fundo branco e sombra
+- **Posicionamento**: Canto superior direito dos cards
+- **Estilo**: `w-2 h-2 rounded-full bg-white shadow-sm`
+- **Cores vibrantes**:
+  - Balcão: Verde intenso (`bg-green-500`)
+  - Mesa: Azul intenso (`bg-blue-500`)
+  - Entrega: Vermelho intenso (`bg-red-500`)
+  - Ficha: Roxo intenso (`bg-purple-500`)
+
+### Contraste Elevado nos Radio Buttons
+- **Borda espessa**: `border-2`
+- **Cores contrastantes**: Alto contraste para visibilidade
+- **Estados visuais**: Hover, focus e checked bem definidos
+
+### Marca D'água Personalizada
+- **Texto principal**: "OIE!" em fonte grande e semi-transparente
+- **Texto secundário**: "Aguardando novos pedidos"
+- **Posicionamento**: Centro da tela quando não há pedidos
+- **Opacidade**: 30-40% para não interferir na leitura
+
+## SISTEMA DE CARDS
+
+### Estrutura do OrderCard
+```tsx
+interface OrderCard {
+  // Informações principais
+  numeroPedido: string;     // Número do pedido
+  nomeCliente?: string;     // Nome/apelido do cliente
+  modulo: 'balcao' | 'mesa' | 'entrega' | 'ficha';
+  status: 'production' | 'ready' | 'delivered';
+  
+  // Formatação especial para delivery
+  // Prefixos: IF- (iFood), DD- (Delivery Direto), etc.
+  // Exibição: Prefixo em itálico menor + número maior
+}
+```
+
+### Comportamento dos Cards
+- **Animação de entrada**: `animate-card-appear` (scale + opacity)
+- **Hover effect**: Scale 102% + sombra
+- **Responsividade**: Ajuste automático de fonte baseado no conteúdo
+- **Centralização**: Texto sempre centralizado vertical e horizontalmente
+
+### Grid Dinâmico (OrderColumnGrid)
+- **ResizeObserver**: Monitora dimensões do container
+- **Cálculo automático**: Altura e fonte baseados no espaço disponível
+- **Virtualização**: Limita cards visíveis para performance
+- **Memoização**: useMemo para cálculos pesados
+
+## COMPORTAMENTO NO REFRESH (F5)
+
+### Reset Completo do Estado
+```tsx
+// No useEffect de inicialização
+useEffect(() => {
+  // SEMPRE usar configuração padrão para módulos
+  const mergedConfig = {
+    ...defaultConfig,
+    modules: {
+      balcao: { enabled: true, displayOption: 'numeroVenda' },
+      mesa: { enabled: true, displayOption: 'apelidoNumeroMesa' },
+      entrega: { enabled: true, displayOption: 'numeroVenda' },
+      ficha: { enabled: true, displayOption: 'fichaCliente' }
+    }
+  };
+}, []);
+```
+
+### Regras do Refresh
+1. **Tela limpa**: Remover todos os pedidos da memória
+2. **Módulos sempre ativos**: Ignorar localStorage para módulos
+3. **Configurações visuais preservadas**: Cores, fontes, etc. mantidas
+4. **Estado inicial**: Voltar ao estado de fábrica para funcionalidades
+
+## SISTEMA DE NOTIFICAÇÕES
+
+### Text-to-Speech (TTS)
+```tsx
+interface TTSConfig {
+  enabled: boolean;
+  voice: string;           // 'Microsoft Heloisa' padrão
+  rate: number;           // 1.5 padrão
+  pitch: number;          // 1.0 padrão
+  volume: number;         // 1.0 padrão
+  textType: 'number_only' | 'name_ready' | 'order_ready' | 'name_order_ready' | 'custom';
+  customText: string;
+  repeatEnabled: boolean;
+  repeatCount: number;    // 2 padrão
+  repeatInterval: number; // 15 segundos padrão
+}
+```
+
+### Sistema de Sons
+```tsx
+interface SoundsConfig {
+  production: boolean;    // false padrão
+  ready: boolean;        // true padrão
+  productionFile: string; // '/sounds/kds_sound_bell1.wav'
+  readyFile: string;     // '/sounds/kds_sound_bell2.wav'
+}
+```
+
+## MODO KIOSK
+
+### Inicialização Automática
+```tsx
+useEffect(() => {
+  const enterKioskMode = async () => {
+    try {
+      if (document.documentElement.requestFullscreen) {
+        await document.documentElement.requestFullscreen();
+      }
+    } catch (error) {
+      console.warn('Não foi possível entrar em modo tela cheia:', error);
+    }
+  };
+  
+  // Delay para garantir carregamento completo
+  const timer = setTimeout(enterKioskMode, 1000);
+  return () => clearTimeout(timer);
+}, []);
+```
+
+## CONFIGURAÇÕES AVANÇADAS
+
+### Painel de Configuração
+- **Posicionamento**: Direita por padrão, alternável para esquerda
+- **Largura**: 25% da tela
+- **Seções expansíveis**: Cada categoria com toggle individual
+- **Preview em tempo real**: Mudanças visíveis imediatamente
+- **Salvamento explícito**: Botões "Salvar" e "Cancelar"
+
+### Atalhos de Teclado
+- **Ctrl+K**: Abrir painel de configurações
+- **F5**: Reset completo do sistema
+- **Enter**: Confirmar expedição no campo de input
+
+## PERSISTÊNCIA DE DADOS
+
+### LocalStorage Structure
+```tsx
+interface StoredConfig {
+  // Configurações visuais (preservadas)
+  backgroundColor: string;
+  production: ColumnConfig;
+  ready: ColumnConfig;
+  advertising: AdvertisingConfig;
+  
+  // Módulos (SEMPRE resetados para padrão)
+  modules: {
+    balcao: { enabled: true, displayOption: string };
+    mesa: { enabled: true, displayOption: string };
+    entrega: { enabled: true, displayOption: string };
+    ficha: { enabled: true, displayOption: string };
+  };
+}
+```
+
+## FUNCIONALIDADES ESPECÍFICAS
+
+### Auto-Expedição
+- **Timer configurável**: Minutos até expedição automática
+- **Toggle**: Habilitado/desabilitado
+- **Notificação**: Toast ao expedir automaticamente
+
+### Último Pedido (LastOrderDisplay)
+- **Altura**: 180px padrão
+- **Fonte**: 8rem padrão
+- **Animação**: Pulse com glow effect
+- **Cor**: Laranja vibrante (#FFAA00)
+
+### Sistema de Expedição Dual
+1. **Produção → Prontos**: Click no card ou input de expedição
+2. **Prontos → Entregue**: Click no card de prontos
+3. **Expedição direta**: Input aceita números de pedidos não visíveis
+
+### Coluna de Publicidade
+- **Suporte a iframe**: URLs externas (globo.com, etc.)
+- **Suporte a imagens**: Upload local
+- **Prioridade**: iframe tem prioridade sobre imagem
+- **Teste de URL**: Botão "Testar" para validar links
+
+## IMPLEMENTAÇÃO TÉCNICA ESPECÍFICA
+
+### Hooks Customizados
+```tsx
+// useOrders.ts - Gerenciamento central
+const useOrders = (ttsConfig, autoExpeditionConfig, panelConfig) => {
+  // Estado dos pedidos
+  // Funções de movimentação
+  // Sistema de notificações
+  // Auto-expedição
+  // Simulação
+};
+```
+
+### Componentes Principais
+```tsx
+// Index.tsx - Página principal
+- Layout em grid responsivo
+- Gerenciamento de estado global
+- Integração com todos os hooks
+- Modo kiosk automático
+
+// ConfigurationPanel.tsx - Painel de configurações
+- Seções expansíveis
+- Validações de negócio
+- Preview em tempo real
+- Salvamento/cancelamento
+
+// OrderCard.tsx - Card individual
+- Formatação de texto dinâmica
+- Suporte a prefixos de delivery
+- Indicadores visuais de módulo
+- Animações suaves
+```
+
+### Performance e Otimizações
+- **Memoização**: useMemo para cálculos pesados
+- **Callbacks estáveis**: useCallback para funções
+- **Virtualização**: Limitar cards visíveis
+- **Debounce**: Para inputs de configuração
+- **ResizeObserver**: Para layouts responsivos
+
+## ESTRUTURA DE DADOS
+
+### Interface Order
+```tsx
+interface Order {
+  id: string;
+  numeroPedido: string;
+  ticket: string;
+  modulo: 'balcao' | 'mesa' | 'entrega' | 'ficha';
+  status: 'production' | 'ready' | 'delivered';
+  ultimoConsumo: Date;
+  dataContabil: Date;
+  localEntrega: string;
+  nomeCliente: string;
+}
+```
+
+### Configuração Padrão Completa
+```tsx
+const defaultConfig: PanelConfig = {
+  backgroundColor: '#ffffff',
+  production: {
+    visible: true,
+    title: 'EM PRODUÇÃO',
+    width: 30,
+    headerHeight: 72,
+    headerBg: '#636363',
+    headerColor: '#ffffff',
+    headerFontFamily: 'Tahoma',
+    headerFontSize: 2, // 2rem
+    cardConfig: {
+      columns: 2,
+      rows: 4,
+      fontSize: 3, // 3rem
+      fontFamily: 'Tahoma',
+      textColor: '#8C8C8C',
+      backgroundColor: '#f3f4f6'
+    }
+  },
+  // ... demais configurações
+};
+```
+
+## REQUISITOS DE QUALIDADE
+
+### Acessibilidade
+- **Contraste alto**: Cores com contraste mínimo WCAG AA
+- **Navegação por teclado**: Todos os elementos acessíveis
+- **Screen readers**: Textos alternativos adequados
+- **Foco visível**: Indicadores claros de foco
+
+### Performance
+- **Tempo de carregamento**: < 2 segundos
+- **Fluidez**: 60fps nas animações
+- **Memória**: Uso eficiente sem vazamentos
+- **Bundle size**: Otimizado com tree-shaking
+
+### Browser Support
+- **Chrome**: 80+
+- **Firefox**: 75+
+- **Safari**: 13+
+- **Edge**: 80+
+
+Este prompt técnico deve ser suficiente para recriar o sistema OIE! v5.0 com total fidelidade às especificações originais, incluindo todas as regras de negócio, comportamentos específicos e decisões de design/UX mencionadas.
