@@ -207,8 +207,11 @@ export const NewsDisplay = ({
       
     } catch (error) {
       console.error('❌ Erro final ao buscar notícias RSS:', error);
-      setError(`${getSourceName(newsSource)} indisponível. Tentando reconectar...`);
-      setNews([]);
+      // Só mostra erro se realmente não conseguiu carregar nada
+      if (news.length === 0) {
+        setError(`Fontes de notícias indisponíveis. Tentando reconectar...`);
+        setNews([]);
+      }
     } finally {
       setLoading(false);
     }
