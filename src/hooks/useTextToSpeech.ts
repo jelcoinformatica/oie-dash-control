@@ -28,7 +28,7 @@ export const useTextToSpeech = () => {
       
       if (deliveryPlatform) {
         if (deliveryPlatform.toLowerCase().includes('ifood') || orderNumber.startsWith('IF-')) {
-          platformPrefix = 'Ifood, ';
+          platformPrefix = 'Ai fuudi, ';
           isDeliveryPlatform = true;
         } else if (deliveryPlatform.toLowerCase().includes('delivery direto') || orderNumber.startsWith('DD-')) {
           platformPrefix = 'Delivery Direto, ';
