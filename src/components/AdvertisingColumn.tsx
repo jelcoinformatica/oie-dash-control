@@ -41,8 +41,8 @@ export const AdvertisingColumn = ({
           >
             <span>{title}</span>
             {onToggleHeader && (
-              <div className="absolute right-2 text-xs opacity-70">
-                ⚙️
+              <div className="absolute right-2 text-xs opacity-70 hover:opacity-100 transition-opacity">
+                👁️
               </div>
             )}
           </div>
