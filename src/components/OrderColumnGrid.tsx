@@ -69,12 +69,11 @@ export const OrderColumnGrid = ({
   }, []);
 
   // Calcular dimensões baseadas na largura real do container
-  const { visibleOrders, cardHeight, cardWidth, adjustedFontSize } = useMemo(() => {
+  const { visibleOrders, cardHeight, adjustedFontSize } = useMemo(() => {
     if (containerDimensions.width === 0 || containerDimensions.height === 0) {
       return {
         visibleOrders: [],
         cardHeight: 90,
-        cardWidth: 100,
         adjustedFontSize: 1.2
       };
     }
@@ -82,16 +81,15 @@ export const OrderColumnGrid = ({
     const baseFontSize = 16;
     const requestedFontSize = cardConfig?.fontSize || 1.2;
     
-    // Use a largura REAL do container
+    // Altura fixa do card
+    const cardHeight = 90;
+    
+    // Ajustar fonte para caber na largura do card - usando largura proporcional
     const gap = 4; // gap-1 = 4px
     const totalGaps = gap * (columns - 1);
     const availableWidth = containerDimensions.width - totalGaps;
     const cardWidth = Math.floor(availableWidth / columns);
     
-    // Altura fixa do card
-    const cardHeight = 90;
-    
-    // Ajustar fonte para caber na largura do card
     let adjustedFontSize = requestedFontSize;
     const estimatedTextWidth = 4 * adjustedFontSize * baseFontSize * 0.6;
     if (estimatedTextWidth > cardWidth - 16) { // 16px de padding interno
@@ -110,7 +108,6 @@ export const OrderColumnGrid = ({
     return {
       visibleOrders,
       cardHeight,
-      cardWidth,
       adjustedFontSize
     };
   }, [orders, columns, cardConfig?.fontSize, containerDimensions]);
