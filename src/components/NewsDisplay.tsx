@@ -37,15 +37,16 @@ export const NewsDisplay = ({
     if (!element) return originalSize;
     
     let currentSize = originalSize;
-    const minSize = originalSize * 0.6; // Não reduzir mais que 60% do tamanho original
+    const minSize = Math.max(originalSize * 0.5, 0.8); // Não reduzir muito, mas permitir mais redução
+    const step = 0.05; // Passos menores para ajuste mais suave
     
     // Resetar para tamanho original
     element.style.fontSize = `${currentSize * 1.5}rem`;
     element.style.webkitLineClamp = maxLines.toString();
     
-    // Verificar se está sendo cortado
+    // Verificar se está sendo cortado e ajustar gradualmente
     while (element.scrollHeight > element.clientHeight && currentSize > minSize) {
-      currentSize -= 0.1;
+      currentSize -= step;
       element.style.fontSize = `${currentSize * 1.5}rem`;
     }
     
@@ -72,10 +73,10 @@ export const NewsDisplay = ({
       g1: 'G1',
       uol: 'UOL', 
       cnn: 'CNN Brasil',
-      panelinha: 'G1', // Está usando G1 como fallback
-      cybercook: 'G1', // Está usando G1 como fallback
-      tudogostoso: 'G1', // Está usando G1 como fallback
-      foodnetwork: 'G1' // Está usando G1 como fallback
+      panelinha: 'Panelinha',
+      cybercook: 'CyberCook',
+      tudogostoso: 'TudoGostoso',
+      foodnetwork: 'Food Network'
     };
     return sourceNames[source] || source.toUpperCase();
   };
@@ -92,10 +93,10 @@ export const NewsDisplay = ({
         g1: 'https://g1.globo.com/rss/g1/',
         uol: 'https://rss.uol.com.br/feed/noticias.xml',
         cnn: 'https://www.cnnbrasil.com.br/rss/',
-        panelinha: 'https://g1.globo.com/rss/g1/', // Fallback para G1
-        cybercook: 'https://g1.globo.com/rss/g1/', // Fallback para G1
-        tudogostoso: 'https://g1.globo.com/rss/g1/', // Fallback para G1
-        foodnetwork: 'https://g1.globo.com/rss/g1/' // Fallback para G1
+        panelinha: 'https://www.panelinha.com.br/feed',
+        cybercook: 'https://cybercook.com.br/rss.xml',
+        tudogostoso: 'https://www.tudogostoso.com.br/rss/receitas',
+        foodnetwork: 'https://www.foodnetwork.com/feeds/recipes.xml'
       };
       
       const rssUrl = rssUrls[newsSource];
@@ -237,10 +238,10 @@ export const NewsDisplay = ({
   return (
     <div className={`h-full bg-gradient-to-b from-slate-50 to-slate-100 ${className}`}>
       <Card className="h-full border-0 shadow-none bg-transparent">
-        <CardContent className="p-6 h-full flex flex-col">
+        <CardContent className="p-8 h-full flex flex-col">
           {/* Header com moldura estilizada */}
           {showSource && (
-            <div className="flex items-center justify-between mb-6 flex-shrink-0">
+            <div className="flex items-center justify-between mb-8 flex-shrink-0">
               <div className="flex items-center gap-3">
                 <div className="flex items-center gap-2 bg-gradient-to-r from-red-500 to-red-600 text-white px-4 py-2 rounded-lg shadow-lg">
                   <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
@@ -264,7 +265,7 @@ export const NewsDisplay = ({
           )}
 
           {/* Conteúdo principal expandido */}
-          <div className="flex-1 flex flex-col justify-center min-h-0 pb-8">
+          <div className="flex-1 flex flex-col justify-center min-h-0 pb-12">
             <h2 
               className="adaptive-title font-bold text-gray-800 leading-tight mb-4 animate-fadeIn"
               style={{
