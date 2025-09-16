@@ -71,14 +71,21 @@ export const LastOrderDisplay = ({
             <span className="leading-none font-bold">
               {orderNumber.match(/^(IF|DD|RA|UB)-/) ? (
                 <div className="flex flex-col items-center">
-                  <span style={{ 
-                    fontStyle: 'italic', 
-                    fontWeight: 'normal',
-                    fontSize: `${adjustedFontSize * 0.5}rem`,
-                    lineHeight: '0.9'
-                  }}>
-                    {orderNumber.split('-')[0]}
-                  </span>
+                   <span style={{ 
+                     fontStyle: 'italic', 
+                     fontWeight: 'normal',
+                     fontSize: `${adjustedFontSize * 0.5}rem`,
+                     lineHeight: '0.9'
+                   }}>
+                     {(() => {
+                       const prefix = orderNumber.split('-')[0];
+                       switch (prefix) {
+                         case 'IF': return 'iFood';
+                         case 'RA': return 'Rappi';
+                         default: return prefix;
+                       }
+                     })()}
+                   </span>
                   <span style={{ fontSize: `${adjustedFontSize * 1.2}rem` }}>
                     {orderNumber.split('-')[1]}
                   </span>
