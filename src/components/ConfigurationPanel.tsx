@@ -141,6 +141,8 @@ export const ConfigurationPanel = ({
   };
 
   const updateConfig = (path: string, value: any) => {
+    console.log('updateConfig called:', path, value, 'current config:', config); // Debug
+    
     // Validação para módulos - pelo menos um deve estar ativo
     if (path.includes('modules.') && path.includes('.enabled') && value === false) {
       const moduleKeys = ['balcao', 'mesa', 'entrega', 'ficha'];
@@ -172,6 +174,7 @@ export const ConfigurationPanel = ({
     }
     
     current[keys[keys.length - 1]] = value;
+    console.log('New config after update:', newConfig); // Debug
     onConfigChange(newConfig);
   };
 
@@ -735,7 +738,7 @@ export const ConfigurationPanel = ({
                 Testar
               </Button>
             </div>
-            <div className="text-xs text-gray-500 mt-1">
+            <div className="text-xs text-black mt-1">
               Se preenchido, será exibido como iframe (tem prioridade sobre imagem)
             </div>
           </div>
@@ -776,8 +779,9 @@ export const ConfigurationPanel = ({
           <div className="space-y-2 border-t pt-3">
             <div className="flex items-center gap-2">
               <Switch 
-                checked={config.advertising.newsMode || false} 
+                checked={Boolean(config.advertising?.newsMode)} 
                 onCheckedChange={(checked) => {
+                  console.log('Switch clicked. Current state:', config.advertising?.newsMode, 'New state:', checked);
                   updateConfig('advertising.newsMode', checked);
                   // Limpar outras configurações quando ativar notícias
                   if (checked) {
@@ -788,6 +792,7 @@ export const ConfigurationPanel = ({
                 className="scale-75"
               />
               <Label className="text-sm font-medium">Exibir Feed de Notícias</Label>
+              <span className="text-xs text-gray-400 ml-2">[Debug: {String(config.advertising?.newsMode)}]</span>
             </div>
             {config.advertising.newsMode && (
               <div className="ml-6 space-y-3">
