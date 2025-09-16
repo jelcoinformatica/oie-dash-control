@@ -299,6 +299,14 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
     setLastOrderNumber('');
     setLastOrderData(null);
     setExpeditionLog([]);
+    
+    // Importar e usar a função de clear do service
+    const { clearAllOrdersService } = await import('../services/orderService');
+    clearAllOrdersService();
+    
+    // Marcar no localStorage que os pedidos foram zerados
+    localStorage.setItem('orders-cleared', 'true');
+    
     // toast({
     //   title: "Pedidos Zerados",
     //   description: "Todos os pedidos foram removidos",
@@ -306,8 +314,11 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
     // });
   }, []);
   
-   const generateOrders = useCallback(async (count: number, config?: any) => {
+  const generateOrders = useCallback(async (count: number, config?: any) => {
     try {
+      // Limpar a flag de pedidos zerados quando gerar novos pedidos
+      localStorage.removeItem('orders-cleared');
+      
       const newOrders: Order[] = [];
       
       // Verificar módulos ativos

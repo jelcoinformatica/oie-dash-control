@@ -2,23 +2,37 @@ import { Order } from '../types/order';
 import ordersData from '../data/orders.json';
 
 // Simulação de estado em memória para os dados JSON
-let orders: Order[] = ordersData.orders.map(order => ({
-  ...order,
-  modulo: order.modulo as 'balcao' | 'mesa' | 'entrega' | 'ficha',
-  status: order.status as 'production' | 'ready' | 'delivered',
-  ultimoConsumo: new Date(order.ultimoConsumo),
-  dataContabil: new Date(order.dataContabil),
-  // Campos de compatibilidade para não quebrar componentes existentes
-  number: order.numeroPedido,
-  nickname: order.nomeCliente,
-  createdAt: new Date(order.ultimoConsumo),
-  updatedAt: new Date(order.ultimoConsumo),
-  items: [`Local: ${order.localEntrega}`],
-  totalValue: 0
-}));
+let orders: Order[] = [];
+
+// Função para inicializar com dados do JSON (chamada apenas quando necessário)
+export const initializeWithDefaultOrders = (): void => {
+  orders = ordersData.orders.map(order => ({
+    ...order,
+    modulo: order.modulo as 'balcao' | 'mesa' | 'entrega' | 'ficha',
+    status: order.status as 'production' | 'ready' | 'delivered',
+    ultimoConsumo: new Date(order.ultimoConsumo),
+    dataContabil: new Date(order.dataContabil),
+    // Campos de compatibilidade para não quebrar componentes existentes
+    number: order.numeroPedido,
+    nickname: order.nomeCliente,
+    createdAt: new Date(order.ultimoConsumo),
+    updatedAt: new Date(order.ultimoConsumo),
+    items: [`Local: ${order.localEntrega}`],
+    totalValue: 0
+  }));
+};
 
 // Função para buscar pedidos (simula chamada de API)
 export const fetchOrders = async (): Promise<Order[]> => {
+  // Se não há pedidos e é o primeiro carregamento, inicializar com dados padrão
+  if (orders.length === 0) {
+    // Verifica se há dados salvos no localStorage
+    const hasBeenCleared = localStorage.getItem('orders-cleared');
+    if (!hasBeenCleared) {
+      initializeWithDefaultOrders();
+    }
+  }
+  
   // Simula delay de API
   await new Promise(resolve => setTimeout(resolve, 300));
   return [...orders]; // Retorna cópia para evitar mutação
@@ -119,6 +133,11 @@ export const expediteOrder = async (orderId: string): Promise<void> => {
   if (orderIndex !== -1) {
     orders.splice(orderIndex, 1);
   }
+};
+
+// Função para limpar todos os pedidos no service
+export const clearAllOrdersService = (): void => {
+  orders = [];
 };
 
 // Para facilitar futura migração para API real, você pode criar uma configuração
