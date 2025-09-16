@@ -42,10 +42,18 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
   }, [ttsConfig, autoExpeditionConfig]);
 
   const loadOrders = useCallback(async () => {
+    // Evitar múltiplas chamadas simultâneas
+    if (loading) return;
+    
     try {
       setLoading(true);
       const data = await fetchOrders();
-      setOrders(data);
+      
+      // Só atualizar se os dados realmente mudaram
+      setOrders(prevOrders => {
+        const hasChanged = JSON.stringify(prevOrders) !== JSON.stringify(data);
+        return hasChanged ? data : prevOrders;
+      });
       
       // Encontrar o último pedido 'ready' - busca mais robusta
       const readyOrders = data.filter(order => order.status === 'ready');
@@ -60,25 +68,29 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
         const lastReadyOrder = sortedReadyOrders[0];
         const newLastOrderNumber = lastReadyOrder.numeroPedido || lastReadyOrder.number || '';
         
-        // Armazenar dados completos do último pedido
-        setLastOrderData(lastReadyOrder);
-        
-        // Verificar se é um novo pedido e falar se TTS habilitado
-        if (newLastOrderNumber !== previousLastOrderNumber.current && previousLastOrderNumber.current !== '' && ttsConfigRef.current?.enabled) {
-          const nickname = lastReadyOrder.nomeCliente;
-          const textToSpeak = nickname ? `Pedido ${newLastOrderNumber}, ${nickname}` : `Pedido ${newLastOrderNumber}`;
-          const soundFile = config?.sounds?.ready && config?.sounds?.readyFile 
-            ? config.sounds.readyFile 
-            : undefined;
-          const readySoundType = config?.sounds?.readySoundType || 'padrao';
-          const airportTones = config?.sounds?.airportTones || 2;
-          const deliveryPlatform = lastReadyOrder.localEntrega || '';
-          speak(textToSpeak, newLastOrderNumber, nickname || '', ttsConfigRef.current, soundFile, readySoundType, airportTones, deliveryPlatform);
+        // Só atualizar se realmente mudou
+        if (newLastOrderNumber !== lastOrderNumber) {
+          // Armazenar dados completos do último pedido
+          setLastOrderData(lastReadyOrder);
+          
+          // Verificar se é um novo pedido e falar se TTS habilitado
+          if (newLastOrderNumber !== previousLastOrderNumber.current && previousLastOrderNumber.current !== '' && ttsConfigRef.current?.enabled) {
+            const nickname = lastReadyOrder.nomeCliente;
+            const textToSpeak = nickname ? `Pedido ${newLastOrderNumber}, ${nickname}` : `Pedido ${newLastOrderNumber}`;
+            const soundFile = config?.sounds?.ready && config?.sounds?.readyFile 
+              ? config.sounds.readyFile 
+              : undefined;
+            const readySoundType = config?.sounds?.readySoundType || 'padrao';
+            const airportTones = config?.sounds?.airportTones || 2;
+            const deliveryPlatform = lastReadyOrder.localEntrega || '';
+            speak(textToSpeak, newLastOrderNumber, nickname || '', ttsConfigRef.current, soundFile, readySoundType, airportTones, deliveryPlatform);
+          }
+          
+          previousLastOrderNumber.current = newLastOrderNumber;
+          setLastOrderNumber(newLastOrderNumber);
         }
-        
-        previousLastOrderNumber.current = newLastOrderNumber;
-        setLastOrderNumber(newLastOrderNumber);
-      } else {
+      } else if (lastOrderNumber) {
+        // Só limpar se havia um último pedido
         setLastOrderNumber('');
         setLastOrderData(null);
         previousLastOrderNumber.current = '';
@@ -92,7 +104,7 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
     } finally {
       setLoading(false);
     }
-  }, [speak]);
+  }, [speak, loading, lastOrderNumber]);
 
   const moveToReady = useCallback(async (orderId: string) => {
     try {
@@ -231,61 +243,24 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
     }
   }, [orders, lastOrderNumber]);
   
-  // Auto-expedição
+  // Auto-expedição otimizada
   useEffect(() => {
     // Limpar timeout anterior
     if (autoExpeditionTimeoutRef.current) {
       clearTimeout(autoExpeditionTimeoutRef.current);
     }
     
-    if (!autoExpeditionConfigRef.current?.enabled || !lastOrderNumber || !lastOrderData) return;
+    const autoConfig = autoExpeditionConfigRef.current;
+    if (!autoConfig?.enabled || !lastOrderNumber || !lastOrderData) return;
     
-    const expediteTime = (autoExpeditionConfigRef.current.minutes || 10) * 60 * 1000;
+    const expediteTime = (autoConfig.minutes || 10) * 60 * 1000;
     
     autoExpeditionTimeoutRef.current = setTimeout(async () => {
-      // Buscar o pedido atual novamente para garantir que ainda existe
-      const currentOrders = orders.filter(o => o.status === 'ready');
-      const currentOrder = currentOrders.find(o => {
-        const orderNum = o.numeroPedido || o.number || '';
-        return orderNum === lastOrderNumber;
-      });
-      
-      if (currentOrder && currentOrder.status === 'ready') {
+      // Verificar se o pedido ainda existe antes de expedir
+      if (orders.some(o => o.status === 'ready' && (o.numeroPedido || o.number) === lastOrderNumber)) {
         try {
           console.log('Auto-expedindo pedido:', lastOrderNumber);
-          await expediteOrder(currentOrder.id);
-          
-          // Atualizar lista de pedidos
-          setOrders(prev => prev.filter(o => o.id !== currentOrder.id));
-          
-          // Encontrar próximo último pedido
-          const remainingReady = orders.filter(o => 
-            o.status === 'ready' && 
-            o.id !== currentOrder.id
-          );
-          
-          if (remainingReady.length > 0) {
-            const newLastOrder = remainingReady.sort((a, b) => {
-              const dateA = new Date(a.updatedAt || a.ultimoConsumo || 0);
-              const dateB = new Date(b.updatedAt || b.ultimoConsumo || 0);
-              return dateB.getTime() - dateA.getTime();
-            })[0];
-            const newLastOrderNumber = newLastOrder.numeroPedido || newLastOrder.number || '';
-            setLastOrderNumber(newLastOrderNumber);
-            setLastOrderData(newLastOrder);
-          } else {
-            setLastOrderNumber('');
-            setLastOrderData(null);
-          }
-          
-          // Adicionar ao log de expedição como autoexpedição (no início da lista)
-          setExpeditionLog(prev => [{
-            orderNumber: currentOrder.numeroPedido || currentOrder.number || '',
-            nickname: currentOrder.nomeCliente,
-            expeditionTime: new Date(),
-            isAutoExpedition: true
-          }, ...prev.slice(0, 9)]);
-          
+          await expedite(lastOrderNumber);
         } catch (error) {
           console.error('Erro na auto-expedição:', error);
         }
@@ -297,7 +272,7 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
         clearTimeout(autoExpeditionTimeoutRef.current);
       }
     };
-  }, [lastOrderNumber, lastOrderData, autoExpeditionConfigRef.current?.enabled, autoExpeditionConfigRef.current?.minutes]);
+  }, [lastOrderNumber, autoExpeditionConfigRef.current?.enabled, autoExpeditionConfigRef.current?.minutes, expedite]);
   
   // Funções para simulação
   const clearAllOrders = useCallback(async () => {
@@ -382,12 +357,27 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
     setIsSimulationActive(false);
   }, []);
 
-  // Carregar pedidos inicialmente e periodicamente
+  // Carregar pedidos inicialmente e periodicamente com otimização
   useEffect(() => {
     loadOrders();
-    const interval = setInterval(loadOrders, 5000); // Atualizar a cada 5 segundos
+    
+    // Polling mais inteligente - apenas se necessário
+    const interval = setInterval(() => {
+      // Só fazer polling se não estiver em uma operação ativa
+      if (!loading) {
+        loadOrders();
+      }
+    }, 10000); // Reduzir frequência para 10 segundos
+    
     return () => clearInterval(interval);
-  }, [loadOrders]);
+  }, []); // Remover loadOrders das dependências para evitar re-criação do interval
+
+  // Separar a lógica de loadOrders para não recriar o interval constantemente
+  useEffect(() => {
+    if (orders.length === 0 && !loading) {
+      loadOrders();
+    }
+  }, [loadOrders, orders.length, loading]);
 
   // Filtrar pedidos por status, excluindo o último pedido dos prontos apenas se for destacado
   const productionOrders = orders.filter(order => order.status === 'production');
