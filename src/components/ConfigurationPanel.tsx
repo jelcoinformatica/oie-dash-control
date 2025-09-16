@@ -140,9 +140,7 @@ export const ConfigurationPanel = ({
     }));
   };
 
-  const updateConfig = (path: string, value: any) => {
-    console.log('updateConfig called:', path, value, 'current config:', config); // Debug
-    
+  const updateConfig = (path: string, value: any) => {    
     // Validação para módulos - pelo menos um deve estar ativo
     if (path.includes('modules.') && path.includes('.enabled') && value === false) {
       const moduleKeys = ['balcao', 'mesa', 'entrega', 'ficha'];
@@ -174,7 +172,6 @@ export const ConfigurationPanel = ({
     }
     
     current[keys[keys.length - 1]] = value;
-    console.log('New config after update:', newConfig); // Debug
     onConfigChange(newConfig);
   };
 
@@ -779,9 +776,8 @@ export const ConfigurationPanel = ({
           <div className="space-y-2 border-t pt-3">
             <div className="flex items-center gap-2">
               <Switch 
-                checked={config.advertising.newsMode === true} 
+                checked={Boolean(config.advertising.newsMode)} 
                 onCheckedChange={(checked) => {
-                  console.log('Switch clicked. Current newsMode:', config.advertising.newsMode, 'Setting to:', checked);
                   updateConfig('advertising.newsMode', checked);
                   // Limpar outras configurações quando ativar notícias
                   if (checked) {
@@ -791,7 +787,6 @@ export const ConfigurationPanel = ({
                 }}
               />
               <Label className="text-sm font-medium">Exibir Feed de Notícias</Label>
-              <span className="text-xs text-gray-400 ml-2">[Estado: {config.advertising.newsMode ? 'ON' : 'OFF'}]</span>
             </div>
             {config.advertising.newsMode && (
               <div className="ml-6 space-y-3">
