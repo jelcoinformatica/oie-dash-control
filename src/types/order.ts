@@ -92,10 +92,24 @@ export interface PanelConfig {
     minutes: number;
   };
   modules: {
-    balcao: boolean;
-    mesa: boolean;
-    entrega: boolean;
-    ficha: boolean;
+    activeModule: 'balcao' | 'mesa' | 'entrega' | 'ficha';
+    balcao: {
+      numeroVenda: boolean;
+      numeroChamada: boolean;
+      apelido: boolean;
+      apelidoNumeroVenda: boolean;
+    };
+    mesa: {
+      numeroMesa: boolean;
+      apelidoNumeroMesa: boolean;
+    };
+    entrega: {
+      numeroEntrega: boolean;
+      numeroVenda: boolean;
+    };
+    ficha: {
+      selectedOption: 'numeroFicha' | 'numeroChamada' | 'nomeCliente' | 'fichaCliente' | 'localEntregaFicha';
+    };
   };
   database?: {
     type: 'none' | 'mssql' | 'mysql' | 'postgre' | 'other';

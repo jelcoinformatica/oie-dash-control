@@ -8,10 +8,24 @@ interface OrderCardProps {
   showNickname?: boolean;
   showItems?: boolean;
   enabledModules?: {
-    balcao: boolean;
-    mesa: boolean;
-    entrega: boolean;
-    ficha: boolean;
+    activeModule: 'balcao' | 'mesa' | 'entrega' | 'ficha';
+    balcao: {
+      numeroVenda: boolean;
+      numeroChamada: boolean;
+      apelido: boolean;
+      apelidoNumeroVenda: boolean;
+    };
+    mesa: {
+      numeroMesa: boolean;
+      apelidoNumeroMesa: boolean;
+    };
+    entrega: {
+      numeroEntrega: boolean;
+      numeroVenda: boolean;
+    };
+    ficha: {
+      selectedOption: 'numeroFicha' | 'numeroChamada' | 'nomeCliente' | 'fichaCliente' | 'localEntregaFicha';
+    };
   };
   fontSize?: number;
   fontFamily?: string;
@@ -38,9 +52,8 @@ export const OrderCard = ({
   textColor = '#374151',
   backgroundColor = '#ffffff'
 }: OrderCardProps) => {
-  const enabledModuleCount = enabledModules ? 
-    Object.values(enabledModules).filter(Boolean).length : 0;
-  const showModuleBullet = enabledModuleCount > 1;
+  // Only show module bullet indicator if it's relevant (not used in current implementation)
+  const showModuleBullet = false;
   
   const displayNumber = order.numeroPedido || order.number;
   const displayName = order.nomeCliente || order.nickname;

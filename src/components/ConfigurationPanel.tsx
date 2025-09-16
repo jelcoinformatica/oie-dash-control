@@ -10,6 +10,8 @@ import { PanelConfig } from '../types/order';
 import { Settings, Palette, Factory, CheckCircle, Monitor, Volume2, Clock, Puzzle, Cog, X, ChevronRight, ChevronDown, Plus, Minus } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { defaultConfig } from '../data/defaultConfig';
+import { RadioGroup, RadioGroupItem } from './ui/radio-group';
+import { Checkbox } from './ui/checkbox';
 
 interface ConfigurationPanelProps {
   open: boolean;
@@ -992,43 +994,154 @@ export const ConfigurationPanel = ({
           onToggle={() => toggleSection('modules')}
           colorClass="text-indigo-600"
         >
-          <div className="grid grid-cols-2 gap-3">
-            <div className="flex items-center space-x-2">
-              <Switch
-                checked={config.modules.balcao}
-                onCheckedChange={(checked) => updateConfig('modules.balcao', checked)}
-                className="scale-75"
-              />
-              <div className="w-2.5 h-2.5 bg-green-500 rounded-full"></div>
-              <Label className="text-base">Balcão</Label>
+          <div className="space-y-4">
+            {/* Seleção do Módulo Principal */}
+            <div className="space-y-3">
+              <Label className="text-sm font-semibold text-gray-700">Módulo Principal</Label>
+              <RadioGroup
+                value={config.modules.activeModule}
+                onValueChange={(value: 'balcao' | 'mesa' | 'entrega' | 'ficha') => updateConfig('modules.activeModule', value)}
+                className="space-y-2"
+              >
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="balcao" id="balcao" />
+                  <Label htmlFor="balcao" className="text-sm font-medium">BALCÃO</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="entrega" id="entrega" />
+                  <Label htmlFor="entrega" className="text-sm font-medium">ENTREGA</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="mesa" id="mesa" />
+                  <Label htmlFor="mesa" className="text-sm font-medium">MESA</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="ficha" id="ficha" />
+                  <Label htmlFor="ficha" className="text-sm font-medium">FICHA</Label>
+                </div>
+              </RadioGroup>
             </div>
-            <div className="flex items-center space-x-2">
-              <Switch
-                checked={config.modules.mesa}
-                onCheckedChange={(checked) => updateConfig('modules.mesa', checked)}
-                className="scale-75"
-              />
-              <div className="w-2.5 h-2.5 bg-blue-500 rounded-full"></div>
-              <Label className="text-base">Mesa</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Switch
-                checked={config.modules.entrega}
-                onCheckedChange={(checked) => updateConfig('modules.entrega', checked)}
-                className="scale-75"
-              />
-              <div className="w-2.5 h-2.5 bg-red-500 rounded-full"></div>
-              <Label className="text-base">Entrega</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Switch
-                checked={config.modules.ficha}
-                onCheckedChange={(checked) => updateConfig('modules.ficha', checked)}
-                className="scale-75"
-              />
-              <div className="w-2.5 h-2.5 bg-purple-500 rounded-full"></div>
-              <Label className="text-base">Ficha</Label>
-            </div>
+
+            {/* Configurações específicas por módulo */}
+            {config.modules.activeModule === 'balcao' && (
+              <div className="space-y-3 border-t pt-4">
+                <Label className="text-sm font-medium text-gray-600">Opções do Balcão</Label>
+                <div className="space-y-2 ml-4">
+                  <div className="flex items-center space-x-2">
+                    <Checkbox 
+                      checked={config.modules.balcao.numeroVenda}
+                      onCheckedChange={(checked) => updateConfig('modules.balcao.numeroVenda', checked)}
+                      id="balcao-num-venda"
+                    />
+                    <Label htmlFor="balcao-num-venda" className="text-sm">No. de venda</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox 
+                      checked={config.modules.balcao.numeroChamada}
+                      onCheckedChange={(checked) => updateConfig('modules.balcao.numeroChamada', checked)}
+                      id="balcao-num-chamada"
+                    />
+                    <Label htmlFor="balcao-num-chamada" className="text-sm">No. da chamada</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox 
+                      checked={config.modules.balcao.apelido}
+                      onCheckedChange={(checked) => updateConfig('modules.balcao.apelido', checked)}
+                      id="balcao-apelido"
+                    />
+                    <Label htmlFor="balcao-apelido" className="text-sm">Apelido</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox 
+                      checked={config.modules.balcao.apelidoNumeroVenda}
+                      onCheckedChange={(checked) => updateConfig('modules.balcao.apelidoNumeroVenda', checked)}
+                      id="balcao-apelido-num-venda"
+                    />
+                    <Label htmlFor="balcao-apelido-num-venda" className="text-sm">Apelido + No. de venda</Label>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {config.modules.activeModule === 'entrega' && (
+              <div className="space-y-3 border-t pt-4">
+                <Label className="text-sm font-medium text-gray-600">Opções da Entrega</Label>
+                <div className="space-y-2 ml-4">
+                  <div className="flex items-center space-x-2">
+                    <Checkbox 
+                      checked={config.modules.entrega.numeroEntrega}
+                      onCheckedChange={(checked) => updateConfig('modules.entrega.numeroEntrega', checked)}
+                      id="entrega-num-entrega"
+                    />
+                    <Label htmlFor="entrega-num-entrega" className="text-sm">No. de entrega</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox 
+                      checked={config.modules.entrega.numeroVenda}
+                      onCheckedChange={(checked) => updateConfig('modules.entrega.numeroVenda', checked)}
+                      id="entrega-num-venda"
+                    />
+                    <Label htmlFor="entrega-num-venda" className="text-sm">No. da venda (iFood, Rappi...)</Label>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {config.modules.activeModule === 'mesa' && (
+              <div className="space-y-3 border-t pt-4">
+                <Label className="text-sm font-medium text-gray-600">Opções da Mesa</Label>
+                <div className="space-y-2 ml-4">
+                  <div className="flex items-center space-x-2">
+                    <Checkbox 
+                      checked={config.modules.mesa.numeroMesa}
+                      onCheckedChange={(checked) => updateConfig('modules.mesa.numeroMesa', checked)}
+                      id="mesa-num-mesa"
+                    />
+                    <Label htmlFor="mesa-num-mesa" className="text-sm">No. da Mesa</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox 
+                      checked={config.modules.mesa.apelidoNumeroMesa}
+                      onCheckedChange={(checked) => updateConfig('modules.mesa.apelidoNumeroMesa', checked)}
+                      id="mesa-apelido-num-mesa"
+                    />
+                    <Label htmlFor="mesa-apelido-num-mesa" className="text-sm">Apelido + No. da Mesa</Label>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {config.modules.activeModule === 'ficha' && (
+              <div className="space-y-3 border-t pt-4">
+                <Label className="text-sm font-medium text-gray-600">Opções da Ficha</Label>
+                <RadioGroup
+                  value={config.modules.ficha.selectedOption}
+                  onValueChange={(value: 'numeroFicha' | 'numeroChamada' | 'nomeCliente' | 'fichaCliente' | 'localEntregaFicha') => updateConfig('modules.ficha.selectedOption', value)}
+                  className="space-y-2 ml-4"
+                >
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="numeroFicha" id="ficha-num-ficha" />
+                    <Label htmlFor="ficha-num-ficha" className="text-sm">No. da ficha</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="numeroChamada" id="ficha-num-chamada" />
+                    <Label htmlFor="ficha-num-chamada" className="text-sm">No. da chamada</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="nomeCliente" id="ficha-nome-cliente" />
+                    <Label htmlFor="ficha-nome-cliente" className="text-sm">Nome do Cliente</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="fichaCliente" id="ficha-ficha-cliente" />
+                    <Label htmlFor="ficha-ficha-cliente" className="text-sm">No.Ficha + Nome do Cliente</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="localEntregaFicha" id="ficha-local-entrega" />
+                    <Label htmlFor="ficha-local-entrega" className="text-sm">Local Entrega + No. da ficha</Label>
+                  </div>
+                </RadioGroup>
+              </div>
+            )}
           </div>
         </ConfigSection>
 
@@ -1329,32 +1442,10 @@ export const ConfigurationPanel = ({
             </div>
             
             <div className="space-y-2 border-t pt-3">
-              <Label className="text-xs font-medium">Módulos Ativos:</Label>
-              <div className="grid grid-cols-2 gap-2 text-xs">
-                {config.modules.balcao && (
-                  <div className="flex items-center gap-1">
-                    <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
-                    <span>Balcão</span>
-                  </div>
-                )}
-                {config.modules.mesa && (
-                  <div className="flex items-center gap-1">
-                    <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
-                    <span>Mesa</span>
-                  </div>
-                )}
-                {config.modules.entrega && (
-                  <div className="flex items-center gap-1">
-                    <div className="w-1.5 h-1.5 bg-red-500 rounded-full"></div>
-                    <span>Entrega</span>
-                  </div>
-                )}
-                {config.modules.ficha && (
-                  <div className="flex items-center gap-1">
-                    <div className="w-1.5 h-1.5 bg-purple-500 rounded-full"></div>
-                    <span>Ficha</span>
-                  </div>
-                )}
+              <Label className="text-xs font-medium">Módulo Ativo:</Label>
+              <div className="flex items-center gap-2 text-xs">
+                <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
+                <span className="capitalize">{config.modules.activeModule}</span>
               </div>
             </div>
           </div>

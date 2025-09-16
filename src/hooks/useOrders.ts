@@ -321,17 +321,10 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
       
       const newOrders: Order[] = [];
       
-      // Verificar módulos ativos
-      const activeModules = [];
-      if (config?.modules) {
-        if (config.modules.balcao) activeModules.push('balcao');
-        if (config.modules.mesa) activeModules.push('mesa');
-        if (config.modules.entrega) activeModules.push('entrega');
-        if (config.modules.ficha) activeModules.push('ficha');
-      }
+      // Verificar módulo ativo
+      const activeModule = config?.modules?.activeModule || 'ficha';
       
-      // Se nenhum módulo ativo, usar todos
-      const modulesToUse = activeModules.length > 0 ? activeModules : ['balcao', 'mesa', 'entrega', 'ficha'];
+      const modulesToUse = [activeModule];
       
       for (let i = 0; i < count; i++) {
         // 60% dos pedidos de entrega serão de delivery online se entrega estiver ativa
