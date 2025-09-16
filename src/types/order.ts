@@ -60,6 +60,7 @@ export interface PanelConfig {
     imageUrl?: string;
     websiteUrl?: string;
     newsMode?: boolean; // Nova propriedade para modo notícias
+    newsSource?: 'g1' | 'uol' | 'cnn'; // Fonte das notícias
     showBorder?: boolean;
   };
   lastOrder: {

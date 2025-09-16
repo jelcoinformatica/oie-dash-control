@@ -60,6 +60,7 @@ export const defaultConfig: PanelConfig = {
     imageUrl: undefined,
     websiteUrl: undefined,
     newsMode: false, // Nova propriedade para modo notícias
+    newsSource: 'g1', // Fonte padrão das notícias
     showBorder: false
   },
   lastOrder: {

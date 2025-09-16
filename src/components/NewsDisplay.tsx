@@ -14,13 +14,15 @@ interface NewsDisplayProps {
   autoRotate?: boolean;
   rotationInterval?: number;
   showSource?: boolean;
+  newsSource?: 'g1' | 'uol' | 'cnn';
 }
 
 export const NewsDisplay = ({ 
   className = "",
   autoRotate = true,
   rotationInterval = 20000, // 20 segundos
-  showSource = true 
+  showSource = true,
+  newsSource = 'g1'
 }: NewsDisplayProps) => {
   const [news, setNews] = useState<NewsItem[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -66,22 +68,57 @@ export const NewsDisplay = ({
     }
   ];
 
-  // Função para buscar notícias via RSS (implementação futura)
+  // Função para buscar notícias via RSS
   const fetchRSSNews = async () => {
     try {
       setLoading(true);
       
-      // Por enquanto, usar dados mock
-      // Em produção, você pode usar um serviço como:
-      // - RSS2JSON API
-      // - AllOrigins API  
-      // - Ou implementar um proxy próprio no backend
+      const rssUrls = {
+        g1: 'https://g1.globo.com/rss/g1/',
+        uol: 'https://rss.uol.com.br/feed/noticias.xml',
+        cnn: 'https://www.cnnbrasil.com.br/rss/'
+      };
       
-      setNews(mockNews);
-      setError(null);
+      const rssUrl = rssUrls[newsSource];
+      
+      // Usar AllOrigins como proxy para contornar CORS
+      const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(rssUrl)}`;
+      
+      const response = await fetch(proxyUrl);
+      const data = await response.json();
+      
+      if (data.contents) {
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(data.contents, 'text/xml');
+        const items = xmlDoc.querySelectorAll('item');
+        
+        const newsItems: NewsItem[] = Array.from(items).slice(0, 10).map(item => {
+          const title = item.querySelector('title')?.textContent || '';
+          const description = item.querySelector('description')?.textContent || '';
+          const pubDate = item.querySelector('pubDate')?.textContent || new Date().toISOString();
+          const link = item.querySelector('link')?.textContent || '#';
+          
+          return {
+            title: title.replace(/<\/?[^>]+(>|$)/g, ""), // Remove HTML tags
+            description: description.replace(/<\/?[^>]+(>|$)/g, "").substring(0, 200),
+            pubDate,
+            link,
+            source: newsSource === 'g1' ? 'G1' : newsSource === 'uol' ? 'UOL Notícias' : 'CNN Brasil'
+          };
+        });
+        
+        if (newsItems.length > 0) {
+          setNews(newsItems);
+          setError(null);
+        } else {
+          throw new Error('Nenhuma notícia encontrada');
+        }
+      } else {
+        throw new Error('Erro ao acessar RSS');
+      }
     } catch (err) {
-      console.error('Erro ao buscar notícias:', err);
-      setError('Erro ao carregar notícias');
+      console.error('Erro ao buscar notícias RSS:', err);
+      setError('Usando notícias de demonstração');
       setNews(mockNews); // Fallback para mock data
     } finally {
       setLoading(false);
@@ -93,7 +130,7 @@ export const NewsDisplay = ({
     fetchRSSNews();
     const interval = setInterval(fetchRSSNews, 5 * 60 * 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, [newsSource]); // Refetch quando a fonte muda
 
   // Auto rotação das notícias
   useEffect(() => {

@@ -790,14 +790,30 @@ export const ConfigurationPanel = ({
               <Label className="text-sm font-medium">Exibir Feed de Notícias</Label>
             </div>
             {config.advertising.newsMode && (
-              <div className="ml-6 text-xs text-blue-600 bg-blue-50 p-2 rounded">
-                ✓ Feed automático de manchetes será exibido<br/>
-                ✓ Rotação automática a cada 25 segundos<br/>
-                ✓ Layout otimizado para espaço disponível
-              </div>
-            )}
-            {config.advertising.newsMode && (
-              <div className="ml-6 space-y-2">
+              <div className="ml-6 space-y-3">
+                <div className="text-xs text-blue-600 bg-blue-50 p-2 rounded">
+                  ✓ Feed automático de manchetes será exibido<br/>
+                  ✓ Rotação automática a cada 25 segundos<br/>
+                  ✓ Layout otimizado para espaço disponível
+                </div>
+                
+                <div>
+                  <Label className="text-xs font-medium">Fonte das Notícias</Label>
+                  <Select 
+                    value={config.advertising.newsSource || 'g1'} 
+                    onValueChange={(value) => updateConfig('advertising.newsSource', value)}
+                  >
+                    <SelectTrigger className="w-full mt-1">
+                      <SelectValue placeholder="Selecione a fonte" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="g1">G1 - Globo.com</SelectItem>
+                      <SelectItem value="uol">UOL Notícias</SelectItem>
+                      <SelectItem value="cnn">CNN Brasil</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
                 <div className="text-xs text-gray-600">
                   🌐 <strong>URL Standalone:</strong> <code>{window.location.origin}/news</code>
                 </div>

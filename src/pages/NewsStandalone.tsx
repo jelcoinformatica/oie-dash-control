@@ -9,6 +9,7 @@ export const NewsStandalone = () => {
         autoRotate={true}
         rotationInterval={25000} // 25 segundos
         showSource={true}
+        newsSource="g1"
       />
     </div>
   );

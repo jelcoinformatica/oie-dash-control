@@ -13,6 +13,7 @@ interface AdvertisingColumnProps {
   backgroundColor?: string;
   showBorder?: boolean;
   newsMode?: boolean; // Nova prop para modo notícias
+  newsSource?: 'g1' | 'uol' | 'cnn'; // Fonte das notícias
   onToggleHeader?: () => void;
 }
 
@@ -28,6 +29,7 @@ export const AdvertisingColumn = ({
   backgroundColor = "#ffffff",
   showBorder = false,
   newsMode = false,
+  newsSource = 'g1',
   onToggleHeader
 }: AdvertisingColumnProps) => {
 
@@ -67,6 +69,7 @@ export const AdvertisingColumn = ({
               autoRotate={true}
               rotationInterval={25000} // 25 segundos
               showSource={true}
+              newsSource={newsSource}
             />
           ) : websiteUrl ? (
             <iframe
