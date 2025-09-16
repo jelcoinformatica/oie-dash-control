@@ -49,6 +49,7 @@ const Index = () => {
       try {
         const parsedConfig: PanelConfig = JSON.parse(savedConfig);
         // Merge com defaultConfig para garantir que todas as propriedades existam
+        // Forçar módulos sempre habilitados conforme padrão de fábrica
         const mergedConfig: PanelConfig = { 
           ...defaultConfig, 
           ...parsedConfig, 
@@ -60,12 +61,23 @@ const Index = () => {
           textToSpeech: { ...defaultConfig.textToSpeech, ...parsedConfig.textToSpeech },
           autoExpedition: { ...defaultConfig.autoExpedition, ...parsedConfig.autoExpedition },
           modules: { 
-            ...defaultConfig.modules, 
-            ...parsedConfig.modules,
-            balcao: { ...defaultConfig.modules.balcao, ...parsedConfig.modules?.balcao },
-            mesa: { ...defaultConfig.modules.mesa, ...parsedConfig.modules?.mesa },
-            entrega: { ...defaultConfig.modules.entrega, ...parsedConfig.modules?.entrega },
-            ficha: { ...defaultConfig.modules.ficha, ...parsedConfig.modules?.ficha }
+            // Sempre usar configuração padrão de fábrica para módulos (todos habilitados)
+            balcao: { 
+              enabled: defaultConfig.modules.balcao.enabled, // Sempre true
+              displayOption: parsedConfig.modules?.balcao?.displayOption || defaultConfig.modules.balcao.displayOption 
+            },
+            mesa: { 
+              enabled: defaultConfig.modules.mesa.enabled, // Sempre true
+              displayOption: parsedConfig.modules?.mesa?.displayOption || defaultConfig.modules.mesa.displayOption 
+            },
+            entrega: { 
+              enabled: defaultConfig.modules.entrega.enabled, // Sempre true
+              displayOption: parsedConfig.modules?.entrega?.displayOption || defaultConfig.modules.entrega.displayOption 
+            },
+            ficha: { 
+              enabled: defaultConfig.modules.ficha.enabled, // Sempre true
+              displayOption: parsedConfig.modules?.ficha?.displayOption || defaultConfig.modules.ficha.displayOption 
+            }
           },
         };
         setConfig(mergedConfig);
