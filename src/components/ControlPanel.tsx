@@ -56,10 +56,10 @@ export const ControlPanel = ({
   };
 
   return (
-    <div className="bg-card border-t shadow-sm" style={{ height: '26px' }}>
-      <div className="container mx-auto px-2 py-0.5 flex items-center justify-between h-full relative">
-        <div className="text-xs text-muted-foreground">
-          Oie! v.5.0 | Jelco Informática (2025)
+    <div className="bg-card border-t shadow-sm relative" style={{ height: '32px', minHeight: '32px' }}>
+      <div className="container mx-auto px-2 py-1 flex items-center justify-between h-full relative">
+        <div className="text-xs text-muted-foreground flex-shrink-0">
+          Oie! v.5.0 | Jelco Informática (2025) | Ctrl+K para configurações
         </div>
         
         {/* Prompt de expedição fixo no centro */}

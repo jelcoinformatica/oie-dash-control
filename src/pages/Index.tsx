@@ -88,6 +88,25 @@ const Index = () => {
     return () => clearTimeout(timer);
   }, []);
 
+  // Atalho de teclado para abrir configurações
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      // Ctrl+K para abrir configurações
+      if (event.ctrlKey && event.key === 'k') {
+        event.preventDefault();
+        setConfigOpen(true);
+        toast({
+          title: "Configurações abertas",
+          description: "Use Ctrl+K para abrir as configurações rapidamente",
+          duration: 2000,
+        });
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   const handleOrderClick = (order: any) => {
     if (order.status === 'production') {
       moveToReady(order.id);
@@ -274,7 +293,7 @@ const Index = () => {
       </div>
 
       {/* Painel de Controle Fixo */}
-      <div className="flex-shrink-0" style={{ height: '26px' }}>
+      <div className="flex-shrink-0 z-10" style={{ height: '32px', backgroundColor: 'var(--background)', borderTop: '1px solid var(--border)' }}>
         <ControlPanel
           onConfigClick={() => setConfigOpen(true)}
           onExpedite={handleExpedite}
