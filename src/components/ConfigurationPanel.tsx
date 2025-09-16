@@ -90,6 +90,26 @@ export const ConfigurationPanel = ({
     simulation: false
   });
 
+  // Reset todas as seções para fechadas sempre que abrir o painel
+  useEffect(() => {
+    if (open) {
+      setOpenSections({
+        background: false,
+        production: false,
+        ready: false,
+        lastOrder: false,
+        advertising: false,
+        sounds: false,
+        tts: false,
+        autoExpedition: false,
+        modules: false,
+        cards: false,
+        diversos: false,
+        simulation: false
+      });
+    }
+  }, [open]);
+
   const [showClearDialog, setShowClearDialog] = useState(false);
   const [panelPosition, setPanelPosition] = useState<'left' | 'right'>('right');
 
@@ -395,7 +415,7 @@ export const ConfigurationPanel = ({
 
         {/* Coluna 2 - Prontos */}
         <ConfigSection
-          title="Coluna 2 - Prontos (Obrigatória)"
+          title="Coluna 2 - Prontos"
           icon={<CheckCircle className="w-4 h-4" />}
           isOpen={openSections.ready}
           onToggle={() => toggleSection('ready')}
