@@ -117,62 +117,54 @@ export const useTextToSpeech = () => {
       }
     };
 
-    try {
-      // Tocar som primeiro, se disponível
-      if (soundFile) {
-        // Tentar tocar arquivo de som primeiro
-        const audio = new Audio(soundFile);
-        audio.play().then(() => {
-          // Aguardar som terminar + pausa de 1s antes de falar
-          audio.addEventListener('ended', () => {
-            setTimeout(performSpeech, 1000);
-          });
-        }).catch(async () => {
-          // Se falhar ao tocar arquivo, usar som gerado
-          console.log('Arquivo de som indisponível, usando som gerado integrado');
+    const playSequence = async () => {
+      try {
+        // Tocar som primeiro
+        if (soundFile) {
+          try {
+            const audio = new Audio(soundFile);
+            await audio.play();
+            // Aguardar som terminar completamente
+            await new Promise<void>((resolve) => {
+              audio.addEventListener('ended', () => resolve());
+            });
+          } catch (audioError) {
+            // Fallback para som gerado se arquivo falhar
+            console.log('Arquivo de som indisponível, usando som gerado');
+            try {
+              await notificationSound.playOrderReadySound();
+            } catch (soundError) {
+              console.error('Erro ao tocar som gerado:', soundError);
+            }
+          }
+        } else {
+          // Usar som gerado se nenhum arquivo especificado
           try {
             await notificationSound.playOrderReadySound();
           } catch (soundError) {
             console.error('Erro ao tocar som gerado:', soundError);
           }
-          setTimeout(performSpeech, 1000);
-        });
-      } else {
-        // Usar som gerado se nenhum arquivo especificado
-        try {
-          await notificationSound.playOrderReadySound();
-        } catch (soundError) {
-          console.error('Erro ao tocar som gerado:', soundError);
         }
-        setTimeout(performSpeech, 1000);
+        
+        // Aguardar 1 segundo após o som antes de falar
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        // Executar fala
+        performSpeech();
+      } catch (error) {
+        console.error('Erro na sequência de som e fala:', error);
       }
+    };
 
-      // Implementar repetição se configurado
-      if (config.repeatEnabled === true && config.repeatCount && config.repeatInterval) {
+    try {
+      // Executar primeira vez
+      await playSequence();
+
+      // Implementar repetição apenas se explicitamente habilitada
+      if (config.repeatEnabled === true && config.repeatCount && config.repeatCount > 1 && config.repeatInterval) {
         for (let i = 1; i < config.repeatCount; i++) {
-          setTimeout(async () => {
-            if (soundFile) {
-              const audio = new Audio(soundFile);
-              audio.play().then(() => {
-                audio.addEventListener('ended', () => {
-                  setTimeout(performSpeech, 1000);
-                });
-              }).catch(async () => {
-                try {
-                  await notificationSound.playOrderReadySound();
-                } catch (soundError) {
-                  console.error('Erro ao tocar som gerado:', soundError);
-                }
-                setTimeout(performSpeech, 1000);
-              });
-            } else {
-              try {
-                await notificationSound.playOrderReadySound();
-              } catch (soundError) {
-                console.error('Erro ao tocar som gerado:', soundError);
-              }
-              setTimeout(performSpeech, 1000);
-            }
+          setTimeout(() => {
+            playSequence();
           }, i * config.repeatInterval * 1000);
         }
       }
