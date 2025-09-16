@@ -235,66 +235,68 @@ const Index = () => {
 
         {/* Coluna 2 - Prontos */}
         <div style={{ width: `${columnWidths.ready}%` }} className="h-full">
-          <div className={`bg-white rounded-lg shadow-lg border border-gray-300 flex flex-col overflow-hidden h-full ${config.ready.showBorder ? 'ring-2 ring-blue-200' : ''}`}>
-            {/* Header Fixo */}
+          <div className="flex flex-col h-full">
             <div 
-              className="bg-ready text-ready-foreground px-4 font-bold text-lg shadow-sm border-b flex items-center justify-center flex-shrink-0 rounded-t-lg relative"
-              style={{ 
-                backgroundColor: config.ready.headerBg, 
-                color: config.ready.headerColor,
-                height: `${config.ready.headerHeight}px`,
-                fontSize: `${config.ready.headerFontSize}rem`,
-                fontFamily: config.ready.headerFontFamily
-              }}
+              className={`bg-white rounded-lg shadow-lg flex flex-col overflow-hidden h-full ${config.ready.showBorder ? 'ring-2 ring-blue-200' : ''}`}
             >
-              {/* Contador de produção quando coluna 1 está desativada */}
-              {!config.production.visible && (
-                <div 
-                  className="absolute left-4 bg-gray-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold cursor-help"
-                  style={{ fontSize: '16px' }}
-                  title="Pedidos em Produção"
-                >
-                  {productionOrders.length}
+              <div 
+                className="flex items-center justify-center px-4 font-bold shadow-sm border-b rounded-t-lg relative"
+                style={{
+                  backgroundColor: config.ready.headerBg,
+                  color: config.ready.headerColor,
+                  height: `${config.ready.headerHeight}px`,
+                  fontSize: `${config.ready.headerFontSize}rem`,
+                  fontFamily: config.ready.headerFontFamily
+                }}
+              >
+                {/* Contador de produção quando coluna 1 está desativada */}
+                {!config.production.visible && (
+                  <div 
+                    className="absolute left-4 bg-gray-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold cursor-help"
+                    style={{ fontSize: '16px' }}
+                    title="Pedidos em Produção"
+                  >
+                    {productionOrders.length}
+                  </div>
+                )}
+                
+                <span>{config.ready.title}</span>
+                
+                <div className="absolute right-4 bg-white/20 px-2 py-1 rounded-full font-bold" style={{ fontSize: '16px' }}>
+                  {readyOrders.length + (lastOrderNumber && config.lastOrder.highlight ? 1 : 0)}
+                </div>
+              </div>
+              
+              {/* Último Pedido Fixo */}
+              {lastOrderNumber && config.lastOrder.highlight && (
+                <div className="flex-shrink-0">
+                  <LastOrderDisplay
+                    orderNumber={lastOrderNumber}
+                    nickname={lastOrderData?.nomeCliente}
+                    config={config.lastOrder}
+                    onExpedite={handleExpedite}
+                  />
                 </div>
               )}
               
-              <span>{config.ready.title}</span>
-              
-              <div className="absolute right-4 bg-white/20 px-2 py-1 rounded-full font-bold" style={{ fontSize: '16px' }}>
-                {readyOrders.length + (lastOrderNumber && config.lastOrder.highlight ? 1 : 0)}
-              </div>
-            </div>
-            
-            {/* Último Pedido Fixo */}
-            {lastOrderNumber && config.lastOrder.highlight && (
-              <div className="flex-shrink-0">
-                <LastOrderDisplay
-                  orderNumber={lastOrderNumber}
-                  nickname={lastOrderData?.nomeCliente}
-                  config={config.lastOrder}
-                  onExpedite={handleExpedite}
+              <div className="flex-1 p-2 bg-gray-50" style={{ overflow: 'hidden' }}>
+                <OrderColumnGrid
+                  orders={readyOrders}
+                  columns={config.ready.cardConfig.columns}
+                  onOrderClick={(order) => expedite(order.numeroPedido || order.number || '')}
+                  showNickname={config.ready?.cardConfig?.showNickname ?? true}
+                  showItems={config.ready?.cardConfig?.showItems ?? true}
+                  enabledModules={config.modules}
+                  cardConfig={{
+                    fontSize: config.ready?.cardConfig?.fontSize,
+                    fontFamily: config.ready?.cardConfig?.fontFamily,
+                    textColor: config.ready?.cardConfig?.textColor,
+                    backgroundColor: config.ready?.cardConfig?.backgroundColor
+                  }}
+                  lastOrderNumber={lastOrderNumber}
+                  lastOrderConfig={config.lastOrder}
                 />
               </div>
-            )}
-            
-            {/* Cards de Pedidos Prontos sem Scroll */}
-            <div className="flex-1 bg-gray-50 p-2" style={{ overflow: 'hidden' }}>
-              <OrderColumnGrid
-                orders={readyOrders}
-                columns={config.ready.cardConfig.columns}
-                onOrderClick={(order) => expedite(order.numeroPedido || order.number || '')}
-                showNickname={config.ready?.cardConfig?.showNickname ?? true}
-                showItems={config.ready?.cardConfig?.showItems ?? true}
-                enabledModules={config.modules}
-                cardConfig={{
-                  fontSize: config.ready?.cardConfig?.fontSize,
-                  fontFamily: config.ready?.cardConfig?.fontFamily,
-                  textColor: config.ready?.cardConfig?.textColor,
-                  backgroundColor: config.ready?.cardConfig?.backgroundColor
-                }}
-                lastOrderNumber={lastOrderNumber}
-                lastOrderConfig={config.lastOrder}
-              />
             </div>
           </div>
         </div>
