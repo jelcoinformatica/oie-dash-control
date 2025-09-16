@@ -85,32 +85,32 @@ export const OrderCard = ({
       {/* Order Number or Name */}
       {displayNumber ? (
         <div className="text-center w-full">
-          <div 
-            className="font-bold leading-tight"
-            style={{ 
-              fontSize: displayNumber.match(/^(IF|DD|RA|UB)-/) && displayNumber.length > 6 
-                ? `${fontSize * 0.6}rem` 
-                : displayNumber.length > 8 
-                ? `${fontSize * 0.8}rem` 
-                : `${fontSize}rem`
-            }}
-          >
+          <div className="font-bold leading-tight">
             {displayNumber.match(/^(IF|DD|RA|UB)-/) ? (
               <div className="flex flex-col items-center">
                 <span style={{ 
                   fontStyle: 'italic', 
                   fontWeight: 'normal',
-                  fontSize: `${fontSize * 0.5}rem`,
+                  fontSize: `${fontSize * 0.4}rem`,
                   lineHeight: '0.9'
                 }}>
                   {displayNumber.split('-')[0]}
                 </span>
-                <span style={{ fontSize: `${fontSize * 1.1}rem` }}>
+                <span style={{ 
+                  fontSize: `${fontSize}rem`,
+                  lineHeight: '1'
+                }}>
                   {displayNumber.split('-')[1]}
                 </span>
               </div>
             ) : (
-              displayNumber
+              <span style={{ 
+                fontSize: displayNumber.length > 8 
+                  ? `${fontSize * 0.8}rem` 
+                  : `${fontSize}rem`
+              }}>
+                {displayNumber}
+              </span>
             )}
           </div>
           {displayName && showNickname && (
