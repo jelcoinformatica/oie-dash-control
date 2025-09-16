@@ -125,4 +125,7 @@ export interface PanelConfig {
     nomeFantasia?: string;
     numeroLicenca?: string;
   };
+  splash?: {
+    enabled: boolean;
+  };
 }

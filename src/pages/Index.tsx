@@ -16,7 +16,7 @@ const Index = () => {
   const [config, setConfig] = useState<PanelConfig>(defaultConfig);
   const [originalConfig, setOriginalConfig] = useState<PanelConfig>(defaultConfig);
   const [configOpen, setConfigOpen] = useState(false);
-  const [showSplash, setShowSplash] = useState(true);
+  const [showSplash, setShowSplash] = useState(false);
   
   // Estabilizar ttsConfig para evitar recriações desnecessárias
   const ttsConfig = useMemo(() => 
@@ -81,14 +81,22 @@ const Index = () => {
               displayOption: parsedConfig.modules?.ficha?.displayOption || defaultConfig.modules.ficha.displayOption 
             }
           },
+          splash: { ...defaultConfig.splash, ...parsedConfig.splash },
         };
         setConfig(mergedConfig);
         setOriginalConfig(mergedConfig);
+        // Set splash screen based on configuration
+        setShowSplash(mergedConfig.splash?.enabled ?? true);
       } catch (error) {
         console.error("Error parsing saved config from localStorage", error);
         setConfig(defaultConfig);
         setOriginalConfig(defaultConfig);
+        // Set splash screen based on default configuration
+        setShowSplash(defaultConfig.splash?.enabled ?? true);
       }
+    } else {
+      // No saved config, use default and set splash accordingly
+      setShowSplash(defaultConfig.splash?.enabled ?? true);
     }
   }, []);
 

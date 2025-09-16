@@ -124,5 +124,8 @@ export const defaultConfig: PanelConfig = {
     razaoSocial: '',
     nomeFantasia: '',
     numeroLicenca: ''
+  },
+  splash: {
+    enabled: true
   }
 };

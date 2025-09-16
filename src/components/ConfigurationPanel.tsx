@@ -1547,6 +1547,18 @@ export const ConfigurationPanel = ({
                 </div>
               </div>
             </div>
+
+            {/* Splash Screen */}
+            <div className="space-y-3 border-t pt-4">
+              <Label className="text-sm font-medium">Tela Inicial</Label>
+              <div className="flex items-center justify-between">
+                <Label className="text-xs">Exibir tela de splash</Label>
+                <Switch
+                  checked={config.splash?.enabled ?? true}
+                  onCheckedChange={(checked) => updateConfig('splash.enabled', checked)}
+                />
+              </div>
+            </div>
           </div>
         </ConfigSection>
 
