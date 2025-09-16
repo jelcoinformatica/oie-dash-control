@@ -1,5 +1,4 @@
 import { cn } from '../lib/utils';
-import { useState, useEffect, useRef } from 'react';
 
 interface AdvertisingColumnProps {
   title?: string;
@@ -26,36 +25,13 @@ export const AdvertisingColumn = ({
   showBorder = false,
   onToggleHeader
 }: AdvertisingColumnProps) => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [containerDimensions, setContainerDimensions] = useState({ width: 0, height: 0 });
-
-  useEffect(() => {
-    const updateDimensions = () => {
-      if (containerRef.current) {
-        const rect = containerRef.current.getBoundingClientRect();
-        // Calcula o espaço disponível para a imagem
-        const availableHeight = rect.height - (showHeader ? headerHeight : 0) - 32; // 32px for padding
-        const availableWidth = rect.width - 32; // 32px for padding
-        setContainerDimensions({ 
-          width: Math.max(0, Math.round(availableWidth)), 
-          height: Math.max(0, Math.round(availableHeight))
-        });
-      }
-    };
-
-    updateDimensions();
-    
-    const resizeObserver = new ResizeObserver(updateDimensions);
-    if (containerRef.current) {
-      resizeObserver.observe(containerRef.current);
-    }
-
-    return () => resizeObserver.disconnect();
-  }, [showHeader, headerHeight]);
 
   return (
-    <div className={cn("flex flex-col", className)} style={{ height: '100%' }} ref={containerRef}>
-      <div className={`bg-white shadow-lg flex flex-col border border-gray-200 rounded-t-lg ${showBorder ? 'ring-2 ring-blue-200' : ''}`} style={{ height: '100%' }}>
+    <div className={cn("flex flex-col h-full", className)}>
+      <div className={cn(
+        "bg-white shadow-lg flex flex-col border border-gray-200 rounded-t-lg h-full",
+        showBorder && 'ring-2 ring-blue-200'
+      )}>
         {showHeader && (
           <div 
             className="flex items-center justify-center text-white font-bold text-lg rounded-t-lg relative cursor-pointer hover:bg-opacity-90 transition-all flex-shrink-0"
@@ -77,32 +53,26 @@ export const AdvertisingColumn = ({
         )}
         
         <div 
-          className="p-4 flex flex-col items-center justify-center overflow-hidden"
-          style={{ 
-            backgroundColor,
-            height: `calc(100% - ${showHeader ? headerHeight : 0}px)`,
-            maxHeight: `calc(100% - ${showHeader ? headerHeight : 0}px)`
-          }}
+          className="flex-1 p-4 flex items-center justify-center overflow-hidden"
+          style={{ backgroundColor }}
         >
           {imageUrl ? (
-            <div 
-              className="flex items-center justify-center"
-              style={{
-                width: `${containerDimensions.width}px`,
-                height: `${containerDimensions.height}px`,
-                maxWidth: `${containerDimensions.width}px`,
-                maxHeight: `${containerDimensions.height}px`
-              }}
-            >
-              <img
-                src={imageUrl}
-                alt="Publicidade"
-                className="rounded-lg shadow-sm object-contain"
-                style={{
-                  maxWidth: `${containerDimensions.width}px`,
-                  maxHeight: `${containerDimensions.height}px`
-                }}
-              />
+            <div className="w-full h-full flex items-center justify-center">
+              {imageUrl.toLowerCase().endsWith('.mp4') ? (
+                <video
+                  src={imageUrl}
+                  autoPlay
+                  loop
+                  muted
+                  className="max-w-full max-h-full object-contain rounded-lg shadow-sm"
+                />
+              ) : (
+                <img
+                  src={imageUrl}
+                  alt="Publicidade"
+                  className="max-w-full max-h-full object-contain rounded-lg shadow-sm"
+                />
+              )}
             </div>
           ) : (
             <div className="text-center text-muted-foreground">
@@ -110,9 +80,9 @@ export const AdvertisingColumn = ({
                 <div className="text-lg font-semibold">ESPAÇO</div>
                 <div className="text-lg font-semibold">PUBLICITÁRIO</div>
               </div>
-              <div className="mt-4 text-sm">
-                <div>Dimensões sugeridas:</div>
-                <div>{containerDimensions.width} x {containerDimensions.height}px</div>
+              <div className="mt-4 text-sm opacity-70">
+                <div>Configure uma imagem/vídeo</div>
+                <div>nas configurações</div>
               </div>
             </div>
           )}
