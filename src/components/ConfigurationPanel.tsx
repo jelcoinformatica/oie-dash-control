@@ -49,7 +49,7 @@ const ConfigSection = ({ title, icon, isOpen, onToggle, children, colorClass = "
         <div className={cn("w-4 h-4", colorClass)}>
           {icon}
         </div>
-        <span className="text-sm font-semibold text-gray-800">{title}</span>
+        <span className="text-xs font-semibold text-gray-800">{title}</span>
       </div>
       {isOpen ? (
         <ChevronDown className="w-4 h-4 text-gray-600" />
@@ -58,7 +58,7 @@ const ConfigSection = ({ title, icon, isOpen, onToggle, children, colorClass = "
       )}
     </button>
     {isOpen && (
-      <div className="px-4 pb-3 pt-2 space-y-2 bg-gradient-to-b from-blue-25 to-white border-t border-blue-100">
+      <div className="px-3 pb-2 pt-1 space-y-1 bg-gradient-to-b from-blue-25 to-white border-t border-blue-100">
         {children}
       </div>
     )}
@@ -190,7 +190,7 @@ export const ConfigurationPanel = ({
           colorClass="text-purple-600"
         >
           <div>
-            <Label className="text-sm font-medium">Cor de Fundo</Label>
+            <Label className="text-xs font-medium">Cor de Fundo</Label>
             <Input
               type="color"
               value={config.backgroundColor}
@@ -215,7 +215,7 @@ export const ConfigurationPanel = ({
                 onCheckedChange={(checked) => updateConfig('production.visible', checked)}
                 className="scale-75"
               />
-              <Label className="text-sm">Exibir Coluna</Label>
+              <Label className="text-xs">Exibir Coluna</Label>
             </div>
             <div className="flex items-center gap-2">
               <Switch 
@@ -223,12 +223,12 @@ export const ConfigurationPanel = ({
                 onCheckedChange={(checked) => updateConfig('production.showBorder', checked)}
                 className="scale-75"
               />
-              <Label className="text-sm">Tem Borda</Label>
+              <Label className="text-xs">Tem Borda</Label>
             </div>
           </div>
 
           <div>
-            <Label className="text-sm font-medium">Título da Coluna</Label>
+            <Label className="text-xs font-medium">Título da Coluna</Label>
             <Input
               value={config.production.title}
               onChange={(e) => updateConfig('production.title', e.target.value)}
@@ -237,7 +237,7 @@ export const ConfigurationPanel = ({
           </div>
 
           <div>
-            <Label className="text-sm font-medium">Largura (%): {config.production.width}</Label>
+            <Label className="text-xs font-medium">Largura (%): {config.production.width}</Label>
             <Slider
               value={[config.production.width]}
               onValueChange={([value]) => updateConfig('production.width', value)}
@@ -692,7 +692,7 @@ export const ConfigurationPanel = ({
               type="color"
               value={config.advertising.backgroundColor}
               onChange={(e) => updateConfig('advertising.backgroundColor', e.target.value)}
-              className="w-20 h-8 mt-1 cursor-pointer"
+              className="w-20 h-6 mt-1 cursor-pointer"
             />
           </div>
         </ConfigSection>
@@ -713,7 +713,7 @@ export const ConfigurationPanel = ({
                   onCheckedChange={(checked) => updateConfig('sounds.production', checked)}
                   className="scale-75"
                 />
-                <Label className="text-sm">Som para Produção</Label>
+                <Label className="text-xs">Som para Produção</Label>
               </div>
               
               {config.sounds.production && (
@@ -778,7 +778,7 @@ export const ConfigurationPanel = ({
                   onCheckedChange={(checked) => updateConfig('sounds.ready', checked)}
                   className="scale-75"
                 />
-                <Label className="text-sm">Som para Pronto</Label>
+                <Label className="text-xs">Som para Pronto</Label>
               </div>
               
               {config.sounds.ready && (
@@ -852,7 +852,7 @@ export const ConfigurationPanel = ({
               onCheckedChange={(checked) => updateConfig('autoExpedition.enabled', checked)}
               className="scale-75"
             />
-            <Label className="text-sm">Utilizar Auto Expedição</Label>
+            <Label className="text-xs">Utilizar Auto Expedição</Label>
           </div>
           <div>
             <Label className="text-sm font-medium">Após quantos minutos: {config.autoExpedition.minutes}</Label>
@@ -881,7 +881,7 @@ export const ConfigurationPanel = ({
                 onCheckedChange={(checked) => updateConfig('textToSpeech.enabled', checked)}
                 className="scale-75"
               />
-              <Label className="text-sm">Ativar Voz</Label>
+              <Label className="text-xs">Ativar Voz</Label>
             </div>
             
             {config.textToSpeech.enabled && (
@@ -889,7 +889,7 @@ export const ConfigurationPanel = ({
                 <div className="space-y-2">
                   <Label className="text-xs">Tipo de Voz</Label>
                   <Select value={config.textToSpeech.voice || 'auto'} onValueChange={(value) => updateConfig('textToSpeech.voice', value)}>
-                    <SelectTrigger className="h-8">
+                    <SelectTrigger className="h-6">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -906,7 +906,7 @@ export const ConfigurationPanel = ({
                 <div className="space-y-2">
                   <Label className="text-xs">Tipo de Mensagem</Label>
                   <Select value={config.textToSpeech.textType || 'name_ready'} onValueChange={(value) => updateConfig('textToSpeech.textType', value)}>
-                    <SelectTrigger className="h-8">
+                    <SelectTrigger className="h-6">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -960,7 +960,7 @@ export const ConfigurationPanel = ({
                       value={config.textToSpeech.customText || ''}
                       onChange={(e) => updateConfig('textToSpeech.customText', e.target.value)}
                       placeholder="Digite o texto personalizado..."
-                      className="h-8"
+                      className="h-6"
                     />
                   </div>
                 )}
@@ -973,31 +973,31 @@ export const ConfigurationPanel = ({
                       onCheckedChange={(checked) => updateConfig('textToSpeech.repeatEnabled', checked)}
                       className="scale-75"
                     />
-                    <Label className="text-sm">Repetir fala</Label>
+                    <Label className="text-xs">Repetir fala</Label>
                   </div>
 
                   {config.textToSpeech.repeatEnabled && (
                     <div className="grid grid-cols-2 gap-4 ml-4">
                       <div className="space-y-1">
-                        <Label className="text-sm">Repetições</Label>
+                        <Label className="text-xs">Repetições</Label>
                         <Input
                           type="number"
                           min="1"
                           max="10"
                           value={config.textToSpeech.repeatCount || 2}
                           onChange={(e) => updateConfig('textToSpeech.repeatCount', parseInt(e.target.value))}
-                          className="h-8"
+                          className="h-6"
                         />
                       </div>
                       <div className="space-y-1">
-                        <Label className="text-sm">Intervalo (s)</Label>
+                        <Label className="text-xs">Intervalo (s)</Label>
                         <Input
                           type="number"
                           min="5"
                           max="60"
                           value={config.textToSpeech.repeatInterval || 15}
                           onChange={(e) => updateConfig('textToSpeech.repeatInterval', parseInt(e.target.value))}
-                          className="h-8"
+                          className="h-6"
                         />
                       </div>
                     </div>
@@ -1016,7 +1016,7 @@ export const ConfigurationPanel = ({
           onToggle={() => toggleSection('modules')}
           colorClass="text-indigo-600"
         >
-          <div className="space-y-4">
+          <div className="space-y-3">
             {/* BALCÃO */}
             <div className="space-y-2">
               <div className="flex items-center justify-between">
@@ -1024,7 +1024,7 @@ export const ConfigurationPanel = ({
                   <div className="w-5 h-5 rounded-full bg-white shadow-md border border-gray-200 flex items-center justify-center">
                     <div className="w-3 h-3 rounded-full bg-green-500 shadow-sm"></div>
                   </div>
-                  <Label className="text-sm font-semibold text-gray-700">BALCÃO</Label>
+                  <Label className="text-xs font-semibold text-gray-700">BALCÃO</Label>
                 </div>
                 <Switch
                   checked={config.modules.balcao.enabled}
@@ -1043,15 +1043,15 @@ export const ConfigurationPanel = ({
                   >
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="numeroVenda" id="balcao-num-venda" />
-                      <Label htmlFor="balcao-num-venda" className="text-sm">No. de venda</Label>
+                      <Label htmlFor="balcao-num-venda" className="text-xs">No. de venda</Label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="numeroChamada" id="balcao-num-chamada" />
-                      <Label htmlFor="balcao-num-chamada" className="text-sm">No. da chamada</Label>
+                      <Label htmlFor="balcao-num-chamada" className="text-xs">No. da chamada</Label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="apelido" id="balcao-apelido" />
-                      <Label htmlFor="balcao-apelido" className="text-sm">Apelido</Label>
+                      <Label htmlFor="balcao-apelido" className="text-xs">Apelido</Label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="apelidoNumeroVenda" id="balcao-apelido-num-venda" />
@@ -1195,7 +1195,7 @@ export const ConfigurationPanel = ({
           onToggle={() => toggleSection('diversos')}
           colorClass="text-gray-600"
         >
-          <div className="space-y-4">
+          <div className="space-y-3">
             {/* Conexão com Banco de Dados */}
             <div className="space-y-3">
               <Label className="text-sm font-medium">Conexão com Banco de Dados</Label>
@@ -1206,7 +1206,7 @@ export const ConfigurationPanel = ({
                     value={config.database?.type || 'none'}
                     onValueChange={(value) => updateConfig('database.type', value)}
                   >
-                    <SelectTrigger className="h-8">
+                    <SelectTrigger className="h-6">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -1226,7 +1226,7 @@ export const ConfigurationPanel = ({
                       <Input
                         value={config.database?.host || ''}
                         onChange={(e) => updateConfig('database.host', e.target.value)}
-                        className="h-8"
+                        className="h-6"
                         placeholder="localhost"
                       />
                     </div>
@@ -1235,7 +1235,7 @@ export const ConfigurationPanel = ({
                       <Input
                         value={config.database?.port || ''}
                         onChange={(e) => updateConfig('database.port', e.target.value)}
-                        className="h-8"
+                        className="h-6"
                         placeholder="5432"
                       />
                     </div>
@@ -1244,7 +1244,7 @@ export const ConfigurationPanel = ({
                       <Input
                         value={config.database?.database || ''}
                         onChange={(e) => updateConfig('database.database', e.target.value)}
-                        className="h-8"
+                        className="h-6"
                         placeholder="database_name"
                       />
                     </div>
@@ -1253,7 +1253,7 @@ export const ConfigurationPanel = ({
                       <Input
                         value={config.database?.username || ''}
                         onChange={(e) => updateConfig('database.username', e.target.value)}
-                        className="h-8"
+                        className="h-6"
                         placeholder="username"
                       />
                     </div>
@@ -1263,7 +1263,7 @@ export const ConfigurationPanel = ({
                         type="password"
                         value={config.database?.password || ''}
                         onChange={(e) => updateConfig('database.password', e.target.value)}
-                        className="h-8"
+                        className="h-6"
                         placeholder="password"
                       />
                     </div>
@@ -1371,7 +1371,7 @@ export const ConfigurationPanel = ({
                       const cnpj = e.target.value.replace(/\D/g, '');
                       updateConfig('store.cnpj', cnpj);
                     }}
-                    className="h-8"
+                    className="h-6"
                     placeholder="00.000.000/0000-00"
                     maxLength={18}
                     onBlur={(e) => {
@@ -1389,7 +1389,7 @@ export const ConfigurationPanel = ({
                   <Input
                     value={config.store?.razaoSocial || ''}
                     onChange={(e) => updateConfig('store.razaoSocial', e.target.value)}
-                    className="h-8"
+                    className="h-6"
                     placeholder="Empresa Ltda"
                   />
                 </div>
@@ -1398,7 +1398,7 @@ export const ConfigurationPanel = ({
                   <Input
                     value={config.store?.nomeFantasia || ''}
                     onChange={(e) => updateConfig('store.nomeFantasia', e.target.value)}
-                    className="h-8"
+                    className="h-6"
                     placeholder="Nome da Loja"
                   />
                 </div>
@@ -1407,7 +1407,7 @@ export const ConfigurationPanel = ({
                   <Input
                     value={config.store?.numeroLicenca || ''}
                     onChange={(e) => updateConfig('store.numeroLicenca', e.target.value)}
-                    className="h-8"
+                    className="h-6"
                     placeholder="LIC-12345"
                   />
                 </div>
@@ -1466,7 +1466,7 @@ export const ConfigurationPanel = ({
                   max="50"
                   defaultValue="15"
                   id="newOrdersCount"
-                  className="h-8 w-20"
+                  className="h-6 w-20"
                 />
                 <Button
                   onClick={() => {
