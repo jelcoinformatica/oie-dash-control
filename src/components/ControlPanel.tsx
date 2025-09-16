@@ -113,7 +113,16 @@ export const ControlPanel = ({
                                 : 'rgba(0, 0, 0, 0.6)' // Cor normal
                             }}
                           >
-                            {logEntry.orderNumber.replace(/[^\d]/g, '')}
+                            {logEntry.orderNumber.match(/^(IF|DD|RA|UB)-/) ? (
+                              <>
+                                <span style={{ fontStyle: 'italic' }}>
+                                  {logEntry.orderNumber.split('-')[0]}
+                                </span>
+                                {logEntry.orderNumber.split('-')[1]}
+                              </>
+                            ) : (
+                              logEntry.orderNumber
+                            )}
                           </span>
                         </TooltipTrigger>
                         <TooltipContent>

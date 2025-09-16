@@ -340,7 +340,7 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
         
         if (isDeliveryOnline) {
           // Gerar pedido de delivery online com diferentes siglas
-          const deliveryTypes = ['IF', 'DD', 'RA', 'UB', 'RJ']; // iFood, Delivery Direto, Rappi, Uber, Rapidão Júnior
+          const deliveryTypes = ['IF', 'DD', 'RA', 'UB']; // iFood, Delivery Direto, Rappi, Uber
           const randomType = deliveryTypes[Math.floor(Math.random() * deliveryTypes.length)];
           const deliveryNumber = `${randomType}-${Math.floor(Math.random() * 90000) + 10000}`;
           

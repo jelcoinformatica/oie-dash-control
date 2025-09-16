@@ -66,7 +66,7 @@ export const LastOrderDisplay = ({
       }}
       onClick={handleClick}
     >
-      <div className="relative h-full flex flex-col items-center justify-center font-bold">
+      <div className="relative h-full flex flex-col items-center justify-center">
           <div className="flex flex-col items-center">
             <span className="leading-none">
               {orderNumber.match(/^(IF|DD|RA|UB)-/) ? (
@@ -74,11 +74,10 @@ export const LastOrderDisplay = ({
                   <span style={{ fontStyle: 'italic' }}>
                     {orderNumber.split('-')[0]}
                   </span>
-                  {' '}
                   {orderNumber.split('-')[1]}
                 </>
               ) : (
-                orderNumber
+                <span style={{ fontWeight: 'bold' }}>{orderNumber}</span>
               )}
             </span>
             {nickname && (

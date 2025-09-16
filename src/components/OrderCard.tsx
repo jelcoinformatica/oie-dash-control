@@ -75,7 +75,7 @@ export const OrderCard = ({
       {displayNumber ? (
         <div className="text-center w-full">
           <div 
-            className="font-bold leading-tight"
+            className="leading-tight"
             style={{ 
               fontSize: displayNumber.match(/^(IF|DD|RA|UB)-/) && displayNumber.length > 6 
                 ? `${fontSize * 0.6}rem` 
@@ -89,11 +89,10 @@ export const OrderCard = ({
                 <span style={{ fontStyle: 'italic' }}>
                   {displayNumber.split('-')[0]}
                 </span>
-                {' '}
                 {displayNumber.split('-')[1]}
               </>
             ) : (
-              displayNumber
+              <span style={{ fontWeight: 'bold' }}>{displayNumber}</span>
             )}
           </div>
           {displayName && showNickname && (
