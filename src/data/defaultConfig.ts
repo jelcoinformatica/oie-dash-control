@@ -116,7 +116,8 @@ export const defaultConfig: PanelConfig = {
     database: '',
     username: '',
     password: '',
-    port: ''
+    port: '',
+    kdsIntegration: false
   },
   store: {
     cnpj: '',

@@ -1267,6 +1267,13 @@ export const ConfigurationPanel = ({
             <div className="space-y-3">
               <Label className="text-sm font-medium">Conexão com Banco de Dados</Label>
               <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs">Integrado com kds da hora</Label>
+                  <Switch
+                    checked={config.database?.kdsIntegration || false}
+                    onCheckedChange={(checked) => updateConfig('database.kdsIntegration', checked)}
+                  />
+                </div>
                 <div className="space-y-2">
                   <Label className="text-xs">Tipo de Banco</Label>
                   <Select

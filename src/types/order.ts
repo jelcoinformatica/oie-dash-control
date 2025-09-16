@@ -117,6 +117,7 @@ export interface PanelConfig {
     username?: string;
     password?: string;
     port?: string;
+    kdsIntegration?: boolean;
   };
   store?: {
     cnpj?: string;
