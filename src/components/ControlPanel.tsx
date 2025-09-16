@@ -21,6 +21,13 @@ export const ControlPanel = ({
   const [recentAutoExpedited, setRecentAutoExpedited] = useState<Set<string>>(new Set());
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // Focus inicial no input quando componente monta
+  useEffect(() => {
+    if (inputRef.current && !configOpen) {
+      inputRef.current.focus();
+    }
+  }, []);
+
   // Rastrear últimos pedidos expedidos para efeito de 2s
   useEffect(() => {
     if (expeditionLog.length > 0) {
@@ -70,7 +77,7 @@ export const ControlPanel = ({
             value={expeditionInput}
             onChange={(e) => setExpeditionInput(e.target.value)}
             onKeyPress={handleKeyPress}
-            className="w-20 h-5 text-xs text-center placeholder:opacity-30 border-black/60"
+            className="w-20 h-5 text-xs text-center placeholder:opacity-30 border-black/60 shadow-sm ring-1 ring-primary/20 focus:ring-primary/40 transition-all duration-300 animate-pulse hover:animate-none focus:animate-none"
           />
           <TooltipProvider>
             <Tooltip>
