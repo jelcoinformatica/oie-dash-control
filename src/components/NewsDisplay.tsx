@@ -192,32 +192,39 @@ export const NewsDisplay = ({
   return (
     <div className={`h-full bg-gradient-to-b from-slate-50 to-slate-100 ${className}`}>
       <Card className="h-full border-0 shadow-none bg-transparent">
-        <CardContent className="p-4 h-full flex flex-col justify-between">
+        <CardContent className="p-6 h-full flex flex-col min-h-0">
           {/* Header com indicador de fonte */}
           {showSource && (
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between mb-6 flex-shrink-0">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-                <span className="text-xs font-medium text-gray-600 uppercase tracking-wider">
+                <span 
+                  className="font-medium text-gray-600 uppercase tracking-wider"
+                  style={{ fontSize: `${fontSize * 0.6}rem` }}
+                >
                   Notícias
                 </span>
               </div>
-              <span className="text-xs text-gray-500">
+              <span 
+                className="text-gray-500"
+                style={{ fontSize: `${fontSize * 0.6}rem` }}
+              >
                 {currentNews.source}
               </span>
             </div>
           )}
 
           {/* Conteúdo principal */}
-          <div className="flex-1 flex flex-col justify-center">
+          <div className="flex-1 flex flex-col justify-center min-h-0">
             <h2 
-              className="font-bold text-gray-800 leading-tight mb-3 animate-fadeIn"
+              className="font-bold text-gray-800 leading-tight mb-3 animate-fadeIn overflow-hidden"
               style={{
-                fontSize: `${fontSize * 1.5}rem`, // Título 1.5x maior que o tamanho base
+                fontSize: `${fontSize * 1.5}rem`,
+                // Ajustar número de linhas baseado no tamanho da fonte
                 display: '-webkit-box',
-                WebkitLineClamp: 4,
+                WebkitLineClamp: fontSize > 3 ? 2 : fontSize > 2 ? 3 : 4,
                 WebkitBoxOrient: 'vertical',
-                overflow: 'hidden'
+                lineHeight: '1.2'
               }}
             >
               {currentNews.title}
@@ -225,13 +232,14 @@ export const NewsDisplay = ({
             
             {currentNews.description && (
               <p 
-                className="text-gray-600 leading-relaxed animate-fadeIn"
+                className="text-gray-600 leading-relaxed animate-fadeIn flex-1 overflow-hidden"
                 style={{
-                  fontSize: `${fontSize}rem`, // Descrição no tamanho base
+                  fontSize: `${fontSize * 0.8}rem`, // Descrição um pouco menor que o tamanho base
+                  // Ajustar número de linhas para descrição baseado no espaço restante
                   display: '-webkit-box',
-                  WebkitLineClamp: 3,
+                  WebkitLineClamp: fontSize > 4 ? 2 : fontSize > 3 ? 3 : fontSize > 2 ? 4 : 5,
                   WebkitBoxOrient: 'vertical',
-                  overflow: 'hidden'
+                  lineHeight: '1.4'
                 }}
               >
                 {currentNews.description}
@@ -240,7 +248,7 @@ export const NewsDisplay = ({
           </div>
 
           {/* Footer com indicadores */}
-          <div className="flex items-center justify-between mt-4 pt-3 border-t border-gray-200">
+          <div className="flex items-center justify-between pt-4 border-t border-gray-200 flex-shrink-0" style={{ marginTop: 'auto' }}>
             {/* Indicadores de posição */}
             <div className="flex gap-1">
               {news.map((_, index) => (
@@ -254,12 +262,15 @@ export const NewsDisplay = ({
                 />
               ))}
             </div>
-
+            
             {/* Timestamp */}
-            <span className="text-xs text-gray-400">
-              {new Date(currentNews.pubDate).toLocaleTimeString('pt-BR', {
-                hour: '2-digit',
-                minute: '2-digit'
+            <span 
+              className="text-gray-400"
+              style={{ fontSize: `${fontSize * 0.5}rem` }}
+            >
+              {new Date(currentNews.pubDate).toLocaleTimeString('pt-BR', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
               })}
             </span>
           </div>
