@@ -123,7 +123,7 @@ export const OrderColumnGrid = ({
       <div 
         className="grid gap-1"
         style={{ 
-          gridTemplateColumns: `repeat(${columns}, ${cardWidth}px)`,
+          gridTemplateColumns: `repeat(${columns}, 1fr)`,
           gridTemplateRows: `repeat(auto-fit, ${cardHeight}px)`,
         }}
       >
