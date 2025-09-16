@@ -70,7 +70,7 @@ export const ControlPanel = ({
             value={expeditionInput}
             onChange={(e) => setExpeditionInput(e.target.value)}
             onKeyPress={handleKeyPress}
-            className="w-20 h-5 text-xs text-center placeholder:opacity-30"
+            className="w-20 h-5 text-xs text-center placeholder:opacity-30 border-black/60"
           />
           <TooltipProvider>
             <Tooltip>
