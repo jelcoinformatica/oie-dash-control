@@ -9,6 +9,7 @@ interface TTSConfig {
   volume?: number;
   textType?: 'number_only' | 'name_ready' | 'order_ready' | 'name_order_ready' | 'custom';
   customText?: string;
+  numberMode?: 'spelled' | 'normal'; // soletrado ou normal
   repeatEnabled?: boolean;
   repeatCount?: number;
   repeatInterval?: number;
@@ -64,31 +65,36 @@ export const useTextToSpeech = () => {
         }
       }
 
+      // Função para processar números baseado na configuração
+      const processOrderNumber = (num: string) => {
+        return config.numberMode === 'spelled' ? convertNumberToWords(num) : num;
+      };
+
       switch (config.textType) {
         case 'number_only':
-          finalText = isDeliveryPlatform ? convertNumberToWords(cleanOrderNumber) : orderNumber;
+          finalText = isDeliveryPlatform ? processOrderNumber(cleanOrderNumber) : processOrderNumber(orderNumber);
           break;
         case 'name_ready':
           if (isDeliveryPlatform) {
-            finalText = `${platformPrefix}o pedido ${convertNumberToWords(cleanOrderNumber)} está pronto!`;
+            finalText = `${platformPrefix}o pedido ${processOrderNumber(cleanOrderNumber)} está pronto!`;
           } else {
             finalText = customerName 
               ? `${customerName}, seu pedido está pronto!`
-              : `Pedido ${orderNumber} está pronto!`;
+              : `Pedido ${processOrderNumber(orderNumber)} está pronto!`;
           }
           break;
         case 'order_ready':
           finalText = isDeliveryPlatform 
-            ? `${platformPrefix}o pedido ${convertNumberToWords(cleanOrderNumber)} está pronto.`
-            : `O pedido ${orderNumber} está pronto.`;
+            ? `${platformPrefix}o pedido ${processOrderNumber(cleanOrderNumber)} está pronto.`
+            : `O pedido ${processOrderNumber(orderNumber)} está pronto.`;
           break;
         case 'name_order_ready':
           if (isDeliveryPlatform) {
-            finalText = `${platformPrefix}o pedido ${convertNumberToWords(cleanOrderNumber)} está pronto!`;
+            finalText = `${platformPrefix}o pedido ${processOrderNumber(cleanOrderNumber)} está pronto!`;
           } else {
             finalText = customerName 
-              ? `${customerName}, o pedido ${orderNumber} está pronto!`
-              : `O pedido ${orderNumber} está pronto!`;
+              ? `${customerName}, o pedido ${processOrderNumber(orderNumber)} está pronto!`
+              : `O pedido ${processOrderNumber(orderNumber)} está pronto!`;
           }
           break;
         case 'custom':
@@ -220,20 +226,30 @@ export const useTextToSpeech = () => {
       await playSequence();
 
       // Implementar repetição apenas se explicitamente habilitada E configurada corretamente
-      if (config.repeatEnabled === true && config.repeatCount && config.repeatCount > 1 && config.repeatInterval && config.repeatInterval > 0) {
+      // Verificação mais rigorosa para evitar repetições indesejadas
+      if (config.repeatEnabled === true && 
+          typeof config.repeatCount === 'number' && 
+          config.repeatCount > 1 && 
+          typeof config.repeatInterval === 'number' && 
+          config.repeatInterval > 0) {
         let completedRepetitions = 1; // Já executamos a primeira
+        let isSchedulingActive = true;
         
         const scheduleNextRepetition = () => {
-          if (completedRepetitions < config.repeatCount!) {
+          if (completedRepetitions < config.repeatCount! && isSchedulingActive) {
             setTimeout(async () => {
+              if (!isSchedulingActive) return; // Verificação adicional
               try {
                 await playSequence();
                 completedRepetitions++;
                 scheduleNextRepetition();
               } catch (error) {
                 console.error('Erro na repetição:', error);
+                isSchedulingActive = false; // Parar repetições em caso de erro
               }
             }, config.repeatInterval! * 1000);
+          } else {
+            isSchedulingActive = false;
           }
         };
         

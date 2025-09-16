@@ -86,6 +86,7 @@ export interface PanelConfig {
     volume?: number;
     textType?: 'number_only' | 'name_ready' | 'order_ready' | 'name_order_ready' | 'custom';
     customText?: string;
+    numberMode?: 'spelled' | 'normal'; // soletrado ou normal
     repeatEnabled?: boolean;
     repeatCount?: number;
     repeatInterval?: number;
