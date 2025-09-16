@@ -1089,6 +1089,19 @@ export const ConfigurationPanel = ({
                 </div>
 
                 <div className="space-y-2">
+                  <Label className="text-xs">Formato dos Números</Label>
+                  <Select value={config.textToSpeech.numberMode || 'normal'} onValueChange={(value) => updateConfig('textToSpeech.numberMode', value)}>
+                    <SelectTrigger className="h-6">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="normal">Normal (123)</SelectItem>
+                      <SelectItem value="spelled">Soletrado (um dois três)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
                   <Label className="text-xs">Volume</Label>
                   <div className="flex items-center space-x-2">
                     <Slider
