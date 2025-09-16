@@ -256,6 +256,17 @@ const Index = () => {
               headerHeight={config.advertising.headerHeight}
               backgroundColor={config.advertising.backgroundColor}
               imageUrl={config.advertising.imageUrl}
+              onToggleHeader={() => {
+                const newConfig = {
+                  ...config,
+                  advertising: {
+                    ...config.advertising,
+                    headerVisible: !config.advertising.headerVisible
+                  }
+                };
+                setConfig(newConfig);
+                localStorage.setItem('oie-config', JSON.stringify(newConfig));
+              }}
             />
           </div>
         )}

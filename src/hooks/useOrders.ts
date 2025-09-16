@@ -237,21 +237,25 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
     const expediteTime = (autoExpeditionConfigRef.current.minutes || 10) * 60 * 1000;
     
     autoExpeditionTimeoutRef.current = setTimeout(async () => {
-      const currentOrder = orders.find(o => {
+      // Buscar o pedido atual novamente para garantir que ainda existe
+      const currentOrders = orders.filter(o => o.status === 'ready');
+      const currentOrder = currentOrders.find(o => {
         const orderNum = o.numeroPedido || o.number || '';
         return orderNum === lastOrderNumber;
       });
       
-      if (currentOrder) {
+      if (currentOrder && currentOrder.status === 'ready') {
         try {
+          console.log('Auto-expedindo pedido:', lastOrderNumber);
           await expediteOrder(currentOrder.id);
           
+          // Atualizar lista de pedidos
           setOrders(prev => prev.filter(o => o.id !== currentOrder.id));
           
-          // Atualizar último pedido
+          // Encontrar próximo último pedido
           const remainingReady = orders.filter(o => 
             o.status === 'ready' && 
-            (o.numeroPedido || o.number) !== lastOrderNumber
+            o.id !== currentOrder.id
           );
           
           if (remainingReady.length > 0) {
@@ -287,7 +291,7 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
         clearTimeout(autoExpeditionTimeoutRef.current);
       }
     };
-  }, [lastOrderNumber, lastOrderData, orders]);
+  }, [lastOrderNumber, lastOrderData, autoExpeditionConfigRef.current?.enabled, autoExpeditionConfigRef.current?.minutes]);
   
   // Funções para simulação
   const clearAllOrders = useCallback(async () => {

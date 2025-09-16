@@ -10,6 +10,7 @@ interface AdvertisingColumnProps {
   headerColor?: string;
   backgroundColor?: string;
   showBorder?: boolean;
+  onToggleHeader?: () => void;
 }
 
 export const AdvertisingColumn = ({
@@ -21,21 +22,29 @@ export const AdvertisingColumn = ({
   headerBg = "#8b5cf6",
   headerColor = "#ffffff", 
   backgroundColor = "#ffffff",
-  showBorder = false
+  showBorder = false,
+  onToggleHeader
 }: AdvertisingColumnProps) => {
   return (
     <div className={cn("flex flex-col h-full", className)}>
       <div className={`bg-white shadow-lg h-full flex flex-col border border-gray-200 rounded-t-lg ${showBorder ? 'ring-2 ring-blue-200' : ''}`}>
         {showHeader && (
           <div 
-            className="flex items-center justify-center text-white font-bold text-lg rounded-t-lg"
+            className="flex items-center justify-center text-white font-bold text-lg rounded-t-lg relative cursor-pointer hover:bg-opacity-90 transition-all"
             style={{ 
               height: `${headerHeight}px`,
               backgroundColor: headerBg,
               color: headerColor
             }}
+            onClick={onToggleHeader}
+            title="Clique para ocultar/exibir cabeçalho"
           >
-            {title}
+            <span>{title}</span>
+            {onToggleHeader && (
+              <div className="absolute right-2 text-xs opacity-70">
+                ⚙️
+              </div>
+            )}
           </div>
         )}
         
