@@ -23,28 +23,31 @@ export const ControlPanel = ({
 
   // Auto-focus no campo de expedição quando não estiver em configuração
   useEffect(() => {
-    if (!configOpen && inputRef.current) {
-      inputRef.current.focus();
-    }
+    const focusInterval = setInterval(() => {
+      if (!configOpen && inputRef.current && document.activeElement !== inputRef.current) {
+        inputRef.current.focus();
+      }
+    }, 100);
+
+    return () => clearInterval(focusInterval);
   }, [configOpen]);
 
-  // Rastrear pedidos auto-expedidos recentemente para efeito
+  // Rastrear últimos pedidos expedidos para efeito de 2s
   useEffect(() => {
-    const autoExpedited = expeditionLog.filter(entry => entry.isAutoExpedition);
-    if (autoExpedited.length > 0) {
-      const latestAutoExpedited = autoExpedited[autoExpedited.length - 1];
-      const key = `${latestAutoExpedited.orderNumber}-${latestAutoExpedited.expeditionTime.getTime()}`;
+    if (expeditionLog.length > 0) {
+      const latestExpedited = expeditionLog[0]; // Primeiro da lista (mais recente)
+      const key = `${latestExpedited.orderNumber}-${latestExpedited.expeditionTime.getTime()}`;
       
       setRecentAutoExpedited(prev => new Set(prev).add(key));
       
-      // Remover o efeito após 3 segundos
+      // Remover o efeito após 2 segundos
       setTimeout(() => {
         setRecentAutoExpedited(prev => {
           const newSet = new Set(prev);
           newSet.delete(key);
           return newSet;
         });
-      }, 3000);
+      }, 2000);
     }
   }, [expeditionLog]);
 
@@ -101,9 +104,9 @@ export const ControlPanel = ({
 
           {/* Log dos últimos pedidos expedidos - após o ícone */}
           {expeditionLog.length > 0 && (
-            <div className="flex items-center ml-2 max-w-[200px] overflow-x-auto">
+            <div className="flex items-center ml-2 max-w-[300px] overflow-x-auto">
               <div className="flex items-center gap-1 whitespace-nowrap">
-                {expeditionLog.slice(-10).reverse().map((logEntry, index) => {
+                {expeditionLog.slice(0, 10).map((logEntry, index) => {
                   const entryKey = `${logEntry.orderNumber}-${logEntry.expeditionTime.getTime()}`;
                   const hasRecentEffect = recentAutoExpedited.has(entryKey);
                   

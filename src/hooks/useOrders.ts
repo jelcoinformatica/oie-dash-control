@@ -33,6 +33,7 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
   const previousLastOrderNumber = useRef<string>('');
   const ttsConfigRef = useRef(ttsConfig);
   const autoExpeditionConfigRef = useRef(autoExpeditionConfig);
+  const autoExpeditionTimeoutRef = useRef<NodeJS.Timeout>();
   
   // Atualizar refs quando configs mudarem
   useEffect(() => {
@@ -158,13 +159,13 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
             }
           }
           
-        // Adicionar ao log de expedição
-        setExpeditionLog(prev => [...prev.slice(-9), {
+        // Adicionar ao log de expedição (no início da lista)
+        setExpeditionLog(prev => [{
           orderNumber: order.numeroPedido || order.number || '',
           nickname: order.nomeCliente,
           expeditionTime: new Date(),
           isAutoExpedition: false
-        }]);
+        }, ...prev.slice(0, 9)]);
           
           // toast({
           //   title: "Pedido Retornado",
@@ -202,13 +203,13 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
           }
         }
         
-        // Adicionar ao log de expedição
-        setExpeditionLog(prev => [...prev.slice(-9), {
+        // Adicionar ao log de expedição (no início da lista)
+        setExpeditionLog(prev => [{
           orderNumber: order.numeroPedido || order.number || '',
           nickname: order.nomeCliente,
           expeditionTime: new Date(),
           isAutoExpedition: false
-        }]);
+        }, ...prev.slice(0, 9)]);
         
         // toast({
         //   title: "Pedido Expedido",
@@ -226,51 +227,66 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
   
   // Auto-expedição
   useEffect(() => {
+    // Limpar timeout anterior
+    if (autoExpeditionTimeoutRef.current) {
+      clearTimeout(autoExpeditionTimeoutRef.current);
+    }
+    
     if (!autoExpeditionConfigRef.current?.enabled || !lastOrderNumber || !lastOrderData) return;
     
     const expediteTime = (autoExpeditionConfigRef.current.minutes || 10) * 60 * 1000;
     
-    const autoExpediteTimeout = setTimeout(() => {
-      if (lastOrderNumber && lastOrderData) {
-        // Expedir automaticamente
-        const order = orders.find(o => {
-          const orderNum = o.numeroPedido || o.number || '';
-          return orderNum === lastOrderNumber;
-        });
-        
-        if (order) {
-          expediteOrder(order.id).then(() => {
-            setOrders(prev => prev.filter(o => o.id !== order.id));
-            
-            // Atualizar último pedido
-            const remainingReady = orders.filter(o => o.status === 'ready' && (o.numeroPedido || o.number) !== lastOrderNumber);
-            if (remainingReady.length > 0) {
-              const newLastOrder = remainingReady.sort((a, b) => {
-                const dateA = new Date(a.updatedAt || a.ultimoConsumo || 0);
-                const dateB = new Date(b.updatedAt || b.ultimoConsumo || 0);
-                return dateB.getTime() - dateA.getTime();
-              })[0];
-              const newLastOrderNumber = newLastOrder.numeroPedido || newLastOrder.number || '';
-              setLastOrderNumber(newLastOrderNumber);
-              setLastOrderData(newLastOrder);
-            } else {
-              setLastOrderNumber('');
-              setLastOrderData(null);
-            }
-            
-            // Adicionar ao log de expedição como autoexpedição
-            setExpeditionLog(prev => [...prev.slice(-9), {
-              orderNumber: order.numeroPedido || order.number || '',
-              nickname: order.nomeCliente,
-              expeditionTime: new Date(),
-              isAutoExpedition: true
-            }]);
-          });
+    autoExpeditionTimeoutRef.current = setTimeout(async () => {
+      const currentOrder = orders.find(o => {
+        const orderNum = o.numeroPedido || o.number || '';
+        return orderNum === lastOrderNumber;
+      });
+      
+      if (currentOrder) {
+        try {
+          await expediteOrder(currentOrder.id);
+          
+          setOrders(prev => prev.filter(o => o.id !== currentOrder.id));
+          
+          // Atualizar último pedido
+          const remainingReady = orders.filter(o => 
+            o.status === 'ready' && 
+            (o.numeroPedido || o.number) !== lastOrderNumber
+          );
+          
+          if (remainingReady.length > 0) {
+            const newLastOrder = remainingReady.sort((a, b) => {
+              const dateA = new Date(a.updatedAt || a.ultimoConsumo || 0);
+              const dateB = new Date(b.updatedAt || b.ultimoConsumo || 0);
+              return dateB.getTime() - dateA.getTime();
+            })[0];
+            const newLastOrderNumber = newLastOrder.numeroPedido || newLastOrder.number || '';
+            setLastOrderNumber(newLastOrderNumber);
+            setLastOrderData(newLastOrder);
+          } else {
+            setLastOrderNumber('');
+            setLastOrderData(null);
+          }
+          
+          // Adicionar ao log de expedição como autoexpedição (no início da lista)
+          setExpeditionLog(prev => [{
+            orderNumber: currentOrder.numeroPedido || currentOrder.number || '',
+            nickname: currentOrder.nomeCliente,
+            expeditionTime: new Date(),
+            isAutoExpedition: true
+          }, ...prev.slice(0, 9)]);
+          
+        } catch (error) {
+          console.error('Erro na auto-expedição:', error);
         }
       }
     }, expediteTime);
     
-    return () => clearTimeout(autoExpediteTimeout);
+    return () => {
+      if (autoExpeditionTimeoutRef.current) {
+        clearTimeout(autoExpeditionTimeoutRef.current);
+      }
+    };
   }, [lastOrderNumber, lastOrderData, orders]);
   
   // Funções para simulação
