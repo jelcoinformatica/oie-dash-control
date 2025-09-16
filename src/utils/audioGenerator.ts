@@ -12,7 +12,16 @@ export class NotificationSoundGenerator {
 
   private getAudioContext(): AudioContext {
     if (!this.audioContext) {
-      this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      try {
+        const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+        if (!AudioContextClass) {
+          throw new Error('AudioContext não suportado neste navegador');
+        }
+        this.audioContext = new AudioContextClass();
+      } catch (error) {
+        console.error('Erro ao criar AudioContext:', error);
+        throw error;
+      }
     }
     return this.audioContext;
   }
@@ -125,16 +134,35 @@ export class NotificationSoundGenerator {
 
   // Reproduz o som gerado (mantém compatibilidade)
   async playOrderReadySound(type: SoundType = 'padrao', airportTones: AirportTones = 2): Promise<void> {
-
     try {
+      // Verificar suporte ao Web Audio API
+      if (!window.AudioContext && !(window as any).webkitAudioContext) {
+        throw new Error('Web Audio API não suportado');
+      }
+
       const ctx = this.getAudioContext();
       
-      // Retomar contexto se suspenso
+      // Garantir que o contexto está funcionando
+      if (!ctx) {
+        throw new Error('Não foi possível criar AudioContext');
+      }
+      
+      // Retomar contexto se suspenso (necessário para alguns browsers)
       if (ctx.state === 'suspended') {
         await ctx.resume();
       }
+      
+      // Verificar se o contexto está rodando
+      if (ctx.state !== 'running') {
+        throw new Error(`AudioContext está em estado: ${ctx.state}`);
+      }
 
       const buffer = this.generateSound(type, airportTones);
+      
+      if (!buffer) {
+        throw new Error('Falha ao gerar buffer de áudio');
+      }
+      
       const source = ctx.createBufferSource();
       const gainNode = ctx.createGain();
 
@@ -144,9 +172,13 @@ export class NotificationSoundGenerator {
       source.connect(gainNode);
       gainNode.connect(ctx.destination);
 
+      // Aguardar próximo frame para garantir que tudo está conectado
+      await new Promise(resolve => requestAnimationFrame(resolve));
+      
       source.start();
     } catch (error) {
       console.error('Erro ao reproduzir som de notificação:', error);
+      throw error; // Re-throw para que o código chamador possa tratar
     }
   }
 

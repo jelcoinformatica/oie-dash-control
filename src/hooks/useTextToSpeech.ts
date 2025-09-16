@@ -198,14 +198,26 @@ export const useTextToSpeech = () => {
                 });
               });
             } catch (audioError) {
-              console.log('Arquivo de som indisponível, usando som gerado');
+              console.log('Arquivo de som indisponível, tentando som gerado');
               soundDuration = airportTones === 1 ? 1.2 : 2.0;
-              await notificationSound.playOrderReadySound(readySoundType || 'padrao', airportTones || 2);
+              try {
+                await notificationSound.playOrderReadySound(readySoundType || 'padrao', airportTones || 2);
+              } catch (generatedSoundError) {
+                console.error('Erro também no som gerado:', generatedSoundError);
+                // Continuar sem som se ambos falharem
+                soundDuration = 0.5;
+              }
             }
           } else {
             // Usar som gerado se nenhum arquivo especificado
             soundDuration = airportTones === 1 ? 1.2 : 2.0;
-            await notificationSound.playOrderReadySound(readySoundType || 'padrao', airportTones || 2);
+            try {
+              await notificationSound.playOrderReadySound(readySoundType || 'padrao', airportTones || 2);
+            } catch (generatedSoundError) {
+              console.error('Erro no som gerado:', generatedSoundError);
+              // Continuar sem som se falhar
+              soundDuration = 0.5;
+            }
           }
           
           // Aguardar som terminar + 1 segundo adicional antes de falar
