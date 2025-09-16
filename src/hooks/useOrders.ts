@@ -159,7 +159,7 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
           }
           
         // Adicionar ao log de expedição
-        setExpeditionLog(prev => [...prev.slice(-4), {
+        setExpeditionLog(prev => [...prev.slice(-9), {
           orderNumber: order.numeroPedido || order.number || '',
           nickname: order.nomeCliente,
           expeditionTime: new Date(),
@@ -203,7 +203,7 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
         }
         
         // Adicionar ao log de expedição
-        setExpeditionLog(prev => [...prev.slice(-4), {
+        setExpeditionLog(prev => [...prev.slice(-9), {
           orderNumber: order.numeroPedido || order.number || '',
           nickname: order.nomeCliente,
           expeditionTime: new Date(),
@@ -259,7 +259,7 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
             }
             
             // Adicionar ao log de expedição como autoexpedição
-            setExpeditionLog(prev => [...prev.slice(-4), {
+            setExpeditionLog(prev => [...prev.slice(-9), {
               orderNumber: order.numeroPedido || order.number || '',
               nickname: order.nomeCliente,
               expeditionTime: new Date(),
