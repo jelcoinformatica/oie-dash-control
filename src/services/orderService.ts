@@ -84,11 +84,33 @@ export const addSimulatedOrder = async (allowedModules?: string[]): Promise<Orde
 
   const selectedModule = modules[Math.floor(Math.random() * modules.length)] as 'balcao' | 'mesa' | 'entrega' | 'ficha';
   
-  // Para pedidos de entrega, 70% devem ter prefixo "IF-" com 5 dígitos
+  // Função para obter o nome da plataforma de delivery
+  const getDeliveryPlatformName = (orderNumber: string): string => {
+    if (orderNumber.startsWith('IF-')) return 'iFood Delivery';
+    if (orderNumber.startsWith('DD-')) return 'Delivery Direto';
+    if (orderNumber.startsWith('RA-')) return 'Rappi Delivery';
+    if (orderNumber.startsWith('UB-')) return 'Uber Eats';
+    if (orderNumber.startsWith('RJ-')) return 'Rapidão Júnior';
+    return 'Delivery Online';
+  };
+
+  // Função para obter itens específicos da plataforma
+  const getDeliveryPlatformItems = (orderNumber: string): string => {
+    if (orderNumber.startsWith('IF-')) return 'Combo iFood';
+    if (orderNumber.startsWith('DD-')) return 'Combo Delivery Direto';
+    if (orderNumber.startsWith('RA-')) return 'Combo Rappi';
+    if (orderNumber.startsWith('UB-')) return 'Combo Uber Eats';
+    if (orderNumber.startsWith('RJ-')) return 'Combo Rapidão';
+    return 'Combo Delivery';
+  };
+  
+  // Para pedidos de entrega, 70% devem ter prefixo de delivery online
   let orderNumber: string;
   if (selectedModule === 'entrega' && Math.random() < 0.7) {
-    // Gerar número com 5 dígitos para iFood
-    orderNumber = `IF-${Math.floor(Math.random() * 90000) + 10000}`;
+    // Gerar número com 5 dígitos para delivery online
+    const deliveryTypes = ['IF', 'DD', 'RA', 'UB', 'RJ']; // iFood, Delivery Direto, Rappi, Uber, Rapidão Júnior
+    const randomType = deliveryTypes[Math.floor(Math.random() * deliveryTypes.length)];
+    orderNumber = `${randomType}-${Math.floor(Math.random() * 90000) + 10000}`;
   } else {
     // Número padrão de 3 dígitos
     orderNumber = (Math.floor(Math.random() * 900) + 100).toString();
@@ -104,8 +126,8 @@ export const addSimulatedOrder = async (allowedModules?: string[]): Promise<Orde
     status: 'production',
     ultimoConsumo: new Date(),
     dataContabil: new Date(),
-    localEntrega: selectedModule === 'entrega' && orderNumber.startsWith('IF-') 
-      ? 'iFood Delivery' 
+    localEntrega: selectedModule === 'entrega' && (orderNumber.startsWith('IF-') || orderNumber.startsWith('DD-') || orderNumber.startsWith('RA-') || orderNumber.startsWith('UB-') || orderNumber.startsWith('RJ-'))
+      ? getDeliveryPlatformName(orderNumber)
       : `Local ${Math.floor(Math.random() * 20) + 1}`,
     nomeCliente: selectedNickname,
     // Campos de compatibilidade
@@ -113,8 +135,8 @@ export const addSimulatedOrder = async (allowedModules?: string[]): Promise<Orde
     nickname: selectedNickname,
     createdAt: new Date(),
     updatedAt: new Date(),
-    items: selectedModule === 'entrega' && orderNumber.startsWith('IF-')
-      ? ['Combo iFood', 'Taxa de Entrega']
+    items: selectedModule === 'entrega' && (orderNumber.startsWith('IF-') || orderNumber.startsWith('DD-') || orderNumber.startsWith('RA-') || orderNumber.startsWith('UB-') || orderNumber.startsWith('RJ-'))
+      ? [getDeliveryPlatformItems(orderNumber), 'Taxa de Entrega']
       : Array.from({ length: Math.floor(Math.random() * 3) + 1 }, () => 
           items[Math.floor(Math.random() * items.length)]
         ),
