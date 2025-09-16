@@ -15,7 +15,7 @@ interface TTSConfig {
 }
 
 export const useTextToSpeech = () => {
-  const speak = useCallback(async (text: string, orderNumber: string, customerName: string, config?: TTSConfig, soundFile?: string, readySoundType?: 'padrao' | 'padrao2') => {
+  const speak = useCallback(async (text: string, orderNumber: string, customerName: string, config?: TTSConfig, soundFile?: string, readySoundType?: 'padrao' | 'padrao2', airportTones?: 1 | 2) => {
     if (!config?.enabled || !text) return;
     
     // Gerar texto baseado no tipo configurado
@@ -117,43 +117,50 @@ export const useTextToSpeech = () => {
       }
     };
 
-    const playSequence = async () => {
-      try {
-        // Tocar som primeiro
-        if (soundFile) {
-          try {
-            const audio = new Audio(soundFile);
-            await audio.play();
-            // Aguardar som terminar completamente
-            await new Promise<void>((resolve) => {
-              audio.addEventListener('ended', () => resolve());
-            });
-          } catch (audioError) {
-            // Fallback para som gerado se arquivo falhar
-            console.log('Arquivo de som indisponível, usando som gerado');
+    const playSequence = async (): Promise<void> => {
+      return new Promise(async (resolve, reject) => {
+        try {
+          let soundDuration = 0;
+          
+          // Tocar som primeiro e calcular duração
+          if (soundFile) {
             try {
-              await notificationSound.playOrderReadySound(readySoundType || 'padrao');
-            } catch (soundError) {
-              console.error('Erro ao tocar som gerado:', soundError);
+              const audio = new Audio(soundFile);
+              await audio.play();
+              
+              // Aguardar som terminar completamente
+              await new Promise<void>((soundResolve) => {
+                audio.addEventListener('ended', () => {
+                  soundDuration = audio.duration || 2;
+                  soundResolve();
+                });
+                audio.addEventListener('error', () => {
+                  soundDuration = 2;
+                  soundResolve();
+                });
+              });
+            } catch (audioError) {
+              console.log('Arquivo de som indisponível, usando som gerado');
+              soundDuration = airportTones === 1 ? 1.2 : 2.0;
+              await notificationSound.playOrderReadySound(readySoundType || 'padrao', airportTones || 2);
             }
+          } else {
+            // Usar som gerado se nenhum arquivo especificado
+            soundDuration = airportTones === 1 ? 1.2 : 2.0;
+            await notificationSound.playOrderReadySound(readySoundType || 'padrao', airportTones || 2);
           }
-        } else {
-          // Usar som gerado se nenhum arquivo especificado
-          try {
-            await notificationSound.playOrderReadySound(readySoundType || 'padrao');
-          } catch (soundError) {
-            console.error('Erro ao tocar som gerado:', soundError);
-          }
+          
+          // Aguardar som terminar + 1 segundo adicional antes de falar
+          setTimeout(() => {
+            performSpeech();
+            resolve();
+          }, soundDuration * 1000 + 1000);
+          
+        } catch (error) {
+          console.error('Erro na sequência de som e fala:', error);
+          reject(error);
         }
-        
-        // Aguardar 1 segundo após o som antes de falar
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        // Executar fala
-        performSpeech();
-      } catch (error) {
-        console.error('Erro na sequência de som e fala:', error);
-      }
+      });
     };
 
     try {
@@ -162,11 +169,23 @@ export const useTextToSpeech = () => {
 
       // Implementar repetição apenas se explicitamente habilitada
       if (config.repeatEnabled === true && config.repeatCount && config.repeatCount > 1 && config.repeatInterval) {
-        for (let i = 1; i < config.repeatCount; i++) {
-          setTimeout(() => {
-            playSequence();
-          }, i * config.repeatInterval * 1000);
-        }
+        let completedRepetitions = 1; // Já executamos a primeira
+        
+        const scheduleNextRepetition = () => {
+          if (completedRepetitions < config.repeatCount!) {
+            setTimeout(async () => {
+              try {
+                await playSequence();
+                completedRepetitions++;
+                scheduleNextRepetition();
+              } catch (error) {
+                console.error('Erro na repetição:', error);
+              }
+            }, config.repeatInterval! * 1000);
+          }
+        };
+        
+        scheduleNextRepetition();
       }
     } catch (error) {
       console.error('Erro no Text-to-Speech:', error);

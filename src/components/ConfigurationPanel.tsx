@@ -893,13 +893,33 @@ export const ConfigurationPanel = ({
                         <option value="padrao">Padrão (Estilo Aeroporto)</option>
                         <option value="padrao2">Padrão 2 (Sino Duplo)</option>
                       </select>
-                      <div className="text-xs text-muted-foreground">
-                        {config.sounds.readySoundType === 'padrao' ? 
-                          '3 tons descendentes, claro e profissional' :
-                          'Som de sino duplo, potente para ambientes ruidosos'
-                        }
-                      </div>
-                    </div>
+                       <div className="text-xs text-muted-foreground">
+                         {config.sounds.readySoundType === 'padrao' ? 
+                           '1-2 tons estilo aeroporto, claro e profissional' :
+                           'Som de sino duplo, potente para ambientes ruidosos'
+                         }
+                       </div>
+                       
+                       {config.sounds.readySoundType === 'padrao' && (
+                         <div className="space-y-2">
+                           <Label className="text-xs">Quantidade de Tons (Aeroporto)</Label>
+                           <select
+                             value={config.sounds.airportTones || 2}
+                             onChange={(e) => updateConfig('sounds.airportTones', parseInt(e.target.value))}
+                             className="text-xs border rounded px-2 py-1 w-full"
+                           >
+                             <option value={1}>1 Tom</option>
+                             <option value={2}>2 Tons</option>
+                           </select>
+                           <div className="text-xs text-muted-foreground">
+                             {config.sounds.airportTones === 1 ? 
+                               'Única nota, ideal para ambientes com muitas notificações' :
+                               'Duas notas descendentes, som clássico de aeroporto'
+                             }
+                           </div>
+                         </div>
+                       )}
+                     </div>
                   )}
                   
                   {config.sounds.readyFile && config.sounds.readyFile !== 'generated' && (
@@ -935,7 +955,9 @@ export const ConfigurationPanel = ({
                   
                   <div className="text-xs text-muted-foreground mb-2">
                     {config.sounds.readyFile === 'generated' ? 
-                      `Som ${config.sounds.readySoundType === 'padrao' ? 'estilo aeroporto' : 'sino duplo'} otimizado para praças de alimentação` :
+                      `Som ${config.sounds.readySoundType === 'padrao' ? 
+                        `estilo aeroporto (${config.sounds.airportTones || 2} ${config.sounds.airportTones === 1 ? 'tom' : 'tons'})` : 
+                        'sino duplo'} otimizado para praças de alimentação` :
                       'Usando arquivo de som personalizado'
                     }
                   </div>
@@ -948,7 +970,7 @@ export const ConfigurationPanel = ({
                              // Usar som gerado com tipo específico
                              try {
                                const { notificationSound } = await import('../utils/audioGenerator');
-                               await notificationSound.playOrderReadySound(config.sounds.readySoundType || 'padrao');
+                               await notificationSound.playOrderReadySound(config.sounds.readySoundType || 'padrao', config.sounds.airportTones || 2);
                              } catch (error) {
                                console.error('Erro ao tocar som gerado:', error);
                                alert('Erro ao tocar o som gerado.');
@@ -960,11 +982,11 @@ export const ConfigurationPanel = ({
                                audio.play().catch(async (error) => {
                                  console.error('Erro ao tocar som:', error);
                                  // Fallback para som gerado
-                                 try {
-                                   const { notificationSound } = await import('../utils/audioGenerator');
-                                   await notificationSound.playOrderReadySound();
-                                   alert('Arquivo de som indisponível. Usando som gerado integrado.');
-                                 } catch (fallbackError) {
+                                  try {
+                                    const { notificationSound } = await import('../utils/audioGenerator');
+                                    await notificationSound.playOrderReadySound('padrao', 2);
+                                    alert('Arquivo de som indisponível. Usando som gerado integrado.');
+                                  } catch (fallbackError) {
                                    alert('Erro ao tocar o som. Verifique se o arquivo existe e é válido.');
                                  }
                                });
