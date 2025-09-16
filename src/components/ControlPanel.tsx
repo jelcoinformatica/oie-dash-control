@@ -52,6 +52,19 @@ export const ControlPanel = ({
       return;
     }
 
+    // Comando especial para fechar o sistema no modo kiosk
+    if (expeditionInput.trim() === '000') {
+      if (window.confirm('Deseja realmente fechar o sistema?')) {
+        window.close();
+        // Fallback para tentar sair do fullscreen se window.close() não funcionar
+        if (document.fullscreenElement) {
+          document.exitFullscreen().catch(() => {});
+        }
+      }
+      setExpeditionInput('');
+      return;
+    }
+
     onExpedite(expeditionInput.trim());
     setExpeditionInput('');
   };

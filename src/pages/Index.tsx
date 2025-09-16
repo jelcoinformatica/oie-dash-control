@@ -7,6 +7,7 @@ import { LastOrderDisplay } from '../components/LastOrderDisplay';
 import { AdvertisingColumn } from '../components/AdvertisingColumn';
 import { ControlPanel } from '../components/ControlPanel';
 import { ConfigurationPanel } from '../components/ConfigurationPanel';
+import { SplashScreen } from '../components/SplashScreen';
 import { defaultConfig } from '../data/defaultConfig';
 import { PanelConfig } from '../types/order';
 import { toast } from '../hooks/use-toast';
@@ -15,6 +16,7 @@ const Index = () => {
   const [config, setConfig] = useState<PanelConfig>(defaultConfig);
   const [originalConfig, setOriginalConfig] = useState<PanelConfig>(defaultConfig);
   const [configOpen, setConfigOpen] = useState(false);
+  const [showSplash, setShowSplash] = useState(true);
   
   // Estabilizar ttsConfig para evitar recriações desnecessárias
   const ttsConfig = useMemo(() => 
@@ -186,10 +188,16 @@ const Index = () => {
   const columnWidths = getColumnWidths();
 
   return (
-    <div 
-      className="min-h-screen h-screen flex flex-col"
-      style={{ backgroundColor: config.backgroundColor, position: 'relative' }}
-    >
+    <>
+      {/* Splash Screen */}
+      {showSplash && (
+        <SplashScreen onComplete={() => setShowSplash(false)} />
+      )}
+
+      <div 
+        className="min-h-screen h-screen flex flex-col"
+        style={{ backgroundColor: config.backgroundColor, position: 'relative' }}
+      >
       <div className="flex-1 flex gap-0.5 p-1 pt-1 h-full overflow-hidden">
         {/* Coluna 1 - Produção */}
         {config.production.visible && (
@@ -342,6 +350,7 @@ const Index = () => {
         />
       )}
     </div>
+    </>
   );
 };
 
