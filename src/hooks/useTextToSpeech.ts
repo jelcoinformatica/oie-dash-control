@@ -24,15 +24,21 @@ export const useTextToSpeech = () => {
     if (config.textType) {
       // Detectar plataforma de delivery baseada no prefixo ou localEntrega
       let platformPrefix = '';
+      let isDeliveryPlatform = false;
+      
       if (deliveryPlatform) {
         if (deliveryPlatform.toLowerCase().includes('ifood') || orderNumber.startsWith('IF-')) {
           platformPrefix = 'Ifood, ';
+          isDeliveryPlatform = true;
         } else if (deliveryPlatform.toLowerCase().includes('delivery direto') || orderNumber.startsWith('DD-')) {
           platformPrefix = 'Delivery Direto, ';
+          isDeliveryPlatform = true;
         } else if (deliveryPlatform.toLowerCase().includes('rappi') || orderNumber.startsWith('RA-')) {
           platformPrefix = 'Rappi, ';
+          isDeliveryPlatform = true;
         } else if (deliveryPlatform.toLowerCase().includes('uber') || orderNumber.startsWith('UB-')) {
           platformPrefix = 'Uber Eats, ';
+          isDeliveryPlatform = true;
         }
       }
 
@@ -41,17 +47,25 @@ export const useTextToSpeech = () => {
           finalText = orderNumber;
           break;
         case 'name_ready':
-          finalText = customerName 
-            ? `${customerName}, seu pedido está pronto!`
-            : `${platformPrefix}pedido ${orderNumber} está pronto!`;
+          if (isDeliveryPlatform) {
+            finalText = `${platformPrefix}o pedido ${orderNumber} está pronto!`;
+          } else {
+            finalText = customerName 
+              ? `${customerName}, seu pedido está pronto!`
+              : `Pedido ${orderNumber} está pronto!`;
+          }
           break;
         case 'order_ready':
           finalText = `${platformPrefix}o pedido ${orderNumber} está pronto.`;
           break;
         case 'name_order_ready':
-          finalText = customerName 
-            ? `${customerName}, ${platformPrefix.toLowerCase()}o pedido ${orderNumber} está pronto!`
-            : `${platformPrefix}o pedido ${orderNumber} está pronto!`;
+          if (isDeliveryPlatform) {
+            finalText = `${platformPrefix}o pedido ${orderNumber} está pronto!`;
+          } else {
+            finalText = customerName 
+              ? `${customerName}, o pedido ${orderNumber} está pronto!`
+              : `O pedido ${orderNumber} está pronto!`;
+          }
           break;
         case 'custom':
           finalText = config.customText || text;
