@@ -778,15 +778,53 @@ export const ConfigurationPanel = ({
               <Switch 
                 checked={Boolean(config.advertising.newsMode)} 
                 onCheckedChange={(checked) => {
+                  console.log('=== TOGGLE CLICKED ===');
+                  console.log('Checked value received:', checked, typeof checked);
+                  console.log('Current newsMode before:', config.advertising.newsMode);
+                  console.log('Full advertising config:', config.advertising);
+                  
+                  // Força atualização direta
+                  const newConfig = {
+                    ...config,
+                    advertising: {
+                      ...config.advertising,
+                      newsMode: checked
+                    }
+                  };
+                  
+                  console.log('New config created:', newConfig.advertising);
+                  console.log('Calling onConfigChange...');
+                  
                   updateConfig('advertising.newsMode', checked);
+                  
                   // Limpar outras configurações quando ativar notícias
                   if (checked) {
-                    updateConfig('advertising.websiteUrl', '');
-                    updateConfig('advertising.imageUrl', '');
+                    setTimeout(() => {
+                      updateConfig('advertising.websiteUrl', '');
+                      updateConfig('advertising.imageUrl', '');
+                    }, 100);
                   }
                 }}
               />
-              <Label className="text-sm font-medium">Exibir Feed de Notícias</Label>
+              <Label 
+                className="text-sm font-medium cursor-pointer"
+                onClick={() => {
+                  const newValue = !Boolean(config.advertising.newsMode);
+                  console.log('Label clicked, toggling to:', newValue);
+                  updateConfig('advertising.newsMode', newValue);
+                }}
+              >
+                Exibir Feed de Notícias
+              </Label>
+              <button 
+                className="text-xs bg-blue-500 text-white px-2 py-1 rounded"
+                onClick={() => {
+                  console.log('Manual toggle - current:', config.advertising.newsMode);
+                  updateConfig('advertising.newsMode', !Boolean(config.advertising.newsMode));
+                }}
+              >
+                Manual Toggle
+              </button>
             </div>
             {config.advertising.newsMode && (
               <div className="ml-6 space-y-3">

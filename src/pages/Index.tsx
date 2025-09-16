@@ -13,7 +13,11 @@ import { PanelConfig } from '../types/order';
 import { toast } from '../hooks/use-toast';
 
 const Index = () => {
-  const [config, setConfig] = useState<PanelConfig>(defaultConfig);
+  const [config, setConfig] = useState<PanelConfig>(() => {
+    console.log('=== Initializing config state ===');
+    console.log('Default config advertising:', defaultConfig.advertising);
+    return defaultConfig;
+  });
   const [originalConfig, setOriginalConfig] = useState<PanelConfig>(defaultConfig);
   const [configOpen, setConfigOpen] = useState(false);
   const [showSplash, setShowSplash] = useState(false);
@@ -47,11 +51,15 @@ const Index = () => {
 
   useEffect(() => {
     const savedConfig = localStorage.getItem('oie-config');
+    console.log('=== Loading saved config ===');
+    console.log('Saved config found:', !!savedConfig);
+    
     if (savedConfig) {
       try {
-        const parsedConfig: PanelConfig = JSON.parse(savedConfig);
+        const parsedConfig = JSON.parse(savedConfig) as PanelConfig;
+        console.log('Parsed config advertising:', parsedConfig.advertising);
+        
         // Merge com defaultConfig para garantir que todas as propriedades existam
-        // Forçar módulos sempre habilitados conforme padrão de fábrica
         const mergedConfig: PanelConfig = { 
           ...defaultConfig, 
           ...parsedConfig, 
@@ -83,19 +91,25 @@ const Index = () => {
           },
           splash: { ...defaultConfig.splash, ...parsedConfig.splash },
         };
+        
+        console.log('Setting merged config from localStorage...');
         setConfig(mergedConfig);
         setOriginalConfig(mergedConfig);
-        // Set splash screen based on configuration
         setShowSplash(mergedConfig.splash?.enabled ?? true);
       } catch (error) {
-        console.error("Error parsing saved config from localStorage", error);
+        console.error('Erro ao carregar configuração salva:', error);
+        console.log('Using default config due to error');
         setConfig(defaultConfig);
         setOriginalConfig(defaultConfig);
-        // Set splash screen based on default configuration
         setShowSplash(defaultConfig.splash?.enabled ?? true);
+        toast({
+          title: "Erro",
+          description: "Erro ao carregar configuração salva. Usando configuração padrão.",
+          variant: "destructive"
+        });
       }
     } else {
-      // No saved config, use default and set splash accordingly
+      console.log('No saved config, using default');
       setShowSplash(defaultConfig.splash?.enabled ?? true);
     }
   }, []);
@@ -159,7 +173,12 @@ const Index = () => {
   };
 
   const handleConfigChange = (newConfig: PanelConfig) => {
+    console.log('=== handleConfigChange called ===');
+    console.log('Current config.advertising.newsMode:', config.advertising.newsMode);
+    console.log('New config.advertising.newsMode:', newConfig.advertising.newsMode);
+    console.log('Full new config advertising:', newConfig.advertising);
     setConfig(newConfig);
+    console.log('setConfig called with new config');
     // Não salva no localStorage aqui para permitir visualização em tempo real
   };
 
