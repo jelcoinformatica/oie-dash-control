@@ -134,7 +134,7 @@ export const useTextToSpeech = () => {
       }
 
       // Implementar repetição se configurado
-      if (config.repeatEnabled && config.repeatCount && config.repeatInterval) {
+      if (config.repeatEnabled === true && config.repeatCount && config.repeatInterval) {
         for (let i = 1; i < config.repeatCount; i++) {
           setTimeout(() => {
             if (soundFile) {

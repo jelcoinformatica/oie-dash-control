@@ -56,8 +56,8 @@ export const AdvertisingColumn = ({
   }, [showHeader, headerHeight]);
 
   return (
-    <div className={cn("flex flex-col h-full", className)} ref={containerRef}>
-      <div className={`bg-white shadow-lg h-full flex flex-col border border-gray-200 rounded-t-lg ${showBorder ? 'ring-2 ring-blue-200' : ''}`}>
+    <div className={cn("flex flex-col", className)} style={{ height: '100%' }} ref={containerRef}>
+      <div className={`bg-white shadow-lg flex flex-col border border-gray-200 rounded-t-lg ${showBorder ? 'ring-2 ring-blue-200' : ''}`} style={{ height: '100%' }}>
         {showHeader && (
           <div 
             className="flex items-center justify-center text-white font-bold text-lg rounded-t-lg relative cursor-pointer hover:bg-opacity-90 transition-all flex-shrink-0"
@@ -79,18 +79,32 @@ export const AdvertisingColumn = ({
         )}
         
         <div 
-          className="flex-1 p-4 flex flex-col items-center justify-center overflow-hidden min-h-0"
-          style={{ backgroundColor }}
+          className="p-4 flex flex-col items-center justify-center overflow-hidden"
+          style={{ 
+            backgroundColor,
+            height: `calc(100% - ${showHeader ? headerHeight : 0}px)`,
+            maxHeight: `calc(100% - ${showHeader ? headerHeight : 0}px)`
+          }}
         >
           {imageUrl ? (
-            <div className="w-full h-full flex items-center justify-center min-h-0">
+            <div 
+              className="flex items-center justify-center"
+              style={{
+                width: `${containerDimensions.width}px`,
+                height: `${containerDimensions.height}px`,
+                maxWidth: `${containerDimensions.width}px`,
+                maxHeight: `${containerDimensions.height}px`
+              }}
+            >
               <img
                 src={imageUrl}
                 alt="Publicidade"
-                className={`rounded-lg shadow-sm ${fillImage ? 'w-full h-full object-cover' : 'max-w-full max-h-full object-contain'}`}
-                style={fillImage ? {} : { 
-                  maxHeight: `${containerDimensions.height}px`,
-                  maxWidth: `${containerDimensions.width}px`
+                className={`rounded-lg shadow-sm ${fillImage ? 'object-cover' : 'object-contain'}`}
+                style={{
+                  width: fillImage ? '100%' : 'auto',
+                  height: fillImage ? '100%' : 'auto',
+                  maxWidth: `${containerDimensions.width}px`,
+                  maxHeight: `${containerDimensions.height}px`
                 }}
               />
             </div>
