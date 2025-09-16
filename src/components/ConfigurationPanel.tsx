@@ -687,12 +687,34 @@ export const ConfigurationPanel = ({
 
           <div>
             <Label className="text-sm font-medium">URL do Website</Label>
-            <Input
-              value={config.advertising.websiteUrl || ''}
-              onChange={(e) => updateConfig('advertising.websiteUrl', e.target.value)}
-              placeholder="https://exemplo.com/pagina"
-              className="text-sm mt-1"
-            />
+            <div className="flex items-center gap-2 mt-1">
+              <Input
+                value={config.advertising.websiteUrl || ''}
+                onChange={(e) => updateConfig('advertising.websiteUrl', e.target.value)}
+                placeholder="https://exemplo.com/pagina"
+                className="text-sm flex-1"
+              />
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  if (config.advertising.websiteUrl) {
+                    window.open(config.advertising.websiteUrl, '_blank');
+                  } else {
+                    toast({
+                      title: "Atenção",
+                      description: "Digite uma URL primeiro",
+                      variant: "destructive"
+                    });
+                  }
+                }}
+                disabled={!config.advertising.websiteUrl}
+                title="Testar URL em nova aba"
+              >
+                Testar
+              </Button>
+            </div>
             <div className="text-xs text-gray-500 mt-1">
               Se preenchido, será exibido como iframe (tem prioridade sobre imagem)
             </div>
