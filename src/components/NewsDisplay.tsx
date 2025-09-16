@@ -120,6 +120,8 @@ export const NewsDisplay = ({
       
       // Tentar cada URL até uma funcionar
       let lastError = null;
+      let actualSource = newsSource; // Rastrear a fonte real das notícias
+      
       for (let i = 0; i < feedUrls.length; i++) {
         const feedUrl = feedUrls[i];
         try {
@@ -150,10 +152,19 @@ export const NewsDisplay = ({
           const xmlDoc = parser.parseFromString(data.contents, 'text/xml');
           const items = xmlDoc.querySelectorAll('item');
           
+          // Determinar a fonte real baseada na URL que funcionou
+          if (feedUrl.includes('g1.globo.com')) {
+            actualSource = 'g1';
+          } else if (feedUrl.includes('uol.com.br')) {
+            actualSource = 'uol';
+          } else if (feedUrl.includes('cnn')) {
+            actualSource = 'cnn';
+          }
+          
           const newsItems: NewsItem[] = [];
           
           items.forEach((item, index) => {
-            if (index < 12) { // Aumentado para 12 notícias
+            if (index < 12) {
               const title = item.querySelector('title')?.textContent || '';
               const description = item.querySelector('description')?.textContent || '';
               const pubDate = item.querySelector('pubDate')?.textContent || new Date().toISOString();
@@ -168,13 +179,13 @@ export const NewsDisplay = ({
                   description: cleanDescription,
                   pubDate,
                   link,
-                  source: getSourceName(newsSource)
+                  source: getSourceName(actualSource) // Usar a fonte real
                 });
               }
             }
           });
           
-          console.log(`✅ RSS carregado com sucesso: ${newsItems.length} itens de ${feedUrl}`);
+          console.log(`✅ RSS carregado com sucesso: ${newsItems.length} itens de ${feedUrl} (fonte: ${actualSource})`);
           
           if (newsItems.length > 0) {
             setNews(newsItems);
