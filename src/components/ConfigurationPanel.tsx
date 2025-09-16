@@ -778,23 +778,6 @@ export const ConfigurationPanel = ({
               <Switch 
                 checked={Boolean(config.advertising.newsMode)} 
                 onCheckedChange={(checked) => {
-                  console.log('=== TOGGLE CLICKED ===');
-                  console.log('Checked value received:', checked, typeof checked);
-                  console.log('Current newsMode before:', config.advertising.newsMode);
-                  console.log('Full advertising config:', config.advertising);
-                  
-                  // Força atualização direta
-                  const newConfig = {
-                    ...config,
-                    advertising: {
-                      ...config.advertising,
-                      newsMode: checked
-                    }
-                  };
-                  
-                  console.log('New config created:', newConfig.advertising);
-                  console.log('Calling onConfigChange...');
-                  
                   updateConfig('advertising.newsMode', checked);
                   
                   // Limpar outras configurações quando ativar notícias
@@ -810,32 +793,23 @@ export const ConfigurationPanel = ({
                 className="text-sm font-medium cursor-pointer"
                 onClick={() => {
                   const newValue = !Boolean(config.advertising.newsMode);
-                  console.log('Label clicked, toggling to:', newValue);
                   updateConfig('advertising.newsMode', newValue);
                 }}
               >
-                Exibir Feed de Notícias
+                Exibir Feed de Conteúdo
               </Label>
-              <button 
-                className="text-xs bg-blue-500 text-white px-2 py-1 rounded"
-                onClick={() => {
-                  console.log('Manual toggle - current:', config.advertising.newsMode);
-                  updateConfig('advertising.newsMode', !Boolean(config.advertising.newsMode));
-                }}
-              >
-                Manual Toggle
-              </button>
             </div>
             {config.advertising.newsMode && (
               <div className="ml-6 space-y-3">
                 <div className="text-xs text-blue-600 bg-blue-50 p-2 rounded">
-                  ✓ Feed automático de manchetes será exibido<br/>
+                  ✓ Feed automático será exibido<br/>
                   ✓ Rotação automática a cada 25 segundos<br/>
-                  ✓ Layout otimizado para espaço disponível
+                  ✓ Layout otimizado para espaço disponível<br/>
+                  ✨ Agora com opções de gastronomia e culinária
                 </div>
                 
                 <div>
-                  <Label className="text-xs font-medium">Fonte das Notícias</Label>
+                  <Label className="text-xs font-medium">Fonte de Conteúdo</Label>
                   <Select 
                     value={config.advertising.newsSource || 'g1'} 
                     onValueChange={(value) => updateConfig('advertising.newsSource', value)}
@@ -844,9 +818,13 @@ export const ConfigurationPanel = ({
                       <SelectValue placeholder="Selecione a fonte" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="g1">G1 - Globo.com</SelectItem>
-                      <SelectItem value="uol">UOL Notícias</SelectItem>
-                      <SelectItem value="cnn">CNN Brasil</SelectItem>
+                      <SelectItem value="g1">G1 - Notícias Gerais</SelectItem>
+                      <SelectItem value="uol">UOL - Notícias Gerais</SelectItem>
+                      <SelectItem value="cnn">CNN Brasil - Notícias</SelectItem>
+                      <SelectItem value="panelinha">Panelinha - Receitas Rita Lobo</SelectItem>
+                      <SelectItem value="cybercook">Cyber Cook - Receitas</SelectItem>
+                      <SelectItem value="tudogostoso">Tudo Gostoso - Culinária</SelectItem>
+                      <SelectItem value="foodnetwork">Food Network - Gastronomia</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

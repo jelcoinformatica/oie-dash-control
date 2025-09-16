@@ -32,39 +32,46 @@ export const NewsDisplay = ({
   // Mock data para demonstração - pode ser substituído por RSS real
   const mockNews: NewsItem[] = [
     {
-      title: "Economia brasileira registra crescimento no último trimestre",
-      description: "Dados do IBGE mostram recuperação dos setores de serviços e indústria",
+      title: "Nova receita de pão caseiro vira sucesso nas redes sociais",
+      description: "Chef ensina técnica simples que não requer fermento biológico",
       pubDate: new Date().toISOString(),
       link: "#",
-      source: "G1 Economia"
+      source: "Panelinha"
     },
     {
-      title: "Novo marco regulatório para energia renovável é aprovado",
-      description: "Medida deve impulsionar investimentos em solar e eólica",
+      title: "Restaurantes apostam em ingredientes orgânicos e locais",
+      description: "Movimento sustentável ganha força no setor gastronômico brasileiro",
       pubDate: new Date().toISOString(),
       link: "#",
-      source: "UOL Notícias"
+      source: "Cyber Cook"
     },
     {
-      title: "Tecnologia 5G chega a mais 50 cidades brasileiras",
-      description: "Expansão da rede promete melhorar conectividade em regiões metropolitanas",
+      title: "Festival de Food Trucks movimenta R$ 2 milhões em SP",
+      description: "Evento gastronômico atrai milhares de visitantes no fim de semana",
       pubDate: new Date().toISOString(),
       link: "#",
-      source: "CNN Brasil"
+      source: "UOL Gastronomia"
     },
     {
-      title: "Exportações do agronegócio batem novo recorde mensal",
-      description: "Soja e milho lideram as vendas para o mercado internacional",
+      title: "Dicas para economizar no supermercado sem perder qualidade",
+      description: "Nutricionistas ensinam como fazer compras inteligentes e saudáveis",
       pubDate: new Date().toISOString(),
       link: "#",
-      source: "G1 Agro"
+      source: "Tudo Gostoso"
     },
     {
-      title: "Investimento em startups brasileiras cresce 40% no ano",
-      description: "Setor de fintechs e healthtechs atraem maior volume de recursos",
+      title: "Massa artesanal: chef ensina preparo em 5 passos simples",
+      description: "Técnica tradicional italiana pode ser feita em casa facilmente",
       pubDate: new Date().toISOString(),
       link: "#",
-      source: "UOL Economia"
+      source: "Food Network"
+    },
+    {
+      title: "Delivery saudável cresce 150% no último ano",
+      description: "Brasileiros buscam opções nutritivas para pedidos em casa",
+      pubDate: new Date().toISOString(),
+      link: "#",
+      source: "G1 Saúde"
     }
   ];
 
@@ -76,7 +83,11 @@ export const NewsDisplay = ({
       const rssUrls = {
         g1: 'https://g1.globo.com/rss/g1/',
         uol: 'https://rss.uol.com.br/feed/noticias.xml',
-        cnn: 'https://www.cnnbrasil.com.br/rss/'
+        cnn: 'https://www.cnnbrasil.com.br/rss/',
+        panelinha: 'https://www.panelinha.com.br/rss',
+        cybercook: 'https://cybercook.com.br/rss.xml',
+        tudogostoso: 'https://www.tudogostoso.com.br/rss/receitas.xml',
+        foodnetwork: 'https://www.foodnetwork.com/feeds/recipes.xml'
       };
       
       const rssUrl = rssUrls[newsSource];

@@ -14,8 +14,6 @@ import { toast } from '../hooks/use-toast';
 
 const Index = () => {
   const [config, setConfig] = useState<PanelConfig>(() => {
-    console.log('=== Initializing config state ===');
-    console.log('Default config advertising:', defaultConfig.advertising);
     return defaultConfig;
   });
   const [originalConfig, setOriginalConfig] = useState<PanelConfig>(defaultConfig);
@@ -173,12 +171,7 @@ const Index = () => {
   };
 
   const handleConfigChange = (newConfig: PanelConfig) => {
-    console.log('=== handleConfigChange called ===');
-    console.log('Current config.advertising.newsMode:', config.advertising.newsMode);
-    console.log('New config.advertising.newsMode:', newConfig.advertising.newsMode);
-    console.log('Full new config advertising:', newConfig.advertising);
     setConfig(newConfig);
-    console.log('setConfig called with new config');
     // Não salva no localStorage aqui para permitir visualização em tempo real
   };
 
