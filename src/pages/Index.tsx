@@ -275,7 +275,6 @@ const Index = () => {
               headerHeight={config.advertising.headerHeight}
               backgroundColor={config.advertising.backgroundColor}
               imageUrl={config.advertising.imageUrl}
-              fillImage={config.advertising.fillImage}
               onToggleHeader={() => {
                 const newConfig = {
                   ...config,

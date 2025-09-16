@@ -11,7 +11,6 @@ interface AdvertisingColumnProps {
   headerColor?: string;
   backgroundColor?: string;
   showBorder?: boolean;
-  fillImage?: boolean;
   onToggleHeader?: () => void;
 }
 
@@ -25,7 +24,6 @@ export const AdvertisingColumn = ({
   headerColor = "#ffffff", 
   backgroundColor = "#ffffff",
   showBorder = false,
-  fillImage = false,
   onToggleHeader
 }: AdvertisingColumnProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -99,10 +97,8 @@ export const AdvertisingColumn = ({
               <img
                 src={imageUrl}
                 alt="Publicidade"
-                className={`rounded-lg shadow-sm ${fillImage ? 'object-cover' : 'object-contain'}`}
+                className="rounded-lg shadow-sm object-contain"
                 style={{
-                  width: fillImage ? '100%' : 'auto',
-                  height: fillImage ? '100%' : 'auto',
                   maxWidth: `${containerDimensions.width}px`,
                   maxHeight: `${containerDimensions.height}px`
                 }}

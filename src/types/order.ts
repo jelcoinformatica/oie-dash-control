@@ -59,7 +59,6 @@ export interface PanelConfig {
     backgroundColor: string;
     imageUrl?: string;
     showBorder?: boolean;
-    fillImage?: boolean; // Se true, usa object-cover; se false, usa object-contain
   };
   lastOrder: {
     height: number;

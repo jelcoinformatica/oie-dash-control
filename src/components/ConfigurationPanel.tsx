@@ -671,21 +671,6 @@ export const ConfigurationPanel = ({
               className="w-20 h-8 mt-1 cursor-pointer"
             />
           </div>
-
-          <div className="flex items-center space-x-2">
-            <Switch
-              checked={config.advertising.fillImage}
-              onCheckedChange={(checked) => updateConfig('advertising.fillImage', checked)}
-              className="scale-75"
-            />
-            <Label className="text-sm">Preencher todo o espaço com a imagem</Label>
-          </div>
-          <div className="text-xs text-gray-500 ml-6">
-            {config.advertising.fillImage 
-              ? "A imagem preencherá todo o espaço (pode ser cortada)" 
-              : "A imagem se ajustará ao espaço (mantém proporção)"
-            }
-          </div>
         </ConfigSection>
 
         {/* Efeitos Sonoros */}
