@@ -1,4 +1,5 @@
 import { cn } from '../lib/utils';
+import { useState, useEffect, useRef } from 'react';
 
 interface AdvertisingColumnProps {
   title?: string;
@@ -25,12 +26,39 @@ export const AdvertisingColumn = ({
   showBorder = false,
   onToggleHeader
 }: AdvertisingColumnProps) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [containerDimensions, setContainerDimensions] = useState({ width: 0, height: 0 });
+
+  useEffect(() => {
+    const updateDimensions = () => {
+      if (containerRef.current) {
+        const rect = containerRef.current.getBoundingClientRect();
+        // Calcula o espaço disponível para a imagem
+        const availableHeight = rect.height - (showHeader ? headerHeight : 0) - 32; // 32px for padding
+        const availableWidth = rect.width - 32; // 32px for padding
+        setContainerDimensions({ 
+          width: Math.max(0, Math.round(availableWidth)), 
+          height: Math.max(0, Math.round(availableHeight))
+        });
+      }
+    };
+
+    updateDimensions();
+    
+    const resizeObserver = new ResizeObserver(updateDimensions);
+    if (containerRef.current) {
+      resizeObserver.observe(containerRef.current);
+    }
+
+    return () => resizeObserver.disconnect();
+  }, [showHeader, headerHeight]);
+
   return (
-    <div className={cn("flex flex-col h-full", className)}>
+    <div className={cn("flex flex-col h-full", className)} ref={containerRef}>
       <div className={`bg-white shadow-lg h-full flex flex-col border border-gray-200 rounded-t-lg ${showBorder ? 'ring-2 ring-blue-200' : ''}`}>
         {showHeader && (
           <div 
-            className="flex items-center justify-center text-white font-bold text-lg rounded-t-lg relative cursor-pointer hover:bg-opacity-90 transition-all"
+            className="flex items-center justify-center text-white font-bold text-lg rounded-t-lg relative cursor-pointer hover:bg-opacity-90 transition-all flex-shrink-0"
             style={{ 
               height: `${headerHeight}px`,
               backgroundColor: headerBg,
@@ -49,7 +77,7 @@ export const AdvertisingColumn = ({
         )}
         
         <div 
-          className="flex-1 p-4 flex flex-col items-center justify-center overflow-hidden"
+          className="flex-1 p-4 flex flex-col items-center justify-center overflow-hidden min-h-0"
           style={{ backgroundColor }}
         >
           {imageUrl ? (
@@ -58,7 +86,10 @@ export const AdvertisingColumn = ({
                 src={imageUrl}
                 alt="Publicidade"
                 className="max-w-full max-h-full object-contain rounded-lg shadow-sm"
-                style={{ maxHeight: '100%', maxWidth: '100%' }}
+                style={{ 
+                  maxHeight: `${containerDimensions.height}px`,
+                  maxWidth: `${containerDimensions.width}px`
+                }}
               />
             </div>
           ) : (
@@ -69,7 +100,7 @@ export const AdvertisingColumn = ({
               </div>
               <div className="mt-4 text-sm">
                 <div>Dimensões sugeridas:</div>
-                <div>{Math.round((window.innerWidth || 1920) * 0.22)} x {Math.round((window.innerHeight || 1080) * 0.6)}px</div>
+                <div>{containerDimensions.width} x {containerDimensions.height}px</div>
               </div>
             </div>
           )}

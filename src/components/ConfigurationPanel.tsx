@@ -625,7 +625,7 @@ export const ConfigurationPanel = ({
               className="mt-1"
             />
             <div className="text-xs text-gray-500 mt-1">
-              Dimensões sugeridas: {Math.round((window.innerWidth || 1920) * config.advertising.width / 100)} x {Math.round((window.innerHeight || 1080) * 0.6 + (config.advertising.headerVisible ? 0 : config.advertising.headerHeight))}px
+              Dimensões baseadas no espaço real disponível (calculadas dinamicamente)
             </div>
           </div>
 
