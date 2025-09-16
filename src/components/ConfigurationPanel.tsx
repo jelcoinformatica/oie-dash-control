@@ -12,6 +12,7 @@ import { cn } from '../lib/utils';
 import { defaultConfig } from '../data/defaultConfig';
 import { RadioGroup, RadioGroupItem } from './ui/radio-group';
 import { Checkbox } from './ui/checkbox';
+import { toast } from '../hooks/use-toast';
 
 interface ConfigurationPanelProps {
   open: boolean;
@@ -119,6 +120,27 @@ export const ConfigurationPanel = ({
   };
 
   const updateConfig = (path: string, value: any) => {
+    // Validação para módulos - pelo menos um deve estar ativo
+    if (path.includes('modules.') && path.includes('.enabled') && value === false) {
+      const moduleKeys = ['balcao', 'mesa', 'entrega', 'ficha'];
+      const currentModuleName = path.split('.')[1];
+      
+      // Verifica se outros módulos estão ativos
+      const otherModulesActive = moduleKeys
+        .filter(key => key !== currentModuleName)
+        .some(key => config.modules[key as keyof typeof config.modules].enabled);
+      
+      if (!otherModulesActive) {
+        // Não permite desativar se for o último módulo ativo
+        toast({
+          title: "Atenção",
+          description: "Pelo menos um módulo deve permanecer ativo.",
+          variant: "destructive"
+        });
+        return;
+      }
+    }
+    
     const keys = path.split('.');
     const newConfig = { ...config };
     let current: any = newConfig;

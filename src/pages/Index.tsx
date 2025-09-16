@@ -59,7 +59,14 @@ const Index = () => {
           sounds: { ...defaultConfig.sounds, ...parsedConfig.sounds },
           textToSpeech: { ...defaultConfig.textToSpeech, ...parsedConfig.textToSpeech },
           autoExpedition: { ...defaultConfig.autoExpedition, ...parsedConfig.autoExpedition },
-          modules: { ...defaultConfig.modules, ...parsedConfig.modules },
+          modules: { 
+            ...defaultConfig.modules, 
+            ...parsedConfig.modules,
+            balcao: { ...defaultConfig.modules.balcao, ...parsedConfig.modules?.balcao },
+            mesa: { ...defaultConfig.modules.mesa, ...parsedConfig.modules?.mesa },
+            entrega: { ...defaultConfig.modules.entrega, ...parsedConfig.modules?.entrega },
+            ficha: { ...defaultConfig.modules.ficha, ...parsedConfig.modules?.ficha }
+          },
         };
         setConfig(mergedConfig);
         setOriginalConfig(mergedConfig);
