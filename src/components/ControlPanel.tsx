@@ -21,16 +21,26 @@ export const ControlPanel = ({
   const [recentAutoExpedited, setRecentAutoExpedited] = useState<Set<string>>(new Set());
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Auto-focus no campo de expedição quando não estiver em configuração
+  // Foco suave no campo de expedição
   useEffect(() => {
-    const focusInterval = setInterval(() => {
-      if (!configOpen && inputRef.current && document.activeElement !== inputRef.current) {
-        inputRef.current.focus();
-      }
-    }, 100);
-
-    return () => clearInterval(focusInterval);
+    if (!configOpen && inputRef.current) {
+      // Foco inicial quando configuração fecha
+      const timer = setTimeout(() => {
+        inputRef.current?.focus();
+      }, 200);
+      return () => clearTimeout(timer);
+    }
   }, [configOpen]);
+
+  // Foco após expedição
+  useEffect(() => {
+    if (!expeditionInput && inputRef.current && !configOpen) {
+      const timer = setTimeout(() => {
+        inputRef.current?.focus();
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [expeditionInput, configOpen]);
 
   // Rastrear últimos pedidos expedidos para efeito de 2s
   useEffect(() => {
