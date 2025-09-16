@@ -14,6 +14,23 @@ interface TTSConfig {
   repeatInterval?: number;
 }
 
+const convertNumberToWords = (num: string): string => {
+    const digits = {
+      '0': 'zero',
+      '1': 'um',
+      '2': 'dois', 
+      '3': 'três',
+      '4': 'quatro',
+      '5': 'cinco',
+      '6': 'seis',
+      '7': 'sete',
+      '8': 'oito',
+      '9': 'nove'
+    };
+    
+    return num.split('').map(digit => digits[digit as keyof typeof digits] || digit).join(' ');
+  };
+
 export const useTextToSpeech = () => {
   const speak = useCallback(async (text: string, orderNumber: string, customerName: string, config?: TTSConfig, soundFile?: string, readySoundType?: 'padrao' | 'padrao2', airportTones?: 1 | 2, deliveryPlatform?: string) => {
     if (!config?.enabled || !text) return;
@@ -29,19 +46,19 @@ export const useTextToSpeech = () => {
       
       if (deliveryPlatform) {
         if (deliveryPlatform.toLowerCase().includes('ifood') || orderNumber.startsWith('IF-')) {
-          platformPrefix = 'Ai fuudi ';
+          platformPrefix = 'Ai fuudi, ';
           isDeliveryPlatform = true;
           cleanOrderNumber = orderNumber.replace('IF-', '');
         } else if (deliveryPlatform.toLowerCase().includes('delivery direto') || orderNumber.startsWith('DD-')) {
-          platformPrefix = 'Delivery Direto ';
+          platformPrefix = 'Delivery Direto, ';
           isDeliveryPlatform = true;
           cleanOrderNumber = orderNumber.replace('DD-', '');
         } else if (deliveryPlatform.toLowerCase().includes('rappi') || orderNumber.startsWith('RA-')) {
-          platformPrefix = 'Rappi ';
+          platformPrefix = 'Rappi, ';
           isDeliveryPlatform = true;
           cleanOrderNumber = orderNumber.replace('RA-', '');
         } else if (deliveryPlatform.toLowerCase().includes('uber') || orderNumber.startsWith('UB-')) {
-          platformPrefix = 'Uber Eats ';
+          platformPrefix = 'Uber Eats, ';
           isDeliveryPlatform = true;
           cleanOrderNumber = orderNumber.replace('UB-', '');
         }
@@ -49,11 +66,11 @@ export const useTextToSpeech = () => {
 
       switch (config.textType) {
         case 'number_only':
-          finalText = isDeliveryPlatform ? cleanOrderNumber : orderNumber;
+          finalText = isDeliveryPlatform ? convertNumberToWords(cleanOrderNumber) : orderNumber;
           break;
         case 'name_ready':
           if (isDeliveryPlatform) {
-            finalText = `${platformPrefix}o pedido ${cleanOrderNumber} está pronto!`;
+            finalText = `${platformPrefix}o pedido ${convertNumberToWords(cleanOrderNumber)} está pronto!`;
           } else {
             finalText = customerName 
               ? `${customerName}, seu pedido está pronto!`
@@ -62,12 +79,12 @@ export const useTextToSpeech = () => {
           break;
         case 'order_ready':
           finalText = isDeliveryPlatform 
-            ? `${platformPrefix}o pedido ${cleanOrderNumber} está pronto.`
+            ? `${platformPrefix}o pedido ${convertNumberToWords(cleanOrderNumber)} está pronto.`
             : `O pedido ${orderNumber} está pronto.`;
           break;
         case 'name_order_ready':
           if (isDeliveryPlatform) {
-            finalText = `${platformPrefix}o pedido ${cleanOrderNumber} está pronto!`;
+            finalText = `${platformPrefix}o pedido ${convertNumberToWords(cleanOrderNumber)} está pronto!`;
           } else {
             finalText = customerName 
               ? `${customerName}, o pedido ${orderNumber} está pronto!`
