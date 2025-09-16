@@ -66,51 +66,22 @@ export const NewsDisplay = ({
     setAdaptiveFontSize(fontSize);
   }, [fontSize]);
 
-  // Mock data para demonstração - pode ser substituído por RSS real
-  const mockNews: NewsItem[] = [
-    {
-      title: "Nova receita de pão caseiro vira sucesso nas redes sociais",
-      description: "Chef ensina técnica simples que não requer fermento biológico",
-      pubDate: new Date().toISOString(),
-      link: "#",
-      source: "Panelinha"
-    },
-    {
-      title: "Restaurantes apostam em ingredientes orgânicos e locais",
-      description: "Movimento sustentável ganha força no setor gastronômico brasileiro",
-      pubDate: new Date().toISOString(),
-      link: "#",
-      source: "Cyber Cook"
-    },
-    {
-      title: "Festival de Food Trucks movimenta R$ 2 milhões em SP",
-      description: "Evento gastronômico atrai milhares de visitantes no fim de semana",
-      pubDate: new Date().toISOString(),
-      link: "#",
-      source: "UOL Gastronomia"
-    },
-    {
-      title: "Dicas para economizar no supermercado sem perder qualidade",
-      description: "Nutricionistas ensinam como fazer compras inteligentes e saudáveis",
-      pubDate: new Date().toISOString(),
-      link: "#",
-      source: "Tudo Gostoso"
-    },
-    {
-      title: "Massa artesanal: chef ensina preparo em 5 passos simples",
-      description: "Técnica tradicional italiana pode ser feita em casa facilmente",
-      pubDate: new Date().toISOString(),
-      link: "#",
-      source: "Food Network"
-    },
-    {
-      title: "Delivery saudável cresce 150% no último ano",
-      description: "Brasileiros buscam opções nutritivas para pedidos em casa",
-      pubDate: new Date().toISOString(),
-      link: "#",
-      source: "G1 Saúde"
-    }
-  ];
+  // Função para obter nome da fonte formatado
+  const getSourceName = (source: string) => {
+    const sourceNames = {
+      g1: 'G1',
+      uol: 'UOL', 
+      cnn: 'CNN Brasil',
+      panelinha: 'G1', // Está usando G1 como fallback
+      cybercook: 'G1', // Está usando G1 como fallback
+      tudogostoso: 'G1', // Está usando G1 como fallback
+      foodnetwork: 'G1' // Está usando G1 como fallback
+    };
+    return sourceNames[source] || source.toUpperCase();
+  };
+
+  // Mock data REMOVIDO - apenas RSS real
+  const mockNews: NewsItem[] = [];
 
   // Função para buscar notícias via RSS
   const fetchRSSNews = async () => {
@@ -121,10 +92,10 @@ export const NewsDisplay = ({
         g1: 'https://g1.globo.com/rss/g1/',
         uol: 'https://rss.uol.com.br/feed/noticias.xml',
         cnn: 'https://www.cnnbrasil.com.br/rss/',
-        panelinha: 'https://www.panelinha.com.br/rss',
-        cybercook: 'https://cybercook.com.br/rss.xml',
-        tudogostoso: 'https://www.tudogostoso.com.br/rss/receitas.xml',
-        foodnetwork: 'https://www.foodnetwork.com/feeds/recipes.xml'
+        panelinha: 'https://g1.globo.com/rss/g1/', // Fallback para G1
+        cybercook: 'https://g1.globo.com/rss/g1/', // Fallback para G1
+        tudogostoso: 'https://g1.globo.com/rss/g1/', // Fallback para G1
+        foodnetwork: 'https://g1.globo.com/rss/g1/' // Fallback para G1
       };
       
       const rssUrl = rssUrls[newsSource];
@@ -135,7 +106,27 @@ export const NewsDisplay = ({
       console.log('🔄 Fetching RSS from:', rssUrl);
       
       const response = await fetch(proxyUrl);
-      const data = await response.json();
+      
+      // Verificar se a resposta é válida
+      if (!response.ok) {
+        throw new Error(`HTTP Error: ${response.status}`);
+      }
+      
+      const responseText = await response.text();
+      if (!responseText || responseText.trim() === '') {
+        throw new Error('Empty response from proxy');
+      }
+      
+      let data;
+      try {
+        data = JSON.parse(responseText);
+      } catch (e) {
+        throw new Error('Invalid JSON response from proxy');
+      }
+      
+      if (!data.contents) {
+        throw new Error('No content in proxy response');
+      }
       
       // Parse do XML
       const parser = new DOMParser();
@@ -160,7 +151,7 @@ export const NewsDisplay = ({
               description: cleanDescription,
               pubDate,
               link,
-              source: newsSource.toUpperCase()
+              source: getSourceName(newsSource)
             });
           }
         }
@@ -172,14 +163,14 @@ export const NewsDisplay = ({
         setNews(newsItems);
         setError(null);
       } else {
-        console.log('No news items found, using mock data');
-        setNews(mockNews);
+        throw new Error('No valid news items found in RSS feed');
       }
       
     } catch (error) {
       console.error('❌ Erro ao buscar notícias RSS:', error);
-      setError('Erro ao buscar notícias. Usando dados de demonstração.');
-      setNews(mockNews);
+      setError(`Falha ao carregar notícias de ${newsSource.toUpperCase()}. Verifique a conexão.`);
+      // NÃO usar dados mock - deixar vazio quando há erro
+      setNews([]);
     } finally {
       setLoading(false);
     }
@@ -217,12 +208,17 @@ export const NewsDisplay = ({
     );
   }
 
-  if (error) {
+  if (error || news.length === 0) {
     return (
       <div className={`flex items-center justify-center h-full bg-gradient-to-b from-gray-50 to-gray-100 ${className}`}>
         <div className="text-center p-4">
-          <div className="text-yellow-500 text-2xl mb-2">⚠️</div>
-          <p className="text-gray-600 text-sm">{error}</p>
+          <div className="text-red-500 text-2xl mb-2">📡</div>
+          <p className="text-gray-600 text-sm font-medium mb-1">
+            {error || `Erro ao carregar ${newsSource.toUpperCase()}`}
+          </p>
+          <p className="text-gray-500 text-xs">
+            Verifique a conexão com a internet
+          </p>
         </div>
       </div>
     );

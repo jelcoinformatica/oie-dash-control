@@ -778,6 +778,7 @@ export const ConfigurationPanel = ({
               <Switch 
                 checked={Boolean(config.advertising.newsMode)} 
                 onCheckedChange={(checked) => {
+                  console.log('Toggle changed to:', checked);
                   updateConfig('advertising.newsMode', checked);
                   
                   // Limpar outras configurações quando ativar notícias
@@ -793,11 +794,25 @@ export const ConfigurationPanel = ({
                 className="text-sm font-medium cursor-pointer"
                 onClick={() => {
                   const newValue = !Boolean(config.advertising.newsMode);
+                  console.log('Label clicked, toggling to:', newValue);
                   updateConfig('advertising.newsMode', newValue);
                 }}
               >
                 Exibir Feed de Conteúdo
               </Label>
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                className="text-xs bg-blue-500 text-white hover:bg-blue-600 border-blue-500 px-2 py-1"
+                onClick={() => {
+                  const newValue = !Boolean(config.advertising.newsMode);
+                  console.log('Manual toggle button clicked, changing to:', newValue);
+                  updateConfig('advertising.newsMode', newValue);
+                }}
+              >
+                Toggle Manual
+              </Button>
             </div>
             {config.advertising.newsMode && (
               <div className="ml-6 space-y-3">
@@ -818,13 +833,13 @@ export const ConfigurationPanel = ({
                       <SelectValue placeholder="Selecione a fonte" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="g1">G1 - Notícias Gerais</SelectItem>
-                      <SelectItem value="uol">UOL - Notícias Gerais</SelectItem>
-                      <SelectItem value="cnn">CNN Brasil - Notícias</SelectItem>
-                      <SelectItem value="panelinha">Panelinha - Receitas Rita Lobo</SelectItem>
-                      <SelectItem value="cybercook">Cyber Cook - Receitas</SelectItem>
-                      <SelectItem value="tudogostoso">Tudo Gostoso - Culinária</SelectItem>
-                      <SelectItem value="foodnetwork">Food Network - Gastronomia</SelectItem>
+                      <SelectItem value="g1">G1 - Notícias Globo</SelectItem>
+                      <SelectItem value="uol">UOL - Notícias</SelectItem>
+                      <SelectItem value="cnn">CNN Brasil</SelectItem>
+                      <SelectItem disabled value="panelinha">Panelinha (Em breve)</SelectItem>
+                      <SelectItem disabled value="cybercook">Cyber Cook (Em breve)</SelectItem>
+                      <SelectItem disabled value="tudogostoso">Tudo Gostoso (Em breve)</SelectItem>
+                      <SelectItem disabled value="foodnetwork">Food Network (Em breve)</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
