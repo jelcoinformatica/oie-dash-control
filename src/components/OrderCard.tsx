@@ -95,7 +95,14 @@ export const OrderCard = ({
               fontSize: `${fontSize * 0.4}rem`,
               lineHeight: '1'
             }}>
-              {displayNumber.split('-')[0]}
+              {(() => {
+                const prefix = displayNumber.split('-')[0];
+                switch (prefix) {
+                  case 'IF': return 'iFood';
+                  case 'RA': return 'Rappi';
+                  default: return prefix;
+                }
+              })()}
             </span>
           )}
         </div>
