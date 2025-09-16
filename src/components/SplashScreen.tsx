@@ -50,43 +50,48 @@ export const SplashScreen = ({ onComplete }: SplashScreenProps) => {
         {/* Main Logo */}
         <div className="space-y-6">
           <div className="relative">
-            <div className="text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-blue-300 tracking-tight">
+            <div className="text-9xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-blue-300 tracking-tight drop-shadow-2xl">
               oie!
             </div>
-            <div className="absolute -inset-4 bg-gradient-to-r from-blue-400/20 via-purple-400/20 to-blue-300/20 blur-xl -z-10 animate-pulse" />
+            <div className="absolute -inset-6 bg-gradient-to-r from-blue-400/30 via-purple-400/30 to-blue-300/30 blur-2xl -z-10 animate-pulse" />
           </div>
           
-          <div className="space-y-2">
-            <div className="text-2xl text-slate-300 font-light tracking-wider">
+          <div className="space-y-3">
+            <div className="text-3xl text-slate-200 font-semibold tracking-wide">
               Kitchen Display System
             </div>
-            <div className="text-sm text-slate-500 uppercase tracking-widest">
+            <div className="text-lg text-slate-400 font-medium uppercase tracking-[0.3em]">
               Sistema de Exibição de Pedidos
             </div>
           </div>
         </div>
 
-        {/* Version and Features */}
-        <div className="space-y-6">
-          <div className="flex items-center justify-center space-x-6">
-            <div className="flex items-center space-x-3 px-6 py-3 bg-slate-800/50 backdrop-blur-sm rounded-full border border-slate-700/50">
-              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-              <span className="text-slate-300 text-sm font-medium">Versão 5.0</span>
-            </div>
+        {/* Version Badge - More Prominent */}
+        <div className="flex items-center justify-center">
+          <div className="flex items-center space-x-4 px-8 py-4 bg-gradient-to-r from-slate-800/80 to-slate-700/80 backdrop-blur-sm rounded-2xl border border-slate-600/50 shadow-2xl">
+            <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse shadow-lg shadow-green-400/50" />
+            <span className="text-slate-100 text-lg font-bold tracking-wide">Versão 5.0</span>
+            <div className="w-3 h-3 bg-blue-400 rounded-full animate-pulse shadow-lg shadow-blue-400/50" />
           </div>
+        </div>
 
-          <div className="flex items-center justify-center space-x-8 text-slate-400 text-xs">
-            <div className="flex items-center space-x-2">
-              <div className="w-1 h-1 bg-blue-400 rounded-full" />
-              <span>Auto-expedição</span>
+        {/* Features - Better organized and prominent */}
+        <div className="space-y-4">
+          <div className="text-slate-300 text-sm font-medium uppercase tracking-widest mb-6">
+            Recursos Principais
+          </div>
+          <div className="flex items-center justify-center space-x-12 text-slate-300">
+            <div className="flex flex-col items-center space-y-2">
+              <div className="w-3 h-3 bg-blue-400 rounded-full animate-pulse shadow-lg shadow-blue-400/30" />
+              <span className="text-sm font-medium">Auto-expedição</span>
             </div>
-            <div className="flex items-center space-x-2">
-              <div className="w-1 h-1 bg-purple-400 rounded-full" />
-              <span>Notificações sonoras</span>
+            <div className="flex flex-col items-center space-y-2">
+              <div className="w-3 h-3 bg-purple-400 rounded-full animate-pulse shadow-lg shadow-purple-400/30" />
+              <span className="text-sm font-medium">Notificações Sonoras</span>
             </div>
-            <div className="flex items-center space-x-2">
-              <div className="w-1 h-1 bg-green-400 rounded-full" />
-              <span>Tempo real</span>
+            <div className="flex flex-col items-center space-y-2">
+              <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse shadow-lg shadow-green-400/30" />
+              <span className="text-sm font-medium">Tempo Real</span>
             </div>
           </div>
         </div>
@@ -94,26 +99,28 @@ export const SplashScreen = ({ onComplete }: SplashScreenProps) => {
         {/* Loading indicator */}
         <div className="flex items-center justify-center space-x-2">
           <div className="flex space-x-1">
-            <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-            <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-            <div className="w-2 h-2 bg-blue-300 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+            <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce shadow-lg shadow-blue-400/50" style={{ animationDelay: '0ms' }} />
+            <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce shadow-lg shadow-purple-400/50" style={{ animationDelay: '150ms' }} />
+            <div className="w-2 h-2 bg-blue-300 rounded-full animate-bounce shadow-lg shadow-blue-300/50" style={{ animationDelay: '300ms' }} />
           </div>
         </div>
 
-        {/* Instructions */}
-        <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 text-center space-y-2">
-          <div className="text-slate-400 text-sm">
-            Pressione qualquer tecla para continuar
+        {/* Instructions - More prominent */}
+        <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 text-center">
+          <div className="px-6 py-3 bg-slate-800/60 backdrop-blur-sm rounded-xl border border-slate-600/30">
+            <div className="text-slate-200 text-base font-medium">
+              Pressione qualquer tecla para continuar
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Company Info */}
-      <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 text-center">
-        <div className="text-slate-500 text-sm font-medium">
+      {/* Company Info - More prominent */}
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-center">
+        <div className="text-slate-400 text-base font-semibold tracking-wide">
           Jelco Informática
         </div>
-        <div className="text-slate-600 text-xs mt-1">
+        <div className="text-slate-500 text-sm mt-1 font-medium">
           © 2025 - Todos os direitos reservados
         </div>
       </div>
