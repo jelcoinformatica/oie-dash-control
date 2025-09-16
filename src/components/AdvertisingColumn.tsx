@@ -27,9 +27,9 @@ export const AdvertisingColumn = ({
 }: AdvertisingColumnProps) => {
 
   return (
-    <div className={cn("flex flex-col h-full", className)}>
+    <div className={cn("flex flex-col h-full max-h-full", className)}>
       <div className={cn(
-        "bg-white shadow-lg flex flex-col border border-gray-200 rounded-t-lg h-full",
+        "bg-white shadow-lg flex flex-col border border-gray-200 rounded-t-lg h-full max-h-full overflow-hidden",
         showBorder && 'ring-2 ring-blue-200'
       )}>
         {showHeader && (
@@ -53,24 +53,36 @@ export const AdvertisingColumn = ({
         )}
         
         <div 
-          className="flex-1 p-4 flex items-center justify-center overflow-hidden"
+          className="flex-1 flex items-center justify-center overflow-hidden min-h-0 max-h-full p-2"
           style={{ backgroundColor }}
         >
           {imageUrl ? (
-            <div className="w-full h-full flex items-center justify-center">
+            <div className="w-full h-full flex items-center justify-center min-h-0 max-h-full overflow-hidden">
               {imageUrl.toLowerCase().endsWith('.mp4') ? (
                 <video
                   src={imageUrl}
                   autoPlay
                   loop
                   muted
-                  className="max-w-full max-h-full object-contain rounded-lg shadow-sm"
+                  className="object-contain"
+                  style={{ 
+                    maxWidth: '100%',
+                    maxHeight: '100%',
+                    width: 'auto',
+                    height: 'auto'
+                  }}
                 />
               ) : (
                 <img
                   src={imageUrl}
                   alt="Publicidade"
-                  className="max-w-full max-h-full object-contain rounded-lg shadow-sm"
+                  className="object-contain"
+                  style={{ 
+                    maxWidth: '100%',
+                    maxHeight: '100%',
+                    width: 'auto',
+                    height: 'auto'
+                  }}
                 />
               )}
             </div>
