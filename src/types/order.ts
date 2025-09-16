@@ -58,6 +58,7 @@ export interface PanelConfig {
     headerFontSize: number;
     backgroundColor: string;
     imageUrl?: string;
+    websiteUrl?: string;
     showBorder?: boolean;
   };
   lastOrder: {

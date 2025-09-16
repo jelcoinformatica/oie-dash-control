@@ -3,6 +3,7 @@ import { cn } from '../lib/utils';
 interface AdvertisingColumnProps {
   title?: string;
   imageUrl?: string;
+  websiteUrl?: string;
   showHeader?: boolean;
   className?: string;
   headerHeight?: number;
@@ -16,6 +17,7 @@ interface AdvertisingColumnProps {
 export const AdvertisingColumn = ({
   title = "PUBLICIDADE",
   imageUrl,
+  websiteUrl,
   showHeader = true,
   className,
   headerHeight = 48,
@@ -56,7 +58,15 @@ export const AdvertisingColumn = ({
           className="flex-1 flex items-center justify-center overflow-hidden p-2"
           style={{ backgroundColor }}
         >
-          {imageUrl ? (
+          {websiteUrl ? (
+            <iframe
+              src={websiteUrl}
+              className="w-full h-full border-0"
+              title="Website"
+              allow="autoplay; encrypted-media"
+              sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+            />
+          ) : imageUrl ? (
             <div className="flex items-center justify-center h-full w-full">
               {imageUrl.toLowerCase().endsWith('.mp4') ? (
                 <video
@@ -81,7 +91,7 @@ export const AdvertisingColumn = ({
                 <div className="text-lg font-semibold">PUBLICITÁRIO</div>
               </div>
               <div className="mt-4 text-sm opacity-70">
-                <div>Configure uma imagem/vídeo</div>
+                <div>Configure uma imagem/vídeo/url</div>
                 <div>nas configurações</div>
               </div>
             </div>

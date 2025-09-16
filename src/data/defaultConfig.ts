@@ -58,6 +58,7 @@ export const defaultConfig: PanelConfig = {
     headerFontSize: 2,
     backgroundColor: '#ffffff',
     imageUrl: undefined,
+    websiteUrl: undefined,
     showBorder: false
   },
   lastOrder: {
