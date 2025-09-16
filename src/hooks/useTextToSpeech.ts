@@ -15,13 +15,27 @@ interface TTSConfig {
 }
 
 export const useTextToSpeech = () => {
-  const speak = useCallback(async (text: string, orderNumber: string, customerName: string, config?: TTSConfig, soundFile?: string, readySoundType?: 'padrao' | 'padrao2', airportTones?: 1 | 2) => {
+  const speak = useCallback(async (text: string, orderNumber: string, customerName: string, config?: TTSConfig, soundFile?: string, readySoundType?: 'padrao' | 'padrao2', airportTones?: 1 | 2, deliveryPlatform?: string) => {
     if (!config?.enabled || !text) return;
     
     // Gerar texto baseado no tipo configurado
     let finalText = text;
     
     if (config.textType) {
+      // Detectar plataforma de delivery baseada no prefixo ou localEntrega
+      let platformPrefix = '';
+      if (deliveryPlatform) {
+        if (deliveryPlatform.toLowerCase().includes('ifood') || orderNumber.startsWith('IF-')) {
+          platformPrefix = 'Ifood, ';
+        } else if (deliveryPlatform.toLowerCase().includes('delivery direto') || orderNumber.startsWith('DD-')) {
+          platformPrefix = 'Delivery Direto, ';
+        } else if (deliveryPlatform.toLowerCase().includes('rappi') || orderNumber.startsWith('RA-')) {
+          platformPrefix = 'Rappi, ';
+        } else if (deliveryPlatform.toLowerCase().includes('uber') || orderNumber.startsWith('UB-')) {
+          platformPrefix = 'Uber Eats, ';
+        }
+      }
+
       switch (config.textType) {
         case 'number_only':
           finalText = orderNumber;
@@ -29,15 +43,15 @@ export const useTextToSpeech = () => {
         case 'name_ready':
           finalText = customerName 
             ? `${customerName}, seu pedido está pronto!`
-            : `Pedido ${orderNumber} está pronto!`;
+            : `${platformPrefix}pedido ${orderNumber} está pronto!`;
           break;
         case 'order_ready':
-          finalText = `O pedido ${orderNumber} está pronto.`;
+          finalText = `${platformPrefix}o pedido ${orderNumber} está pronto.`;
           break;
         case 'name_order_ready':
           finalText = customerName 
-            ? `${customerName}, o pedido ${orderNumber} está pronto!`
-            : `O pedido ${orderNumber} está pronto!`;
+            ? `${customerName}, ${platformPrefix.toLowerCase()}o pedido ${orderNumber} está pronto!`
+            : `${platformPrefix}o pedido ${orderNumber} está pronto!`;
           break;
         case 'custom':
           finalText = config.customText || text;
@@ -167,8 +181,8 @@ export const useTextToSpeech = () => {
       // Executar primeira vez
       await playSequence();
 
-      // Implementar repetição apenas se explicitamente habilitada
-      if (config.repeatEnabled === true && config.repeatCount && config.repeatCount > 1 && config.repeatInterval) {
+      // Implementar repetição apenas se explicitamente habilitada E configurada corretamente
+      if (config.repeatEnabled === true && config.repeatCount && config.repeatCount > 1 && config.repeatInterval && config.repeatInterval > 0) {
         let completedRepetitions = 1; // Já executamos a primeira
         
         const scheduleNextRepetition = () => {

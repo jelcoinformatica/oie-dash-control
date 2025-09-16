@@ -71,8 +71,9 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
             ? config.sounds.readyFile 
             : undefined;
           const readySoundType = config?.sounds?.readySoundType || 'padrao';
-        const airportTones = config?.sounds?.airportTones || 2;
-        speak(textToSpeak, newLastOrderNumber, nickname || '', ttsConfigRef.current, soundFile, readySoundType, airportTones);
+          const airportTones = config?.sounds?.airportTones || 2;
+          const deliveryPlatform = lastReadyOrder.localEntrega || '';
+          speak(textToSpeak, newLastOrderNumber, nickname || '', ttsConfigRef.current, soundFile, readySoundType, airportTones, deliveryPlatform);
         }
         
         previousLastOrderNumber.current = newLastOrderNumber;
@@ -114,7 +115,8 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
           : undefined;
         const readySoundType = config?.sounds?.readySoundType || 'padrao';
         const airportTones = config?.sounds?.airportTones || 2;
-        speak(textToSpeak, newOrderNumber, nickname || '', ttsConfigRef.current, soundFile, readySoundType, airportTones);
+        const deliveryPlatform = updatedOrder.localEntrega || '';
+        speak(textToSpeak, newOrderNumber, nickname || '', ttsConfigRef.current, soundFile, readySoundType, airportTones, deliveryPlatform);
       }
       
       previousLastOrderNumber.current = newOrderNumber;
