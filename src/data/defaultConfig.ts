@@ -93,20 +93,20 @@ export const defaultConfig: PanelConfig = {
   },
   modules: {
     balcao: {
-      enabled: false,
+      enabled: true,
       displayOption: 'numeroVenda'
     },
     mesa: {
-      enabled: false,
-      displayOption: 'numeroMesa'
+      enabled: true,
+      displayOption: 'apelidoNumeroMesa'
     },
     entrega: {
-      enabled: false,
-      displayOption: 'numeroEntrega'
+      enabled: true,
+      displayOption: 'numeroVenda'
     },
     ficha: {
       enabled: true,
-      displayOption: 'numeroFicha'
+      displayOption: 'fichaCliente'
     }
   },
   database: {

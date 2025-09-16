@@ -999,7 +999,7 @@ export const ConfigurationPanel = ({
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                  <div className="w-3 h-3 rounded-full bg-emerald-400"></div>
                   <Label className="text-sm font-semibold text-gray-700">BALCÃO</Label>
                 </div>
                 <Switch
@@ -1042,7 +1042,7 @@ export const ConfigurationPanel = ({
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                  <div className="w-3 h-3 rounded-full bg-rose-400"></div>
                   <Label className="text-sm font-semibold text-gray-700">ENTREGA</Label>
                 </div>
                 <Switch
@@ -1077,7 +1077,7 @@ export const ConfigurationPanel = ({
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+                  <div className="w-3 h-3 rounded-full bg-cyan-400"></div>
                   <Label className="text-sm font-semibold text-gray-700">MESA</Label>
                 </div>
                 <Switch
@@ -1112,7 +1112,7 @@ export const ConfigurationPanel = ({
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-purple-500"></div>
+                  <div className="w-3 h-3 rounded-full bg-violet-400"></div>
                   <Label className="text-sm font-semibold text-gray-700">FICHA</Label>
                 </div>
                 <Switch
