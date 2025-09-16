@@ -998,10 +998,14 @@ export const ConfigurationPanel = ({
             {/* BALCÃO */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <Label className="text-sm font-semibold text-gray-700">BALCÃO</Label>
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                  <Label className="text-sm font-semibold text-gray-700">BALCÃO</Label>
+                </div>
                 <Switch
                   checked={config.modules.balcao.enabled}
                   onCheckedChange={(checked) => updateConfig('modules.balcao.enabled', checked)}
+                  className="scale-50"
                 />
               </div>
               {config.modules.balcao.enabled && (
@@ -1037,10 +1041,14 @@ export const ConfigurationPanel = ({
             {/* ENTREGA */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <Label className="text-sm font-semibold text-gray-700">ENTREGA</Label>
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                  <Label className="text-sm font-semibold text-gray-700">ENTREGA</Label>
+                </div>
                 <Switch
                   checked={config.modules.entrega.enabled}
                   onCheckedChange={(checked) => updateConfig('modules.entrega.enabled', checked)}
+                  className="scale-50"
                 />
               </div>
               {config.modules.entrega.enabled && (
@@ -1068,10 +1076,14 @@ export const ConfigurationPanel = ({
             {/* MESA */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <Label className="text-sm font-semibold text-gray-700">MESA</Label>
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+                  <Label className="text-sm font-semibold text-gray-700">MESA</Label>
+                </div>
                 <Switch
                   checked={config.modules.mesa.enabled}
                   onCheckedChange={(checked) => updateConfig('modules.mesa.enabled', checked)}
+                  className="scale-50"
                 />
               </div>
               {config.modules.mesa.enabled && (
@@ -1099,10 +1111,14 @@ export const ConfigurationPanel = ({
             {/* FICHA */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <Label className="text-sm font-semibold text-gray-700">FICHA</Label>
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-purple-500"></div>
+                  <Label className="text-sm font-semibold text-gray-700">FICHA</Label>
+                </div>
                 <Switch
                   checked={config.modules.ficha.enabled}
                   onCheckedChange={(checked) => updateConfig('modules.ficha.enabled', checked)}
+                  className="scale-50"
                 />
               </div>
               {config.modules.ficha.enabled && (
