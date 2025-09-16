@@ -327,6 +327,7 @@ const Index = () => {
               websiteUrl={config.advertising.websiteUrl}
               newsMode={config.advertising.newsMode}
               newsSource={config.advertising.newsSource}
+              newsFontSize={config.advertising.newsFontSize || 2.5}
               className="h-full"
               onToggleHeader={() => {
                 const newConfig = {

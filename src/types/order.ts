@@ -60,7 +60,8 @@ export interface PanelConfig {
     imageUrl?: string;
     websiteUrl?: string;
     newsMode?: boolean; // Nova propriedade para modo notícias
-    newsSource?: 'g1' | 'uol' | 'cnn'; // Fonte das notícias
+    newsSource?: 'g1' | 'uol' | 'cnn' | 'panelinha' | 'cybercook' | 'tudogostoso' | 'foodnetwork'; // Fontes expandidas
+    newsFontSize?: number; // Tamanho da fonte das notícias
     showBorder?: boolean;
   };
   lastOrder: {

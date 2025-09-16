@@ -829,6 +829,21 @@ export const ConfigurationPanel = ({
                   </Select>
                 </div>
                 
+                <div>
+                  <Label className="text-xs font-medium">Tamanho da Fonte: {config.advertising.newsFontSize || 2.5}rem</Label>
+                  <Slider
+                    value={[config.advertising.newsFontSize || 2.5]}
+                    onValueChange={([value]) => updateConfig('advertising.newsFontSize', value)}
+                    max={6}
+                    min={1}
+                    step={0.5}
+                    className="mt-1"
+                  />
+                  <div className="text-xs text-gray-500 mt-1">
+                    Ideal para visualização à distância na praça de alimentação
+                  </div>
+                </div>
+                
                 <div className="text-xs text-gray-600">
                   🌐 <strong>URL Standalone:</strong> <code>{window.location.origin}/news</code>
                 </div>

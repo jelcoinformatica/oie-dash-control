@@ -12,8 +12,9 @@ interface AdvertisingColumnProps {
   headerColor?: string;
   backgroundColor?: string;
   showBorder?: boolean;
-  newsMode?: boolean; // Nova prop para modo notícias
-  newsSource?: 'g1' | 'uol' | 'cnn'; // Fonte das notícias
+  newsMode?: boolean;
+  newsSource?: 'g1' | 'uol' | 'cnn' | 'panelinha' | 'cybercook' | 'tudogostoso' | 'foodnetwork';
+  newsFontSize?: number; // Nova prop para tamanho da fonte
   onToggleHeader?: () => void;
 }
 
@@ -30,6 +31,7 @@ export const AdvertisingColumn = ({
   showBorder = false,
   newsMode = false,
   newsSource = 'g1',
+  newsFontSize = 2.5, // Tamanho padrão para visualização à distância
   onToggleHeader
 }: AdvertisingColumnProps) => {
 
@@ -70,6 +72,7 @@ export const AdvertisingColumn = ({
               rotationInterval={25000} // 25 segundos
               showSource={true}
               newsSource={newsSource}
+              fontSize={newsFontSize} // Passa o tamanho da fonte configurado
             />
           ) : websiteUrl ? (
             <iframe

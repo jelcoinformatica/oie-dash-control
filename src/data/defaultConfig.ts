@@ -61,6 +61,7 @@ export const defaultConfig: PanelConfig = {
     websiteUrl: undefined,
     newsMode: true, // Ativado por padrão para testes
     newsSource: 'g1', // Fonte padrão das notícias
+    newsFontSize: 2.5, // Tamanho da fonte para visualização à distância
     showBorder: false
   },
   lastOrder: {

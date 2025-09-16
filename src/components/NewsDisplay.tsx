@@ -14,7 +14,8 @@ interface NewsDisplayProps {
   autoRotate?: boolean;
   rotationInterval?: number;
   showSource?: boolean;
-  newsSource?: 'g1' | 'uol' | 'cnn';
+  newsSource?: 'g1' | 'uol' | 'cnn' | 'panelinha' | 'cybercook' | 'tudogostoso' | 'foodnetwork';
+  fontSize?: number; // Tamanho da fonte em rem
 }
 
 export const NewsDisplay = ({ 
@@ -22,7 +23,8 @@ export const NewsDisplay = ({
   autoRotate = true,
   rotationInterval = 20000, // 20 segundos
   showSource = true,
-  newsSource = 'g1'
+  newsSource = 'g1',
+  fontSize = 1 // Tamanho padrão 1rem
 }: NewsDisplayProps) => {
   const [news, setNews] = useState<NewsItem[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -209,8 +211,9 @@ export const NewsDisplay = ({
           {/* Conteúdo principal */}
           <div className="flex-1 flex flex-col justify-center">
             <h2 
-              className="text-lg font-bold text-gray-800 leading-tight mb-3 animate-fadeIn"
+              className="font-bold text-gray-800 leading-tight mb-3 animate-fadeIn"
               style={{
+                fontSize: `${fontSize * 1.5}rem`, // Título 1.5x maior que o tamanho base
                 display: '-webkit-box',
                 WebkitLineClamp: 4,
                 WebkitBoxOrient: 'vertical',
@@ -222,8 +225,9 @@ export const NewsDisplay = ({
             
             {currentNews.description && (
               <p 
-                className="text-sm text-gray-600 leading-relaxed animate-fadeIn"
+                className="text-gray-600 leading-relaxed animate-fadeIn"
                 style={{
+                  fontSize: `${fontSize}rem`, // Descrição no tamanho base
                   display: '-webkit-box',
                   WebkitLineClamp: 3,
                   WebkitBoxOrient: 'vertical',

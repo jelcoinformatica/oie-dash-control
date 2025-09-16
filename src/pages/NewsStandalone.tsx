@@ -10,6 +10,7 @@ export const NewsStandalone = () => {
         rotationInterval={25000} // 25 segundos
         showSource={true}
         newsSource="g1"
+        fontSize={3} // Tamanho otimizado para visualização standalone
       />
     </div>
   );
