@@ -15,7 +15,7 @@ interface TTSConfig {
 }
 
 export const useTextToSpeech = () => {
-  const speak = useCallback(async (text: string, orderNumber: string, customerName: string, config?: TTSConfig, soundFile?: string) => {
+  const speak = useCallback(async (text: string, orderNumber: string, customerName: string, config?: TTSConfig, soundFile?: string, readySoundType?: 'padrao' | 'padrao2') => {
     if (!config?.enabled || !text) return;
     
     // Gerar texto baseado no tipo configurado
@@ -132,7 +132,7 @@ export const useTextToSpeech = () => {
             // Fallback para som gerado se arquivo falhar
             console.log('Arquivo de som indisponível, usando som gerado');
             try {
-              await notificationSound.playOrderReadySound();
+              await notificationSound.playOrderReadySound(readySoundType || 'padrao');
             } catch (soundError) {
               console.error('Erro ao tocar som gerado:', soundError);
             }
@@ -140,7 +140,7 @@ export const useTextToSpeech = () => {
         } else {
           // Usar som gerado se nenhum arquivo especificado
           try {
-            await notificationSound.playOrderReadySound();
+            await notificationSound.playOrderReadySound(readySoundType || 'padrao');
           } catch (soundError) {
             console.error('Erro ao tocar som gerado:', soundError);
           }

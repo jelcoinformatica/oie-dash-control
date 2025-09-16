@@ -75,6 +75,7 @@ export interface PanelConfig {
     ready: boolean;
     productionFile?: string;
     readyFile?: string;
+    readySoundType?: 'padrao' | 'padrao2';
   };
   textToSpeech: {
     enabled: boolean;

@@ -876,11 +876,31 @@ export const ConfigurationPanel = ({
                       onChange={(e) => updateConfig('sounds.readyFile', e.target.value)}
                       className="text-xs border rounded px-2 py-1 flex-1"
                     >
-                      <option value="generated">Som Integrado (Recomendado)</option>
+                      <option value="generated">Som Integrado</option>
                       <option value="/sounds/kds_sound_bell2.wav">Arquivo Padrão</option>
                       <option value="">Personalizar...</option>
                     </select>
                   </div>
+                   
+                  {config.sounds.readyFile === 'generated' && (
+                    <div className="space-y-2">
+                      <Label className="text-xs">Tipo de Som Integrado</Label>
+                      <select
+                        value={config.sounds.readySoundType || 'padrao'}
+                        onChange={(e) => updateConfig('sounds.readySoundType', e.target.value)}
+                        className="text-xs border rounded px-2 py-1 w-full"
+                      >
+                        <option value="padrao">Padrão (Estilo Aeroporto)</option>
+                        <option value="padrao2">Padrão 2 (Sino Duplo)</option>
+                      </select>
+                      <div className="text-xs text-muted-foreground">
+                        {config.sounds.readySoundType === 'padrao' ? 
+                          '3 tons descendentes, claro e profissional' :
+                          'Som de sino duplo, potente para ambientes ruidosos'
+                        }
+                      </div>
+                    </div>
+                  )}
                   
                   {config.sounds.readyFile && config.sounds.readyFile !== 'generated' && (
                     <div className="flex gap-2">
@@ -915,7 +935,7 @@ export const ConfigurationPanel = ({
                   
                   <div className="text-xs text-muted-foreground mb-2">
                     {config.sounds.readyFile === 'generated' ? 
-                      'Som otimizado para ambientes ruidosos como praças de alimentação' :
+                      `Som ${config.sounds.readySoundType === 'padrao' ? 'estilo aeroporto' : 'sino duplo'} otimizado para praças de alimentação` :
                       'Usando arquivo de som personalizado'
                     }
                   </div>
@@ -925,10 +945,10 @@ export const ConfigurationPanel = ({
                        onClick={async () => {
                          if (config.sounds.readyFile) {
                            if (config.sounds.readyFile === 'generated') {
-                             // Usar som gerado
+                             // Usar som gerado com tipo específico
                              try {
                                const { notificationSound } = await import('../utils/audioGenerator');
-                               await notificationSound.playOrderReadySound();
+                               await notificationSound.playOrderReadySound(config.sounds.readySoundType || 'padrao');
                              } catch (error) {
                                console.error('Erro ao tocar som gerado:', error);
                                alert('Erro ao tocar o som gerado.');

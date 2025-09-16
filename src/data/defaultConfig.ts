@@ -74,7 +74,8 @@ export const defaultConfig: PanelConfig = {
     production: false,
     ready: true,
     productionFile: '/sounds/kds_sound_bell1.wav',
-    readyFile: 'generated' // Indica uso do som gerado integrado
+    readyFile: 'generated', // Indica uso do som gerado integrado
+    readySoundType: 'padrao' // Som estilo aeroporto como padrão
   },
   textToSpeech: {
     enabled: false,

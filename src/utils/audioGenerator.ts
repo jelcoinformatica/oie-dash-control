@@ -1,4 +1,6 @@
 // Gerador de som de notificação integrado
+export type SoundType = 'padrao' | 'padrao2';
+
 export class NotificationSoundGenerator {
   private audioContext: AudioContext | null = null;
 
@@ -14,8 +16,54 @@ export class NotificationSoundGenerator {
     return this.audioContext;
   }
 
-  // Gera um som de sino duplo otimizado para ambientes ruidosos
-  generateOrderReadySound(): AudioBuffer {
+  // Gera som estilo aeroporto (3 tons descendentes) - PADRÃO
+  generateAirportSound(): AudioBuffer {
+    const ctx = this.getAudioContext();
+    const sampleRate = ctx.sampleRate;
+    const duration = 2.5; // 2.5 segundos
+    const length = sampleRate * duration;
+    const buffer = ctx.createBuffer(1, length, sampleRate);
+    const data = buffer.getChannelData(0);
+
+    // Sequência de 3 tons descendentes como em aeroportos
+    const frequencies = [1047, 880, 659]; // C6, A5, E5 (melodia descendente)
+    const toneDuration = 0.7; // Cada tom dura 0.7s
+    const pauseDuration = 0.1; // Pausa entre tons
+
+    for (let i = 0; i < length; i++) {
+      const time = i / sampleRate;
+      let amplitude = 0;
+
+      // Gerar cada um dos 3 tons
+      for (let tone = 0; tone < 3; tone++) {
+        const toneStart = tone * (toneDuration + pauseDuration);
+        const toneEnd = toneStart + toneDuration;
+
+        if (time >= toneStart && time < toneEnd) {
+          const localTime = time - toneStart;
+          const freq = frequencies[tone];
+          
+          // Envelope suave para cada tom
+          const fadeIn = Math.min(localTime * 8, 1);
+          const fadeOut = Math.max(0, (toneDuration - localTime) / toneDuration);
+          const envelope = fadeIn * fadeOut;
+          
+          // Tom principal + harmônicos para riqueza sonora
+          amplitude += Math.sin(2 * Math.PI * freq * localTime) * envelope * 0.6;
+          amplitude += Math.sin(2 * Math.PI * freq * 2 * localTime) * envelope * 0.2;
+          amplitude += Math.sin(2 * Math.PI * freq * 0.5 * localTime) * envelope * 0.1;
+        }
+      }
+
+      // Aplicar compressão suave e normalização
+      data[i] = Math.tanh(amplitude * 1.2) * 0.8;
+    }
+
+    return buffer;
+  }
+
+  // Som de sino duplo otimizado para ambientes ruidosos - PADRÃO 2
+  generateBellSound(): AudioBuffer {
     const ctx = this.getAudioContext();
     const sampleRate = ctx.sampleRate;
     const duration = 2.0; // 2 segundos
@@ -62,8 +110,21 @@ export class NotificationSoundGenerator {
     return buffer;
   }
 
-  // Reproduz o som gerado
-  async playOrderReadySound(): Promise<void> {
+  // Gera som baseado no tipo selecionado
+  generateSound(type: SoundType = 'padrao'): AudioBuffer {
+    switch (type) {
+      case 'padrao':
+        return this.generateAirportSound();
+      case 'padrao2':
+        return this.generateBellSound();
+      default:
+        return this.generateAirportSound();
+    }
+  }
+
+  // Reproduz o som gerado (mantém compatibilidade)
+  async playOrderReadySound(type: SoundType = 'padrao'): Promise<void> {
+
     try {
       const ctx = this.getAudioContext();
       
@@ -72,7 +133,7 @@ export class NotificationSoundGenerator {
         await ctx.resume();
       }
 
-      const buffer = this.generateOrderReadySound();
+      const buffer = this.generateSound(type);
       const source = ctx.createBufferSource();
       const gainNode = ctx.createGain();
 
@@ -89,11 +150,11 @@ export class NotificationSoundGenerator {
   }
 
   // Criar arquivo de áudio blob para download/uso
-  createAudioBlob(): Promise<Blob> {
+  createAudioBlob(type: SoundType = 'padrao'): Promise<Blob> {
     return new Promise((resolve, reject) => {
       try {
         const ctx = this.getAudioContext();
-        const buffer = this.generateOrderReadySound();
+        const buffer = this.generateSound(type);
         
         // Converter AudioBuffer para WAV
         const wavBuffer = this.audioBufferToWav(buffer);

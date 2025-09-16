@@ -70,7 +70,8 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
           const soundFile = config?.sounds?.ready && config?.sounds?.readyFile 
             ? config.sounds.readyFile 
             : undefined;
-          speak(textToSpeak, newLastOrderNumber, nickname || '', ttsConfigRef.current, soundFile);
+          const readySoundType = config?.sounds?.readySoundType || 'padrao';
+          speak(textToSpeak, newLastOrderNumber, nickname || '', ttsConfigRef.current, soundFile, readySoundType);
         }
         
         previousLastOrderNumber.current = newLastOrderNumber;
@@ -110,7 +111,8 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
         const soundFile = autoExpeditionConfigRef.current?.enabled && config?.sounds?.ready && config?.sounds?.readyFile 
           ? config.sounds.readyFile 
           : undefined;
-        speak(textToSpeak, newOrderNumber, nickname || '', ttsConfigRef.current, soundFile);
+        const readySoundType = config?.sounds?.readySoundType || 'padrao';
+        speak(textToSpeak, newOrderNumber, nickname || '', ttsConfigRef.current, soundFile, readySoundType);
       }
       
       previousLastOrderNumber.current = newOrderNumber;
