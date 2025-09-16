@@ -24,15 +24,6 @@ export const initializeWithDefaultOrders = (): void => {
 
 // Função para buscar pedidos (simula chamada de API)
 export const fetchOrders = async (): Promise<Order[]> => {
-  // Se não há pedidos e é o primeiro carregamento, inicializar com dados padrão
-  if (orders.length === 0) {
-    // Verifica se há dados salvos no localStorage
-    const hasBeenCleared = localStorage.getItem('orders-cleared');
-    if (!hasBeenCleared) {
-      initializeWithDefaultOrders();
-    }
-  }
-  
   // Simula delay de API
   await new Promise(resolve => setTimeout(resolve, 300));
   return [...orders]; // Retorna cópia para evitar mutação
