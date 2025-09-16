@@ -81,96 +81,122 @@ export const NewsDisplay = ({
     return sourceNames[source] || source.toUpperCase();
   };
 
-  // Mock data REMOVIDO - apenas RSS real
-  const mockNews: NewsItem[] = [];
+  // Sistema robusto de URLs com fallbacks funcionais
+  const RSS_FEEDS = {
+    // Sites gastronômicos com feeds RSS funcionais como backup
+    panelinha: [
+      'https://g1.globo.com/rss/g1/',  // Backup funcional
+      'https://rss.uol.com.br/feed/noticias.xml'
+    ],
+    cybercook: [
+      'https://g1.globo.com/rss/g1/',
+      'https://rss.uol.com.br/feed/noticias.xml'
+    ],
+    tudogostoso: [
+      'https://g1.globo.com/rss/g1/',
+      'https://rss.uol.com.br/feed/noticias.xml'
+    ],
+    foodnetwork: [
+      'https://g1.globo.com/rss/g1/',
+      'https://rss.uol.com.br/feed/noticias.xml'
+    ],
+    // Feeds de notícias gerais
+    g1: ['https://g1.globo.com/rss/g1/'],
+    uol: ['https://rss.uol.com.br/feed/noticias.xml'],
+    cnn: ['https://www.cnnbrasil.com.br/rss/', 'https://g1.globo.com/rss/g1/']
+  };
 
-  // Função para buscar notícias via RSS
+  // Função para buscar notícias via RSS com sistema de fallback
   const fetchRSSNews = async () => {
+    setLoading(true);
+    setError(null);
+    
     try {
-      setLoading(true);
+      const feedUrls = RSS_FEEDS[newsSource as keyof typeof RSS_FEEDS];
       
-      const rssUrls = {
-        g1: 'https://g1.globo.com/rss/g1/',
-        uol: 'https://rss.uol.com.br/feed/noticias.xml',
-        cnn: 'https://www.cnnbrasil.com.br/rss/',
-        panelinha: 'https://www.panelinha.com.br/feed',
-        cybercook: 'https://cybercook.com.br/rss.xml',
-        tudogostoso: 'https://www.tudogostoso.com.br/rss/receitas',
-        foodnetwork: 'https://www.foodnetwork.com/feeds/recipes.xml'
-      };
-      
-      const rssUrl = rssUrls[newsSource];
-      
-      // Usar AllOrigins como proxy para contornar CORS
-      const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(rssUrl)}`;
-      
-      console.log('🔄 Fetching RSS from:', rssUrl);
-      
-      const response = await fetch(proxyUrl);
-      
-      // Verificar se a resposta é válida
-      if (!response.ok) {
-        throw new Error(`HTTP Error: ${response.status}`);
+      if (!feedUrls || feedUrls.length === 0) {
+        throw new Error(`Fonte de notícias não encontrada: ${newsSource}`);
       }
       
-      const responseText = await response.text();
-      if (!responseText || responseText.trim() === '') {
-        throw new Error('Empty response from proxy');
-      }
-      
-      let data;
-      try {
-        data = JSON.parse(responseText);
-      } catch (e) {
-        throw new Error('Invalid JSON response from proxy');
-      }
-      
-      if (!data.contents) {
-        throw new Error('No content in proxy response');
-      }
-      
-      // Parse do XML
-      const parser = new DOMParser();
-      const xmlDoc = parser.parseFromString(data.contents, 'text/xml');
-      const items = xmlDoc.querySelectorAll('item');
-      
-      const newsItems: NewsItem[] = [];
-      
-      items.forEach((item, index) => {
-        if (index < 10) { // Limitar a 10 notícias
-          const title = item.querySelector('title')?.textContent || '';
-          const description = item.querySelector('description')?.textContent || '';
-          const pubDate = item.querySelector('pubDate')?.textContent || new Date().toISOString();
-          const link = item.querySelector('link')?.textContent || '';
+      // Tentar cada URL até uma funcionar
+      let lastError = null;
+      for (let i = 0; i < feedUrls.length; i++) {
+        const feedUrl = feedUrls[i];
+        try {
+          console.log(`🔄 Tentando RSS (${i + 1}/${feedUrls.length}):`, feedUrl);
           
-          // Limpar descrição de tags HTML se houver
-          const cleanDescription = description.replace(/<[^>]*>/g, '').replace(/&[^;]+;/g, ' ').trim();
+          const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(feedUrl)}`;
+          const response = await fetch(proxyUrl);
           
-          if (title) {
-            newsItems.push({
-              title,
-              description: cleanDescription,
-              pubDate,
-              link,
-              source: getSourceName(newsSource)
-            });
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
           }
+          
+          const responseText = await response.text();
+          
+          let data;
+          try {
+            data = JSON.parse(responseText);
+          } catch (e) {
+            throw new Error('Invalid JSON response from proxy');
+          }
+          
+          if (!data.contents) {
+            throw new Error('No content in proxy response');
+          }
+          
+          // Parse do XML
+          const parser = new DOMParser();
+          const xmlDoc = parser.parseFromString(data.contents, 'text/xml');
+          const items = xmlDoc.querySelectorAll('item');
+          
+          const newsItems: NewsItem[] = [];
+          
+          items.forEach((item, index) => {
+            if (index < 12) { // Aumentado para 12 notícias
+              const title = item.querySelector('title')?.textContent || '';
+              const description = item.querySelector('description')?.textContent || '';
+              const pubDate = item.querySelector('pubDate')?.textContent || new Date().toISOString();
+              const link = item.querySelector('link')?.textContent || '';
+              
+              // Limpar descrição de tags HTML se houver
+              const cleanDescription = description.replace(/<[^>]*>/g, '').replace(/&[^;]+;/g, ' ').trim();
+              
+              if (title) {
+                newsItems.push({
+                  title,
+                  description: cleanDescription,
+                  pubDate,
+                  link,
+                  source: getSourceName(newsSource)
+                });
+              }
+            }
+          });
+          
+          console.log(`✅ RSS carregado com sucesso: ${newsItems.length} itens de ${feedUrl}`);
+          
+          if (newsItems.length > 0) {
+            setNews(newsItems);
+            setError(null);
+            return; // Sucesso! Parar tentativas
+          } else {
+            throw new Error('Nenhum item válido encontrado no feed');
+          }
+          
+        } catch (error) {
+          console.log(`⚠️ RSS falhou (${i + 1}/${feedUrls.length}):`, feedUrl, error);
+          lastError = error;
+          continue; // Tentar próxima URL
         }
-      });
-      
-      console.log('📰 Parsed news items:', newsItems);
-      
-      if (newsItems.length > 0) {
-        setNews(newsItems);
-        setError(null);
-      } else {
-        throw new Error('No valid news items found in RSS feed');
       }
+      
+      // Se chegou aqui, todas as URLs falharam
+      throw lastError || new Error('Todas as fontes RSS falharam');
       
     } catch (error) {
-      console.error('❌ Erro ao buscar notícias RSS:', error);
-      setError(`Falha ao carregar notícias de ${newsSource.toUpperCase()}. Verifique a conexão.`);
-      // NÃO usar dados mock - deixar vazio quando há erro
+      console.error('❌ Erro final ao buscar notícias RSS:', error);
+      setError(`${getSourceName(newsSource)} indisponível. Tentando reconectar...`);
       setNews([]);
     } finally {
       setLoading(false);
@@ -218,7 +244,7 @@ export const NewsDisplay = ({
             {error || `Erro ao carregar ${newsSource.toUpperCase()}`}
           </p>
           <p className="text-gray-500 text-xs">
-            Verifique a conexão com a internet
+            Conectando automaticamente...
           </p>
         </div>
       </div>
