@@ -1,128 +1,120 @@
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface SplashScreenProps {
   onComplete: () => void;
 }
 
 export const SplashScreen = ({ onComplete }: SplashScreenProps) => {
-  const [progress, setProgress] = useState(0);
-  const [currentStep, setCurrentStep] = useState('Inicializando o sistema');
-
-  const steps = [
-    'Inicializando o sistema',
-    'Carregando configurações',
-    'Conectando com banco de dados',
-    'Verificando licença',
-    'Preparando interface',
-    'Sistema pronto!'
-  ];
+  const [isVisible, setIsVisible] = useState(true);
+  const [fadeOut, setFadeOut] = useState(false);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setProgress((prev) => {
-        const newProgress = prev + 2;
-        if (newProgress <= 100) {
-          // Atualizar o step baseado no progresso
-          const stepIndex = Math.floor((newProgress / 100) * (steps.length - 1));
-          setCurrentStep(steps[stepIndex]);
-          
-          if (newProgress >= 100) {
-            setTimeout(() => onComplete(), 500);
-          }
-          return newProgress;
-        }
-        return prev;
-      });
-    }, 50);
+    // Handle any key press to dismiss
+    const handleKeyPress = () => {
+      dismissSplash();
+    };
 
-    return () => clearInterval(interval);
+    // Auto dismiss after 5 seconds
+    const autoTimeout = setTimeout(() => {
+      dismissSplash();
+    }, 5000);
+
+    const dismissSplash = () => {
+      setFadeOut(true);
+      setTimeout(() => {
+        setIsVisible(false);
+        onComplete();
+      }, 500);
+    };
+
+    document.addEventListener('keydown', handleKeyPress);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyPress);
+      clearTimeout(autoTimeout);
+    };
   }, [onComplete]);
 
+  if (!isVisible) {
+    return null;
+  }
+
   return (
-    <div className="fixed inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-black flex items-center justify-center z-50">
-      <div className="w-full h-full flex">
-        {/* Conteúdo Principal */}
-        <div className="flex-1 flex flex-col items-center justify-center relative">
-          {/* Logo Digital */}
-          <div className="mb-8 relative">
-            <div className="bg-gray-700 rounded-2xl p-6 shadow-2xl border border-gray-600 mb-6">
-              <div className="text-6xl font-bold text-green-400 font-mono tracking-wider">
-                88
-              </div>
-            </div>
-          </div>
+    <div className={`fixed inset-0 bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 flex items-center justify-center z-50 transition-all duration-500 ${fadeOut ? 'opacity-0 scale-95' : 'opacity-100 scale-100'}`}>
+      {/* Background Pattern */}
+      <div className="absolute inset-0 opacity-5">
+        <div className="absolute inset-0 bg-grid-white/[0.02] bg-[size:50px_50px]" />
+      </div>
 
-          {/* Logo Principal */}
-          <div className="text-center mb-8">
-            <h1 className="text-8xl font-bold text-gray-300 mb-2" style={{ fontFamily: 'system-ui, sans-serif' }}>
+      <div className="relative text-center space-y-12 animate-fade-in">
+        {/* Main Logo */}
+        <div className="space-y-6">
+          <div className="relative">
+            <div className="text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-blue-300 tracking-tight">
               oie!
-            </h1>
-            <h2 className="text-2xl text-gray-400 font-light tracking-wide">
-              Painel de Senhas
-            </h2>
-          </div>
-
-          {/* Linha Separadora */}
-          <div className="w-3/4 h-px bg-gradient-to-r from-transparent via-gray-500 to-transparent mb-8"></div>
-
-          {/* Texto Integração */}
-          <p className="text-xl text-gray-300 italic mb-12">
-            Integrado ao kds da hora!
-          </p>
-
-          {/* Rodapé */}
-          <div className="absolute bottom-8 flex items-center text-gray-400 text-sm">
-            <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center mr-3">
-              <span className="text-white text-xs font-bold">✓</span>
             </div>
-            <span className="mr-4">JELCO INFORMÁTICA</span>
-            <span className="text-gray-500">|</span>
-            <span className="ml-4">KDS.APP.BR</span>
+            <div className="absolute -inset-4 bg-gradient-to-r from-blue-400/20 via-purple-400/20 to-blue-300/20 blur-xl -z-10 animate-pulse" />
+          </div>
+          
+          <div className="space-y-2">
+            <div className="text-2xl text-slate-300 font-light tracking-wider">
+              Kitchen Display System
+            </div>
+            <div className="text-sm text-slate-500 uppercase tracking-widest">
+              Sistema de Exibição de Pedidos
+            </div>
           </div>
         </div>
 
-        {/* Painel Lateral Direito */}
-        <div className="w-80 bg-black/40 backdrop-blur-sm p-8 flex flex-col justify-between border-l border-gray-700">
-          {/* Status do Sistema */}
-          <div className="space-y-6">
-            <div className="text-right">
-              <h3 className="text-white text-lg font-semibold mb-4">
-                {currentStep}
-              </h3>
-              
-              {/* Barra de Progresso */}
-              <div className="w-full bg-gray-700 rounded-full h-1 mb-6">
-                <div 
-                  className="bg-green-400 h-1 rounded-full transition-all duration-300 ease-out"
-                  style={{ width: `${progress}%` }}
-                ></div>
-              </div>
-            </div>
-
-            <div className="space-y-4 text-right text-gray-300 text-sm">
-              <div>
-                <p className="text-white font-medium">Licenciado para</p>
-                <p className="text-green-400">ORLEAN EVENTOS</p>
-                <p className="text-xs text-gray-400">37.302.187/0001-98</p>
-              </div>
-
-              <div className="border-t border-gray-700 pt-4">
-                <p className="text-white font-medium">Banco de Dados</p>
-                <p className="text-green-400">ncrsuporteti</p>
-              </div>
-
-              <div className="border-t border-gray-700 pt-4">
-                <p className="text-white font-medium">Licença válida até</p>
-                <p className="text-green-400">11/10/2025</p>
-              </div>
+        {/* Version and Features */}
+        <div className="space-y-6">
+          <div className="flex items-center justify-center space-x-6">
+            <div className="flex items-center space-x-3 px-6 py-3 bg-slate-800/50 backdrop-blur-sm rounded-full border border-slate-700/50">
+              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+              <span className="text-slate-300 text-sm font-medium">Versão 5.0</span>
             </div>
           </div>
 
-          {/* Versão */}
-          <div className="text-right">
-            <p className="text-gray-400 text-sm">Versão</p>
-            <p className="text-white text-lg font-bold">2.0.25a</p>
+          <div className="flex items-center justify-center space-x-8 text-slate-400 text-xs">
+            <div className="flex items-center space-x-2">
+              <div className="w-1 h-1 bg-blue-400 rounded-full" />
+              <span>Auto-expedição</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-1 h-1 bg-purple-400 rounded-full" />
+              <span>Notificações sonoras</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-1 h-1 bg-green-400 rounded-full" />
+              <span>Tempo real</span>
+            </div>
           </div>
+        </div>
+
+        {/* Loading indicator */}
+        <div className="flex items-center justify-center space-x-2">
+          <div className="flex space-x-1">
+            <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+            <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+            <div className="w-2 h-2 bg-blue-300 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+          </div>
+        </div>
+
+        {/* Instructions */}
+        <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 text-center space-y-2">
+          <div className="text-slate-400 text-sm">
+            Pressione qualquer tecla para continuar
+          </div>
+        </div>
+      </div>
+
+      {/* Company Info */}
+      <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 text-center">
+        <div className="text-slate-500 text-sm font-medium">
+          Jelco Informática
+        </div>
+        <div className="text-slate-600 text-xs mt-1">
+          © 2025 - Todos os direitos reservados
         </div>
       </div>
     </div>
