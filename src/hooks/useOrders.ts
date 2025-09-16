@@ -333,16 +333,13 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
           const randomType = deliveryTypes[Math.floor(Math.random() * deliveryTypes.length)];
           const deliveryNumber = `${randomType}-${Math.floor(Math.random() * 90000) + 10000}`;
           
-          const deliveryOrder = await addSimulatedOrder();
+          const deliveryOrder = await addSimulatedOrder(['entrega']);
           deliveryOrder.numeroPedido = deliveryNumber;
           deliveryOrder.number = deliveryNumber;
           deliveryOrder.modulo = 'entrega' as 'balcao' | 'mesa' | 'entrega' | 'ficha';
           newOrders.push(deliveryOrder);
         } else {
-          const newOrder = await addSimulatedOrder();
-          // Definir módulo baseado apenas nos módulos ativos
-          const randomModule = modulesToUse[Math.floor(Math.random() * modulesToUse.length)];
-          newOrder.modulo = randomModule as 'balcao' | 'mesa' | 'entrega' | 'ficha';
+          const newOrder = await addSimulatedOrder(modulesToUse);
           newOrders.push(newOrder);
         }
       }

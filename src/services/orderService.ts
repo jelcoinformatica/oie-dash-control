@@ -43,10 +43,13 @@ export const updateOrderStatus = async (orderId: string, newStatus: 'production'
 };
 
 // Função para adicionar pedido simulado
-export const addSimulatedOrder = async (): Promise<Order> => {
+export const addSimulatedOrder = async (allowedModules?: string[]): Promise<Order> => {
   await new Promise(resolve => setTimeout(resolve, 100));
   
-  const modules = ['balcao', 'mesa', 'entrega', 'ficha'] as const;
+  const defaultModules = ['balcao', 'mesa', 'entrega', 'ficha'] as const;
+  const modules = allowedModules && allowedModules.length > 0 
+    ? allowedModules 
+    : defaultModules;
   const nicknames = [
     'João', 'Maria', 'Pedro', 'Ana', 'Carlos', 'Lucia', 'Rafael', 'Fernanda',
     'Alessandro', 'Cristiane', 'Rodrigo', 'Mariana', 'Fernando', 'Gabriela',
@@ -65,7 +68,7 @@ export const addSimulatedOrder = async (): Promise<Order> => {
     'Pasta Carbonara'
   ];
 
-  const selectedModule = modules[Math.floor(Math.random() * modules.length)];
+  const selectedModule = modules[Math.floor(Math.random() * modules.length)] as 'balcao' | 'mesa' | 'entrega' | 'ficha';
   
   // Para pedidos de entrega, 70% devem ter prefixo "IF-" com 5 dígitos
   let orderNumber: string;
