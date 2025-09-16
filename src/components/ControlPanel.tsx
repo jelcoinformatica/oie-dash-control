@@ -59,7 +59,7 @@ export const ControlPanel = ({
     <div className="bg-card border-t shadow-sm relative" style={{ height: '32px', minHeight: '32px' }}>
       <div className="container mx-auto px-2 py-1 flex items-center justify-between h-full relative">
         <div className="text-xs text-muted-foreground flex-shrink-0">
-          Oie! v.5.0 | Jelco Informática (2025) | Ctrl+K para configurações
+          Oie! v.5.0 | Jelco Informática (2025)
         </div>
         
         {/* Prompt de expedição fixo no centro */}
@@ -115,14 +115,14 @@ export const ControlPanel = ({
                           >
                             {logEntry.orderNumber.match(/^(IF|DD|RA|UB)-/) ? (
                               <div className="flex flex-col items-center" style={{ fontSize: '10px' }}>
-                                <span style={{ 
-                                  fontStyle: 'italic', 
-                                  fontWeight: 'normal',
-                                  fontSize: '8px',
-                                  lineHeight: '0.9'
-                                }}>
-                                  {logEntry.orderNumber.split('-')[0]}
-                                </span>
+                                 <span style={{ 
+                                   fontStyle: 'italic', 
+                                   fontWeight: 'normal',
+                                   fontSize: '5.5px',
+                                   lineHeight: '0.9'
+                                 }}>
+                                   {logEntry.orderNumber.split('-')[0]}
+                                 </span>
                                 <span style={{ fontSize: '11px' }}>
                                   {logEntry.orderNumber.split('-')[1]}
                                 </span>
@@ -148,14 +148,19 @@ export const ControlPanel = ({
           )}
         </div>
         
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={onConfigClick}
-          className="h-5 w-5 p-0 border-0"
-        >
-          <Settings className="w-3 h-3" />
-        </Button>
+        <div className="flex items-center gap-2">
+          <div className="text-xs text-muted-foreground">
+            Ctrl+K para configurações
+          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onConfigClick}
+            className="h-5 w-5 p-0 border-0"
+          >
+            <Settings className="w-3 h-3" />
+          </Button>
+        </div>
       </div>
     </div>
   );

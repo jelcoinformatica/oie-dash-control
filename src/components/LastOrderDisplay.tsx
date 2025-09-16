@@ -74,7 +74,7 @@ export const LastOrderDisplay = ({
                   <span style={{ 
                     fontStyle: 'italic', 
                     fontWeight: 'normal',
-                    fontSize: `${adjustedFontSize * 0.4}rem`,
+                    fontSize: `${adjustedFontSize * 0.5}rem`,
                     lineHeight: '0.9'
                   }}>
                     {orderNumber.split('-')[0]}

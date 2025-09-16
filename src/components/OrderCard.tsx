@@ -89,7 +89,7 @@ export const OrderCard = ({
                 <span style={{ 
                   fontStyle: 'italic', 
                   fontWeight: 'normal',
-                  fontSize: `${fontSize * 0.4}rem`,
+                  fontSize: `${fontSize * 0.5}rem`,
                   lineHeight: '0.9'
                 }}>
                   {displayNumber.split('-')[0]}
