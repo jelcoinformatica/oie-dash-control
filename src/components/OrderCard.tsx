@@ -50,8 +50,10 @@ export const OrderCard = ({
   textColor = '#374151',
   backgroundColor = '#ffffff'
 }: OrderCardProps) => {
-  // Only show module bullet indicator if it's relevant (not used in current implementation)
-  const showModuleBullet = false;
+  // Show module bullet indicator when more than 1 module is enabled
+  const enabledModulesCount = enabledModules ? 
+    Object.values(enabledModules).filter(module => module.enabled).length : 0;
+  const showModuleBullet = enabledModulesCount > 1;
   
   const displayNumber = order.numeroPedido || order.number;
   const displayName = order.nomeCliente || order.nickname;
