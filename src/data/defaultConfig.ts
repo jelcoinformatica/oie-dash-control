@@ -58,7 +58,8 @@ export const defaultConfig: PanelConfig = {
     headerFontSize: 2,
     backgroundColor: '#ffffff',
     imageUrl: undefined,
-    showBorder: false
+    showBorder: false,
+    fillImage: false
   },
   lastOrder: {
     height: 180,
