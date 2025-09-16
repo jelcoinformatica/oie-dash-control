@@ -35,30 +35,30 @@ interface ConfigSectionProps {
 }
 
 const ConfigSection = ({ title, icon, isOpen, onToggle, children, colorClass = "text-blue-600" }: ConfigSectionProps) => (
-  <div className="border-b-2 border-gray-300 shadow-sm">
+  <div className="border-b border-gray-200">
     <button
       onClick={onToggle}
       className={cn(
-        "w-full px-4 py-4 flex items-center justify-between transition-all duration-200",
+        "w-full px-4 py-2 flex items-center justify-between transition-all duration-200",
         isOpen 
-          ? "bg-gradient-to-r from-blue-50 to-blue-100 shadow-lg border-l-4 border-blue-400" 
+          ? "bg-gradient-to-r from-blue-50 to-blue-100 shadow-sm border-l-4 border-blue-400" 
           : "bg-white hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100"
       )}
     >
       <div className="flex items-center gap-3">
-        <div className={cn("w-5 h-5", colorClass)}>
+        <div className={cn("w-4 h-4", colorClass)}>
           {icon}
         </div>
         <span className="text-sm font-semibold text-gray-800">{title}</span>
       </div>
       {isOpen ? (
-        <ChevronDown className="w-5 h-5 text-gray-600" />
+        <ChevronDown className="w-4 h-4 text-gray-600" />
       ) : (
-        <ChevronRight className="w-5 h-5 text-gray-600" />
+        <ChevronRight className="w-4 h-4 text-gray-600" />
       )}
     </button>
     {isOpen && (
-      <div className="px-6 pb-6 pt-4 space-y-4 bg-gradient-to-b from-blue-25 to-white border-t border-blue-200 shadow-inner">
+      <div className="px-4 pb-3 pt-2 space-y-2 bg-gradient-to-b from-blue-25 to-white border-t border-blue-100">
         {children}
       </div>
     )}
@@ -1016,9 +1016,9 @@ export const ConfigurationPanel = ({
           onToggle={() => toggleSection('modules')}
           colorClass="text-indigo-600"
         >
-          <div className="space-y-6">
+          <div className="space-y-4">
             {/* BALCÃO */}
-            <div className="space-y-3">
+            <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className="w-5 h-5 rounded-full bg-white shadow-md border border-gray-200 flex items-center justify-center">
@@ -1063,7 +1063,7 @@ export const ConfigurationPanel = ({
             </div>
 
             {/* ENTREGA */}
-            <div className="space-y-3">
+            <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className="w-5 h-5 rounded-full bg-white shadow-md border border-gray-200 flex items-center justify-center">
@@ -1100,7 +1100,7 @@ export const ConfigurationPanel = ({
             </div>
 
             {/* MESA */}
-            <div className="space-y-3">
+            <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className="w-5 h-5 rounded-full bg-white shadow-md border border-gray-200 flex items-center justify-center">
@@ -1137,7 +1137,7 @@ export const ConfigurationPanel = ({
             </div>
 
             {/* FICHA */}
-            <div className="space-y-3">
+            <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className="w-5 h-5 rounded-full bg-white shadow-md border border-gray-200 flex items-center justify-center">
@@ -1195,7 +1195,7 @@ export const ConfigurationPanel = ({
           onToggle={() => toggleSection('diversos')}
           colorClass="text-gray-600"
         >
-          <div className="space-y-6">
+          <div className="space-y-4">
             {/* Conexão com Banco de Dados */}
             <div className="space-y-3">
               <Label className="text-sm font-medium">Conexão com Banco de Dados</Label>
