@@ -148,7 +148,7 @@ export const OrderColumnGrid = ({
         })}
         
         {visibleOrders.length === 0 && !(lastOrderNumber && lastOrderConfig?.highlight) && (
-          <div className="flex flex-col items-center justify-center h-full col-span-full text-center">
+          <div className="flex flex-col items-center justify-center col-span-full text-center" style={{ height: containerDimensions.height }}>
             <p className="text-6xl font-black text-black/20 tracking-wider select-none">OIE!</p>
             <p className="text-lg font-medium text-black/15 tracking-wide select-none mt-2">Aguardando novos pedidos</p>
           </div>
