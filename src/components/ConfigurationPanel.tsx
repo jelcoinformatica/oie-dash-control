@@ -586,6 +586,14 @@ export const ConfigurationPanel = ({
             </div>
             <div className="flex items-center gap-2">
               <Switch 
+                checked={config.advertising.headerVisible} 
+                onCheckedChange={(checked) => updateConfig('advertising.headerVisible', checked)}
+                className="scale-75"
+              />
+              <Label className="text-sm">Exibir Cabeçalho</Label>
+            </div>
+            <div className="flex items-center gap-2">
+              <Switch 
                 checked={config.advertising.showBorder || false} 
                 onCheckedChange={(checked) => updateConfig('advertising.showBorder', checked)}
                 className="scale-75"
