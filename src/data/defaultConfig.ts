@@ -60,7 +60,7 @@ export const defaultConfig: PanelConfig = {
     imageUrl: undefined,
     websiteUrl: undefined,
     newsMode: true, // Ativado por padrão para testes
-    newsSource: 'g1', // Fonte padrão das notícias
+    newsSource: 'panelinha', // Fonte padrão das notícias - gastronômico como principal
     newsFontSize: 2.5, // Tamanho da fonte para visualização à distância
     showBorder: false
   },

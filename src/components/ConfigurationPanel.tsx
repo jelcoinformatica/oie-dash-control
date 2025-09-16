@@ -820,7 +820,7 @@ export const ConfigurationPanel = ({
                   ✓ Feed automático será exibido<br/>
                   ✓ Rotação automática a cada 25 segundos<br/>
                   ✓ Layout otimizado para espaço disponível<br/>
-                  ✨ Agora com opções de gastronomia e culinária
+                  🍽️ Perfeito para restaurantes: sites gastronômicos disponíveis
                 </div>
                 
                 <div>
@@ -833,13 +833,13 @@ export const ConfigurationPanel = ({
                       <SelectValue placeholder="Selecione a fonte" />
                     </SelectTrigger>
                     <SelectContent>
+                      <SelectItem value="panelinha">Panelinha - Receitas e Culinária</SelectItem>
+                      <SelectItem value="cybercook">CyberCook - Receitas e Dicas</SelectItem>
+                      <SelectItem value="tudogostoso">TudoGostoso - Receitas</SelectItem>
+                      <SelectItem value="foodnetwork">Food Network - Gastronomia</SelectItem>
                       <SelectItem value="g1">G1 - Notícias Globo</SelectItem>
                       <SelectItem value="uol">UOL - Notícias</SelectItem>
                       <SelectItem value="cnn">CNN Brasil</SelectItem>
-                      <SelectItem disabled value="panelinha">Panelinha (Em breve)</SelectItem>
-                      <SelectItem disabled value="cybercook">Cyber Cook (Em breve)</SelectItem>
-                      <SelectItem disabled value="tudogostoso">Tudo Gostoso (Em breve)</SelectItem>
-                      <SelectItem disabled value="foodnetwork">Food Network (Em breve)</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
