@@ -114,12 +114,19 @@ export const ControlPanel = ({
                             }}
                           >
                             {logEntry.orderNumber.match(/^(IF|DD|RA|UB)-/) ? (
-                              <>
-                                <span style={{ fontStyle: 'italic', fontWeight: 'normal' }}>
+                              <div className="flex flex-col items-center" style={{ fontSize: '10px' }}>
+                                <span style={{ 
+                                  fontStyle: 'italic', 
+                                  fontWeight: 'normal',
+                                  fontSize: '8px',
+                                  lineHeight: '0.9'
+                                }}>
                                   {logEntry.orderNumber.split('-')[0]}
                                 </span>
-                                {logEntry.orderNumber.split('-')[1]}
-                              </>
+                                <span style={{ fontSize: '11px' }}>
+                                  {logEntry.orderNumber.split('-')[1]}
+                                </span>
+                              </div>
                             ) : (
                               logEntry.orderNumber
                             )}

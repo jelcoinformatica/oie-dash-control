@@ -85,12 +85,19 @@ export const OrderCard = ({
             }}
           >
             {displayNumber.match(/^(IF|DD|RA|UB)-/) ? (
-              <>
-                <span style={{ fontStyle: 'italic', fontWeight: 'normal' }}>
+              <div className="flex flex-col items-center">
+                <span style={{ 
+                  fontStyle: 'italic', 
+                  fontWeight: 'normal',
+                  fontSize: `${fontSize * 0.4}rem`,
+                  lineHeight: '0.9'
+                }}>
                   {displayNumber.split('-')[0]}
                 </span>
-                {displayNumber.split('-')[1]}
-              </>
+                <span style={{ fontSize: `${fontSize * 1.1}rem` }}>
+                  {displayNumber.split('-')[1]}
+                </span>
+              </div>
             ) : (
               displayNumber
             )}
