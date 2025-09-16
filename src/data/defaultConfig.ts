@@ -92,23 +92,21 @@ export const defaultConfig: PanelConfig = {
     minutes: 10
   },
   modules: {
-    activeModule: 'ficha',
     balcao: {
-      numeroVenda: false,
-      numeroChamada: false,
-      apelido: false,
-      apelidoNumeroVenda: false
+      enabled: false,
+      displayOption: 'numeroVenda'
     },
     mesa: {
-      numeroMesa: false,
-      apelidoNumeroMesa: false
+      enabled: false,
+      displayOption: 'numeroMesa'
     },
     entrega: {
-      numeroEntrega: false,
-      numeroVenda: false
+      enabled: false,
+      displayOption: 'numeroEntrega'
     },
     ficha: {
-      selectedOption: 'numeroFicha'
+      enabled: true,
+      displayOption: 'numeroFicha'
     }
   },
   database: {

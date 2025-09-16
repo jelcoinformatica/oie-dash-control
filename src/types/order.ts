@@ -92,23 +92,21 @@ export interface PanelConfig {
     minutes: number;
   };
   modules: {
-    activeModule: 'balcao' | 'mesa' | 'entrega' | 'ficha';
     balcao: {
-      numeroVenda: boolean;
-      numeroChamada: boolean;
-      apelido: boolean;
-      apelidoNumeroVenda: boolean;
+      enabled: boolean;
+      displayOption: 'numeroVenda' | 'numeroChamada' | 'apelido' | 'apelidoNumeroVenda';
     };
     mesa: {
-      numeroMesa: boolean;
-      apelidoNumeroMesa: boolean;
+      enabled: boolean;
+      displayOption: 'numeroMesa' | 'apelidoNumeroMesa';
     };
     entrega: {
-      numeroEntrega: boolean;
-      numeroVenda: boolean;
+      enabled: boolean;
+      displayOption: 'numeroEntrega' | 'numeroVenda';
     };
     ficha: {
-      selectedOption: 'numeroFicha' | 'numeroChamada' | 'nomeCliente' | 'fichaCliente' | 'localEntregaFicha';
+      enabled: boolean;
+      displayOption: 'numeroFicha' | 'numeroChamada' | 'nomeCliente' | 'fichaCliente' | 'localEntregaFicha';
     };
   };
   database?: {
