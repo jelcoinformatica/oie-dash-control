@@ -7,7 +7,7 @@ import { Slider } from './ui/slider';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from './ui/alert-dialog';
 import { PanelConfig } from '../types/order';
-import { Settings, Palette, Factory, CheckCircle, Monitor, Volume2, Clock, Puzzle, Cog, X, ChevronRight, ChevronDown, Plus, Minus } from 'lucide-react';
+import { Settings, Palette, Factory, CheckCircle, Monitor, Volume2, Clock, Puzzle, Cog, X, ChevronRight, ChevronDown, Plus, Minus, ChevronLeft, ArrowLeft, ArrowRight } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { defaultConfig } from '../data/defaultConfig';
 import { RadioGroup, RadioGroupItem } from './ui/radio-group';
@@ -91,6 +91,7 @@ export const ConfigurationPanel = ({
   });
 
   const [showClearDialog, setShowClearDialog] = useState(false);
+  const [panelPosition, setPanelPosition] = useState<'left' | 'right'>('right');
 
   const toggleAllSections = () => {
     const allOpen = Object.values(openSections).every(Boolean);
@@ -159,11 +160,42 @@ export const ConfigurationPanel = ({
 
   return (
     <div 
-      className="fixed top-0 right-0 w-1/4 h-full bg-white/30 backdrop-blur-sm shadow-xl z-50 flex flex-col border-l border-gray-200"
+      className={cn(
+        "fixed top-0 w-1/4 h-full bg-white/30 backdrop-blur-sm shadow-xl z-50 flex flex-col border-gray-200",
+        panelPosition === 'right' ? 'right-0 border-l' : 'left-0 border-r'
+      )}
     >
         <div className="flex items-center justify-between p-3 border-b bg-gray-50/30">
           <h2 className="text-lg font-semibold">Configurações</h2>
           <div className="flex items-center gap-2">
+            {/* Controles de posição */}
+            <div className="flex items-center bg-gray-100 rounded-md overflow-hidden">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setPanelPosition('left')}
+                className={cn(
+                  "h-6 w-6 p-0 rounded-none",
+                  panelPosition === 'left' ? "bg-gray-200" : ""
+                )}
+                title="Mover para esquerda"
+              >
+                <ArrowLeft className="h-3 w-3" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setPanelPosition('right')}
+                className={cn(
+                  "h-6 w-6 p-0 rounded-none",
+                  panelPosition === 'right' ? "bg-gray-200" : ""
+                )}
+                title="Mover para direita"
+              >
+                <ArrowRight className="h-3 w-3" />
+              </Button>
+            </div>
+            
             <Button
               variant="ghost"
               size="sm"
