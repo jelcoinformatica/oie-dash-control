@@ -738,7 +738,7 @@ export const ConfigurationPanel = ({
                 Testar
               </Button>
             </div>
-            <div className="text-xs text-black mt-1">
+            <div className="text-xs text-black font-medium mt-1">
               Se preenchido, será exibido como iframe (tem prioridade sobre imagem)
             </div>
           </div>
@@ -779,9 +779,9 @@ export const ConfigurationPanel = ({
           <div className="space-y-2 border-t pt-3">
             <div className="flex items-center gap-2">
               <Switch 
-                checked={Boolean(config.advertising?.newsMode)} 
+                checked={config.advertising.newsMode === true} 
                 onCheckedChange={(checked) => {
-                  console.log('Switch clicked. Current state:', config.advertising?.newsMode, 'New state:', checked);
+                  console.log('Switch clicked. Current newsMode:', config.advertising.newsMode, 'Setting to:', checked);
                   updateConfig('advertising.newsMode', checked);
                   // Limpar outras configurações quando ativar notícias
                   if (checked) {
@@ -789,10 +789,9 @@ export const ConfigurationPanel = ({
                     updateConfig('advertising.imageUrl', '');
                   }
                 }}
-                className="scale-75"
               />
               <Label className="text-sm font-medium">Exibir Feed de Notícias</Label>
-              <span className="text-xs text-gray-400 ml-2">[Debug: {String(config.advertising?.newsMode)}]</span>
+              <span className="text-xs text-gray-400 ml-2">[Estado: {config.advertising.newsMode ? 'ON' : 'OFF'}]</span>
             </div>
             {config.advertising.newsMode && (
               <div className="ml-6 space-y-3">
