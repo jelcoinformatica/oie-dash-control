@@ -870,55 +870,95 @@ export const ConfigurationPanel = ({
               
               {config.sounds.ready && (
                 <div className="ml-6 space-y-2">
-                  <div className="flex gap-2">
-                    <Input
-                      type="text"
+                  <div className="flex gap-2 items-center">
+                    <select
                       value={config.sounds.readyFile}
                       onChange={(e) => updateConfig('sounds.readyFile', e.target.value)}
-                      placeholder="Caminho do arquivo de som"
-                      className="text-xs flex-1"
-                    />
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        const input = document.createElement('input');
-                        input.type = 'file';
-                        input.accept = 'audio/*';
-                        input.onchange = (e) => {
-                          const file = (e.target as HTMLInputElement).files?.[0];
-                          if (file) {
-                            updateConfig('sounds.readyFile', file.name);
-                          }
-                        };
-                        input.click();
-                      }}
-                      className="px-2"
+                      className="text-xs border rounded px-2 py-1 flex-1"
                     >
-                      ...
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        if (config.sounds.readyFile) {
-                          try {
-                            const audio = new Audio(config.sounds.readyFile);
-                            audio.play().catch(error => {
-                              console.error('Erro ao tocar som:', error);
-                              alert('Erro ao tocar o som. Verifique se o arquivo existe e é válido.');
-                            });
-                          } catch (error) {
-                            console.error('Erro ao criar Audio:', error);
-                            alert('Caminho do arquivo inválido.');
-                          }
-                        }
-                      }}
-                      disabled={!config.sounds.readyFile}
-                    >
-                      Testar
-                    </Button>
+                      <option value="generated">Som Integrado (Recomendado)</option>
+                      <option value="/sounds/kds_sound_bell2.wav">Arquivo Padrão</option>
+                      <option value="">Personalizar...</option>
+                    </select>
                   </div>
+                  
+                  {config.sounds.readyFile && config.sounds.readyFile !== 'generated' && (
+                    <div className="flex gap-2">
+                      <Input
+                        type="text"
+                        value={config.sounds.readyFile}
+                        onChange={(e) => updateConfig('sounds.readyFile', e.target.value)}
+                        placeholder="Caminho do arquivo de som"
+                        className="text-xs flex-1"
+                      />
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          const input = document.createElement('input');
+                          input.type = 'file';
+                          input.accept = 'audio/*';
+                          input.onchange = (e) => {
+                            const file = (e.target as HTMLInputElement).files?.[0];
+                            if (file) {
+                              const url = URL.createObjectURL(file);
+                              updateConfig('sounds.readyFile', url);
+                            }
+                          };
+                          input.click();
+                        }}
+                      >
+                        ...
+                      </Button>
+                    </div>
+                  )}
+                  
+                  <div className="text-xs text-muted-foreground mb-2">
+                    {config.sounds.readyFile === 'generated' ? 
+                      'Som otimizado para ambientes ruidosos como praças de alimentação' :
+                      'Usando arquivo de som personalizado'
+                    }
+                  </div>
+                     <Button
+                       variant="outline"
+                       size="sm"
+                       onClick={async () => {
+                         if (config.sounds.readyFile) {
+                           if (config.sounds.readyFile === 'generated') {
+                             // Usar som gerado
+                             try {
+                               const { notificationSound } = await import('../utils/audioGenerator');
+                               await notificationSound.playOrderReadySound();
+                             } catch (error) {
+                               console.error('Erro ao tocar som gerado:', error);
+                               alert('Erro ao tocar o som gerado.');
+                             }
+                           } else {
+                             // Usar arquivo de som
+                             try {
+                               const audio = new Audio(config.sounds.readyFile);
+                               audio.play().catch(async (error) => {
+                                 console.error('Erro ao tocar som:', error);
+                                 // Fallback para som gerado
+                                 try {
+                                   const { notificationSound } = await import('../utils/audioGenerator');
+                                   await notificationSound.playOrderReadySound();
+                                   alert('Arquivo de som indisponível. Usando som gerado integrado.');
+                                 } catch (fallbackError) {
+                                   alert('Erro ao tocar o som. Verifique se o arquivo existe e é válido.');
+                                 }
+                               });
+                             } catch (error) {
+                               console.error('Erro ao criar Audio:', error);
+                               alert('Caminho do arquivo inválido.');
+                             }
+                           }
+                         }
+                       }}
+                       disabled={!config.sounds.readyFile}
+                     >
+                       Testar
+                     </Button>
                 </div>
               )}
             </div>
@@ -1612,8 +1652,6 @@ export const ConfigurationPanel = ({
           </div>
         </ConfigSection>
 
-        </div>
-        
         {/* Footer */}
         <div className="p-4 border-t border-gray-200 bg-gray-50/80">
           <div className="flex gap-2">
@@ -1626,5 +1664,6 @@ export const ConfigurationPanel = ({
           </div>
         </div>
       </div>
-    );
+    </div>
+  );
 };

@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import { notificationSound } from '../utils/audioGenerator';
 
 interface TTSConfig {
   enabled: boolean;
@@ -119,35 +120,58 @@ export const useTextToSpeech = () => {
     try {
       // Tocar som primeiro, se disponível
       if (soundFile) {
+        // Tentar tocar arquivo de som primeiro
         const audio = new Audio(soundFile);
         audio.play().then(() => {
           // Aguardar som terminar + pausa de 0.5s antes de falar
           audio.addEventListener('ended', () => {
             setTimeout(performSpeech, 500);
           });
-        }).catch(() => {
-          // Se falhar ao tocar som, falar diretamente com pausa
+        }).catch(async () => {
+          // Se falhar ao tocar arquivo, usar som gerado
+          console.log('Arquivo de som indisponível, usando som gerado integrado');
+          try {
+            await notificationSound.playOrderReadySound();
+          } catch (soundError) {
+            console.error('Erro ao tocar som gerado:', soundError);
+          }
           setTimeout(performSpeech, 500);
         });
       } else {
-        performSpeech();
+        // Usar som gerado se nenhum arquivo especificado
+        try {
+          await notificationSound.playOrderReadySound();
+        } catch (soundError) {
+          console.error('Erro ao tocar som gerado:', soundError);
+        }
+        setTimeout(performSpeech, 500);
       }
 
       // Implementar repetição se configurado
       if (config.repeatEnabled === true && config.repeatCount && config.repeatInterval) {
         for (let i = 1; i < config.repeatCount; i++) {
-          setTimeout(() => {
+          setTimeout(async () => {
             if (soundFile) {
               const audio = new Audio(soundFile);
               audio.play().then(() => {
                 audio.addEventListener('ended', () => {
                   setTimeout(performSpeech, 500);
                 });
-              }).catch(() => {
+              }).catch(async () => {
+                try {
+                  await notificationSound.playOrderReadySound();
+                } catch (soundError) {
+                  console.error('Erro ao tocar som gerado:', soundError);
+                }
                 setTimeout(performSpeech, 500);
               });
             } else {
-              performSpeech();
+              try {
+                await notificationSound.playOrderReadySound();
+              } catch (soundError) {
+                console.error('Erro ao tocar som gerado:', soundError);
+              }
+              setTimeout(performSpeech, 500);
             }
           }, i * config.repeatInterval * 1000);
         }
