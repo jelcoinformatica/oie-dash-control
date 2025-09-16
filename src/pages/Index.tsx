@@ -190,10 +190,10 @@ const Index = () => {
       className="min-h-screen h-screen flex flex-col"
       style={{ backgroundColor: config.backgroundColor, position: 'relative' }}
     >
-      <div className="flex-1 flex gap-0.5 p-1 pt-1">
+      <div className="flex-1 flex gap-0.5 p-1 pt-1 h-full overflow-hidden">
         {/* Coluna 1 - Produção */}
         {config.production.visible && (
-          <div style={{ width: `${columnWidths.production}%` }}>
+          <div style={{ width: `${columnWidths.production}%` }} className="h-full">
             <OrderColumn
               title={config.production.title}
               orders={productionOrders}
@@ -218,7 +218,7 @@ const Index = () => {
         )}
 
         {/* Coluna 2 - Prontos */}
-        <div style={{ width: `${columnWidths.ready}%` }}>
+        <div style={{ width: `${columnWidths.ready}%` }} className="h-full">
           <div className={`bg-white rounded-lg shadow-lg border border-gray-300 flex flex-col overflow-hidden h-full ${config.ready.showBorder ? 'ring-2 ring-blue-200' : ''}`}>
             {/* Header Fixo */}
             <div 
@@ -285,7 +285,7 @@ const Index = () => {
 
         {/* Coluna 3 - Publicidade */}
         {config.advertising.visible && (
-          <div style={{ width: `${columnWidths.advertising}%` }}>
+          <div style={{ width: `${columnWidths.advertising}%` }} className="h-full">
             <AdvertisingColumn
               title={config.advertising.headerTitle}
               showHeader={config.advertising.headerVisible}
@@ -294,6 +294,7 @@ const Index = () => {
               headerHeight={config.advertising.headerHeight}
               backgroundColor={config.advertising.backgroundColor}
               imageUrl={config.advertising.imageUrl}
+              className="h-full"
               onToggleHeader={() => {
                 const newConfig = {
                   ...config,

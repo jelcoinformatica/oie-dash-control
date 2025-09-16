@@ -27,9 +27,9 @@ export const AdvertisingColumn = ({
 }: AdvertisingColumnProps) => {
 
   return (
-    <div className={cn("flex flex-col h-full max-h-full", className)}>
+    <div className={cn("flex flex-col h-full", className)}>
       <div className={cn(
-        "bg-white shadow-lg flex flex-col border border-gray-200 rounded-t-lg h-full max-h-full overflow-hidden",
+        "bg-white shadow-lg flex flex-col border border-gray-200 rounded-t-lg h-full overflow-hidden",
         showBorder && 'ring-2 ring-blue-200'
       )}>
         {showHeader && (
@@ -53,36 +53,24 @@ export const AdvertisingColumn = ({
         )}
         
         <div 
-          className="flex-1 flex items-center justify-center overflow-hidden min-h-0 max-h-full p-2"
+          className="flex-1 flex items-center justify-center overflow-hidden p-2"
           style={{ backgroundColor }}
         >
           {imageUrl ? (
-            <div className="w-full h-full flex items-center justify-center min-h-0 max-h-full overflow-hidden">
+            <div className="flex items-center justify-center h-full w-full">
               {imageUrl.toLowerCase().endsWith('.mp4') ? (
                 <video
                   src={imageUrl}
                   autoPlay
                   loop
                   muted
-                  className="object-contain"
-                  style={{ 
-                    maxWidth: '100%',
-                    maxHeight: '100%',
-                    width: 'auto',
-                    height: 'auto'
-                  }}
+                  className="max-w-full max-h-full object-contain"
                 />
               ) : (
                 <img
                   src={imageUrl}
                   alt="Publicidade"
-                  className="object-contain"
-                  style={{ 
-                    maxWidth: '100%',
-                    maxHeight: '100%',
-                    width: 'auto',
-                    height: 'auto'
-                  }}
+                  className="max-w-full max-h-full object-contain"
                 />
               )}
             </div>
