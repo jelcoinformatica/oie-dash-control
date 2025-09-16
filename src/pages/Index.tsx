@@ -292,7 +292,7 @@ const Index = () => {
       </div>
 
       {/* Painel de Controle Fixo */}
-      <div className="flex-shrink-0 z-10" style={{ height: '32px', backgroundColor: 'var(--background)', borderTop: '1px solid var(--border)' }}>
+      <div className="flex-shrink-0 z-50 bg-card border-t shadow-sm" style={{ height: '32px', minHeight: '32px' }}>
         <ControlPanel
           onConfigClick={() => setConfigOpen(true)}
           onExpedite={handleExpedite}
