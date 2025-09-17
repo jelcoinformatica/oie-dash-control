@@ -37,7 +37,7 @@ export const NewsDisplay = ({
     if (!element) return originalSize;
     
     let currentSize = originalSize;
-    const minSize = Math.max(originalSize * 0.5, 0.8); // Não reduzir muito, mas permitir mais redução
+    const minSize = Math.max(originalSize * 0.6, 0.9); // Permitir mais redução para mais texto
     const step = 0.05; // Passos menores para ajuste mais suave
     
     // Resetar para tamanho original
@@ -57,7 +57,7 @@ export const NewsDisplay = ({
   useEffect(() => {
     const titleElement = document.querySelector('.adaptive-title') as HTMLElement;
     if (titleElement && news.length > 0) {
-      const newSize = adjustFontSize(titleElement, fontSize, fontSize > 3 ? 2 : fontSize > 2 ? 3 : 4);
+      const newSize = adjustFontSize(titleElement, fontSize, fontSize > 3 ? 4 : fontSize > 2 ? 5 : 6);
       setAdaptiveFontSize(newSize);
     }
   }, [currentIndex, news, fontSize]);
@@ -329,10 +329,10 @@ export const NewsDisplay = ({
   return (
     <div className={`h-full bg-gradient-to-b from-slate-50 to-slate-100 ${className}`}>
       <Card className="h-full border-0 shadow-none bg-transparent">
-        <CardContent className="p-8 h-full flex flex-col">
+        <CardContent className="p-4 h-full flex flex-col">
           {/* Header com moldura estilizada */}
           {showSource && (
-            <div className="flex items-center justify-between mb-8 flex-shrink-0">
+            <div className="flex items-center justify-between mb-4 flex-shrink-0">
               <div className="flex items-center gap-3">
                 <div className={`flex items-center gap-2 px-4 py-2 rounded-lg shadow-lg text-white ${
                   isGastronomicSource(newsSource) 
@@ -360,16 +360,16 @@ export const NewsDisplay = ({
           )}
 
           {/* Conteúdo principal expandido */}
-          <div className="flex-1 flex flex-col justify-center min-h-0 pb-12">
+          <div className="flex-1 flex flex-col justify-start min-h-0 pb-4">
             <h2 
-              className="adaptive-title font-bold text-gray-800 leading-tight mb-4 animate-fadeIn"
+              className="adaptive-title font-bold text-gray-800 leading-tight mb-3 animate-fadeIn"
               style={{
                 fontSize: `${adaptiveFontSize * 1.5}rem`,
-                lineHeight: '1.2',
+                lineHeight: '1.15',
                 overflow: 'hidden',
                 display: '-webkit-box',
                 WebkitBoxOrient: 'vertical',
-                WebkitLineClamp: adaptiveFontSize > 3 ? 2 : adaptiveFontSize > 2 ? 3 : 4,
+                WebkitLineClamp: adaptiveFontSize > 3 ? 3 : adaptiveFontSize > 2 ? 4 : 5,
               }}
             >
               {currentNews.title}
@@ -380,11 +380,11 @@ export const NewsDisplay = ({
                 className="text-gray-600 leading-relaxed animate-fadeIn"
                 style={{
                   fontSize: `${adaptiveFontSize * 0.8}rem`,
-                  lineHeight: '1.4',
+                  lineHeight: '1.3',
                   overflow: 'hidden',
                   display: '-webkit-box',
                   WebkitBoxOrient: 'vertical',
-                  WebkitLineClamp: adaptiveFontSize > 4 ? 2 : adaptiveFontSize > 3 ? 3 : adaptiveFontSize > 2 ? 4 : 5,
+                  WebkitLineClamp: adaptiveFontSize > 4 ? 3 : adaptiveFontSize > 3 ? 4 : adaptiveFontSize > 2 ? 5 : 6,
                 }}
               >
                 {currentNews.description}
@@ -393,13 +393,13 @@ export const NewsDisplay = ({
           </div>
 
           {/* Footer fixo na parte inferior */}
-          <div className="flex items-center justify-between pt-4 border-t border-gray-200 flex-shrink-0 mt-auto">
+          <div className="flex items-center justify-between pt-2 border-t border-gray-200 flex-shrink-0 mt-auto">
             {/* Indicadores de posição */}
             <div className="flex gap-1">
               {news.map((_, index) => (
                 <div
                   key={index}
-                  className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
                     index === currentIndex 
                       ? 'bg-blue-500 scale-110' 
                       : 'bg-gray-300 hover:bg-gray-400'
@@ -409,10 +409,10 @@ export const NewsDisplay = ({
             </div>
             
             {/* Timestamp com estilo aprimorado */}
-            <div className="bg-gray-100 text-gray-600 px-3 py-1 rounded-full border">
+            <div className="bg-gray-100 text-gray-600 px-2 py-1 rounded-full border">
               <span 
                 className="font-mono font-medium"
-                style={{ fontSize: `${adaptiveFontSize * 0.6}rem` }}
+                style={{ fontSize: `${adaptiveFontSize * 0.5}rem` }}
               >
                 {new Date(currentNews.pubDate).toLocaleTimeString('pt-BR', { 
                   hour: '2-digit', 
