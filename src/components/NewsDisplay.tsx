@@ -81,11 +81,37 @@ export const NewsDisplay = ({
     return sourceNames[source] || source.toUpperCase();
   };
 
+  // Palavras-chave para filtrar conteúdo culinário
+  const CULINARY_KEYWORDS = [
+    'receita', 'culinária', 'gastronomia', 'cozinha', 'chef', 'restaurante',
+    'comida', 'prato', 'ingrediente', 'tempero', 'sabor', 'cozinhar',
+    'alimento', 'bebida', 'doce', 'sobremesa', 'jantar', 'almoço',
+    'café da manhã', 'lanche', 'petisco', 'aperitivo', 'churrasco',
+    'pizza', 'hambúrguer', 'massa', 'macarrão', 'risotto', 'salada',
+    'sopa', 'caldo', 'molho', 'tempero', 'erva', 'especiaria',
+    'fruta', 'verdura', 'legume', 'carne', 'peixe', 'frango',
+    'queijo', 'leite', 'ovo', 'farinha', 'açúcar', 'sal',
+    'bolo', 'torta', 'biscoito', 'cookie', 'pudim', 'mousse',
+    'sorvete', 'gelato', 'vitamina', 'suco', 'refrigerante',
+    'vinho', 'cerveja', 'caipirinha', 'coquetel', 'drink'
+  ];
+
+  // Verificar se uma notícia é relacionada à culinária
+  const isCulinaryNews = (title: string, description: string) => {
+    const text = `${title} ${description}`.toLowerCase();
+    return CULINARY_KEYWORDS.some(keyword => text.includes(keyword.toLowerCase()));
+  };
+
+  // Verificar se a fonte selecionada é gastronômica
+  const isGastronomicSource = (source: string) => {
+    return ['panelinha', 'cybercook', 'tudogostoso', 'foodnetwork'].includes(source);
+  };
+
   // Sistema robusto de URLs com fallbacks funcionais
   const RSS_FEEDS = {
-    // Sites gastronômicos com feeds RSS funcionais como backup
+    // Sites gastronômicos usam feeds gerais mas filtram conteúdo culinário
     panelinha: [
-      'https://g1.globo.com/rss/g1/',  // Backup funcional
+      'https://g1.globo.com/rss/g1/',
       'https://rss.uol.com.br/feed/noticias.xml'
     ],
     cybercook: [
@@ -164,7 +190,7 @@ export const NewsDisplay = ({
           const newsItems: NewsItem[] = [];
           
           items.forEach((item, index) => {
-            if (index < 12) {
+            if (newsItems.length < 12) { // Mudar limite para permitir mais processamento
               const title = item.querySelector('title')?.textContent || '';
               const description = item.querySelector('description')?.textContent || '';
               const pubDate = item.querySelector('pubDate')?.textContent || new Date().toISOString();
@@ -174,13 +200,25 @@ export const NewsDisplay = ({
               const cleanDescription = description.replace(/<[^>]*>/g, '').replace(/&[^;]+;/g, ' ').trim();
               
               if (title) {
-                newsItems.push({
-                  title,
-                  description: cleanDescription,
-                  pubDate,
-                  link,
-                  source: getSourceName(actualSource) // Usar a fonte real
-                });
+                // Se é fonte gastronômica, filtrar apenas notícias culinárias
+                const shouldInclude = isGastronomicSource(newsSource) 
+                  ? isCulinaryNews(title, cleanDescription)
+                  : true;
+                
+                if (shouldInclude) {
+                  // Para fontes gastronômicas, mostrar o nome da fonte selecionada
+                  const displaySource = isGastronomicSource(newsSource) 
+                    ? getSourceName(newsSource) 
+                    : getSourceName(actualSource);
+                    
+                  newsItems.push({
+                    title,
+                    description: cleanDescription,
+                    pubDate,
+                    link,
+                    source: displaySource
+                  });
+                }
               }
             }
           });
@@ -188,11 +226,21 @@ export const NewsDisplay = ({
           console.log(`✅ RSS carregado com sucesso: ${newsItems.length} itens de ${feedUrl} (fonte: ${actualSource})`);
           
           if (newsItems.length > 0) {
+            // Log específico para fontes gastronômicas
+            if (isGastronomicSource(newsSource)) {
+              console.log(`🍽️ Notícias culinárias filtradas para ${newsSource}: ${newsItems.length} itens`);
+            }
+            
             setNews(newsItems);
             setError(null);
             return; // Sucesso! Parar tentativas
           } else {
-            throw new Error('Nenhum item válido encontrado no feed');
+            // Se for fonte gastronômica e não encontrou notícias culinárias, tentar próxima URL
+            if (isGastronomicSource(newsSource)) {
+              throw new Error(`Nenhuma notícia culinária encontrada no feed ${feedUrl}`);
+            } else {
+              throw new Error('Nenhum item válido encontrado no feed');
+            }
           }
           
         } catch (error) {
@@ -209,7 +257,10 @@ export const NewsDisplay = ({
       console.error('❌ Erro final ao buscar notícias RSS:', error);
       // Só mostra erro se realmente não conseguiu carregar nada
       if (news.length === 0) {
-        setError(`Fontes de notícias indisponíveis. Tentando reconectar...`);
+        const errorMessage = isGastronomicSource(newsSource) 
+          ? `Nenhuma notícia culinária encontrada. Tentando reconectar...`
+          : `Fontes de notícias indisponíveis. Tentando reconectar...`;
+        setError(errorMessage);
         setNews([]);
       }
     } finally {
@@ -283,13 +334,17 @@ export const NewsDisplay = ({
           {showSource && (
             <div className="flex items-center justify-between mb-8 flex-shrink-0">
               <div className="flex items-center gap-3">
-                <div className="flex items-center gap-2 bg-gradient-to-r from-red-500 to-red-600 text-white px-4 py-2 rounded-lg shadow-lg">
+                <div className={`flex items-center gap-2 px-4 py-2 rounded-lg shadow-lg text-white ${
+                  isGastronomicSource(newsSource) 
+                    ? 'bg-gradient-to-r from-orange-500 to-red-500' 
+                    : 'bg-gradient-to-r from-red-500 to-red-600'
+                }`}>
                   <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
                   <span 
                     className="font-bold uppercase tracking-wider"
                     style={{ fontSize: `${adaptiveFontSize * 0.7}rem` }}
                   >
-                    NOTÍCIAS
+                    {isGastronomicSource(newsSource) ? '🍽️ CULINÁRIA' : 'NOTÍCIAS'}
                   </span>
                 </div>
               </div>
