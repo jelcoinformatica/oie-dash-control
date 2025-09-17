@@ -81,25 +81,36 @@ export const NewsDisplay = ({
     return sourceNames[source] || source.toUpperCase();
   };
 
-  // Palavras-chave para filtrar conteúdo culinário
-  const CULINARY_KEYWORDS = [
-    'receita', 'culinária', 'gastronomia', 'cozinha', 'chef', 'restaurante',
-    'comida', 'prato', 'ingrediente', 'tempero', 'sabor', 'cozinhar',
-    'alimento', 'bebida', 'doce', 'sobremesa', 'jantar', 'almoço',
-    'café da manhã', 'lanche', 'petisco', 'aperitivo', 'churrasco',
-    'pizza', 'hambúrguer', 'massa', 'macarrão', 'risotto', 'salada',
-    'sopa', 'caldo', 'molho', 'tempero', 'erva', 'especiaria',
-    'fruta', 'verdura', 'legume', 'carne', 'peixe', 'frango',
-    'queijo', 'leite', 'ovo', 'farinha', 'açúcar', 'sal',
-    'bolo', 'torta', 'biscoito', 'cookie', 'pudim', 'mousse',
-    'sorvete', 'gelato', 'vitamina', 'suco', 'refrigerante',
-    'vinho', 'cerveja', 'caipirinha', 'coquetel', 'drink'
-  ];
+  // Palavras-chave específicas por fonte gastronômica
+  const CULINARY_KEYWORDS_BY_SOURCE = {
+    panelinha: [
+      'receita', 'chef', 'gastronomia', 'rita lobo', 'cozinha', 'ingrediente',
+      'tempero', 'molho', 'técnica', 'preparo', 'culinária', 'gourmet',
+      'fogão', 'panela', 'forno', 'assado', 'refogado', 'cozido'
+    ],
+    cybercook: [
+      'receita', 'cozinha', 'cyber', 'digital', 'moderna', 'inovação',
+      'tecnologia', 'air fryer', 'microondas', 'liquidificador', 'processador',
+      'robô', 'automático', 'prático', 'rápido', 'facil', 'instantâneo'
+    ],
+    tudogostoso: [
+      'receita', 'caseiro', 'tradicional', 'família', 'vovó', 'brasileiro',
+      'feijão', 'arroz', 'farofa', 'brigadeiro', 'bolo', 'torta', 'doce',
+      'salgado', 'lanche', 'petisco', 'festa', 'aniversário', 'domingo'
+    ],
+    foodnetwork: [
+      'chef', 'cooking', 'recipe', 'kitchen', 'culinary', 'international',
+      'masterchef', 'professional', 'restaurant', 'fine dining', 'cuisine',
+      'gastronomy', 'food network', 'tv culinária', 'programa', 'show'
+    ]
+  };
 
-  // Verificar se uma notícia é relacionada à culinária
-  const isCulinaryNews = (title: string, description: string) => {
+  // Verificar se uma notícia é relacionada à culinária para fonte específica
+  const isCulinaryNews = (title: string, description: string, source: string) => {
     const text = `${title} ${description}`.toLowerCase();
-    return CULINARY_KEYWORDS.some(keyword => text.includes(keyword.toLowerCase()));
+    const keywords = CULINARY_KEYWORDS_BY_SOURCE[source as keyof typeof CULINARY_KEYWORDS_BY_SOURCE] || 
+                    CULINARY_KEYWORDS_BY_SOURCE.panelinha; // fallback
+    return keywords.some(keyword => text.includes(keyword.toLowerCase()));
   };
 
   // Verificar se a fonte selecionada é gastronômica
@@ -134,7 +145,6 @@ export const NewsDisplay = ({
 
   // Função para buscar notícias via RSS com sistema de fallback
   const fetchRSSNews = async () => {
-    console.log('🎯 fetchRSSNews chamado com newsSource:', newsSource);
     setLoading(true);
     setError(null);
     
@@ -203,7 +213,7 @@ export const NewsDisplay = ({
               if (title) {
                 // Se é fonte gastronômica, filtrar apenas notícias culinárias
                 const shouldInclude = isGastronomicSource(newsSource) 
-                  ? isCulinaryNews(title, cleanDescription)
+                  ? isCulinaryNews(title, cleanDescription, newsSource)
                   : true;
                 
                 if (shouldInclude) {
@@ -269,8 +279,6 @@ export const NewsDisplay = ({
 
   // Effect para buscar notícias na inicialização e quando a fonte muda
   useEffect(() => {
-    console.log('🔄 NewsDisplay: newsSource mudou para:', newsSource);
-    console.log('📰 RSS_FEEDS para esta fonte:', RSS_FEEDS[newsSource as keyof typeof RSS_FEEDS]);
     fetchRSSNews();
     
     // Buscar a cada 5 minutos
