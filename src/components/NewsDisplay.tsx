@@ -206,10 +206,8 @@ export const NewsDisplay = ({
                   : true;
                 
                 if (shouldInclude) {
-                  // Para fontes gastronômicas, mostrar o nome da fonte selecionada
-                  const displaySource = isGastronomicSource(newsSource) 
-                    ? getSourceName(newsSource) 
-                    : getSourceName(actualSource);
+                  // SEMPRE mostrar o nome da fonte selecionada pelo usuário
+                  const displaySource = getSourceName(newsSource);
                     
                   newsItems.push({
                     title,
