@@ -134,6 +134,7 @@ export const NewsDisplay = ({
 
   // Função para buscar notícias via RSS com sistema de fallback
   const fetchRSSNews = async () => {
+    console.log('🎯 fetchRSSNews chamado com newsSource:', newsSource);
     setLoading(true);
     setError(null);
     
@@ -268,6 +269,8 @@ export const NewsDisplay = ({
 
   // Effect para buscar notícias na inicialização e quando a fonte muda
   useEffect(() => {
+    console.log('🔄 NewsDisplay: newsSource mudou para:', newsSource);
+    console.log('📰 RSS_FEEDS para esta fonte:', RSS_FEEDS[newsSource as keyof typeof RSS_FEEDS]);
     fetchRSSNews();
     
     // Buscar a cada 5 minutos
