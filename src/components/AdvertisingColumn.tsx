@@ -104,26 +104,14 @@ export const AdvertisingColumn = ({
               )}
             </div>
           ) : (
-            <div className="text-center text-muted-foreground relative">
-              {/* Marca d'água animada OIE! */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <AnimatedWatermark 
-                  totalOrders={totalOrders}
-                  autoPlay={true}
-                  className="text-6xl"
-                />
+            <div className="text-center text-muted-foreground">
+              <div className="space-y-2">
+                <div className="text-lg font-semibold">ESPAÇO</div>
+                <div className="text-lg font-semibold">PUBLICITÁRIO</div>
               </div>
-              
-              {/* Conteúdo do espaço publicitário */}
-              <div className="relative z-10">
-                <div className="space-y-2">
-                  <div className="text-lg font-semibold">ESPAÇO</div>
-                  <div className="text-lg font-semibold">PUBLICITÁRIO</div>
-                </div>
-                <div className="mt-4 text-sm opacity-70">
-                  <div>Configure imagem/vídeo/url/notícias</div>
-                  <div>nas configurações</div>
-                </div>
+              <div className="mt-4 text-sm opacity-70">
+                <div>Configure imagem/vídeo/url/notícias</div>
+                <div>nas configurações</div>
               </div>
             </div>
           )}
