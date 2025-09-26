@@ -1134,8 +1134,8 @@ export const UserManual = ({ children }: UserManualProps) => {
       <SheetTrigger asChild>
         {children}
       </SheetTrigger>
-      <SheetContent side="right" className="max-w-6xl w-full bg-background/70 overflow-hidden p-0 flex items-center justify-center">
-        <div className="max-w-5xl w-full max-h-[90vh] bg-background border rounded-xl shadow-lg flex flex-col">
+      <SheetContent side="right" className="max-w-6xl w-full bg-background/70 overflow-hidden p-0 flex items-center justify-center fixed inset-0">
+        <div className="max-w-5xl w-full max-h-[90vh] bg-background border rounded-xl shadow-lg flex flex-col mx-auto my-auto">
           <SheetHeader className="p-6 pb-4 border-b">
             <div className="flex items-center gap-3">
               <BookOpen className="w-6 h-6 text-blue-600" />
@@ -1166,26 +1166,22 @@ export const UserManual = ({ children }: UserManualProps) => {
               <ScrollArea className="h-full">
                 <div className="p-4 space-y-1">
                   {filteredSections.map((section) => (
-                    <Button
+                    <button
                       key={section.id}
-                      variant={activeSection === section.id ? "default" : "ghost"}
-                      size="sm"
                       onClick={() => scrollToSection(section.id)}
-                      className={`w-full justify-start text-left h-auto py-2 px-3 relative transition-all ${
+                      className={`w-full text-left px-3 py-2 rounded-md text-sm transition-all flex items-center gap-3 relative ${
                         activeSection === section.id 
-                          ? 'border-l-4 border-l-primary bg-primary text-primary-foreground' 
-                          : 'hover:bg-muted/40 hover:border-l-4 hover:border-l-primary/60'
+                          ? 'bg-primary text-primary-foreground border-l-4 border-l-primary-foreground font-medium' 
+                          : 'text-muted-foreground hover:text-foreground hover:bg-muted/60 hover:border-l-4 hover:border-l-primary/60'
                       }`}
                     >
-                      <div className="flex items-center gap-3 w-full">
-                        <div className="flex-shrink-0">
-                          {section.icon}
-                        </div>
-                        <span className="text-sm font-medium truncate">
-                          {section.title}
-                        </span>
+                      <div className="flex-shrink-0">
+                        {section.icon}
                       </div>
-                    </Button>
+                      <span className="font-medium truncate">
+                        {section.title}
+                      </span>
+                    </button>
                   ))}
                 </div>
               </ScrollArea>
