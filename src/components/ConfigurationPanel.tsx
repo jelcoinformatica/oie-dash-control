@@ -1032,9 +1032,10 @@ export const ConfigurationPanel = ({
                         }, 100);
                       }
                     }}
+                    className="scale-75"
                   />
                   <Label 
-                    className="text-xs font-medium cursor-pointer"
+                    className="text-xs font-medium cursor-pointer flex-1"
                     onClick={() => {
                       const newValue = !Boolean(config.advertising.newsMode);
                       console.log('Label clicked, toggling to:', newValue);
@@ -1043,27 +1044,16 @@ export const ConfigurationPanel = ({
                   >
                     Exibir Feed de Conteúdo
                   </Label>
-                  <Button
-                    type="button"
-                    size="sm"
-                    variant="outline"
-                    className="text-xs bg-blue-500 text-white hover:bg-blue-600 border-blue-500 px-2 py-1"
-                    onClick={() => {
-                      const newValue = !Boolean(config.advertising.newsMode);
-                      console.log('Manual toggle button clicked, changing to:', newValue);
-                      updateConfig('advertising.newsMode', newValue);
-                    }}
-                  >
-                    Toggle Manual
-                  </Button>
                 </div>
                 {config.advertising.newsMode && (
-                  <div className="ml-6 space-y-3">
-                    <div className="text-xs text-blue-600 bg-blue-50 p-2 rounded">
-                      ✓ Feed automático será exibido<br/>
-                      ✓ Rotação automática a cada 25 segundos<br/>
-                      ✓ Layout otimizado para espaço disponível<br/>
-                      🍽️ Perfeito para restaurantes: sites gastronômicos disponíveis
+                  <div className="space-y-3">
+                    <div className="text-xs text-blue-600 bg-blue-50 p-3 rounded-md border border-blue-200">
+                      <div className="space-y-1">
+                        <div>✓ Feed automático será exibido</div>
+                        <div>✓ Rotação automática a cada 25 segundos</div>
+                        <div>✓ Layout otimizado para espaço disponível</div>
+                        <div>🍽️ Perfeito para restaurantes: sites gastronômicos disponíveis</div>
+                      </div>
                     </div>
                     
                     <div>
