@@ -1582,7 +1582,7 @@ export const ConfigurationPanel = ({
             
             {/* Configuração Global - Indicadores de Módulo */}
             <div className="space-y-2 pt-3 border-t-2 border-gray-300">
-              <Label className="text-sm font-medium text-gray-700">Indicadores de Módulo</Label>
+              <Label className="text-lg font-bold text-gray-800 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">INDICADORES DE MÓDULO</Label>
               <div className="space-y-2">
                 <Label className="text-xs text-gray-500">Como exibir os módulos nos cards:</Label>
                 <select
@@ -1902,26 +1902,27 @@ export const ConfigurationPanel = ({
               </AlertDialog>
               
               <div className="flex items-center gap-2">
-                <Input
-                  type="number"
-                  min="1"
-                  max="50"
-                  defaultValue="30"
-                  id="newOrdersCount"
-                  className="h-6 w-20"
-                />
                 <Button
                   onClick={() => {
                     const input = document.getElementById('newOrdersCount') as HTMLInputElement;
                     const count = parseInt(input?.value || '30');
                     generateOrders?.(count);
                   }}
-                  variant="outline"
+                  variant="default"
                   size="sm"
-                  className="flex-1"
+                  className="bg-blue-600 hover:bg-blue-700 text-white"
                 >
-                  Gerar Novos Pedidos
+                  Gerar Pedidos
                 </Button>
+                <Input
+                  type="number"
+                  min="1"
+                  max="50"
+                  defaultValue="30"
+                  id="newOrdersCount"
+                  className="h-8 w-16 text-center"
+                />
+                <span className="text-gray-500">-</span>
               </div>
             </div>
             
