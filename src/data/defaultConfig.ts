@@ -21,7 +21,8 @@ export const defaultConfig: PanelConfig = {
       fontFamily: 'Tahoma',
       fontSize: 3,
       showNickname: true,
-      showItems: true
+      showItems: true,
+      moduleIndicator: 'bullet'
     }
   },
   ready: {
@@ -43,7 +44,8 @@ export const defaultConfig: PanelConfig = {
       fontFamily: 'Tahoma',
       fontSize: 4,
       showNickname: true,
-      showItems: true
+      showItems: true,
+      moduleIndicator: 'bullet'
     }
   },
   advertising: {

@@ -258,6 +258,9 @@ const Index = () => {
               orders={productionOrders}
               onOrderClick={(order) => moveToReady(order.id)}
               variant="production"
+              showNickname={config.production?.cardConfig?.showNickname ?? true}
+              showItems={config.production?.cardConfig?.showItems ?? true}
+              moduleIndicator={config.production?.cardConfig?.moduleIndicator ?? 'bullet'}
               headerBg={config.production.headerBg}
               headerColor={config.production.headerColor}
               headerHeight={config.production.headerHeight}
@@ -329,6 +332,7 @@ const Index = () => {
                   onOrderClick={(order) => expedite(order.numeroPedido || order.number || '')}
                   showNickname={config.ready?.cardConfig?.showNickname ?? true}
                   showItems={config.ready?.cardConfig?.showItems ?? true}
+                  moduleIndicator={config.ready?.cardConfig?.moduleIndicator ?? 'bullet'}
                   enabledModules={config.modules}
                   cardConfig={{
                     fontSize: config.ready?.cardConfig?.fontSize,

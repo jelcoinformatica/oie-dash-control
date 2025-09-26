@@ -13,6 +13,7 @@ interface OrderColumnProps {
   variant?: 'production' | 'ready' | 'advertising';
   showNickname?: boolean;
   showItems?: boolean;
+  moduleIndicator?: 'bullet' | 'tag';
   headerBg?: string;
   headerColor?: string;
   headerHeight?: number;
@@ -71,6 +72,7 @@ export const OrderColumn = ({
   variant = 'production',
   showNickname = true,
   showItems = true,
+  moduleIndicator = 'bullet',
   headerBg,
   headerColor,
   headerHeight = 48,
@@ -118,6 +120,7 @@ export const OrderColumn = ({
             onOrderClick={onOrderClick}
             showNickname={showNickname}
             showItems={showItems}
+            moduleIndicator={moduleIndicator}
             enabledModules={enabledModules}
             cardConfig={cardConfig}
           />

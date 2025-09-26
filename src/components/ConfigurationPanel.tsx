@@ -420,6 +420,18 @@ export const ConfigurationPanel = ({
                 />
               </div>
             </div>
+            
+            <div>
+              <Label className="text-xs">Indicador de Módulo</Label>
+              <select
+                value={config.production.cardConfig.moduleIndicator || 'bullet'}
+                onChange={(e) => updateConfig('production.cardConfig.moduleIndicator', e.target.value)}
+                className="w-full mt-1 px-3 py-1 text-xs border border-gray-300 rounded-md bg-white"
+              >
+                <option value="bullet">Bullets (bolinhas)</option>
+                <option value="tag">Etiquetas discretas</option>
+              </select>
+            </div>
           </div>
         </ConfigSection>
 
@@ -580,6 +592,18 @@ export const ConfigurationPanel = ({
                   className="h-8 mt-1 border-2"
                 />
               </div>
+            </div>
+            
+            <div>
+              <Label className="text-xs">Indicador de Módulo</Label>
+              <select
+                value={config.ready.cardConfig.moduleIndicator || 'bullet'}
+                onChange={(e) => updateConfig('ready.cardConfig.moduleIndicator', e.target.value)}
+                className="w-full mt-1 px-3 py-1 text-xs border border-gray-300 rounded-md bg-white"
+              >
+                <option value="bullet">Bullets (bolinhas)</option>
+                <option value="tag">Etiquetas discretas</option>
+              </select>
             </div>
           </div>
 
@@ -1897,7 +1921,7 @@ export const ConfigurationPanel = ({
                     </div>
                     
                     <div>
-                      <Label className="text-xs font-medium">Quantidade por vez: {config.simulation?.ordersPerInterval || 1}</Label>
+                      <Label className="text-xs font-medium">Quantidade no intervalo: {config.simulation?.ordersPerInterval || 1}</Label>
                       <Slider
                         value={[config.simulation?.ordersPerInterval || 1]}
                         onValueChange={([value]) => updateConfig('simulation.ordersPerInterval', value)}

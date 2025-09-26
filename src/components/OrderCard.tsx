@@ -7,6 +7,7 @@ interface OrderCardProps {
   className?: string;
   showNickname?: boolean;
   showItems?: boolean;
+  moduleIndicator?: 'bullet' | 'tag';
   enabledModules?: {
     balcao: {
       enabled: boolean;
@@ -38,12 +39,27 @@ const moduleColors = {
   ficha: 'bg-purple-500'
 };
 
+const modulePastelColors = {
+  balcao: 'bg-green-100',
+  mesa: 'bg-blue-100', 
+  entrega: 'bg-red-100',
+  ficha: 'bg-purple-100'
+};
+
+const moduleLabels = {
+  balcao: 'Balcao',
+  mesa: 'Mesa',
+  entrega: 'Entrega', 
+  ficha: 'Ficha'
+};
+
 export const OrderCard = ({ 
   order, 
   onClick, 
   className,
   showNickname = true,
   showItems = true,
+  moduleIndicator = 'bullet',
   enabledModules,
   fontSize = 2,
   fontFamily = 'Arial',
@@ -76,12 +92,24 @@ export const OrderCard = ({
         width: '100%'
       }}
     >
-      {/* Colored Dot Indicator - only show when more than 1 module enabled - top right corner */}
+      {/* Indicador de Módulo */}
       {showModuleBullet && (
-        <div className={cn(
-          "absolute top-0.5 right-0.5 w-2 h-2 rounded-full",
-          moduleColors[order.modulo]
-        )} />
+        <>
+          {moduleIndicator === 'bullet' ? (
+            <div className={cn(
+              "absolute top-0.5 right-0.5 w-2 h-2 rounded-full",
+              moduleColors[order.modulo]
+            )} />
+          ) : (
+            <div className={cn(
+              "absolute top-0.5 right-0.5 px-1 py-0.5 rounded text-xs font-medium text-black",
+              modulePastelColors[order.modulo]
+            )}
+            style={{ fontSize: `${fontSize * 0.3}rem` }}>
+              [{moduleLabels[order.modulo]}]
+            </div>
+          )}
+        </>
       )}
       
       {/* Layout com posições fixas */}

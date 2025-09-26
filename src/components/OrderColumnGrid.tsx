@@ -8,6 +8,7 @@ interface OrderColumnGridProps {
   onOrderClick?: (order: Order) => void;
   showNickname?: boolean;
   showItems?: boolean;
+  moduleIndicator?: 'bullet' | 'tag';
   enabledModules?: {
     balcao: {
       enabled: boolean;
@@ -50,6 +51,7 @@ export const OrderColumnGrid = ({
   onOrderClick,
   showNickname = true,
   showItems = true,
+  moduleIndicator = 'bullet',
   enabledModules,
   cardConfig,
   lastOrderNumber,
@@ -150,6 +152,7 @@ export const OrderColumnGrid = ({
               className={`flex-shrink-0 ${isLastOrder && lastOrderConfig?.pulseAnimation ? 'animate-pulse' : ''}`}
               showNickname={showNickname}
               showItems={showItems}
+              moduleIndicator={moduleIndicator}
               enabledModules={enabledModules}
               fontSize={adjustedFontSize}
               fontFamily={cardConfig?.fontFamily}
