@@ -629,7 +629,7 @@ export const ConfigurationPanel = ({
               <Slider
                 value={[config.lastOrder.height]}
                 onValueChange={([value]) => updateConfig('lastOrder.height', value)}
-                max={360}
+                max={1000}
                 min={40}
                 step={10}
                 className="mt-1"
@@ -646,7 +646,7 @@ export const ConfigurationPanel = ({
               <Slider
                 value={[config.lastOrder.fontSize]}
                 onValueChange={([value]) => updateConfig('lastOrder.fontSize', value)}
-                max={30}
+                max={80}
                 min={1}
                 step={0.5}
                 className="mt-1"
