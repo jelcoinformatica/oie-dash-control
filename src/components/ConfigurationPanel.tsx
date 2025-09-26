@@ -181,7 +181,7 @@ export const ConfigurationPanel = ({
   return (
     <div 
       className={cn(
-        "fixed top-0 w-1/4 h-full bg-white/30 backdrop-blur-sm shadow-xl z-50 flex flex-col border-gray-200",
+        "fixed top-0 w-1/3 h-full bg-white/30 backdrop-blur-sm shadow-xl z-50 flex flex-col border-gray-200",
         panelPosition === 'right' ? 'right-0 border-l' : 'left-0 border-r'
       )}
     >
@@ -260,72 +260,103 @@ export const ConfigurationPanel = ({
           onToggle={() => toggleSection('production')}
           colorClass="text-blue-600"
         >
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <Switch 
-                checked={config.production.visible} 
-                onCheckedChange={(checked) => updateConfig('production.visible', checked)}
-                className="scale-75"
-              />
-              <Label className="text-xs">Exibir Coluna</Label>
+          {/* Gerais */}
+          <div className="pb-3 mb-3 border-b-2 border-gray-300">
+            <h4 className="text-sm font-semibold mb-2 text-gray-700">Gerais</h4>
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <Switch 
+                  checked={config.production.visible} 
+                  onCheckedChange={(checked) => updateConfig('production.visible', checked)}
+                  className="scale-75"
+                />
+                <Label className="text-xs">Exibir Coluna</Label>
+              </div>
+              <div className="flex items-center gap-2">
+                <Switch 
+                  checked={config.production.showBorder || false} 
+                  onCheckedChange={(checked) => updateConfig('production.showBorder', checked)}
+                  className="scale-75"
+                />
+                <Label className="text-xs">Tem Borda</Label>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <Switch 
-                checked={config.production.showBorder || false} 
-                onCheckedChange={(checked) => updateConfig('production.showBorder', checked)}
-                className="scale-75"
+
+            <div>
+              <Label className="text-xs font-medium">Título da Coluna</Label>
+              <Input
+                value={config.production.title}
+                onChange={(e) => updateConfig('production.title', e.target.value)}
+                className="mt-1"
               />
-              <Label className="text-xs">Tem Borda</Label>
+            </div>
+
+            <div>
+              <Label className="text-xs font-medium">Largura (%): {config.production.width}</Label>
+              <Slider
+                value={[config.production.width]}
+                onValueChange={([value]) => updateConfig('production.width', value)}
+                max={50}
+                min={10}
+                step={1}
+                className="mt-1"
+              />
             </div>
           </div>
 
-          <div>
-            <Label className="text-xs font-medium">Título da Coluna</Label>
-            <Input
-              value={config.production.title}
-              onChange={(e) => updateConfig('production.title', e.target.value)}
-              className="mt-1"
-            />
+          {/* Cabeçalho */}
+          <div className="pb-3 mb-3 border-b-2 border-gray-300">
+            <h4 className="text-sm font-semibold mb-2 text-gray-700">Cabeçalho</h4>
+            
+            <div>
+              <Label className="text-sm font-medium">Altura: {config.production.headerHeight}px</Label>
+              <Slider
+                value={[config.production.headerHeight]}
+                onValueChange={([value]) => updateConfig('production.headerHeight', value)}
+                max={180}
+                min={32}
+                step={4}
+                className="mt-1"
+              />
+            </div>
+
+            <div>
+              <Label className="text-sm font-medium">Tamanho da Fonte: {config.production.headerFontSize}rem</Label>
+              <Slider
+                value={[config.production.headerFontSize]}
+                onValueChange={([value]) => updateConfig('production.headerFontSize', value)}
+                max={3}
+                min={0.8}
+                step={0.1}
+                className="mt-1"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <Label className="text-xs">Cor Fundo Cabeçalho</Label>
+                <Input
+                  type="color"
+                  value={config.production.headerBg}
+                  onChange={(e) => updateConfig('production.headerBg', e.target.value)}
+                  className="h-8 mt-1 border-2"
+                />
+              </div>
+              <div>
+                <Label className="text-xs">Cor Fonte Cabeçalho</Label>
+                <Input
+                  type="color"
+                  value={config.production.headerColor}
+                  onChange={(e) => updateConfig('production.headerColor', e.target.value)}
+                  className="h-8 mt-1 border-2"
+                />
+              </div>
+            </div>
           </div>
 
+          {/* Cards */}
           <div>
-            <Label className="text-xs font-medium">Largura (%): {config.production.width}</Label>
-            <Slider
-              value={[config.production.width]}
-              onValueChange={([value]) => updateConfig('production.width', value)}
-              max={50}
-              min={10}
-              step={1}
-              className="mt-1"
-            />
-          </div>
-
-          <div>
-            <Label className="text-sm font-medium">Altura do Cabeçalho: {config.production.headerHeight}px</Label>
-            <Slider
-              value={[config.production.headerHeight]}
-              onValueChange={([value]) => updateConfig('production.headerHeight', value)}
-              max={180}
-              min={32}
-              step={4}
-              className="mt-1"
-            />
-          </div>
-
-          <div>
-            <Label className="text-sm font-medium">Tamanho da Fonte do Cabeçalho: {config.production.headerFontSize}rem</Label>
-            <Slider
-              value={[config.production.headerFontSize]}
-              onValueChange={([value]) => updateConfig('production.headerFontSize', value)}
-              max={3}
-              min={0.8}
-              step={0.1}
-              className="mt-1"
-            />
-          </div>
-
-            <div className="space-y-3 border-t pt-3">
-            <Label className="text-sm font-medium">Configuração dos Cards - Produção</Label>
+            <h4 className="text-sm font-semibold mb-2 text-gray-700">Cards</h4>
             
             <div>
               <Label className="text-xs">Colunas: {config.production.cardConfig.columns}</Label>
@@ -343,9 +374,9 @@ export const ConfigurationPanel = ({
               <Label className="text-xs">Tamanho da Fonte: {config.production.cardConfig.fontSize}rem</Label>
               <Slider
                 value={[config.production.cardConfig.fontSize]}
-              onValueChange={([value]) => updateConfig('production.cardConfig.fontSize', value)}
-              max={8}
-              min={0.5}
+                onValueChange={([value]) => updateConfig('production.cardConfig.fontSize', value)}
+                max={8}
+                min={0.5}
                 step={0.1}
                 className="mt-1"
               />
@@ -371,46 +402,25 @@ export const ConfigurationPanel = ({
 
             <div className="grid grid-cols-2 gap-2">
               <div>
-                <Label className="text-xs">Cor da Fonte</Label>
+                <Label className="text-xs">Cor Fonte Cards</Label>
                 <Input
                   type="color"
                   value={config.production.cardConfig.textColor}
                   onChange={(e) => updateConfig('production.cardConfig.textColor', e.target.value)}
-                  className="h-10 mt-1 border-2"
+                  className="h-8 mt-1 border-2"
                 />
               </div>
               <div>
-                <Label className="text-xs">Cor de Fundo</Label>
+                <Label className="text-xs">Cor Fundo Cards</Label>
                 <Input
                   type="color"
                   value={config.production.cardConfig.backgroundColor}
                   onChange={(e) => updateConfig('production.cardConfig.backgroundColor', e.target.value)}
-                  className="h-10 mt-1 border-2"
+                  className="h-8 mt-1 border-2"
                 />
               </div>
             </div>
           </div>
-
-            <div className="grid grid-cols-2 gap-2">
-              <div>
-                <Label className="text-xs">Cor de Fundo</Label>
-                <Input
-                  type="color"
-                  value={config.production.headerBg}
-                  onChange={(e) => updateConfig('production.headerBg', e.target.value)}
-                  className="h-12 mt-1 border-2"
-                />
-              </div>
-              <div>
-                <Label className="text-xs">Cor da Fonte</Label>
-                <Input
-                  type="color"
-                  value={config.production.headerColor}
-                  onChange={(e) => updateConfig('production.headerColor', e.target.value)}
-                  className="h-12 mt-1 border-2"
-                />
-              </div>
-            </div>
         </ConfigSection>
 
         {/* Coluna 2 - Prontos */}
@@ -421,83 +431,93 @@ export const ConfigurationPanel = ({
           onToggle={() => toggleSection('ready')}
           colorClass="text-green-600"
         >
-          <div className="flex items-center gap-2">
-            <Switch 
-              checked={config.ready.showBorder || false} 
-              onCheckedChange={(checked) => updateConfig('ready.showBorder', checked)}
-              className="scale-75"
-            />
-            <Label className="text-sm">Tem Borda</Label>
-          </div>
+          {/* Gerais */}
+          <div className="pb-3 mb-3 border-b-2 border-gray-300">
+            <h4 className="text-sm font-semibold mb-2 text-gray-700">Gerais</h4>
+            <div className="flex items-center gap-2">
+              <Switch 
+                checked={config.ready.showBorder || false} 
+                onCheckedChange={(checked) => updateConfig('ready.showBorder', checked)}
+                className="scale-75"
+              />
+              <Label className="text-xs">Tem Borda</Label>
+            </div>
 
-          <div>
-            <Label className="text-sm font-medium">Título da Coluna</Label>
-            <Input
-              value={config.ready.title}
-              onChange={(e) => updateConfig('ready.title', e.target.value)}
-              className="mt-1"
-            />
-          </div>
-
-          <div>
-            <Label className="text-sm font-medium">Largura (%): {config.ready.width}</Label>
-            <Slider
-              value={[config.ready.width]}
-              onValueChange={([value]) => updateConfig('ready.width', value)}
-              max={60}
-              min={10}
-              step={1}
-              className="mt-1"
-            />
-          </div>
-
-          <div>
-            <Label className="text-sm font-medium">Altura do Cabeçalho: {config.ready.headerHeight}px</Label>
-            <Slider
-              value={[config.ready.headerHeight]}
-              onValueChange={([value]) => updateConfig('ready.headerHeight', value)}
-              max={180}
-              min={32}
-              step={4}
-              className="mt-1"
-            />
-          </div>
-
-          <div>
-            <Label className="text-sm font-medium">Tamanho da Fonte do Cabeçalho: {config.ready.headerFontSize}rem</Label>
-            <Slider
-              value={[config.ready.headerFontSize]}
-              onValueChange={([value]) => updateConfig('ready.headerFontSize', value)}
-              max={3}
-              min={0.8}
-              step={0.1}
-              className="mt-1"
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-1">
             <div>
-              <Label className="text-xs">Cor Fundo Cabeçalho</Label>
+              <Label className="text-xs font-medium">Título da Coluna</Label>
               <Input
-                type="color"
-                value={config.ready.headerBg}
-                onChange={(e) => updateConfig('ready.headerBg', e.target.value)}
-                className="h-8 mt-1 border-2"
+                value={config.ready.title}
+                onChange={(e) => updateConfig('ready.title', e.target.value)}
+                className="mt-1"
               />
             </div>
+
             <div>
-              <Label className="text-xs">Cor Fonte Cabeçalho</Label>
-              <Input
-                type="color"
-                value={config.ready.headerColor}
-                onChange={(e) => updateConfig('ready.headerColor', e.target.value)}
-                className="h-8 mt-1 border-2"
+              <Label className="text-xs font-medium">Largura (%): {config.ready.width}</Label>
+              <Slider
+                value={[config.ready.width]}
+                onValueChange={([value]) => updateConfig('ready.width', value)}
+                max={60}
+                min={10}
+                step={1}
+                className="mt-1"
               />
             </div>
           </div>
 
-          <div className="space-y-3 border-t pt-3">
-            <Label className="text-sm font-medium">Configuração dos Cards - Prontos</Label>
+          {/* Cabeçalho */}
+          <div className="pb-3 mb-3 border-b-2 border-gray-300">
+            <h4 className="text-sm font-semibold mb-2 text-gray-700">Cabeçalho</h4>
+            
+            <div>
+              <Label className="text-sm font-medium">Altura: {config.ready.headerHeight}px</Label>
+              <Slider
+                value={[config.ready.headerHeight]}
+                onValueChange={([value]) => updateConfig('ready.headerHeight', value)}
+                max={180}
+                min={32}
+                step={4}
+                className="mt-1"
+              />
+            </div>
+
+            <div>
+              <Label className="text-sm font-medium">Tamanho da Fonte: {config.ready.headerFontSize}rem</Label>
+              <Slider
+                value={[config.ready.headerFontSize]}
+                onValueChange={([value]) => updateConfig('ready.headerFontSize', value)}
+                max={3}
+                min={0.8}
+                step={0.1}
+                className="mt-1"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-1">
+              <div>
+                <Label className="text-xs">Cor Fundo Cabeçalho</Label>
+                <Input
+                  type="color"
+                  value={config.ready.headerBg}
+                  onChange={(e) => updateConfig('ready.headerBg', e.target.value)}
+                  className="h-8 mt-1 border-2"
+                />
+              </div>
+              <div>
+                <Label className="text-xs">Cor Fonte Cabeçalho</Label>
+                <Input
+                  type="color"
+                  value={config.ready.headerColor}
+                  onChange={(e) => updateConfig('ready.headerColor', e.target.value)}
+                  className="h-8 mt-1 border-2"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Cards */}
+          <div>
+            <h4 className="text-sm font-semibold mb-2 text-gray-700">Cards</h4>
             
             <div>
               <Label className="text-xs">Colunas: {config.ready.cardConfig.columns}</Label>
@@ -515,9 +535,9 @@ export const ConfigurationPanel = ({
               <Label className="text-xs">Tamanho da Fonte: {config.ready.cardConfig.fontSize}rem</Label>
               <Slider
                 value={[config.ready.cardConfig.fontSize]}
-              onValueChange={([value]) => updateConfig('ready.cardConfig.fontSize', value)}
-              max={8}
-              min={0.5}
+                onValueChange={([value]) => updateConfig('ready.cardConfig.fontSize', value)}
+                max={8}
+                min={0.5}
                 step={0.1}
                 className="mt-1"
               />
