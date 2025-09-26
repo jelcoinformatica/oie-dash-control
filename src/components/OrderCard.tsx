@@ -40,10 +40,10 @@ const moduleColors = {
 };
 
 const modulePastelColors = {
-  balcao: 'bg-green-100',
-  mesa: 'bg-blue-100', 
-  entrega: 'bg-red-100',
-  ficha: 'bg-purple-100'
+  balcao: 'bg-green-100 text-green-800',
+  mesa: 'bg-blue-100 text-blue-800', 
+  entrega: 'bg-red-100 text-red-800',
+  ficha: 'bg-purple-100 text-purple-800'
 };
 
 const moduleLabels = {
@@ -73,6 +73,18 @@ export const OrderCard = ({
   
   const displayNumber = order.numeroPedido || order.number;
   const displayName = order.nomeCliente || order.nickname;
+  const isOnlineDelivery = displayNumber?.match(/^(IF|DD|RA|UB)-/);
+  
+  // Para delivery online, o nome da plataforma vai na etiqueta
+  const getDeliveryPlatformName = (prefix: string) => {
+    switch (prefix) {
+      case 'IF': return 'iFood';
+      case 'RA': return 'Rappi';
+      case 'UB': return 'Uber';
+      case 'DD': return 'Delivery Direto';
+      default: return prefix;
+    }
+  };
   
   return (
     <div
@@ -102,11 +114,14 @@ export const OrderCard = ({
             )} />
           ) : (
             <div className={cn(
-              "absolute top-0.5 right-0.5 px-1 py-0.5 rounded text-xs font-medium text-black",
+              "absolute top-0.5 right-0.5 px-1 py-0.5 rounded text-xs font-medium",
               modulePastelColors[order.modulo]
             )}
             style={{ fontSize: `${fontSize * 0.3}rem` }}>
-              [{moduleLabels[order.modulo]}]
+              {isOnlineDelivery 
+                ? getDeliveryPlatformName(displayNumber.split('-')[0])
+                : moduleLabels[order.modulo]
+              }
             </div>
           )}
         </>
@@ -114,23 +129,16 @@ export const OrderCard = ({
       
       {/* Layout com posições fixas */}
       <div className="w-full h-full flex flex-col justify-between items-center py-1">
-        {/* Prefixo no topo */}
+        {/* Prefixo no topo - só mostra se não há etiqueta ou se etiqueta não está mostrando o delivery */}
         <div className="flex-shrink-0 h-4 flex items-start justify-center">
-          {displayNumber?.match(/^(IF|DD|RA|UB)-/) && (
+          {isOnlineDelivery && (!showModuleIndicator || moduleIndicator === 'bullet') && (
             <span style={{ 
               fontStyle: 'italic', 
               fontWeight: 'normal',
               fontSize: `${fontSize * 0.4}rem`,
               lineHeight: '1'
             }}>
-              {(() => {
-                const prefix = displayNumber.split('-')[0];
-                switch (prefix) {
-                  case 'IF': return 'iFood';
-                  case 'RA': return 'Rappi';
-                  default: return prefix;
-                }
-              })()}
+              {getDeliveryPlatformName(displayNumber.split('-')[0])}
             </span>
           )}
         </div>
