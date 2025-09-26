@@ -475,6 +475,27 @@ export const ConfigurationPanel = ({
             />
           </div>
 
+          <div className="grid grid-cols-2 gap-1">
+            <div>
+              <Label className="text-xs">Cor Fundo Cabeçalho</Label>
+              <Input
+                type="color"
+                value={config.ready.headerBg}
+                onChange={(e) => updateConfig('ready.headerBg', e.target.value)}
+                className="h-8 mt-1 border-2"
+              />
+            </div>
+            <div>
+              <Label className="text-xs">Cor Fonte Cabeçalho</Label>
+              <Input
+                type="color"
+                value={config.ready.headerColor}
+                onChange={(e) => updateConfig('ready.headerColor', e.target.value)}
+                className="h-8 mt-1 border-2"
+              />
+            </div>
+          </div>
+
           <div className="space-y-3 border-t pt-3">
             <Label className="text-sm font-medium">Configuração dos Cards - Prontos</Label>
             
@@ -520,46 +541,25 @@ export const ConfigurationPanel = ({
               </select>
             </div>
 
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-1">
               <div>
-                <Label className="text-xs">Cor da Fonte</Label>
+                <Label className="text-xs">Cor Fonte Cards</Label>
                 <Input
                   type="color"
                   value={config.ready.cardConfig.textColor}
                   onChange={(e) => updateConfig('ready.cardConfig.textColor', e.target.value)}
-                  className="h-10 mt-1 border-2"
+                  className="h-8 mt-1 border-2"
                 />
               </div>
               <div>
-                <Label className="text-xs">Cor de Fundo</Label>
+                <Label className="text-xs">Cor Fundo Cards</Label>
                 <Input
                   type="color"
                   value={config.ready.cardConfig.backgroundColor}
                   onChange={(e) => updateConfig('ready.cardConfig.backgroundColor', e.target.value)}
-                  className="h-10 mt-1 border-2"
+                  className="h-8 mt-1 border-2"
                 />
               </div>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-2">
-            <div>
-              <Label className="text-xs">Cor de Fundo</Label>
-              <Input
-                type="color"
-                value={config.ready.headerBg}
-                onChange={(e) => updateConfig('ready.headerBg', e.target.value)}
-                className="h-12 mt-1 border-2"
-              />
-            </div>
-            <div>
-              <Label className="text-xs">Cor da Fonte</Label>
-              <Input
-                type="color"
-                value={config.ready.headerColor}
-                onChange={(e) => updateConfig('ready.headerColor', e.target.value)}
-                className="h-12 mt-1 border-2"
-              />
             </div>
           </div>
 
@@ -723,6 +723,27 @@ export const ConfigurationPanel = ({
             />
             <div className="text-xs text-gray-500 mt-1">
               Dimensões baseadas no espaço real disponível (calculadas dinamicamente)
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-1">
+            <div>
+              <Label className="text-xs">Cor Fundo Cabeçalho</Label>
+              <Input
+                type="color"
+                value={config.advertising.headerBg}
+                onChange={(e) => updateConfig('advertising.headerBg', e.target.value)}
+                className="h-8 mt-1 border-2"
+              />
+            </div>
+            <div>
+              <Label className="text-xs">Cor Fonte Cabeçalho</Label>
+              <Input
+                type="color"
+                value={config.advertising.headerColor}
+                onChange={(e) => updateConfig('advertising.headerColor', e.target.value)}
+                className="h-8 mt-1 border-2"
+              />
             </div>
           </div>
 
@@ -897,34 +918,13 @@ export const ConfigurationPanel = ({
           </div>
 
           <div>
-            <Label className="text-sm font-medium">Cor do Fundo</Label>
+            <Label className="text-sm font-medium">Cor do Fundo da Coluna</Label>
             <Input
               type="color"
               value={config.advertising.backgroundColor}
               onChange={(e) => updateConfig('advertising.backgroundColor', e.target.value)}
               className="w-20 h-6 mt-1 cursor-pointer"
             />
-          </div>
-
-          <div className="grid grid-cols-2 gap-2">
-            <div>
-              <Label className="text-xs">Cor de Fundo do Cabeçalho</Label>
-              <Input
-                type="color"
-                value={config.advertising.headerBg}
-                onChange={(e) => updateConfig('advertising.headerBg', e.target.value)}
-                className="h-12 mt-1 border-2"
-              />
-            </div>
-            <div>
-              <Label className="text-xs">Cor da Fonte do Cabeçalho</Label>
-              <Input
-                type="color"
-                value={config.advertising.headerColor}
-                onChange={(e) => updateConfig('advertising.headerColor', e.target.value)}
-                className="h-12 mt-1 border-2"
-              />
-            </div>
           </div>
 
         </ConfigSection>
