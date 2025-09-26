@@ -1134,8 +1134,8 @@ export const UserManual = ({ children }: UserManualProps) => {
       <SheetTrigger asChild>
         {children}
       </SheetTrigger>
-      <SheetContent side="right" className="w-full sm:max-w-5xl bg-background overflow-hidden p-0">
-        <div className="h-full flex flex-col">
+      <SheetContent side="right" className="w-full sm:max-w-5xl bg-background overflow-hidden p-0 flex items-center justify-center">
+        <div className="w-full max-h-[85vh] my-[7.5vh] bg-background border rounded-lg shadow-lg flex flex-col">
           <SheetHeader className="p-6 pb-4 border-b bg-background">
             <div className="flex items-center gap-3">
               <BookOpen className="w-6 h-6 text-blue-600" />
