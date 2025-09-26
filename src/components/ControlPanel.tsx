@@ -117,7 +117,7 @@ export const ControlPanel = ({
               size="sm"
               className="h-4 w-4 p-0 border-0"
             >
-              <BookOpen className="w-3 h-3" />
+              <BookOpen className="w-3 h-3 text-muted-foreground" />
             </Button>
           </UserManual>
         </div>

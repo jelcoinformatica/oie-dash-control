@@ -59,7 +59,7 @@ export const UserManual = ({ children }: UserManualProps) => {
           </p>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="p-4 border rounded-lg">
+            <div className="p-4 border bg-card/50 rounded-lg shadow-sm">
               <h4 className="font-medium mb-2 flex items-center gap-2">
                 <Monitor className="w-4 h-4 text-blue-500" />
                 Interface Principal
@@ -72,7 +72,7 @@ export const UserManual = ({ children }: UserManualProps) => {
               </ul>
             </div>
             
-            <div className="p-4 border rounded-lg">
+            <div className="p-4 border bg-card/50 rounded-lg shadow-sm">
               <h4 className="font-medium mb-2 flex items-center gap-2">
                 <Zap className="w-4 h-4 text-green-500" />
                 Funcionalidades
@@ -109,7 +109,7 @@ export const UserManual = ({ children }: UserManualProps) => {
           <h3 className="text-lg font-semibold">Como Navegar no Sistema</h3>
           
           <div className="space-y-4">
-            <div className="p-4 border rounded-lg">
+            <div className="p-4 border bg-card/50 rounded-lg shadow-sm">
               <h4 className="font-medium mb-2 flex items-center gap-2">
                 <MousePointer className="w-4 h-4 text-purple-500" />
                 Interações com Pedidos
@@ -139,7 +139,7 @@ export const UserManual = ({ children }: UserManualProps) => {
               </ul>
             </div>
 
-            <div className="p-4 border rounded-lg">
+            <div className="p-4 border bg-card/50 rounded-lg shadow-sm">
               <h4 className="font-medium mb-2 flex items-center gap-2">
                 <Keyboard className="w-4 h-4 text-green-500" />
                 Expedição Manual
@@ -152,7 +152,7 @@ export const UserManual = ({ children }: UserManualProps) => {
               </ul>
             </div>
 
-            <div className="p-4 border rounded-lg">
+            <div className="p-4 border bg-card/50 rounded-lg shadow-sm">
               <h4 className="font-medium mb-2 flex items-center gap-2">
                 <Maximize className="w-4 h-4 text-blue-500" />
                 Modo Kiosk
@@ -177,7 +177,7 @@ export const UserManual = ({ children }: UserManualProps) => {
           <h3 className="text-lg font-semibold">Gestão da Coluna Produção</h3>
           
           <div className="space-y-4">
-            <div className="p-4 border rounded-lg">
+            <div className="p-4 border bg-card/50 rounded-lg shadow-sm">
               <h4 className="font-medium mb-2 flex items-center gap-2">
                 <Clock className="w-4 h-4 text-orange-500" />
                 Objetivo
@@ -188,7 +188,7 @@ export const UserManual = ({ children }: UserManualProps) => {
               </p>
             </div>
 
-            <div className="p-4 border rounded-lg">
+            <div className="p-4 border bg-card/50 rounded-lg shadow-sm">
               <h4 className="font-medium mb-2">Configurações Disponíveis</h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                 <div>
@@ -214,7 +214,7 @@ export const UserManual = ({ children }: UserManualProps) => {
               </div>
             </div>
 
-            <div className="p-4 bg-orange-50 rounded-lg">
+            <div className="p-4 bg-orange-50 border border-orange-200 rounded-lg">
               <h4 className="font-medium mb-2 flex items-center gap-2">
                 <Eye className="w-4 h-4 text-orange-600" />
                 Coluna Oculta
@@ -239,7 +239,7 @@ export const UserManual = ({ children }: UserManualProps) => {
           <h3 className="text-lg font-semibold">Gestão da Coluna Prontos</h3>
           
           <div className="space-y-4">
-            <div className="p-4 border rounded-lg">
+            <div className="p-4 border bg-card/50 rounded-lg shadow-sm">
               <h4 className="font-medium mb-2 flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-green-500" />
                 Objetivo
@@ -250,7 +250,7 @@ export const UserManual = ({ children }: UserManualProps) => {
               </p>
             </div>
 
-            <div className="p-4 border rounded-lg">
+            <div className="p-4 border bg-card/50 rounded-lg shadow-sm">
               <h4 className="font-medium mb-2">Funcionalidades Especiais</h4>
               <div className="space-y-3 text-sm">
                 <div>
@@ -268,7 +268,7 @@ export const UserManual = ({ children }: UserManualProps) => {
               </div>
             </div>
 
-            <div className="p-4 border rounded-lg">
+            <div className="p-4 border bg-card/50 rounded-lg shadow-sm">
               <h4 className="font-medium mb-2">Layout dos Cartões</h4>
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
@@ -304,7 +304,7 @@ export const UserManual = ({ children }: UserManualProps) => {
           <h3 className="text-lg font-semibold">Coluna de Publicidade</h3>
           
           <div className="space-y-4">
-            <div className="p-4 border rounded-lg">
+            <div className="p-4 border bg-card/50 rounded-lg shadow-sm">
               <h4 className="font-medium mb-2 flex items-center gap-2">
                 <Palette className="w-4 h-4 text-purple-500" />
                 Objetivo
@@ -315,8 +315,8 @@ export const UserManual = ({ children }: UserManualProps) => {
               </p>
             </div>
 
-            <div className="p-4 border rounded-lg">
-              <h4 className="font-medium mb-2">Configurações</h4>
+            <div className="p-4 border bg-card/50 rounded-lg shadow-sm">
+              <h4 className="font-medium mb-2">Configurações Visuais</h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                 <div>
                   <strong>Cabeçalho:</strong>
@@ -324,30 +324,126 @@ export const UserManual = ({ children }: UserManualProps) => {
                     <li>• Mostrar/ocultar</li>
                     <li>• Título personalizado</li>
                     <li>• Cores e fontes</li>
-                    <li>• Altura ajustável</li>
+                    <li>• Altura ajustável (40-120px)</li>
                   </ul>
                 </div>
                 <div>
                   <strong>Conteúdo:</strong>
                   <ul className="ml-4 mt-1 space-y-1">
-                    <li>• Cor de fundo</li>
-                    <li>• Largura da coluna</li>
+                    <li>• Cor de fundo personalizada</li>
+                    <li>• Largura da coluna (200-500px)</li>
                     <li>• Layout responsivo</li>
-                    <li>• Integração com notícias</li>
+                    <li>• Padding interno ajustável</li>
                   </ul>
                 </div>
               </div>
             </div>
 
-            <div className="p-4 bg-purple-50 rounded-lg">
+            <div className="p-4 border bg-card/50 rounded-lg shadow-sm">
+              <h4 className="font-medium mb-2 flex items-center gap-2">
+                <Database className="w-4 h-4 text-blue-500" />
+                Feed RSS e Links Externos
+              </h4>
+              <div className="space-y-3 text-sm">
+                <div>
+                  <strong>Feed RSS:</strong>
+                  <ul className="ml-4 mt-1 space-y-1">
+                    <li>• URL do feed RSS personalizada</li>
+                    <li>• Atualização automática (5-60 minutos)</li>
+                    <li>• Filtros por categoria ou palavra-chave</li>
+                    <li>• Limitação de itens exibidos (1-20)</li>
+                    <li>• Formato de exibição configurável</li>
+                  </ul>
+                </div>
+                <div>
+                  <strong>Links Personalizados:</strong>
+                  <ul className="ml-4 mt-1 space-y-1">
+                    <li>• Lista de links úteis</li>
+                    <li>• Ícones personalizáveis</li>
+                    <li>• Abertura em nova aba</li>
+                    <li>• Agrupamento por categorias</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div className="p-4 border bg-card/50 rounded-lg shadow-sm">
+              <h4 className="font-medium mb-2 flex items-center gap-2">
+                <Monitor className="w-4 h-4 text-green-500" />
+                Imagens Estáticas e Multimedia
+              </h4>
+              <div className="space-y-3 text-sm">
+                <div>
+                  <strong>Dimensões Recomendadas:</strong>
+                  <ul className="ml-4 mt-1 space-y-1">
+                    <li>• <Badge variant="outline">300x200px</Badge> - Banner horizontal</li>
+                    <li>• <Badge variant="outline">250x350px</Badge> - Banner vertical</li>
+                    <li>• <Badge variant="outline">300x300px</Badge> - Quadrado (logotipos)</li>
+                    <li>• <Badge variant="outline">600x400px</Badge> - HD horizontal</li>
+                  </ul>
+                </div>
+                <div>
+                  <strong>Formatos Suportados:</strong>
+                  <ul className="ml-4 mt-1 space-y-1">
+                    <li>• JPG/JPEG (boa compressão)</li>
+                    <li>• PNG (transparência)</li>
+                    <li>• GIF (animações)</li>
+                    <li>• WebP (otimizado para web)</li>
+                    <li>• SVG (vetorial, responsivo)</li>
+                  </ul>
+                </div>
+                <div>
+                  <strong>Configurações de Exibição:</strong>
+                  <ul className="ml-4 mt-1 space-y-1">
+                    <li>• Rotação automática (slideshow)</li>
+                    <li>• Tempo de exibição (3-30 segundos)</li>
+                    <li>• Efeitos de transição</li>
+                    <li>• Redimensionamento automático</li>
+                    <li>• Aspecto preservado ou esticado</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div className="p-4 border bg-card/50 rounded-lg shadow-sm">
+              <h4 className="font-medium mb-2 flex items-center gap-2">
+                <Eye className="w-4 h-4 text-orange-500" />
+                Tipos de Conteúdo Suportados
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div>
+                  <strong>Texto e HTML:</strong>
+                  <ul className="ml-4 mt-1 space-y-1">
+                    <li>• HTML personalizado</li>
+                    <li>• Texto simples formatado</li>
+                    <li>• Listas e tabelas</li>
+                    <li>• Estilos CSS inline</li>
+                  </ul>
+                </div>
+                <div>
+                  <strong>Widgets Interativos:</strong>
+                  <ul className="ml-4 mt-1 space-y-1">
+                    <li>• Relógio digital</li>
+                    <li>• Clima local</li>
+                    <li>• Calendário</li>
+                    <li>• Contador personalizado</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div className="p-4 bg-purple-50 border border-purple-200 rounded-lg">
               <h4 className="font-medium mb-2 flex items-center gap-2">
                 <HelpCircle className="w-4 h-4 text-purple-600" />
-                Dica de Uso
+                Dicas de Performance
               </h4>
-              <p className="text-sm">
-                Use esta coluna para promover pratos especiais, horários de funcionamento, 
-                informações de contato ou qualquer conteúdo que queira destacar para a equipe da cozinha.
-              </p>
+              <ul className="text-sm space-y-1">
+                <li>• Mantenha imagens abaixo de 2MB para carregamento rápido</li>
+                <li>• Use WebP quando possível para melhor compressão</li>
+                <li>• Evite muitas animações simultâneas</li>
+                <li>• Teste a velocidade de carregamento dos feeds RSS</li>
+                <li>• Configure cache apropriado para conteúdo estático</li>
+              </ul>
             </div>
           </div>
         </div>
@@ -363,7 +459,7 @@ export const UserManual = ({ children }: UserManualProps) => {
           <h3 className="text-lg font-semibold">Sistema de Expedição</h3>
           
           <div className="space-y-4">
-            <div className="p-4 border rounded-lg">
+            <div className="p-4 border bg-card/50 rounded-lg shadow-sm">
               <h4 className="font-medium mb-2 flex items-center gap-2">
                 <Zap className="w-4 h-4 text-yellow-500" />
                 Expedição Manual
@@ -392,7 +488,7 @@ export const UserManual = ({ children }: UserManualProps) => {
               </div>
             </div>
 
-            <div className="p-4 border rounded-lg">
+            <div className="p-4 border bg-card/50 rounded-lg shadow-sm">
               <h4 className="font-medium mb-2 flex items-center gap-2">
                 <Clock className="w-4 h-4 text-blue-500" />
                 Auto-Expedição
@@ -411,7 +507,7 @@ export const UserManual = ({ children }: UserManualProps) => {
               </div>
             </div>
 
-            <div className="p-4 border rounded-lg">
+            <div className="p-4 border bg-card/50 rounded-lg shadow-sm">
               <h4 className="font-medium mb-2">Log de Expedição</h4>
               <div className="space-y-3 text-sm">
                 <p>Histórico dos últimos 10 pedidos expedidos, visível na barra inferior.</p>
@@ -440,13 +536,13 @@ export const UserManual = ({ children }: UserManualProps) => {
           <h3 className="text-lg font-semibold">Sistema de Sons e TTS</h3>
           
           <div className="space-y-4">
-            <div className="p-4 border rounded-lg">
+            <div className="p-4 border bg-card/50 rounded-lg shadow-sm">
               <h4 className="font-medium mb-2 flex items-center gap-2">
                 <Bell className="w-4 h-4 text-blue-500" />
                 Sons de Notificação
               </h4>
               <div className="space-y-3 text-sm">
-                <p>Alertas sonoros para diferentes eventos do sistema.</p>
+                <p>Alertas sonoros para diferentes eventos do sistema, totalmente personalizáveis.</p>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <strong>Eventos com som:</strong>
@@ -454,49 +550,160 @@ export const UserManual = ({ children }: UserManualProps) => {
                       <li>• Novo pedido na produção</li>
                       <li>• Pedido movido para prontos</li>
                       <li>• Expedição de pedido</li>
+                      <li>• Auto-expedição de pedido</li>
+                      <li>• Erro na expedição</li>
+                      <li>• Sistema iniciado</li>
                     </ul>
                   </div>
                   <div>
-                    <strong>Configurações:</strong>
+                    <strong>Configurações por evento:</strong>
                     <ul className="ml-4 mt-1 space-y-1">
-                      <li>• Ativar/desativar por evento</li>
-                      <li>• Escolher arquivo de som</li>
-                      <li>• Ajustar volume</li>
+                      <li>• Ativar/desativar individualmente</li>
+                      <li>• Escolher arquivo de som (.wav, .mp3)</li>
+                      <li>• Ajustar volume (0-100%)</li>
+                      <li>• Repetir som (1-5 vezes)</li>
+                      <li>• Delay entre repetições</li>
                     </ul>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="p-4 border rounded-lg">
+            <div className="p-4 border bg-card/50 rounded-lg shadow-sm">
               <h4 className="font-medium mb-2 flex items-center gap-2">
                 <Volume2 className="w-4 h-4 text-green-500" />
-                Text-to-Speech (TTS)
+                Text-to-Speech (TTS) Avançado
               </h4>
               <div className="space-y-3 text-sm">
-                <p>Narração automática de informações dos pedidos.</p>
+                <p>Sistema de narração automática com múltiplas opções e configurações de voz.</p>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <strong>Conteúdo Narrado:</strong>
+                    <ul className="ml-4 mt-1 space-y-1">
+                      <li>• Número do pedido</li>
+                      <li>• Apelido do cliente</li>
+                      <li>• Lista completa de itens</li>
+                      <li>• Tipo de módulo (balcão, mesa, etc.)</li>
+                      <li>• Instruções especiais</li>
+                      <li>• Quantidade de itens</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <strong>Configurações de Voz:</strong>
+                    <ul className="ml-4 mt-1 space-y-1">
+                      <li>• Velocidade de fala (0.5x - 3x)</li>
+                      <li>• Tom da voz (pitch: -2 a +2)</li>
+                      <li>• Volume específico do TTS</li>
+                      <li>• Seleção de voz (quando disponível)</li>
+                      <li>• Idioma (pt-BR, en, es, fr)</li>
+                      <li>• Pausas entre palavras</li>
+                    </ul>
+                  </div>
+                </div>
+                
                 <div>
-                  <strong>Funcionalidades:</strong>
+                  <strong>Eventos de TTS Configuráveis:</strong>
                   <ul className="ml-4 mt-1 space-y-1">
-                    <li>• Leitura do número do pedido</li>
-                    <li>• Leitura do apelido do cliente</li>
-                    <li>• Leitura dos itens do pedido</li>
-                    <li>• Configuração de voz (velocidade, pitch)</li>
-                    <li>• Ativar/desativar por evento</li>
+                    <li>• Novo pedido chegou (produção)</li>
+                    <li>• Pedido pronto para expedição</li>
+                    <li>• Pedido foi expedido</li>
+                    <li>• Lista de pedidos pendentes (resumo)</li>
+                    <li>• Avisos personalizados (por horário)</li>
                   </ul>
                 </div>
               </div>
             </div>
 
-            <div className="p-4 bg-blue-50 rounded-lg">
+            <div className="p-4 border bg-card/50 rounded-lg shadow-sm">
+              <h4 className="font-medium mb-2 flex items-center gap-2">
+                <Settings className="w-4 h-4 text-orange-500" />
+                Regras e Condições Avançadas
+              </h4>
+              <div className="space-y-3 text-sm">
+                <div>
+                  <strong>Filtros de Ativação:</strong>
+                  <ul className="ml-4 mt-1 space-y-1">
+                    <li>• Por horário (ex: só entre 12h-14h)</li>
+                    <li>• Por tipo de módulo (só balcão/mesa)</li>
+                    <li>• Por quantidade de pedidos pendentes</li>
+                    <li>• Por palavras-chave nos itens</li>
+                    <li>• Por número do pedido (padrões específicos)</li>
+                  </ul>
+                </div>
+                <div>
+                  <strong>Condições de Volume Dinâmico:</strong>
+                  <ul className="ml-4 mt-1 space-y-1">
+                    <li>• Volume mais alto em horários de pico</li>
+                    <li>• Redução automática após horário comercial</li>
+                    <li>• Aumento gradual para pedidos antigos</li>
+                    <li>• Silenciar completamente em períodos definidos</li>
+                  </ul>
+                </div>
+                <div>
+                  <strong>Personalização de Mensagens:</strong>
+                  <ul className="ml-4 mt-1 space-y-1">
+                    <li>• Templates de fala personalizáveis</li>
+                    <li>• Prefixos/sufixos por módulo</li>
+                    <li>• Abreviações de itens longos</li>
+                    <li>• Pronúncia personalizada de palavras</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div className="p-4 border bg-card/50 rounded-lg shadow-sm">
+              <h4 className="font-medium mb-2 flex items-center gap-2">
+                <Keyboard className="w-4 h-4 text-purple-500" />
+                Comandos de Voz e Atalhos
+              </h4>
+              <div className="space-y-3 text-sm">
+                <div>
+                  <strong>Comandos Manuais:</strong>
+                  <ul className="ml-4 mt-1 space-y-1">
+                    <li>• Botão "Repetir última narração"</li>
+                    <li>• Narrar lista atual de pedidos</li>
+                    <li>• Testar configurações de voz</li>
+                    <li>• Silenciar temporariamente (30min/1h)</li>
+                  </ul>
+                </div>
+                <div>
+                  <strong>Atalhos de Teclado:</strong>
+                  <ul className="ml-4 mt-1 space-y-1">
+                    <li>• <Badge variant="outline">Ctrl + M</Badge> - Silenciar/Ativar TTS</li>
+                    <li>• <Badge variant="outline">Ctrl + R</Badge> - Repetir última narração</li>
+                    <li>• <Badge variant="outline">Ctrl + L</Badge> - Ler lista atual</li>
+                    <li>• <Badge variant="outline">Ctrl + T</Badge> - Testar voz</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
               <h4 className="font-medium mb-2 flex items-center gap-2">
                 <HelpCircle className="w-4 h-4 text-blue-600" />
-                Compatibilidade
+                Compatibilidade e Limitações
               </h4>
-              <p className="text-sm">
-                Os recursos de TTS dependem do navegador utilizado. Funciona melhor em 
-                Chrome, Firefox e Safari. Teste sempre antes de usar em produção.
-              </p>
+              <div className="space-y-2 text-sm">
+                <div>
+                  <strong>Navegadores Suportados:</strong>
+                  <ul className="ml-4 mt-1 space-y-1">
+                    <li>• <Badge variant="outline">Chrome</Badge> - Suporte completo, melhor qualidade</li>
+                    <li>• <Badge variant="outline">Firefox</Badge> - Suporte bom, algumas limitações</li>
+                    <li>• <Badge variant="outline">Safari</Badge> - Suporte básico</li>
+                    <li>• <Badge variant="outline">Edge</Badge> - Suporte completo</li>
+                  </ul>
+                </div>
+                <div>
+                  <strong>Limitações Técnicas:</strong>
+                  <ul className="ml-4 mt-1 space-y-1">
+                    <li>• Requer interação do usuário para primeiro uso</li>
+                    <li>• Qualidade da voz varia por SO</li>
+                    <li>• Algumas vozes podem não estar disponíveis</li>
+                    <li>• Performance pode variar com textos longos</li>
+                  </ul>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -512,7 +719,7 @@ export const UserManual = ({ children }: UserManualProps) => {
           <h3 className="text-lg font-semibold">Módulos de Pedidos</h3>
           
           <div className="space-y-4">
-            <div className="p-4 border rounded-lg">
+            <div className="p-4 border bg-card/50 rounded-lg shadow-sm">
               <h4 className="font-medium mb-2 flex items-center gap-2">
                 <Puzzle className="w-4 h-4 text-indigo-500" />
                 Tipos de Módulos
@@ -544,7 +751,7 @@ export const UserManual = ({ children }: UserManualProps) => {
               </div>
             </div>
 
-            <div className="p-4 border rounded-lg">
+            <div className="p-4 border bg-card/50 rounded-lg shadow-sm">
               <h4 className="font-medium mb-2">Opções de Exibição</h4>
               <div className="space-y-3 text-sm">
                 <div>
@@ -562,7 +769,7 @@ export const UserManual = ({ children }: UserManualProps) => {
               </div>
             </div>
 
-            <div className="p-4 border rounded-lg">
+            <div className="p-4 border bg-card/50 rounded-lg shadow-sm">
               <h4 className="font-medium mb-2">Indicadores Visuais</h4>
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
@@ -597,7 +804,7 @@ export const UserManual = ({ children }: UserManualProps) => {
           <h3 className="text-lg font-semibold">Sistema de Simulação</h3>
           
           <div className="space-y-4">
-            <div className="p-4 border rounded-lg">
+            <div className="p-4 border bg-card/50 rounded-lg shadow-sm">
               <h4 className="font-medium mb-2 flex items-center gap-2">
                 <Play className="w-4 h-4 text-green-500" />
                 Objetivo
@@ -608,7 +815,7 @@ export const UserManual = ({ children }: UserManualProps) => {
               </p>
             </div>
 
-            <div className="p-4 border rounded-lg">
+            <div className="p-4 border bg-card/50 rounded-lg shadow-sm">
               <h4 className="font-medium mb-2">Configurações Disponíveis</h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                 <div>
@@ -632,7 +839,7 @@ export const UserManual = ({ children }: UserManualProps) => {
               </div>
             </div>
 
-            <div className="p-4 border rounded-lg">
+            <div className="p-4 border bg-card/50 rounded-lg shadow-sm">
               <h4 className="font-medium mb-2">Pedidos Gerados</h4>
               <div className="space-y-3 text-sm">
                 <p>Os pedidos simulados incluem:</p>
@@ -672,7 +879,7 @@ export const UserManual = ({ children }: UserManualProps) => {
           <h3 className="text-lg font-semibold">Painel de Configurações</h3>
           
           <div className="space-y-4">
-            <div className="p-4 border rounded-lg">
+            <div className="p-4 border bg-card/50 rounded-lg shadow-sm">
               <h4 className="font-medium mb-2 flex items-center gap-2">
                 <Settings className="w-4 h-4 text-gray-500" />
                 Acesso às Configurações
@@ -686,7 +893,7 @@ export const UserManual = ({ children }: UserManualProps) => {
               </div>
             </div>
 
-            <div className="p-4 border rounded-lg">
+            <div className="p-4 border bg-card/50 rounded-lg shadow-sm">
               <h4 className="font-medium mb-2">Seções de Configuração</h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                 <div>
@@ -711,7 +918,7 @@ export const UserManual = ({ children }: UserManualProps) => {
               </div>
             </div>
 
-            <div className="p-4 border rounded-lg">
+            <div className="p-4 border bg-card/50 rounded-lg shadow-sm">
               <h4 className="font-medium mb-2 flex items-center gap-2">
                 <Database className="w-4 h-4 text-blue-500" />
                 Backup e Restauração
@@ -756,7 +963,7 @@ export const UserManual = ({ children }: UserManualProps) => {
           <h3 className="text-lg font-semibold">Solução de Problemas Comuns</h3>
           
           <div className="space-y-4">
-            <div className="p-4 border rounded-lg">
+            <div className="p-4 border bg-card/50 rounded-lg shadow-sm">
               <h4 className="font-medium mb-2 text-red-600">Som não funciona</h4>
               <div className="space-y-2 text-sm">
                 <p><strong>Possíveis causas:</strong></p>
@@ -774,7 +981,7 @@ export const UserManual = ({ children }: UserManualProps) => {
               </div>
             </div>
 
-            <div className="p-4 border rounded-lg">
+            <div className="p-4 border bg-card/50 rounded-lg shadow-sm">
               <h4 className="font-medium mb-2 text-red-600">TTS não fala</h4>
               <div className="space-y-2 text-sm">
                 <p><strong>Soluções:</strong></p>
@@ -787,7 +994,7 @@ export const UserManual = ({ children }: UserManualProps) => {
               </div>
             </div>
 
-            <div className="p-4 border rounded-lg">
+            <div className="p-4 border bg-card/50 rounded-lg shadow-sm">
               <h4 className="font-medium mb-2 text-red-600">Tela não fica em modo kiosk</h4>
               <div className="space-y-2 text-sm">
                 <p><strong>Soluções:</strong></p>
@@ -799,7 +1006,7 @@ export const UserManual = ({ children }: UserManualProps) => {
               </div>
             </div>
 
-            <div className="p-4 border rounded-lg">
+            <div className="p-4 border bg-card/50 rounded-lg shadow-sm">
               <h4 className="font-medium mb-2 text-red-600">Configurações não salvam</h4>
               <div className="space-y-2 text-sm">
                 <p><strong>Soluções:</strong></p>
@@ -839,6 +1046,18 @@ export const UserManual = ({ children }: UserManualProps) => {
   }, [searchTerm, manualSections]);
 
   const activeContent = manualSections.find(section => section.id === activeSection)?.content;
+
+  // Função para scroll automático para a seção
+  const scrollToSection = (sectionId: string) => {
+    setActiveSection(sectionId);
+    // Pequeno delay para garantir que o conteúdo seja renderizado antes do scroll
+    setTimeout(() => {
+      const contentElement = document.querySelector('[data-section-content]');
+      if (contentElement) {
+        contentElement.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }, 100);
+  };
 
   return (
     <Sheet>
@@ -880,7 +1099,7 @@ export const UserManual = ({ children }: UserManualProps) => {
                     key={section.id}
                     variant={activeSection === section.id ? "default" : "ghost"}
                     size="sm"
-                    onClick={() => setActiveSection(section.id)}
+                    onClick={() => scrollToSection(section.id)}
                     className="w-full justify-start text-left h-auto py-2 px-3"
                   >
                     <div className="flex items-center gap-3 w-full">
@@ -899,7 +1118,7 @@ export const UserManual = ({ children }: UserManualProps) => {
 
           {/* Conteúdo principal */}
           <div className="flex-1">
-            <ScrollArea className="h-full">
+            <ScrollArea className="h-full" data-section-content>
               <div className="p-6">
                 {activeContent || (
                   <div className="text-center py-12">
