@@ -29,10 +29,6 @@ import {
   CheckCircle2
 } from 'lucide-react';
 
-// Importar as imagens de referência
-import splashReference from '@/assets/splash-reference.png';
-import modulesReference from '@/assets/modules-layout-reference.png';
-
 interface UserManualProps {
   children: React.ReactNode;
 }
@@ -61,18 +57,6 @@ export const UserManual = ({ children }: UserManualProps) => {
           <p className="text-sm text-muted-foreground">
             O sistema Oie!, é um painel de senhas que exibe os números de chamada gerados pelo PDV para facilitar o controle de expedição de pedidos.
           </p>
-
-          {/* Mockup da tela principal */}
-          <div className="my-6">
-            <img 
-              src={splashReference} 
-              alt="Tela inicial do Sistema Oie!" 
-              className="w-full max-w-2xl mx-auto rounded-lg border shadow-sm"
-            />
-            <p className="text-xs text-muted-foreground text-center mt-2">
-              Tela de inicialização do Sistema Oie! v5.0
-            </p>
-          </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="p-4 border bg-card/50 rounded-lg shadow-sm">
@@ -773,18 +757,6 @@ export const UserManual = ({ children }: UserManualProps) => {
       content: (
         <div className="space-y-4">
           <h3 className="text-lg font-semibold">Módulos de Pedidos</h3>
-          
-          {/* Mockup das configurações de módulos */}
-          <div className="my-6">
-            <img 
-              src={modulesReference} 
-              alt="Configuração dos Módulos do Sistema" 
-              className="w-full max-w-md mx-auto rounded-lg border shadow-sm"
-            />
-            <p className="text-xs text-muted-foreground text-center mt-2">
-              Tela de configuração dos módulos e suas opções de exibição
-            </p>
-          </div>
           
           <div className="space-y-4">
             <div className="p-4 border bg-card/50 rounded-lg shadow-sm">
