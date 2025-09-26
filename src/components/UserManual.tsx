@@ -32,8 +32,6 @@ import {
 // Importar as imagens de referência
 import splashReference from '@/assets/splash-reference.png';
 import modulesReference from '@/assets/modules-layout-reference.png';
-import kdsInterfaceMockup from '@/assets/kds-interface-mockup.jpg';
-import orderCardsMockup from '@/assets/order-cards-mockup.jpg';
 
 interface UserManualProps {
   children: React.ReactNode;
@@ -73,18 +71,6 @@ export const UserManual = ({ children }: UserManualProps) => {
             />
             <p className="text-xs text-muted-foreground text-center mt-2">
               Tela de inicialização do Sistema Oie! v5.0
-            </p>
-          </div>
-          
-          {/* Interface principal mockup */}
-          <div className="my-6">
-            <img 
-              src={kdsInterfaceMockup} 
-              alt="Interface principal do sistema KDS" 
-              className="w-full max-w-3xl mx-auto rounded-lg border shadow-sm"
-            />
-            <p className="text-xs text-muted-foreground text-center mt-2">
-              Interface principal com as três colunas: Produção, Prontos e Publicidade
             </p>
           </div>
           
@@ -853,19 +839,6 @@ export const UserManual = ({ children }: UserManualProps) => {
 
             <div className="p-4 border bg-card/50 rounded-lg shadow-sm">
               <h4 className="font-medium mb-2">Indicadores Visuais</h4>
-              
-              {/* Mockup dos cartões com indicadores */}
-              <div className="my-4">
-                <img 
-                  src={orderCardsMockup} 
-                  alt="Tipos de indicadores visuais nos cartões" 
-                  className="w-full max-w-md mx-auto rounded-lg border shadow-sm"
-                />
-                <p className="text-xs text-muted-foreground text-center mt-2">
-                  Diferentes tipos de indicadores visuais: etiqueta, background e borda
-                </p>
-              </div>
-              
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
                   <strong>Etiqueta (padrão):</strong>
