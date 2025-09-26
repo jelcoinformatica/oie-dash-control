@@ -232,3 +232,10 @@
   .animate-fadeIn {
     animation: fadeIn 0.5s ease-out;
   }
+
+  /* Força o estilo da marca oie! */
+  .oie-brand-text {
+    font-family: 'Nunito', Arial, sans-serif !important;
+    font-weight: 700 !important;
+    text-transform: none !important;
+  }
