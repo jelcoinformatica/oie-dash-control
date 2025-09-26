@@ -7,7 +7,7 @@ import { Slider } from './ui/slider';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from './ui/alert-dialog';
 import { PanelConfig } from '../types/order';
-import { Settings, Palette, Factory, CheckCircle, Monitor, Volume2, Clock, Puzzle, Cog, X, ChevronRight, ChevronDown, Plus, Minus, ChevronLeft, ArrowLeft, ArrowRight, Mic, Database, Download, Upload, Store, Eye, RotateCcw } from 'lucide-react';
+import { Settings, Palette, Factory, CheckCircle, Monitor, Volume2, Clock, Puzzle, Cog, X, ChevronRight, ChevronDown, Plus, Minus, ChevronLeft, ArrowLeft, ArrowRight, Mic, Database, Download, Upload, Store, Eye, RotateCcw, Lightbulb } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { defaultConfig } from '../data/defaultConfig';
 import { RadioGroup, RadioGroupItem } from './ui/radio-group';
@@ -2015,6 +2015,75 @@ export const ConfigurationPanel = ({
           colorClass="text-teal-600"
         >
           <div className="space-y-4">
+            {/* Resumo Dinâmico da Simulação */}
+            <div className="bg-teal-50 border border-teal-200 rounded-md p-3">
+              <div className="flex items-center justify-between mb-2">
+                <Label className="text-xs font-semibold text-teal-800">Resumo da Configuração</Label>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-5 w-5 p-0 text-teal-600 hover:text-teal-800"
+                      title="Ver dicas sobre simulação"
+                    >
+                      <Lightbulb className="w-3 h-3" />
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle className="flex items-center gap-2">
+                        <Lightbulb className="w-4 h-4 text-yellow-500" />
+                        Dicas de Simulação
+                      </AlertDialogTitle>
+                      <AlertDialogDescription className="text-left space-y-2">
+                        <div><strong>Simulação Manual:</strong> Use os botões para gerar pedidos específicos na quantidade desejada.</div>
+                        <div><strong>Simulação Automática:</strong> Ativa geração contínua de pedidos baseado no intervalo e quantidade configurados.</div>
+                        <div><strong>Módulos Ativos:</strong> Apenas os módulos habilitados receberão pedidos simulados.</div>
+                        <div><strong>Distribuição:</strong> Os pedidos são distribuídos aleatoriamente entre os módulos ativos.</div>
+                        <div className="text-amber-600"><strong>⚠️ Importante:</strong> A simulação automática continuará gerando pedidos até ser desativada.</div>
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogAction>Entendi</AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </div>
+              
+              <div className="space-y-1 text-xs text-teal-700">
+                {config.simulation?.enabled ? (
+                  <>
+                    <div>📍 <strong>Automática:</strong> Gera {config.simulation?.ordersPerInterval || 1} pedido(s) a cada {config.simulation?.intervalSeconds || 30} segundos</div>
+                    <div>🎯 <strong>Distribuição:</strong> Entre {Object.entries(config.modules || {}).filter(([_, mod]) => mod.enabled).length || 0} módulos ativos</div>
+                  </>
+                ) : (
+                  <div>📍 <strong>Manual:</strong> Use os botões para gerar pedidos conforme necessário</div>
+                )}
+                
+                <div className="mt-2 pt-2 border-t border-teal-200">
+                  <div className="font-medium mb-1">Módulos Ativos:</div>
+                  <div className="flex flex-wrap gap-1">
+                    {Object.entries(config.modules || {})
+                      .filter(([_, mod]) => mod.enabled)
+                      .map(([key, mod]) => {
+                        const colors = {
+                          balcao: 'bg-blue-100 text-blue-800',
+                          entrega: 'bg-green-100 text-green-800', 
+                          mesa: 'bg-purple-100 text-purple-800',
+                          ficha: 'bg-orange-100 text-orange-800'
+                        };
+                        return (
+                          <span key={key} className={`px-1.5 py-0.5 rounded text-xs font-medium ${colors[key as keyof typeof colors]}`}>
+                            {key.toUpperCase()} ({mod.displayOption})
+                          </span>
+                        );
+                      })}
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div className="flex flex-col gap-3">
               <AlertDialog open={showClearDialog} onOpenChange={setShowClearDialog}>
                 <AlertDialogTrigger asChild>
