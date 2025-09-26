@@ -111,6 +111,15 @@ export const ControlPanel = ({
             </Tooltip>
           </TooltipProvider>
           <span>Oie! v.5.0</span>
+          <UserManual>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-4 w-4 p-0 border-0"
+            >
+              <BookOpen className="w-3 h-3" />
+            </Button>
+          </UserManual>
         </div>
         
         {/* Prompt de expedição fixo no centro */}
@@ -203,24 +212,6 @@ export const ControlPanel = ({
           <div className="text-xs text-muted-foreground">
             Jelco Informática (2025)
           </div>
-          <UserManual>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-5 w-5 p-0 border-0"
-                  >
-                    <BookOpen className="w-3 h-3" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Manual do Usuário</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </UserManual>
           <Button
             variant="ghost"
             size="sm"
