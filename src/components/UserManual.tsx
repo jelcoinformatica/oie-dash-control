@@ -1134,9 +1134,9 @@ export const UserManual = ({ children }: UserManualProps) => {
       <SheetTrigger asChild>
         {children}
       </SheetTrigger>
-      <SheetContent side="right" className="max-w-6xl w-full bg-background/70 overflow-hidden p-0 flex items-center justify-center fixed inset-0">
-        <div className="max-w-5xl w-full max-h-[90vh] bg-background border rounded-xl shadow-lg flex flex-col mx-auto my-auto">
-          <SheetHeader className="p-6 pb-4 border-b">
+      <SheetContent side="right" className="w-full sm:max-w-5xl bg-background overflow-hidden p-0">
+        <div className="h-full flex flex-col">
+          <SheetHeader className="p-6 pb-4 border-b bg-background">
             <div className="flex items-center gap-3">
               <BookOpen className="w-6 h-6 text-blue-600" />
               <div>
@@ -1160,7 +1160,7 @@ export const UserManual = ({ children }: UserManualProps) => {
             </div>
           </SheetHeader>
 
-          <div className="flex flex-1 overflow-hidden">
+          <div className="flex flex-1 overflow-hidden bg-background">
             {/* Sidebar de navegação */}
             <div className="w-64 border-r bg-muted/20">
               <ScrollArea className="h-full">
