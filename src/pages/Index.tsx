@@ -19,6 +19,7 @@ const Index = () => {
   const [originalConfig, setOriginalConfig] = useState<PanelConfig>(defaultConfig);
   const [configOpen, setConfigOpen] = useState(false);
   const [showSplash, setShowSplash] = useState(false);
+  const [isKioskMode, setIsKioskMode] = useState(true);
   
   // Estabilizar ttsConfig para evitar recriações desnecessárias
   const ttsConfig = useMemo(() => 
@@ -191,6 +192,36 @@ const Index = () => {
     setConfigOpen(false);
   };
 
+  const handleToggleKiosk = async () => {
+    try {
+      if (isKioskMode) {
+        // Sair do modo kiosk
+        if (document.fullscreenElement) {
+          await document.exitFullscreen();
+        }
+        setIsKioskMode(false);
+      } else {
+        // Entrar no modo kiosk
+        if (document.documentElement.requestFullscreen) {
+          await document.documentElement.requestFullscreen();
+        }
+        setIsKioskMode(true);
+      }
+    } catch (error) {
+      console.warn('Erro ao alternar modo kiosk:', error);
+    }
+  };
+
+  // Listener para detectar mudanças no fullscreen
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsKioskMode(!!document.fullscreenElement);
+    };
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  }, []);
+
   const getColumnWidths = () => {
     const production = config.production.visible ? config.production.width : 0;
     const ready = config.ready.width;
@@ -352,6 +383,8 @@ const Index = () => {
           onExpedite={handleExpedite}
           expeditionLog={expeditionLog}
           configOpen={configOpen}
+          isKioskMode={isKioskMode}
+          onToggleKiosk={handleToggleKiosk}
         />
       </div>
 

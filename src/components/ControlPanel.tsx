@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
-import { Settings, Send } from 'lucide-react';
+import { Settings, Send, Maximize, Minimize } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 
 interface ControlPanelProps {
@@ -9,13 +9,17 @@ interface ControlPanelProps {
   onExpedite: (orderNumber: string) => void;
   expeditionLog?: Array<{orderNumber: string, nickname?: string, expeditionTime: Date, isAutoExpedition?: boolean}>;
   configOpen?: boolean;
+  isKioskMode?: boolean;
+  onToggleKiosk: () => void;
 }
 
 export const ControlPanel = ({ 
   onConfigClick, 
   onExpedite,
   expeditionLog = [],
-  configOpen = false
+  configOpen = false,
+  isKioskMode = true,
+  onToggleKiosk
 }: ControlPanelProps) => {
   const [expeditionInput, setExpeditionInput] = useState('');
   const [recentAutoExpedited, setRecentAutoExpedited] = useState<Set<string>>(new Set());
@@ -78,7 +82,24 @@ export const ControlPanel = ({
   return (
     <div className="bg-card border-t shadow-sm relative" style={{ height: '32px', minHeight: '32px' }}>
       <div className="container mx-auto px-2 py-1 flex items-center justify-between h-full relative">
-        <div className="text-xs text-muted-foreground flex-shrink-0">
+        <div className="text-xs text-muted-foreground flex-shrink-0 flex items-center gap-1">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={onToggleKiosk}
+                  className="h-4 w-4 p-0 border-0"
+                >
+                  {isKioskMode ? <Minimize className="w-3 h-3" /> : <Maximize className="w-3 h-3" />}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{isKioskMode ? 'Sair do modo kiosk' : 'Entrar no modo kiosk'}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
           Oie! v.5.0 | Banco: &lt;colibri&gt; | Usuário: sa
         </div>
         
