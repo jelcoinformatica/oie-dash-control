@@ -98,6 +98,11 @@ export interface PanelConfig {
     enabled: boolean;
     minutes: number;
   };
+  simulation?: {
+    enabled: boolean;
+    intervalSeconds: number;
+    ordersPerInterval: number;
+  };
   modules: {
     balcao: {
       enabled: boolean;

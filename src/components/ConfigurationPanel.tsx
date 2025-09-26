@@ -1870,6 +1870,57 @@ export const ConfigurationPanel = ({
               </div>
             </div>
             
+            <div className="space-y-3 border-t pt-3">
+              <div className="space-y-2">
+                <Label className="text-xs font-medium">Simulação Automática:</Label>
+                <div className="flex items-center space-x-1.5">
+                  <Switch
+                    checked={config.simulation?.enabled || false}
+                    onCheckedChange={(checked) => updateConfig('simulation.enabled', checked)}
+                    className="scale-50"
+                  />
+                  <Label className="text-xs">Ativar geração automática</Label>
+                </div>
+                
+                {config.simulation?.enabled && (
+                  <div className="space-y-2 pl-4 border-l-2 border-gray-200">
+                    <div>
+                      <Label className="text-xs font-medium">Gerar a cada: {config.simulation?.intervalSeconds || 30} segundos</Label>
+                      <Slider
+                        value={[config.simulation?.intervalSeconds || 30]}
+                        onValueChange={([value]) => updateConfig('simulation.intervalSeconds', value)}
+                        max={180}
+                        min={15}
+                        step={15}
+                        className="mt-1"
+                      />
+                    </div>
+                    
+                    <div>
+                      <Label className="text-xs font-medium">Quantidade por vez: {config.simulation?.ordersPerInterval || 1}</Label>
+                      <Slider
+                        value={[config.simulation?.ordersPerInterval || 1]}
+                        onValueChange={([value]) => updateConfig('simulation.ordersPerInterval', value)}
+                        max={10}
+                        min={1}
+                        step={1}
+                        className="mt-1"
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+              
+              {config.autoExpedition.enabled && (
+                <div className="space-y-1 bg-orange-50 p-2 rounded border">
+                  <Label className="text-xs font-medium text-orange-700">Auto Expedição Ativa</Label>
+                  <div className="text-xs text-orange-600">
+                    Pedidos serão expedidos após {config.autoExpedition.minutes} minutos
+                  </div>
+                </div>
+              )}
+            </div>
+            
             <div className="space-y-2 border-t pt-3">
               <Label className="text-xs font-medium">Módulos Ativos:</Label>
               <div className="flex flex-col gap-1 text-xs">

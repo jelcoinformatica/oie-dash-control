@@ -97,6 +97,11 @@ export const defaultConfig: PanelConfig = {
     enabled: false,
     minutes: 10
   },
+  simulation: {
+    enabled: false,
+    intervalSeconds: 30,
+    ordersPerInterval: 1
+  },
   modules: {
     balcao: {
       enabled: true,
