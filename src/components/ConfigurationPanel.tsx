@@ -542,6 +542,27 @@ export const ConfigurationPanel = ({
             </div>
           </div>
 
+          <div className="grid grid-cols-2 gap-2">
+            <div>
+              <Label className="text-xs">Cor de Fundo</Label>
+              <Input
+                type="color"
+                value={config.ready.headerBg}
+                onChange={(e) => updateConfig('ready.headerBg', e.target.value)}
+                className="h-12 mt-1 border-2"
+              />
+            </div>
+            <div>
+              <Label className="text-xs">Cor da Fonte</Label>
+              <Input
+                type="color"
+                value={config.ready.headerColor}
+                onChange={(e) => updateConfig('ready.headerColor', e.target.value)}
+                className="h-12 mt-1 border-2"
+              />
+            </div>
+          </div>
+
         </ConfigSection>
 
         {/* Último Pedido */}
@@ -884,6 +905,28 @@ export const ConfigurationPanel = ({
               className="w-20 h-6 mt-1 cursor-pointer"
             />
           </div>
+
+          <div className="grid grid-cols-2 gap-2">
+            <div>
+              <Label className="text-xs">Cor de Fundo do Cabeçalho</Label>
+              <Input
+                type="color"
+                value={config.advertising.headerBg}
+                onChange={(e) => updateConfig('advertising.headerBg', e.target.value)}
+                className="h-12 mt-1 border-2"
+              />
+            </div>
+            <div>
+              <Label className="text-xs">Cor da Fonte do Cabeçalho</Label>
+              <Input
+                type="color"
+                value={config.advertising.headerColor}
+                onChange={(e) => updateConfig('advertising.headerColor', e.target.value)}
+                className="h-12 mt-1 border-2"
+              />
+            </div>
+          </div>
+
         </ConfigSection>
 
         {/* Efeitos Sonoros */}
