@@ -7,7 +7,7 @@ import { Slider } from './ui/slider';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from './ui/alert-dialog';
 import { PanelConfig } from '../types/order';
-import { Settings, Palette, Factory, CheckCircle, Monitor, Volume2, Clock, Puzzle, Cog, X, ChevronRight, ChevronDown, Plus, Minus, ChevronLeft, ArrowLeft, ArrowRight, Mic } from 'lucide-react';
+import { Settings, Palette, Factory, CheckCircle, Monitor, Volume2, Clock, Puzzle, Cog, X, ChevronRight, ChevronDown, Plus, Minus, ChevronLeft, ArrowLeft, ArrowRight, Mic, Database, Download, Upload, Store, Eye } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { defaultConfig } from '../data/defaultConfig';
 import { RadioGroup, RadioGroupItem } from './ui/radio-group';
@@ -65,11 +65,12 @@ const ConfigSection = ({ title, icon, isOpen, onToggle, children, colorClass = "
   </div>
 );
 
-const SubConfigSection = ({ title, isOpen, onToggle, children }: { 
+const SubConfigSection = ({ title, isOpen, onToggle, children, icon }: { 
   title: string; 
   isOpen: boolean; 
   onToggle: () => void; 
-  children: React.ReactNode; 
+  children: React.ReactNode;
+  icon?: React.ReactNode;
 }) => (
   <div className="border border-gray-200 rounded-md mb-2">
     <button
@@ -79,7 +80,10 @@ const SubConfigSection = ({ title, isOpen, onToggle, children }: {
         isOpen ? "bg-gray-100" : "bg-white hover:bg-gray-50"
       )}
     >
-      <span className="text-xs font-medium text-gray-700">{title}</span>
+      <div className="flex items-center gap-2">
+        {icon && <div className="w-3 h-3 text-gray-500">{icon}</div>}
+        <span className="text-xs font-medium text-gray-700">{title}</span>
+      </div>
       {isOpen ? (
         <ChevronDown className="w-3 h-3 text-gray-500" />
       ) : (
@@ -1745,9 +1749,10 @@ export const ConfigurationPanel = ({
           colorClass="text-gray-600"
         >
           <SubConfigSection
-            title="Conexão com Banco de Dados"
+            title="Conexão com Banco"
             isOpen={openSubSections.diversosDatabase}
             onToggle={() => toggleSubSection('diversosDatabase')}
+            icon={<Database className="w-3 h-3" />}
           >
             <div className="space-y-3">
               <div className="flex items-center justify-between">
@@ -1831,9 +1836,10 @@ export const ConfigurationPanel = ({
           </SubConfigSection>
 
           <SubConfigSection
-            title="Backup e Configurações"
+            title="Backup & Config"
             isOpen={openSubSections.diversosBackup}
             onToggle={() => toggleSubSection('diversosBackup')}
+            icon={<Download className="w-3 h-3" />}
           >
             <div className="space-y-3">
               <div className="flex gap-2">
@@ -1924,6 +1930,7 @@ export const ConfigurationPanel = ({
             title="Dados da Loja"
             isOpen={openSubSections.diversosStore}
             onToggle={() => toggleSubSection('diversosStore')}
+            icon={<Store className="w-3 h-3" />}
           >
             <div className="space-y-3">
               <div className="space-y-1">
@@ -1982,6 +1989,7 @@ export const ConfigurationPanel = ({
             title="Tela Inicial"
             isOpen={openSubSections.diversosScreen}
             onToggle={() => toggleSubSection('diversosScreen')}
+            icon={<Eye className="w-3 h-3" />}
           >
             <div className="flex items-center justify-between">
               <Label className="text-xs">Exibir tela de splash</Label>
