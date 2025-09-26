@@ -5,7 +5,6 @@ import { OrderCard } from '../components/OrderCard';
 import { OrderColumnGrid } from '../components/OrderColumnGrid';
 import { LastOrderDisplay } from '../components/LastOrderDisplay';
 import { AdvertisingColumn } from '../components/AdvertisingColumn';
-import { AnimatedWatermark } from '../components/AnimatedWatermark';
 import { ControlPanel } from '../components/ControlPanel';
 import { ConfigurationPanel } from '../components/ConfigurationPanel';
 import { SplashScreen } from '../components/SplashScreen';
@@ -385,18 +384,7 @@ const Index = () => {
                 </div>
               )}
               
-              <div className="flex-1 p-2 bg-gray-50 relative" style={{ overflow: 'hidden' }}>
-                {/* Marca d'água animada OIE! quando há poucos pedidos */}
-                {(productionOrders.length + readyOrders.length) < 2 && (
-                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
-                    <AnimatedWatermark 
-                      totalOrders={productionOrders.length + readyOrders.length}
-                      autoPlay={true}
-                      className="text-8xl opacity-20"
-                    />
-                  </div>
-                )}
-                
+              <div className="flex-1 p-2 bg-gray-50" style={{ overflow: 'hidden' }}>
                 <OrderColumnGrid
                   orders={readyOrders}
                   columns={config.ready.cardConfig.columns}

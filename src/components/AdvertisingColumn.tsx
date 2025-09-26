@@ -1,6 +1,5 @@
 import { cn } from '../lib/utils';
 import { NewsDisplay } from './NewsDisplay';
-import { AnimatedWatermark } from './AnimatedWatermark';
 
 interface AdvertisingColumnProps {
   title?: string;
@@ -16,7 +15,6 @@ interface AdvertisingColumnProps {
   newsMode?: boolean;
   newsSource?: 'g1' | 'uol' | 'cnn' | 'panelinha' | 'cybercook' | 'tudogostoso' | 'foodnetwork';
   newsFontSize?: number; // Nova prop para tamanho da fonte
-  totalOrders?: number; // Número total de pedidos para controlar a animação da marca d'água
   onToggleHeader?: () => void;
 }
 
@@ -34,7 +32,6 @@ export const AdvertisingColumn = ({
   newsMode = false,
   newsSource = 'g1',
   newsFontSize = 2.5, // Tamanho padrão para visualização à distância
-  totalOrders = 0,
   onToggleHeader
 }: AdvertisingColumnProps) => {
 
