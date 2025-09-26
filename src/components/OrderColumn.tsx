@@ -19,22 +19,28 @@ interface OrderColumnProps {
   headerHeight?: number;
   headerFontSize?: number;
   headerFontFamily?: string;
-  enabledModules?: {
-    balcao: {
-      enabled: boolean;
-      displayOption: 'numeroVenda' | 'numeroChamada' | 'apelido' | 'apelidoNumeroVenda';
-    };
-    mesa: {
-      enabled: boolean;
-      displayOption: 'numeroMesa' | 'apelidoNumeroMesa';
-    };
-    entrega: {
-      enabled: boolean;
-      displayOption: 'numeroEntrega' | 'numeroVenda';
-    };
-    ficha: {
-      enabled: boolean;
-      displayOption: 'numeroFicha' | 'numeroChamada' | 'nomeCliente' | 'fichaCliente' | 'localEntregaFicha';
+  config?: {
+    modules: {
+      balcao: {
+        enabled: boolean;
+        displayOption: 'numeroVenda' | 'numeroChamada' | 'apelido' | 'apelidoNumeroVenda';
+        showIndicator?: boolean;
+      };
+      mesa: {
+        enabled: boolean;
+        displayOption: 'numeroMesa' | 'apelidoNumeroMesa';
+        showIndicator?: boolean;
+      };
+      entrega: {
+        enabled: boolean;
+        displayOption: 'numeroEntrega' | 'numeroVenda';
+        showIndicator?: boolean;
+      };
+      ficha: {
+        enabled: boolean;
+        displayOption: 'numeroFicha' | 'numeroChamada' | 'nomeCliente' | 'fichaCliente' | 'localEntregaFicha';
+        showIndicator?: boolean;
+      };
     };
   };
   cardConfig?: {
@@ -78,7 +84,7 @@ export const OrderColumn = ({
   headerHeight = 48,
   headerFontSize = 1.2,
   headerFontFamily = 'Arial',
-  enabledModules,
+  config,
   cardConfig,
   columns,
   showBorder = false
@@ -121,7 +127,7 @@ export const OrderColumn = ({
             showNickname={showNickname}
             showItems={showItems}
             moduleIndicator={moduleIndicator}
-            enabledModules={enabledModules}
+            config={config}
             cardConfig={cardConfig}
           />
         </div>

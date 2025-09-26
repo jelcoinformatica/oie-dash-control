@@ -108,18 +108,22 @@ export interface PanelConfig {
     balcao: {
       enabled: boolean;
       displayOption: 'numeroVenda' | 'numeroChamada' | 'apelido' | 'apelidoNumeroVenda';
+      showIndicator?: boolean;
     };
     mesa: {
       enabled: boolean;
       displayOption: 'numeroMesa' | 'apelidoNumeroMesa';
+      showIndicator?: boolean;
     };
     entrega: {
       enabled: boolean;
       displayOption: 'numeroEntrega' | 'numeroVenda';
+      showIndicator?: boolean;
     };
     ficha: {
       enabled: boolean;
       displayOption: 'numeroFicha' | 'numeroChamada' | 'nomeCliente' | 'fichaCliente' | 'localEntregaFicha';
+      showIndicator?: boolean;
     };
   };
   database?: {

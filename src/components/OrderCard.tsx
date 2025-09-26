@@ -8,22 +8,28 @@ interface OrderCardProps {
   showNickname?: boolean;
   showItems?: boolean;
   moduleIndicator?: 'none' | 'bullet' | 'tag';
-  enabledModules?: {
-    balcao: {
-      enabled: boolean;
-      displayOption: 'numeroVenda' | 'numeroChamada' | 'apelido' | 'apelidoNumeroVenda';
-    };
-    mesa: {
-      enabled: boolean;
-      displayOption: 'numeroMesa' | 'apelidoNumeroMesa';
-    };
-    entrega: {
-      enabled: boolean;
-      displayOption: 'numeroEntrega' | 'numeroVenda';
-    };
-    ficha: {
-      enabled: boolean;
-      displayOption: 'numeroFicha' | 'numeroChamada' | 'nomeCliente' | 'fichaCliente' | 'localEntregaFicha';
+  config?: {
+    modules: {
+      balcao: {
+        enabled: boolean;
+        displayOption: 'numeroVenda' | 'numeroChamada' | 'apelido' | 'apelidoNumeroVenda';
+        showIndicator?: boolean;
+      };
+      mesa: {
+        enabled: boolean;
+        displayOption: 'numeroMesa' | 'apelidoNumeroMesa';
+        showIndicator?: boolean;
+      };
+      entrega: {
+        enabled: boolean;
+        displayOption: 'numeroEntrega' | 'numeroVenda';
+        showIndicator?: boolean;
+      };
+      ficha: {
+        enabled: boolean;
+        displayOption: 'numeroFicha' | 'numeroChamada' | 'nomeCliente' | 'fichaCliente' | 'localEntregaFicha';
+        showIndicator?: boolean;
+      };
     };
   };
   fontSize?: number;
@@ -60,17 +66,12 @@ export const OrderCard = ({
   showNickname = true,
   showItems = true,
   moduleIndicator = 'bullet',
-  enabledModules,
+  config,
   fontSize = 2,
   fontFamily = 'Arial',
   textColor = '#374151',
   backgroundColor = '#ffffff'
 }: OrderCardProps) => {
-  // Show module indicator when more than 1 module is enabled and not set to 'none'
-  const enabledModulesCount = enabledModules ? 
-    Object.values(enabledModules).filter(module => module.enabled).length : 0;
-  const showModuleIndicator = enabledModulesCount > 1 && moduleIndicator !== 'none';
-  
   const displayNumber = order.numeroPedido || order.number;
   const displayName = order.nomeCliente || order.nickname;
   const isOnlineDelivery = displayNumber?.match(/^(IF|DD|RA|UB)-/);
@@ -85,6 +86,21 @@ export const OrderCard = ({
       default: return prefix;
     }
   };
+
+  // Nova lógica: verifica se o módulo específico tem indicador ativado
+  const shouldShowModuleIndicator = (): boolean => {
+    // Para delivery online, sempre mostra na etiqueta se for tipo tag
+    if (isOnlineDelivery && moduleIndicator === 'tag') return true;
+    
+    // Para módulos normais, verifica a configuração individual
+    if (config?.modules && order.modulo) {
+      return config.modules[order.modulo]?.showIndicator || false;
+    }
+    
+    return false;
+  };
+  
+  const showModuleIndicator = shouldShowModuleIndicator();
   
   return (
     <div

@@ -1405,206 +1405,214 @@ export const ConfigurationPanel = ({
 
         {/* Módulos */}
         <ConfigSection
-          title="Módulos"
+          title="Indicador de módulos"
           icon={<Puzzle className="w-4 h-4" />}
           isOpen={openSections.modules}
           onToggle={() => toggleSection('modules')}
-          colorClass="text-indigo-600"
+          colorClass="text-yellow-600"
         >
-          <div className="space-y-3">
-            {/* BALCÃO */}
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="w-5 h-5 rounded-full bg-white shadow-md border border-gray-200 flex items-center justify-center">
-                    <div className="w-3 h-3 rounded-full bg-green-500 shadow-sm"></div>
+          <div className="pb-2 mb-3 border-b border-gray-200">
+            <h4 className="text-lg font-bold mb-3 text-gray-800">Configuração por Módulo</h4>
+            <p className="text-sm text-gray-600 mb-4">Configure individualmente quais módulos exibirão indicadores nos cards.</p>
+          </div>
+          
+          {Object.entries(config.modules).map(([moduleKey, moduleConfig]) => {
+            const moduleLabels = {
+              balcao: 'Balcão',
+              mesa: 'Mesa', 
+              entrega: 'Entrega',
+              ficha: 'Ficha'
+            };
+            
+            const moduleColors = {
+              balcao: 'bg-green-500',
+              mesa: 'bg-blue-500',
+              entrega: 'bg-red-500',
+              ficha: 'bg-purple-500'
+            };
+            
+            return (
+              <div key={moduleKey} className="space-y-3 p-3 rounded-lg border bg-gray-50/50">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2">
+                      <div className="w-5 h-5 rounded-full bg-white shadow-md border border-gray-200 flex items-center justify-center">
+                        <div className={cn("w-3 h-3 rounded-full shadow-sm", moduleColors[moduleKey as keyof typeof moduleColors])}></div>
+                      </div>
+                      <Switch 
+                        checked={moduleConfig.enabled} 
+                        onCheckedChange={(checked) => updateConfig(`modules.${moduleKey}.enabled`, checked)}
+                        className="scale-75"
+                      />
+                      <Label className="text-sm font-medium text-gray-700">
+                        {moduleLabels[moduleKey as keyof typeof moduleLabels]}
+                      </Label>
+                    </div>
+                    
+                    {moduleConfig.enabled && (
+                      <div className="flex items-center gap-2 ml-4">
+                        <Switch 
+                          checked={moduleConfig.showIndicator || false} 
+                          onCheckedChange={(checked) => updateConfig(`modules.${moduleKey}.showIndicator`, checked)}
+                          className="scale-50"
+                        />
+                        <Label className="text-xs text-gray-600">Exibir indicador</Label>
+                      </div>
+                    )}
                   </div>
-                  <Label className="text-xs font-semibold text-gray-700">BALCÃO</Label>
+                  
+                  <div className="text-xs px-2 py-1 rounded-full">
+                    {moduleConfig.enabled ? (
+                      <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full font-medium">
+                        Ativo {moduleConfig.showIndicator ? '• Indicador' : ''}
+                      </span>
+                    ) : (
+                      <span className="bg-gray-100 text-gray-500 px-2 py-1 rounded-full">
+                        Inativo
+                      </span>
+                    )}
+                  </div>
                 </div>
-                <Switch
-                  checked={config.modules.balcao.enabled}
-                  onCheckedChange={(checked) => updateConfig('modules.balcao.enabled', checked)}
-                  className="scale-50"
-                />
-              </div>
-              {config.modules.balcao.enabled && (
-                <div className="ml-4 space-y-2 border-l-2 border-gray-200 pl-4">
-                  <Label className="text-xs text-gray-500">Opção de Exibição:</Label>
-                  <RadioGroup
-                    value={config.modules.balcao.displayOption}
-                    onValueChange={(value: 'numeroVenda' | 'numeroChamada' | 'apelido' | 'apelidoNumeroVenda') => 
-                      updateConfig('modules.balcao.displayOption', value)}
-                    className="space-y-1"
-                  >
-                    <div className="flex items-center space-x-1.5">
-                      <RadioGroupItem value="numeroVenda" id="balcao-num-venda" />
-                      <Label htmlFor="balcao-num-venda" className="text-xs">No. de venda</Label>
-                    </div>
-                    <div className="flex items-center space-x-1.5">
-                      <RadioGroupItem value="numeroChamada" id="balcao-num-chamada" />
-                      <Label htmlFor="balcao-num-chamada" className="text-xs">No. da chamada</Label>
-                    </div>
-                    <div className="flex items-center space-x-1.5">
-                      <RadioGroupItem value="apelido" id="balcao-apelido" />
-                      <Label htmlFor="balcao-apelido" className="text-xs">Apelido</Label>
-                    </div>
-                    <div className="flex items-center space-x-1.5">
-                      <RadioGroupItem value="apelidoNumeroVenda" id="balcao-apelido-num-venda" />
-                      <Label htmlFor="balcao-apelido-num-venda" className="text-xs">Apelido + No. de venda</Label>
-                    </div>
-                  </RadioGroup>
-                </div>
-              )}
-            </div>
 
-            {/* ENTREGA */}
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="w-5 h-5 rounded-full bg-white shadow-md border border-gray-200 flex items-center justify-center">
-                    <div className="w-3 h-3 rounded-full bg-red-500 shadow-sm"></div>
+                {moduleConfig.enabled && (
+                  <div className="ml-4 space-y-2 border-l-2 border-gray-200 pl-4">
+                    <Label className="text-xs text-gray-500">Opção de Exibição:</Label>
+                    {moduleKey === 'balcao' && (
+                      <RadioGroup
+                        value={moduleConfig.displayOption}
+                        onValueChange={(value: 'numeroVenda' | 'numeroChamada' | 'apelido' | 'apelidoNumeroVenda') => 
+                          updateConfig(`modules.${moduleKey}.displayOption`, value)}
+                        className="space-y-1"
+                      >
+                        <div className="flex items-center space-x-1.5">
+                          <RadioGroupItem value="numeroVenda" id="balcao-num-venda" />
+                          <Label htmlFor="balcao-num-venda" className="text-xs">No. de venda</Label>
+                        </div>
+                        <div className="flex items-center space-x-1.5">
+                          <RadioGroupItem value="numeroChamada" id="balcao-num-chamada" />
+                          <Label htmlFor="balcao-num-chamada" className="text-xs">No. da chamada</Label>
+                        </div>
+                        <div className="flex items-center space-x-1.5">
+                          <RadioGroupItem value="apelido" id="balcao-apelido" />
+                          <Label htmlFor="balcao-apelido" className="text-xs">Apelido</Label>
+                        </div>
+                        <div className="flex items-center space-x-1.5">
+                          <RadioGroupItem value="apelidoNumeroVenda" id="balcao-apelido-num-venda" />
+                          <Label htmlFor="balcao-apelido-num-venda" className="text-xs">Apelido + No. de venda</Label>
+                        </div>
+                      </RadioGroup>
+                    )}
+                    
+                    {moduleKey === 'entrega' && (
+                      <RadioGroup
+                        value={moduleConfig.displayOption}
+                        onValueChange={(value: 'numeroEntrega' | 'numeroVenda') => 
+                          updateConfig(`modules.${moduleKey}.displayOption`, value)}
+                        className="space-y-1"
+                      >
+                        <div className="flex items-center space-x-1.5">
+                          <RadioGroupItem value="numeroEntrega" id="entrega-num-entrega" />
+                          <Label htmlFor="entrega-num-entrega" className="text-xs">No. de entrega</Label>
+                        </div>
+                        <div className="flex items-center space-x-1.5">
+                          <RadioGroupItem value="numeroVenda" id="entrega-num-venda" />
+                          <Label htmlFor="entrega-num-venda" className="text-xs">No. da venda (iFood, Rappi...)</Label>
+                        </div>
+                      </RadioGroup>
+                    )}
+                    
+                    {moduleKey === 'mesa' && (
+                      <RadioGroup
+                        value={moduleConfig.displayOption}
+                        onValueChange={(value: 'numeroMesa' | 'apelidoNumeroMesa') => 
+                          updateConfig(`modules.${moduleKey}.displayOption`, value)}
+                        className="space-y-1"
+                      >
+                        <div className="flex items-center space-x-1.5">
+                          <RadioGroupItem value="numeroMesa" id="mesa-num-mesa" />
+                          <Label htmlFor="mesa-num-mesa" className="text-xs">No. da Mesa</Label>
+                        </div>
+                        <div className="flex items-center space-x-1.5">
+                          <RadioGroupItem value="apelidoNumeroMesa" id="mesa-apelido-num-mesa" />
+                          <Label htmlFor="mesa-apelido-num-mesa" className="text-xs">Apelido + No. da Mesa</Label>
+                        </div>
+                      </RadioGroup>
+                    )}
+                    
+                    {moduleKey === 'ficha' && (
+                      <RadioGroup
+                        value={moduleConfig.displayOption}
+                        onValueChange={(value: 'numeroFicha' | 'numeroChamada' | 'nomeCliente' | 'fichaCliente' | 'localEntregaFicha') => 
+                          updateConfig(`modules.${moduleKey}.displayOption`, value)}
+                        className="space-y-1"
+                      >
+                        <div className="flex items-center space-x-1.5">
+                          <RadioGroupItem value="numeroFicha" id="ficha-num-ficha" />
+                          <Label htmlFor="ficha-num-ficha" className="text-xs">No. da ficha</Label>
+                        </div>
+                        <div className="flex items-center space-x-1.5">
+                          <RadioGroupItem value="numeroChamada" id="ficha-num-chamada" />
+                          <Label htmlFor="ficha-num-chamada" className="text-xs">No. da chamada</Label>
+                        </div>
+                        <div className="flex items-center space-x-1.5">
+                          <RadioGroupItem value="nomeCliente" id="ficha-nome-cliente" />
+                          <Label htmlFor="ficha-nome-cliente" className="text-xs">Nome do Cliente</Label>
+                        </div>
+                        <div className="flex items-center space-x-1.5">
+                          <RadioGroupItem value="fichaCliente" id="ficha-ficha-cliente" />
+                          <Label htmlFor="ficha-ficha-cliente" className="text-xs">No.Ficha + Nome do Cliente</Label>
+                        </div>
+                        <div className="flex items-center space-x-1.5">
+                          <RadioGroupItem value="localEntregaFicha" id="ficha-local-entrega" />
+                          <Label htmlFor="ficha-local-entrega" className="text-xs">Local Entrega + No. da ficha</Label>
+                        </div>
+                      </RadioGroup>
+                    )}
                   </div>
-                  <Label className="text-sm font-semibold text-gray-700">ENTREGA</Label>
-                </div>
-                <Switch
-                  checked={config.modules.entrega.enabled}
-                  onCheckedChange={(checked) => updateConfig('modules.entrega.enabled', checked)}
-                  className="scale-50"
-                />
+                )}
               </div>
-              {config.modules.entrega.enabled && (
-                <div className="ml-4 space-y-2 border-l-2 border-gray-200 pl-4">
-                  <Label className="text-xs text-gray-500">Opção de Exibição:</Label>
-                  <RadioGroup
-                    value={config.modules.entrega.displayOption}
-                    onValueChange={(value: 'numeroEntrega' | 'numeroVenda') => 
-                      updateConfig('modules.entrega.displayOption', value)}
-                    className="space-y-1"
-                  >
-                    <div className="flex items-center space-x-1.5">
-                      <RadioGroupItem value="numeroEntrega" id="entrega-num-entrega" />
-                      <Label htmlFor="entrega-num-entrega" className="text-xs">No. de entrega</Label>
-                    </div>
-                    <div className="flex items-center space-x-1.5">
-                      <RadioGroupItem value="numeroVenda" id="entrega-num-venda" />
-                      <Label htmlFor="entrega-num-venda" className="text-xs">No. da venda (iFood, Rappi...)</Label>
-                    </div>
-                  </RadioGroup>
-                </div>
-              )}
-            </div>
-
-            {/* MESA */}
+            );
+          })}
+          
+          {/* Tipo de indicador global */}
+          <div className="mt-4 p-3 rounded-lg bg-blue-50 border border-blue-200">
             <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="w-5 h-5 rounded-full bg-white shadow-md border border-gray-200 flex items-center justify-center">
-                    <div className="w-3 h-3 rounded-full bg-blue-500 shadow-sm"></div>
-                  </div>
-                  <Label className="text-sm font-semibold text-gray-700">MESA</Label>
-                </div>
-                <Switch
-                  checked={config.modules.mesa.enabled}
-                  onCheckedChange={(checked) => updateConfig('modules.mesa.enabled', checked)}
-                  className="scale-50"
-                />
+              <Label className="text-sm font-medium text-gray-800">Tipo de Indicador</Label>
+              <select
+                value={config.production.cardConfig.moduleIndicator || 'tag'}
+                onChange={(e) => {
+                  updateConfig('production.cardConfig.moduleIndicator', e.target.value);
+                  updateConfig('ready.cardConfig.moduleIndicator', e.target.value);
+                }}
+                className="w-full mt-1 px-3 py-1 text-xs border border-gray-300 rounded-md bg-white"
+              >
+                <option value="bullet">Bullets (bolinhas coloridas)</option>
+                <option value="tag">Etiquetas discretas</option>
+              </select>
+              <div className="text-xs text-gray-600">
+                {config.production.cardConfig.moduleIndicator === 'bullet' 
+                  ? "Bolinhas coloridas no canto superior direito" 
+                  : "Etiquetas com cores pastel e nome do módulo/plataforma"
+                }
               </div>
-              {config.modules.mesa.enabled && (
-                <div className="ml-4 space-y-2 border-l-2 border-gray-200 pl-4">
-                  <Label className="text-xs text-gray-500">Opção de Exibição:</Label>
-                  <RadioGroup
-                    value={config.modules.mesa.displayOption}
-                    onValueChange={(value: 'numeroMesa' | 'apelidoNumeroMesa') => 
-                      updateConfig('modules.mesa.displayOption', value)}
-                    className="space-y-1"
-                  >
-                    <div className="flex items-center space-x-1.5">
-                      <RadioGroupItem value="numeroMesa" id="mesa-num-mesa" />
-                      <Label htmlFor="mesa-num-mesa" className="text-xs">No. da Mesa</Label>
-                    </div>
-                    <div className="flex items-center space-x-1.5">
-                      <RadioGroupItem value="apelidoNumeroMesa" id="mesa-apelido-num-mesa" />
-                      <Label htmlFor="mesa-apelido-num-mesa" className="text-xs">Apelido + No. da Mesa</Label>
-                    </div>
-                  </RadioGroup>
-                </div>
-              )}
-            </div>
-
-            {/* FICHA */}
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="w-5 h-5 rounded-full bg-white shadow-md border border-gray-200 flex items-center justify-center">
-                    <div className="w-3 h-3 rounded-full bg-purple-500 shadow-sm"></div>
-                  </div>
-                  <Label className="text-sm font-semibold text-gray-700">FICHA</Label>
-                </div>
-                <Switch
-                  checked={config.modules.ficha.enabled}
-                  onCheckedChange={(checked) => updateConfig('modules.ficha.enabled', checked)}
-                  className="scale-50"
-                />
-              </div>
-              {config.modules.ficha.enabled && (
-                <div className="ml-4 space-y-2 border-l-2 border-gray-200 pl-4">
-                  <Label className="text-xs text-gray-500">Opção de Exibição:</Label>
-                  <RadioGroup
-                    value={config.modules.ficha.displayOption}
-                    onValueChange={(value: 'numeroFicha' | 'numeroChamada' | 'nomeCliente' | 'fichaCliente' | 'localEntregaFicha') => 
-                      updateConfig('modules.ficha.displayOption', value)}
-                    className="space-y-1"
-                  >
-                    <div className="flex items-center space-x-1.5">
-                      <RadioGroupItem value="numeroFicha" id="ficha-num-ficha" />
-                      <Label htmlFor="ficha-num-ficha" className="text-xs">No. da ficha</Label>
-                    </div>
-                    <div className="flex items-center space-x-1.5">
-                      <RadioGroupItem value="numeroChamada" id="ficha-num-chamada" />
-                      <Label htmlFor="ficha-num-chamada" className="text-xs">No. da chamada</Label>
-                    </div>
-                    <div className="flex items-center space-x-1.5">
-                      <RadioGroupItem value="nomeCliente" id="ficha-nome-cliente" />
-                      <Label htmlFor="ficha-nome-cliente" className="text-xs">Nome do Cliente</Label>
-                    </div>
-                    <div className="flex items-center space-x-1.5">
-                      <RadioGroupItem value="fichaCliente" id="ficha-ficha-cliente" />
-                      <Label htmlFor="ficha-ficha-cliente" className="text-xs">No.Ficha + Nome do Cliente</Label>
-                    </div>
-                    <div className="flex items-center space-x-1.5">
-                      <RadioGroupItem value="localEntregaFicha" id="ficha-local-entrega" />
-                      <Label htmlFor="ficha-local-entrega" className="text-xs">Local Entrega + No. da ficha</Label>
-                    </div>
-                  </RadioGroup>
-                </div>
-              )}
             </div>
             
-            {/* Configuração Global - Indicadores de Módulo */}
-            <div className="space-y-2 pt-3 border-t-2 border-gray-300">
-              <Label className="text-lg font-bold text-gray-800 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">INDICADORES DE MÓDULO</Label>
-              <div className="space-y-2">
-                <Label className="text-xs text-gray-500">Como exibir os módulos nos cards:</Label>
-                <select
-                  value={config.production.cardConfig.moduleIndicator || 'none'}
-                  onChange={(e) => {
-                    updateConfig('production.cardConfig.moduleIndicator', e.target.value);
-                    updateConfig('ready.cardConfig.moduleIndicator', e.target.value);
-                  }}
-                  className="w-full mt-1 px-3 py-1 text-xs border border-gray-300 rounded-md bg-white"
-                >
-                  <option value="none">Nenhum indicador</option>
-                  <option value="bullet">Bullets (bolinhas)</option>
-                  <option value="tag">Etiquetas discretas</option>
-                </select>
-                <div className="text-xs text-gray-400">
-                  {(() => {
-                    const indicator = config.production.cardConfig.moduleIndicator || 'none';
-                    if (indicator === 'none') return 'Sem indicadores visuais de módulo';
-                    if (indicator === 'bullet') return 'Bolinhas coloridas no canto superior direito';
-                    return 'Etiquetas com cores pastel e texto do módulo';
-                  })()}
-                </div>
+            {/* Resumo visual do status da coluna */}
+            <div className="mt-3 pt-3 border-t border-blue-200">
+              <div className="flex items-center gap-2">
+                <div className={cn(
+                  "w-3 h-3 rounded-full",
+                  Object.values(config.modules).some(m => m.enabled && m.showIndicator) 
+                    ? "bg-green-500" 
+                    : "bg-gray-400"
+                )}></div>
+                <span className="text-sm font-medium text-gray-700">
+                  Status: {
+                    Object.values(config.modules).some(m => m.enabled && m.showIndicator)
+                      ? "Alguns módulos exibirão indicadores"
+                      : "Nenhum módulo exibirá indicadores"
+                  }
+                </span>
               </div>
             </div>
           </div>

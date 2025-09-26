@@ -36,7 +36,7 @@ export const defaultConfig: PanelConfig = {
     headerFontSize: 2,
     showBorder: true,
     cardConfig: {
-      columns: 10,
+      columns: 4,
       rows: 2,
       height: 60,
       backgroundColor: '#FAFAFA',
@@ -107,19 +107,23 @@ export const defaultConfig: PanelConfig = {
   modules: {
     balcao: {
       enabled: true,
-      displayOption: 'numeroVenda'
+      displayOption: 'numeroVenda',
+      showIndicator: false
     },
     mesa: {
       enabled: true,
-      displayOption: 'apelidoNumeroMesa'
+      displayOption: 'apelidoNumeroMesa',
+      showIndicator: false
     },
     entrega: {
       enabled: true,
-      displayOption: 'numeroVenda'
+      displayOption: 'numeroVenda',
+      showIndicator: false
     },
     ficha: {
       enabled: true,
-      displayOption: 'fichaCliente'
+      displayOption: 'fichaCliente',
+      showIndicator: false
     }
   },
   database: {

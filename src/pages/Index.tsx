@@ -291,7 +291,7 @@ const Index = () => {
               headerHeight={config.production.headerHeight}
               headerFontSize={config.production.headerFontSize}
               headerFontFamily={config.production.headerFontFamily}
-              enabledModules={config.modules}
+              config={config}
               cardConfig={{
                 fontSize: config.production.cardConfig.fontSize,
                 fontFamily: config.production.cardConfig.fontFamily,
@@ -358,7 +358,7 @@ const Index = () => {
                   showNickname={config.ready?.cardConfig?.showNickname ?? true}
                   showItems={config.ready?.cardConfig?.showItems ?? true}
                   moduleIndicator={config.ready?.cardConfig?.moduleIndicator ?? 'bullet'}
-                  enabledModules={config.modules}
+                  config={config}
                   cardConfig={{
                     fontSize: config.ready?.cardConfig?.fontSize,
                     fontFamily: config.ready?.cardConfig?.fontFamily,
