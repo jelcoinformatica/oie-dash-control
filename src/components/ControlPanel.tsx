@@ -100,6 +100,7 @@ export const ControlPanel = ({
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
+          <span>Oie! v.5.0</span>
         </div>
         
         {/* Prompt de expedição fixo no centro */}
