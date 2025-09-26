@@ -93,8 +93,8 @@ export const OrderColumnGrid = ({
     const baseFontSize = 16;
     const requestedFontSize = cardConfig?.fontSize || 1.2;
     
-    // Altura fixa do card
-    const cardHeight = 90;
+    // Altura proporcional ao tamanho da fonte
+    const cardHeight = Math.max(60, requestedFontSize * 45);
     
     // Ajustar fonte para caber na largura do card - usando largura proporcional
     const gap = 4; // gap-1 = 4px
