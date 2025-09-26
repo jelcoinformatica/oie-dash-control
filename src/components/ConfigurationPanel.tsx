@@ -421,17 +421,6 @@ export const ConfigurationPanel = ({
               </div>
             </div>
             
-            <div>
-              <Label className="text-xs">Indicador de Módulo</Label>
-              <select
-                value={config.production.cardConfig.moduleIndicator || 'bullet'}
-                onChange={(e) => updateConfig('production.cardConfig.moduleIndicator', e.target.value)}
-                className="w-full mt-1 px-3 py-1 text-xs border border-gray-300 rounded-md bg-white"
-              >
-                <option value="bullet">Bullets (bolinhas)</option>
-                <option value="tag">Etiquetas discretas</option>
-              </select>
-            </div>
           </div>
         </ConfigSection>
 
@@ -1575,6 +1564,34 @@ export const ConfigurationPanel = ({
                   </RadioGroup>
                 </div>
               )}
+            </div>
+            
+            {/* Configuração Global - Indicadores de Módulo */}
+            <div className="space-y-2 pt-3 border-t-2 border-gray-300">
+              <Label className="text-sm font-medium text-gray-700">Indicadores de Módulo</Label>
+              <div className="space-y-2">
+                <Label className="text-xs text-gray-500">Como exibir os módulos nos cards:</Label>
+                <select
+                  value={config.production.cardConfig.moduleIndicator || 'bullet'}
+                  onChange={(e) => {
+                    updateConfig('production.cardConfig.moduleIndicator', e.target.value);
+                    updateConfig('ready.cardConfig.moduleIndicator', e.target.value);
+                  }}
+                  className="w-full mt-1 px-3 py-1 text-xs border border-gray-300 rounded-md bg-white"
+                >
+                  <option value="none">Nenhum indicador</option>
+                  <option value="bullet">Bullets (bolinhas)</option>
+                  <option value="tag">Etiquetas discretas</option>
+                </select>
+                <div className="text-xs text-gray-400">
+                  {(() => {
+                    const indicator = config.production.cardConfig.moduleIndicator || 'bullet';
+                    if (indicator === 'none') return 'Sem indicadores visuais de módulo';
+                    if (indicator === 'bullet') return 'Bolinhas coloridas no canto superior direito';
+                    return 'Etiquetas com cores pastel e texto do módulo';
+                  })()}
+                </div>
+              </div>
             </div>
           </div>
         </ConfigSection>

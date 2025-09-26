@@ -7,7 +7,7 @@ interface OrderCardProps {
   className?: string;
   showNickname?: boolean;
   showItems?: boolean;
-  moduleIndicator?: 'bullet' | 'tag';
+  moduleIndicator?: 'none' | 'bullet' | 'tag';
   enabledModules?: {
     balcao: {
       enabled: boolean;
@@ -66,10 +66,10 @@ export const OrderCard = ({
   textColor = '#374151',
   backgroundColor = '#ffffff'
 }: OrderCardProps) => {
-  // Show module bullet indicator when more than 1 module is enabled
+  // Show module indicator when more than 1 module is enabled and not set to 'none'
   const enabledModulesCount = enabledModules ? 
     Object.values(enabledModules).filter(module => module.enabled).length : 0;
-  const showModuleBullet = enabledModulesCount > 1;
+  const showModuleIndicator = enabledModulesCount > 1 && moduleIndicator !== 'none';
   
   const displayNumber = order.numeroPedido || order.number;
   const displayName = order.nomeCliente || order.nickname;
@@ -93,7 +93,7 @@ export const OrderCard = ({
       }}
     >
       {/* Indicador de Módulo */}
-      {showModuleBullet && (
+      {showModuleIndicator && (
         <>
           {moduleIndicator === 'bullet' ? (
             <div className={cn(

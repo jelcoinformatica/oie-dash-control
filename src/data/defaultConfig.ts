@@ -22,7 +22,7 @@ export const defaultConfig: PanelConfig = {
       fontSize: 3,
       showNickname: true,
       showItems: true,
-      moduleIndicator: 'bullet'
+      moduleIndicator: 'bullet' as 'none' | 'bullet' | 'tag'
     }
   },
   ready: {
@@ -45,7 +45,7 @@ export const defaultConfig: PanelConfig = {
       fontSize: 4,
       showNickname: true,
       showItems: true,
-      moduleIndicator: 'bullet'
+      moduleIndicator: 'bullet' as 'none' | 'bullet' | 'tag'
     }
   },
   advertising: {

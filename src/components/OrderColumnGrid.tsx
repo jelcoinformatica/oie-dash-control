@@ -8,7 +8,7 @@ interface OrderColumnGridProps {
   onOrderClick?: (order: Order) => void;
   showNickname?: boolean;
   showItems?: boolean;
-  moduleIndicator?: 'bullet' | 'tag';
+  moduleIndicator?: 'none' | 'bullet' | 'tag';
   enabledModules?: {
     balcao: {
       enabled: boolean;

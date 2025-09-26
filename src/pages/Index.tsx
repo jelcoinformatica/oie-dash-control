@@ -48,6 +48,29 @@ const Index = () => {
     generateOrders
   } = useOrders(ttsConfig, autoExpeditionConfig, config);
 
+  // Simulação automática
+  useEffect(() => {
+    let intervalId: NodeJS.Timeout;
+    
+    if (isSimulationActive && config.simulation?.enabled) {
+      const intervalSeconds = config.simulation.intervalSeconds || 30;
+      const ordersPerInterval = config.simulation.ordersPerInterval || 1;
+      
+      // Calcular intervalo individual: se quer 3 pedidos em 30s, cada um a cada 10s
+      const individualInterval = (intervalSeconds / ordersPerInterval) * 1000;
+      
+      intervalId = setInterval(() => {
+        generateOrders(1, config);
+      }, individualInterval);
+    }
+    
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
+  }, [isSimulationActive, config.simulation?.enabled, config.simulation?.intervalSeconds, config.simulation?.ordersPerInterval, generateOrders, config]);
+
   useEffect(() => {
     const savedConfig = localStorage.getItem('oie-config');
     console.log('=== Loading saved config ===');
