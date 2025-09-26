@@ -7,7 +7,7 @@ import { Slider } from './ui/slider';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from './ui/alert-dialog';
 import { PanelConfig } from '../types/order';
-import { Settings, Palette, Factory, CheckCircle, Monitor, Volume2, Clock, Puzzle, Cog, X, ChevronRight, ChevronDown, Plus, Minus, ChevronLeft, ArrowLeft, ArrowRight } from 'lucide-react';
+import { Settings, Palette, Factory, CheckCircle, Monitor, Volume2, Clock, Puzzle, Cog, X, ChevronRight, ChevronDown, Plus, Minus, ChevronLeft, ArrowLeft, ArrowRight, Mic } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { defaultConfig } from '../data/defaultConfig';
 import { RadioGroup, RadioGroupItem } from './ui/radio-group';
@@ -1223,7 +1223,7 @@ export const ConfigurationPanel = ({
         {/* Text-to-Speech */}
         <ConfigSection
           title="Controle de Voz"
-          icon={<div className="w-4 h-4 bg-current rounded-full opacity-60" />}
+          icon={<Mic className="w-4 h-4" />}
           isOpen={openSections.tts}
           onToggle={() => toggleSection('tts')}
         >
@@ -1442,7 +1442,7 @@ export const ConfigurationPanel = ({
                       <Switch 
                         checked={moduleConfig.enabled} 
                         onCheckedChange={(checked) => updateConfig(`modules.${moduleKey}.enabled`, checked)}
-                        className="scale-75"
+                        className="scale-50"
                       />
                       <Label className="text-sm font-medium text-gray-700">
                         {moduleLabels[moduleKey as keyof typeof moduleLabels]}
@@ -1463,9 +1463,20 @@ export const ConfigurationPanel = ({
                   
                   <div className="text-xs px-2 py-1 rounded-full">
                     {moduleConfig.enabled ? (
-                      <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full font-medium">
-                        Ativo {moduleConfig.showIndicator ? '• Indicador' : ''}
-                      </span>
+                      <div className="flex flex-col gap-1">
+                        <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full font-medium">
+                          Ativo
+                        </span>
+                        {moduleConfig.showIndicator ? (
+                          <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full font-medium text-xs">
+                            Indicador On
+                          </span>
+                        ) : (
+                          <span className="bg-gray-100 text-gray-600 px-2 py-1 rounded-full text-xs">
+                            Indicador Off
+                          </span>
+                        )}
+                      </div>
                     ) : (
                       <span className="bg-gray-100 text-gray-500 px-2 py-1 rounded-full">
                         Inativo
