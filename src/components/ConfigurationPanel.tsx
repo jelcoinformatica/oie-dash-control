@@ -181,7 +181,7 @@ export const ConfigurationPanel = ({
   return (
     <div 
       className={cn(
-        "fixed top-0 w-1/3 h-full bg-white shadow-xl z-50 flex flex-col border-gray-200",
+        "fixed top-0 w-[30%] h-full bg-white shadow-xl z-50 flex flex-col border-gray-200",
         panelPosition === 'right' ? 'right-0 border-l' : 'left-0 border-r'
       )}
     >
@@ -1193,35 +1193,6 @@ export const ConfigurationPanel = ({
           </div>
         </ConfigSection>
 
-        {/* Auto Expedição */}
-        <ConfigSection
-          title="Auto Expedição"
-          icon={<Clock className="w-4 h-4" />}
-          isOpen={openSections.autoExpedition}
-          onToggle={() => toggleSection('autoExpedition')}
-          colorClass="text-orange-600"
-        >
-          <div className="flex items-center space-x-2">
-            <Switch
-              checked={config.autoExpedition.enabled}
-              onCheckedChange={(checked) => updateConfig('autoExpedition.enabled', checked)}
-              className="scale-50"
-            />
-            <Label className="text-xs">Utilizar Auto Expedição</Label>
-          </div>
-          <div>
-            <Label className="text-sm font-medium">Após quantos minutos: {config.autoExpedition.minutes}</Label>
-            <Slider
-              value={[config.autoExpedition.minutes]}
-              onValueChange={([value]) => updateConfig('autoExpedition.minutes', value)}
-              max={60}
-              min={1}
-              step={1}
-              className="mt-1"
-            />
-          </div>
-        </ConfigSection>
-
         {/* Text-to-Speech */}
         <ConfigSection
           title="Controle de Voz"
@@ -1373,6 +1344,35 @@ export const ConfigurationPanel = ({
                 </div>
               </>
             )}
+          </div>
+        </ConfigSection>
+
+        {/* Auto Expedição */}
+        <ConfigSection
+          title="Auto Expedição"
+          icon={<Clock className="w-4 h-4" />}
+          isOpen={openSections.autoExpedition}
+          onToggle={() => toggleSection('autoExpedition')}
+          colorClass="text-orange-600"
+        >
+          <div className="flex items-center space-x-2">
+            <Switch
+              checked={config.autoExpedition.enabled}
+              onCheckedChange={(checked) => updateConfig('autoExpedition.enabled', checked)}
+              className="scale-50"
+            />
+            <Label className="text-xs">Utilizar Auto Expedição</Label>
+          </div>
+          <div>
+            <Label className="text-sm font-medium">Após quantos minutos: {config.autoExpedition.minutes}</Label>
+            <Slider
+              value={[config.autoExpedition.minutes]}
+              onValueChange={([value]) => updateConfig('autoExpedition.minutes', value)}
+              max={60}
+              min={1}
+              step={1}
+              className="mt-1"
+            />
           </div>
         </ConfigSection>
 
@@ -1851,14 +1851,14 @@ export const ConfigurationPanel = ({
                   type="number"
                   min="1"
                   max="50"
-                  defaultValue="15"
+                  defaultValue="30"
                   id="newOrdersCount"
                   className="h-6 w-20"
                 />
                 <Button
                   onClick={() => {
                     const input = document.getElementById('newOrdersCount') as HTMLInputElement;
-                    const count = parseInt(input?.value || '15');
+                    const count = parseInt(input?.value || '30');
                     generateOrders?.(count);
                   }}
                   variant="outline"
