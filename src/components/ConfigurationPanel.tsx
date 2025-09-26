@@ -549,6 +549,7 @@ export const ConfigurationPanel = ({
                   <option value="none">Nenhum indicador</option>
                   <option value="bullet">Bullets (bolinhas)</option>
                   <option value="tag">Etiquetas discretas</option>
+                  <option value="border">Bordas coloridas</option>
                 </select>
               </div>
             </div>
@@ -741,6 +742,7 @@ export const ConfigurationPanel = ({
                   <option value="none">Nenhum indicador</option>
                   <option value="bullet">Bullets (bolinhas)</option>
                   <option value="tag">Etiquetas discretas</option>
+                  <option value="border">Bordas coloridas</option>
                 </select>
               </div>
             </div>
@@ -1710,11 +1712,17 @@ export const ConfigurationPanel = ({
               >
                 <option value="bullet">Bullets (bolinhas coloridas)</option>
                 <option value="tag">Etiquetas discretas</option>
+                <option value="border">Bordas coloridas</option>
+                <option value="none">Nenhum indicador</option>
               </select>
               <div className="text-xs text-gray-600">
                 {config.production.cardConfig.moduleIndicator === 'bullet' 
                   ? "Bolinhas coloridas no canto superior direito" 
-                  : "Etiquetas com cores pastel e nome do módulo/plataforma"
+                  : config.production.cardConfig.moduleIndicator === 'tag'
+                  ? "Etiquetas com cores pastel e nome do módulo/plataforma"
+                  : config.production.cardConfig.moduleIndicator === 'border'
+                  ? "Bordas coloridas em volta do cartão"
+                  : "Sem indicação visual do módulo"
                 }
               </div>
             </div>

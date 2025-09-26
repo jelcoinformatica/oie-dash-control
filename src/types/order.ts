@@ -27,7 +27,7 @@ export interface OrderCardConfig {
   fontSize: number;
   showNickname?: boolean;
   showItems?: boolean;
-  moduleIndicator?: 'none' | 'bullet' | 'tag'; // Nova opção para tipo de indicador
+  moduleIndicator?: 'none' | 'bullet' | 'tag' | 'border'; // Nova opção para tipo de indicador
 }
 
 export interface ColumnConfig {

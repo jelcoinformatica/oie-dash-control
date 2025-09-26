@@ -7,7 +7,7 @@ interface OrderCardProps {
   className?: string;
   showNickname?: boolean;
   showItems?: boolean;
-  moduleIndicator?: 'none' | 'bullet' | 'tag';
+  moduleIndicator?: 'none' | 'bullet' | 'tag' | 'border';
   config?: {
     modules: {
       balcao: {
@@ -50,6 +50,13 @@ const modulePastelColors = {
   mesa: 'bg-blue-100 text-blue-800', 
   entrega: 'bg-red-100 text-red-800',
   ficha: 'bg-purple-100 text-purple-800'
+};
+
+const moduleBorderColors = {
+  balcao: 'border-green-500',
+  mesa: 'border-blue-500',
+  entrega: 'border-red-500',
+  ficha: 'border-purple-500'
 };
 
 const moduleLabels = {
@@ -105,10 +112,13 @@ export const OrderCard = ({
   return (
     <div
       className={cn(
-        "border border-gray-300 rounded-lg cursor-pointer relative",
+        "border rounded-lg cursor-pointer relative",
         "hover:shadow-md transition-all duration-200 hover:scale-[1.02]",
         "animate-card-appear",
         "flex flex-col items-center justify-center p-2 min-h-16",
+        showModuleIndicator && moduleIndicator === 'border' 
+          ? cn("border-2", moduleBorderColors[order.modulo])
+          : "border-gray-300",
         className
       )}
       onClick={onClick}
@@ -121,7 +131,7 @@ export const OrderCard = ({
       }}
     >
       {/* Indicador de Módulo */}
-      {showModuleIndicator && (
+      {showModuleIndicator && moduleIndicator !== 'border' && (
         <>
           {moduleIndicator === 'bullet' ? (
             <div className={cn(

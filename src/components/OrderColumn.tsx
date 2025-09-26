@@ -13,7 +13,7 @@ interface OrderColumnProps {
   variant?: 'production' | 'ready' | 'advertising';
   showNickname?: boolean;
   showItems?: boolean;
-  moduleIndicator?: 'none' | 'bullet' | 'tag';
+  moduleIndicator?: 'none' | 'bullet' | 'tag' | 'border';
   headerBg?: string;
   headerColor?: string;
   headerHeight?: number;

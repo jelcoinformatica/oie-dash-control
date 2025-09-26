@@ -53,9 +53,9 @@ export const UserManual = ({ children }: UserManualProps) => {
       keywords: ['visão', 'geral', 'inicio', 'começar', 'sistema', 'kds', 'kitchen'],
       content: (
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold">Sistema KDS - Kitchen Display System</h3>
+          <h3 className="text-lg font-semibold">Sistema Oie! - Painel de Senhas</h3>
           <p className="text-sm text-muted-foreground">
-            O Sistema Oie! é uma solução completa para gerenciamento de pedidos em cozinhas e estabelecimentos.
+            O sistema Oie!, é um painel de senhas que exibe os números de chamada gerados pelo PDV para facilitar o controle de expedição de pedidos.
           </p>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -813,7 +813,7 @@ export const UserManual = ({ children }: UserManualProps) => {
               <h4 className="font-medium mb-2">Indicadores Visuais</h4>
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
-                  <strong>Bullet (padrão):</strong>
+                  <strong>Etiqueta (padrão):</strong>
                   <p>Pequeno círculo colorido no cartão</p>
                 </div>
                 <div>
@@ -1134,73 +1134,79 @@ export const UserManual = ({ children }: UserManualProps) => {
       <SheetTrigger asChild>
         {children}
       </SheetTrigger>
-      <SheetContent side="right" className="w-full sm:max-w-4xl p-0 overflow-hidden bg-background/85">
-        <SheetHeader className="p-6 pb-4 border-b">
-          <div className="flex items-center gap-3">
-            <BookOpen className="w-6 h-6 text-blue-600" />
-            <div>
-              <SheetTitle className="text-xl">Manual do Usuário</SheetTitle>
-              <SheetDescription>
-                Guia completo do Sistema KDS Oie! v5.0
-              </SheetDescription>
+      <SheetContent side="right" className="max-w-6xl w-full bg-background/70 overflow-hidden p-0 flex items-center justify-center">
+        <div className="max-w-5xl w-full max-h-[90vh] bg-background border rounded-xl shadow-lg flex flex-col">
+          <SheetHeader className="p-6 pb-4 border-b">
+            <div className="flex items-center gap-3">
+              <BookOpen className="w-6 h-6 text-blue-600" />
+              <div>
+                <SheetTitle className="text-xl">Manual do Usuário</SheetTitle>
+                <SheetDescription>
+                  Guia completo do Sistema KDS Oie! v5.0
+                </SheetDescription>
+              </div>
             </div>
-          </div>
-          
-          <div className="flex items-center gap-2 mt-4">
-            <div className="relative flex-1">
-              <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
-              <Input
-                placeholder="Buscar no manual..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-              />
+            
+            <div className="flex items-center gap-2 mt-4">
+              <div className="relative flex-1">
+                <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  placeholder="Buscar no manual..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
             </div>
-          </div>
-        </SheetHeader>
+          </SheetHeader>
 
-        <div className="flex h-[calc(100vh-140px)]">
-          {/* Sidebar de navegação */}
-          <div className="w-64 border-r bg-muted/20">
-            <ScrollArea className="h-full">
-              <div className="p-4 space-y-1">
-                {filteredSections.map((section) => (
-                  <Button
-                    key={section.id}
-                    variant={activeSection === section.id ? "default" : "ghost"}
-                    size="sm"
-                    onClick={() => scrollToSection(section.id)}
-                    className="w-full justify-start text-left h-auto py-2 px-3"
-                  >
-                    <div className="flex items-center gap-3 w-full">
-                      <div className="flex-shrink-0">
-                        {section.icon}
+          <div className="flex flex-1 overflow-hidden">
+            {/* Sidebar de navegação */}
+            <div className="w-64 border-r bg-muted/20">
+              <ScrollArea className="h-full">
+                <div className="p-4 space-y-1">
+                  {filteredSections.map((section) => (
+                    <Button
+                      key={section.id}
+                      variant={activeSection === section.id ? "default" : "ghost"}
+                      size="sm"
+                      onClick={() => scrollToSection(section.id)}
+                      className={`w-full justify-start text-left h-auto py-2 px-3 relative transition-all ${
+                        activeSection === section.id 
+                          ? 'border-l-4 border-l-primary bg-primary text-primary-foreground' 
+                          : 'hover:bg-muted/40 hover:border-l-4 hover:border-l-primary/60'
+                      }`}
+                    >
+                      <div className="flex items-center gap-3 w-full">
+                        <div className="flex-shrink-0">
+                          {section.icon}
+                        </div>
+                        <span className="text-sm font-medium truncate">
+                          {section.title}
+                        </span>
                       </div>
-                      <span className="text-sm font-medium truncate">
-                        {section.title}
-                      </span>
-                    </div>
-                  </Button>
-                ))}
-              </div>
-            </ScrollArea>
-          </div>
+                    </Button>
+                  ))}
+                </div>
+              </ScrollArea>
+            </div>
 
-          {/* Conteúdo principal */}
-          <div className="flex-1">
-            <ScrollArea className="h-full" data-section-content>
-              <div className="p-6">
-                {activeContent || (
-                  <div className="text-center py-12">
-                    <Search className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-                    <h3 className="text-lg font-medium mb-2">Nenhum resultado encontrado</h3>
-                    <p className="text-sm text-muted-foreground">
-                      Tente buscar por outros termos ou navegue pelas seções disponíveis.
-                    </p>
-                  </div>
-                )}
-              </div>
-            </ScrollArea>
+            {/* Conteúdo principal */}
+            <div className="flex-1">
+              <ScrollArea className="h-full" data-section-content>
+                <div className="p-6">
+                  {activeContent || (
+                    <div className="text-center py-12">
+                      <Search className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+                      <h3 className="text-lg font-medium mb-2">Nenhum resultado encontrado</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Tente buscar por outros termos ou navegue pelas seções disponíveis.
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </ScrollArea>
+            </div>
           </div>
         </div>
       </SheetContent>
