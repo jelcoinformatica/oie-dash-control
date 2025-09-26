@@ -191,12 +191,20 @@ export const ConfigurationPanel = ({
   // Colapse automaticamente a Coluna 1 quando ela está inativa
   useEffect(() => {
     if (!config.production.visible && openSections.production) {
+      // Fecha a seção quando a coluna é desabilitada
       setOpenSections(prev => ({
         ...prev,
         production: false
       }));
+      // Também fecha as subseções
+      setOpenSubSections(prev => ({
+        ...prev,
+        productionGeneral: false,
+        productionHeader: false,
+        productionCards: false
+      }));
     }
-  }, [config.production.visible, openSections.production]);
+  }, [config.production.visible]);
 
   const updateConfig = (path: string, value: any) => {    
     // Validação para módulos - pelo menos um deve estar ativo
@@ -314,7 +322,7 @@ export const ConfigurationPanel = ({
         <ConfigSection
           title="Coluna 1 - Produção"
           icon={<Factory className="w-4 h-4" />}
-          isOpen={openSections.production && config.production.visible}
+          isOpen={openSections.production}
           onToggle={() => toggleSection('production')}
           colorClass="text-blue-600"
         >
