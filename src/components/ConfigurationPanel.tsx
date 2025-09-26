@@ -65,6 +65,35 @@ const ConfigSection = ({ title, icon, isOpen, onToggle, children, colorClass = "
   </div>
 );
 
+const SubConfigSection = ({ title, isOpen, onToggle, children }: { 
+  title: string; 
+  isOpen: boolean; 
+  onToggle: () => void; 
+  children: React.ReactNode; 
+}) => (
+  <div className="border border-gray-200 rounded-md mb-2">
+    <button
+      onClick={onToggle}
+      className={cn(
+        "w-full px-3 py-2 flex items-center justify-between transition-colors",
+        isOpen ? "bg-gray-100" : "bg-white hover:bg-gray-50"
+      )}
+    >
+      <span className="text-xs font-medium text-gray-700">{title}</span>
+      {isOpen ? (
+        <ChevronDown className="w-3 h-3 text-gray-500" />
+      ) : (
+        <ChevronRight className="w-3 h-3 text-gray-500" />
+      )}
+    </button>
+    {isOpen && (
+      <div className="px-3 pb-3 bg-gray-50">
+        {children}
+      </div>
+    )}
+  </div>
+);
+
 export const ConfigurationPanel = ({
   open,
   onOpenChange,
@@ -88,6 +117,18 @@ export const ConfigurationPanel = ({
     cards: false,
     diversos: false,
     simulation: false
+  });
+
+  // Estado para subseções das colunas
+  const [openSubSections, setOpenSubSections] = useState<Record<string, boolean>>({
+    productionGeneral: false,
+    productionHeader: false,
+    productionCards: false,
+    readyGeneral: false,
+    readyHeader: false,
+    readyCards: false,
+    advertisingGeneral: false,
+    advertisingHeader: false
   });
 
   // Reset todas as seções para fechadas sempre que abrir o painel
@@ -139,6 +180,23 @@ export const ConfigurationPanel = ({
       [section]: !prev[section]
     }));
   };
+
+  const toggleSubSection = (section: string) => {
+    setOpenSubSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }));
+  };
+
+  // Colapse automaticamente a Coluna 1 quando ela está inativa
+  useEffect(() => {
+    if (!config.production.visible && openSections.production) {
+      setOpenSections(prev => ({
+        ...prev,
+        production: false
+      }));
+    }
+  }, [config.production.visible, openSections.production]);
 
   const updateConfig = (path: string, value: any) => {    
     // Validação para módulos - pelo menos um deve estar ativo
@@ -256,14 +314,16 @@ export const ConfigurationPanel = ({
         <ConfigSection
           title="Coluna 1 - Produção"
           icon={<Factory className="w-4 h-4" />}
-          isOpen={openSections.production}
+          isOpen={openSections.production && config.production.visible}
           onToggle={() => toggleSection('production')}
           colorClass="text-blue-600"
         >
-          {/* Gerais */}
-          <div className="pb-3 mb-3 border-b-2 border-gray-300">
-            <h4 className="text-sm font-semibold mb-2 text-gray-700">Gerais</h4>
-            <div className="space-y-2">
+          <SubConfigSection
+            title="Gerais"
+            isOpen={openSubSections.productionGeneral}
+            onToggle={() => toggleSubSection('productionGeneral')}
+          >
+            <div className="space-y-3">
               <div className="flex items-center gap-2">
                 <Switch 
                   checked={config.production.visible} 
@@ -280,161 +340,166 @@ export const ConfigurationPanel = ({
                 />
                 <Label className="text-xs">Tem Borda</Label>
               </div>
-            </div>
 
-            <div>
-              <Label className="text-xs font-medium">Título da Coluna</Label>
-              <Input
-                value={config.production.title}
-                onChange={(e) => updateConfig('production.title', e.target.value)}
-                className="mt-1"
-              />
-            </div>
-
-            <div>
-              <Label className="text-xs font-medium">Largura (%): {config.production.width}</Label>
-              <Slider
-                value={[config.production.width]}
-                onValueChange={([value]) => updateConfig('production.width', value)}
-                max={50}
-                min={10}
-                step={1}
-                className="mt-1"
-              />
-            </div>
-          </div>
-
-          {/* Cabeçalho */}
-          <div className="pb-3 mb-3 border-b-2 border-gray-300">
-            <h4 className="text-sm font-semibold mb-2 text-gray-700">Cabeçalho</h4>
-            
-            <div>
-              <Label className="text-sm font-medium">Altura: {config.production.headerHeight}px</Label>
-              <Slider
-                value={[config.production.headerHeight]}
-                onValueChange={([value]) => updateConfig('production.headerHeight', value)}
-                max={180}
-                min={32}
-                step={4}
-                className="mt-1"
-              />
-            </div>
-
-            <div>
-              <Label className="text-sm font-medium">Tamanho da Fonte: {config.production.headerFontSize}rem</Label>
-              <Slider
-                value={[config.production.headerFontSize]}
-                onValueChange={([value]) => updateConfig('production.headerFontSize', value)}
-                max={3}
-                min={0.8}
-                step={0.1}
-                className="mt-1"
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-2">
               <div>
-                <Label className="text-xs">Cor Fundo Cabeçalho</Label>
+                <Label className="text-xs font-medium">Título da Coluna</Label>
                 <Input
-                  type="color"
-                  value={config.production.headerBg}
-                  onChange={(e) => updateConfig('production.headerBg', e.target.value)}
-                  className="h-8 mt-1 border-2"
+                  value={config.production.title}
+                  onChange={(e) => updateConfig('production.title', e.target.value)}
+                  className="mt-1"
                 />
               </div>
+
               <div>
-                <Label className="text-xs">Cor Fonte Cabeçalho</Label>
-                <Input
-                  type="color"
-                  value={config.production.headerColor}
-                  onChange={(e) => updateConfig('production.headerColor', e.target.value)}
-                  className="h-8 mt-1 border-2"
+                <Label className="text-xs font-medium">Largura (%): {config.production.width}</Label>
+                <Slider
+                  value={[config.production.width]}
+                  onValueChange={([value]) => updateConfig('production.width', value)}
+                  max={50}
+                  min={10}
+                  step={1}
+                  className="mt-1"
                 />
               </div>
             </div>
-          </div>
+          </SubConfigSection>
 
-          {/* Cards */}
-          <div>
-            <h4 className="text-sm font-semibold mb-2 text-gray-700">Cards</h4>
-            
-            <div>
-              <Label className="text-xs">Colunas: {config.production.cardConfig.columns}</Label>
-              <Slider
-                value={[config.production.cardConfig.columns]}
-                onValueChange={([value]) => updateConfig('production.cardConfig.columns', value)}
-                max={5}
-                min={2}
-                step={1}
-                className="mt-1"
-              />
-            </div>
-            
-            <div>
-              <Label className="text-xs">Tamanho da Fonte: {config.production.cardConfig.fontSize}rem</Label>
-              <Slider
-                value={[config.production.cardConfig.fontSize]}
-                onValueChange={([value]) => updateConfig('production.cardConfig.fontSize', value)}
-                max={8}
-                min={0.5}
-                step={0.1}
-                className="mt-1"
-              />
-            </div>
-
-            <div>
-              <Label className="text-xs">Família da Fonte</Label>
-              <select
-                value={config.production.cardConfig.fontFamily}
-                onChange={(e) => updateConfig('production.cardConfig.fontFamily', e.target.value)}
-                className="w-full mt-1 px-3 py-1 text-xs border border-gray-300 rounded-md bg-white"
-              >
-                <option value="Arial">Arial</option>
-                <option value="Times New Roman">Times New Roman</option>
-                <option value="Courier New">Courier New</option>
-                <option value="Calibri">Calibri</option>
-                <option value="Verdana">Verdana</option>
-                <option value="Georgia">Georgia</option>
-                <option value="Tahoma">Tahoma</option>
-                <option value="Impact">Impact</option>
-              </select>
-            </div>
-
-            <div className="grid grid-cols-2 gap-2">
+          <SubConfigSection
+            title="Cabeçalho"
+            isOpen={openSubSections.productionHeader}
+            onToggle={() => toggleSubSection('productionHeader')}
+          >
+            <div className="space-y-3">
               <div>
-                <Label className="text-xs">Cor Fonte Cards</Label>
-                <Input
-                  type="color"
-                  value={config.production.cardConfig.textColor}
-                  onChange={(e) => updateConfig('production.cardConfig.textColor', e.target.value)}
-                  className="h-8 mt-1 border-2"
+                <Label className="text-sm font-medium">Altura: {config.production.headerHeight}px</Label>
+                <Slider
+                  value={[config.production.headerHeight]}
+                  onValueChange={([value]) => updateConfig('production.headerHeight', value)}
+                  max={180}
+                  min={32}
+                  step={4}
+                  className="mt-1"
                 />
               </div>
+
               <div>
-                <Label className="text-xs">Cor Fundo Cards</Label>
-                <Input
-                  type="color"
-                  value={config.production.cardConfig.backgroundColor}
-                  onChange={(e) => updateConfig('production.cardConfig.backgroundColor', e.target.value)}
-                  className="h-8 mt-1 border-2"
+                <Label className="text-sm font-medium">Tamanho da Fonte: {config.production.headerFontSize}rem</Label>
+                <Slider
+                  value={[config.production.headerFontSize]}
+                  onValueChange={([value]) => updateConfig('production.headerFontSize', value)}
+                  max={3}
+                  min={0.8}
+                  step={0.1}
+                  className="mt-1"
                 />
               </div>
+
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <Label className="text-xs">Cor Fundo Cabeçalho</Label>
+                  <Input
+                    type="color"
+                    value={config.production.headerBg}
+                    onChange={(e) => updateConfig('production.headerBg', e.target.value)}
+                    className="h-8 mt-1 border-2"
+                  />
+                </div>
+                <div>
+                  <Label className="text-xs">Cor Fonte Cabeçalho</Label>
+                  <Input
+                    type="color"
+                    value={config.production.headerColor}
+                    onChange={(e) => updateConfig('production.headerColor', e.target.value)}
+                    className="h-8 mt-1 border-2"
+                  />
+                </div>
+              </div>
             </div>
-            
-            <div>
-              <Label className="text-xs">Indicador de Módulo</Label>
-              <select
-                value={config.production.cardConfig.moduleIndicator || 'none'}
-                onChange={(e) => updateConfig('production.cardConfig.moduleIndicator', e.target.value)}
-                className="w-full mt-1 px-3 py-1 text-xs border border-gray-300 rounded-md bg-white"
-              >
-                <option value="none">Nenhum indicador</option>
-                <option value="bullet">Bullets (bolinhas)</option>
-                <option value="tag">Etiquetas discretas</option>
-              </select>
+          </SubConfigSection>
+
+          <SubConfigSection
+            title="Cards e Indicadores"
+            isOpen={openSubSections.productionCards}
+            onToggle={() => toggleSubSection('productionCards')}
+          >
+            <div className="space-y-3">
+              <div>
+                <Label className="text-xs">Colunas: {config.production.cardConfig.columns}</Label>
+                <Slider
+                  value={[config.production.cardConfig.columns]}
+                  onValueChange={([value]) => updateConfig('production.cardConfig.columns', value)}
+                  max={5}
+                  min={2}
+                  step={1}
+                  className="mt-1"
+                />
+              </div>
+              
+              <div>
+                <Label className="text-xs">Tamanho da Fonte: {config.production.cardConfig.fontSize}rem</Label>
+                <Slider
+                  value={[config.production.cardConfig.fontSize]}
+                  onValueChange={([value]) => updateConfig('production.cardConfig.fontSize', value)}
+                  max={8}
+                  min={0.5}
+                  step={0.1}
+                  className="mt-1"
+                />
+              </div>
+
+              <div>
+                <Label className="text-xs">Família da Fonte</Label>
+                <select
+                  value={config.production.cardConfig.fontFamily}
+                  onChange={(e) => updateConfig('production.cardConfig.fontFamily', e.target.value)}
+                  className="w-full mt-1 px-3 py-1 text-xs border border-gray-300 rounded-md bg-white"
+                >
+                  <option value="Arial">Arial</option>
+                  <option value="Times New Roman">Times New Roman</option>
+                  <option value="Courier New">Courier New</option>
+                  <option value="Calibri">Calibri</option>
+                  <option value="Verdana">Verdana</option>
+                  <option value="Georgia">Georgia</option>
+                  <option value="Tahoma">Tahoma</option>
+                  <option value="Impact">Impact</option>
+                </select>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <Label className="text-xs">Cor Fonte Cards</Label>
+                  <Input
+                    type="color"
+                    value={config.production.cardConfig.textColor}
+                    onChange={(e) => updateConfig('production.cardConfig.textColor', e.target.value)}
+                    className="h-8 mt-1 border-2"
+                  />
+                </div>
+                <div>
+                  <Label className="text-xs">Cor Fundo Cards</Label>
+                  <Input
+                    type="color"
+                    value={config.production.cardConfig.backgroundColor}
+                    onChange={(e) => updateConfig('production.cardConfig.backgroundColor', e.target.value)}
+                    className="h-8 mt-1 border-2"
+                  />
+                </div>
+              </div>
+              
+              <div>
+                <Label className="text-xs">Indicador de Módulo</Label>
+                <select
+                  value={config.production.cardConfig.moduleIndicator || 'none'}
+                  onChange={(e) => updateConfig('production.cardConfig.moduleIndicator', e.target.value)}
+                  className="w-full mt-1 px-3 py-1 text-xs border border-gray-300 rounded-md bg-white"
+                >
+                  <option value="none">Nenhum indicador</option>
+                  <option value="bullet">Bullets (bolinhas)</option>
+                  <option value="tag">Etiquetas discretas</option>
+                </select>
+              </div>
             </div>
-            
-          </div>
+          </SubConfigSection>
         </ConfigSection>
 
         {/* Coluna 2 - Prontos */}
