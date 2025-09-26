@@ -247,7 +247,7 @@ export const ConfigurationPanel = ({
               type="color"
               value={config.backgroundColor}
               onChange={(e) => updateConfig('backgroundColor', e.target.value)}
-              className="h-12 mt-1 border-2"
+              className="h-8 mt-1 border-2"
             />
           </div>
         </ConfigSection>
