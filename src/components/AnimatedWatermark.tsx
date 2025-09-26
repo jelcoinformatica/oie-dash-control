@@ -1,27 +1,62 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 interface AnimatedWatermarkProps {
   className?: string;
   autoPlay?: boolean;
   duration?: number;
+  totalOrders?: number; // Número total de pedidos no sistema
+  repeatInterval?: number; // Intervalo de repetição em ms (padrão 15s)
 }
 
 export const AnimatedWatermark: React.FC<AnimatedWatermarkProps> = ({
   className = "",
   autoPlay = true,
-  duration = 3000
+  duration = 3000,
+  totalOrders = 0,
+  repeatInterval = 15000 // 15 segundos
 }) => {
   const [isAnimating, setIsAnimating] = useState(false);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Função para iniciar uma animação
+  const startAnimation = () => {
+    setIsAnimating(false);
+    setTimeout(() => setIsAnimating(true), 100);
+  };
 
   useEffect(() => {
-    if (autoPlay) {
-      const timer = setTimeout(() => {
-        setIsAnimating(true);
+    // Limpar timers anteriores
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+    }
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
+    if (autoPlay && totalOrders < 2) {
+      // Primeira animação após 500ms
+      timeoutRef.current = setTimeout(() => {
+        startAnimation();
       }, 500);
 
-      return () => clearTimeout(timer);
+      // Repetir a cada 15 segundos enquanto tiver menos de 2 pedidos
+      intervalRef.current = setInterval(() => {
+        if (totalOrders < 2) {
+          startAnimation();
+        }
+      }, repeatInterval);
     }
-  }, [autoPlay]);
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, [autoPlay, totalOrders, repeatInterval]);
 
   const handleReplay = () => {
     setIsAnimating(false);

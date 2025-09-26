@@ -422,6 +422,7 @@ const Index = () => {
               newsMode={config.advertising.newsMode}
               newsSource={config.advertising.newsSource}
               newsFontSize={config.advertising.newsFontSize || 2.5}
+              totalOrders={productionOrders.length + readyOrders.length}
               className="h-full"
               onToggleHeader={() => {
                 const newConfig = {

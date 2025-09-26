@@ -1,5 +1,6 @@
 import { cn } from '../lib/utils';
 import { NewsDisplay } from './NewsDisplay';
+import { AnimatedWatermark } from './AnimatedWatermark';
 
 interface AdvertisingColumnProps {
   title?: string;
@@ -15,6 +16,7 @@ interface AdvertisingColumnProps {
   newsMode?: boolean;
   newsSource?: 'g1' | 'uol' | 'cnn' | 'panelinha' | 'cybercook' | 'tudogostoso' | 'foodnetwork';
   newsFontSize?: number; // Nova prop para tamanho da fonte
+  totalOrders?: number; // Número total de pedidos para controlar a animação da marca d'água
   onToggleHeader?: () => void;
 }
 
@@ -32,6 +34,7 @@ export const AdvertisingColumn = ({
   newsMode = false,
   newsSource = 'g1',
   newsFontSize = 2.5, // Tamanho padrão para visualização à distância
+  totalOrders = 0,
   onToggleHeader
 }: AdvertisingColumnProps) => {
 
@@ -101,14 +104,26 @@ export const AdvertisingColumn = ({
               )}
             </div>
           ) : (
-            <div className="text-center text-muted-foreground">
-              <div className="space-y-2">
-                <div className="text-lg font-semibold">ESPAÇO</div>
-                <div className="text-lg font-semibold">PUBLICITÁRIO</div>
+            <div className="text-center text-muted-foreground relative">
+              {/* Marca d'água animada OIE! */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <AnimatedWatermark 
+                  totalOrders={totalOrders}
+                  autoPlay={true}
+                  className="text-6xl"
+                />
               </div>
-              <div className="mt-4 text-sm opacity-70">
-                <div>Configure imagem/vídeo/url/notícias</div>
-                <div>nas configurações</div>
+              
+              {/* Conteúdo do espaço publicitário */}
+              <div className="relative z-10">
+                <div className="space-y-2">
+                  <div className="text-lg font-semibold">ESPAÇO</div>
+                  <div className="text-lg font-semibold">PUBLICITÁRIO</div>
+                </div>
+                <div className="mt-4 text-sm opacity-70">
+                  <div>Configure imagem/vídeo/url/notícias</div>
+                  <div>nas configurações</div>
+                </div>
               </div>
             </div>
           )}
