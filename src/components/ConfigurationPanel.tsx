@@ -129,7 +129,11 @@ export const ConfigurationPanel = ({
     readyCards: false,
     advertisingGeneral: false,
     advertisingHeader: false,
-    advertisingContent: false
+    advertisingContent: false,
+    diversosDatabase: false,
+    diversosBackup: false,
+    diversosStore: false,
+    diversosScreen: false
   });
 
   // Reset todas as seções para fechadas sempre que abrir o painel
@@ -1740,93 +1744,98 @@ export const ConfigurationPanel = ({
           onToggle={() => toggleSection('diversos')}
           colorClass="text-gray-600"
         >
-          <div className="space-y-3">
-            {/* Conexão com Banco de Dados */}
+          <SubConfigSection
+            title="Conexão com Banco de Dados"
+            isOpen={openSubSections.diversosDatabase}
+            onToggle={() => toggleSubSection('diversosDatabase')}
+          >
             <div className="space-y-3">
-              <Label className="text-sm font-medium">Conexão com Banco de Dados</Label>
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <Label className="text-xs">Integrado com kds da hora</Label>
-                  <Switch
-                    checked={config.database?.kdsIntegration || false}
-                    onCheckedChange={(checked) => updateConfig('database.kdsIntegration', checked)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-xs">Tipo de Banco</Label>
-                  <Select
-                    value={config.database?.type || 'none'}
-                    onValueChange={(value) => updateConfig('database.type', value)}
-                  >
-                    <SelectTrigger className="h-6">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="none">Nenhum</SelectItem>
-                      <SelectItem value="mssql">MSSQL</SelectItem>
-                      <SelectItem value="mysql">MYSQL</SelectItem>
-                      <SelectItem value="postgre">POSTGRE</SelectItem>
-                      <SelectItem value="other">OUTRO</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {config.database?.type && config.database.type !== 'none' && (
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1">
-                      <Label className="text-xs">Host</Label>
-                      <Input
-                        value={config.database?.host || ''}
-                        onChange={(e) => updateConfig('database.host', e.target.value)}
-                        className="h-6"
-                        placeholder="localhost"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <Label className="text-xs">Porta</Label>
-                      <Input
-                        value={config.database?.port || ''}
-                        onChange={(e) => updateConfig('database.port', e.target.value)}
-                        className="h-6"
-                        placeholder="5432"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <Label className="text-xs">Database</Label>
-                      <Input
-                        value={config.database?.database || ''}
-                        onChange={(e) => updateConfig('database.database', e.target.value)}
-                        className="h-6"
-                        placeholder="database_name"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <Label className="text-xs">Usuário</Label>
-                      <Input
-                        value={config.database?.username || ''}
-                        onChange={(e) => updateConfig('database.username', e.target.value)}
-                        className="h-6"
-                        placeholder="username"
-                      />
-                    </div>
-                    <div className="col-span-2 space-y-1">
-                      <Label className="text-xs">Senha</Label>
-                      <Input
-                        type="password"
-                        value={config.database?.password || ''}
-                        onChange={(e) => updateConfig('database.password', e.target.value)}
-                        className="h-6"
-                        placeholder="password"
-                      />
-                    </div>
-                  </div>
-                )}
+              <div className="flex items-center justify-between">
+                <Label className="text-xs">Integrado com kds da hora</Label>
+                <Switch
+                  checked={config.database?.kdsIntegration || false}
+                  onCheckedChange={(checked) => updateConfig('database.kdsIntegration', checked)}
+                  className="scale-75"
+                />
               </div>
-            </div>
+              <div className="space-y-2">
+                <Label className="text-xs">Tipo de Banco</Label>
+                <Select
+                  value={config.database?.type || 'none'}
+                  onValueChange={(value) => updateConfig('database.type', value)}
+                >
+                  <SelectTrigger className="h-6">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">Nenhum</SelectItem>
+                    <SelectItem value="mssql">MSSQL</SelectItem>
+                    <SelectItem value="mysql">MYSQL</SelectItem>
+                    <SelectItem value="postgre">POSTGRE</SelectItem>
+                    <SelectItem value="other">OUTRO</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
 
-            {/* Backup */}
-            <div className="space-y-3 border-t pt-4">
-              <Label className="text-sm font-medium">Backup</Label>
+              {config.database?.type && config.database.type !== 'none' && (
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1">
+                    <Label className="text-xs">Host</Label>
+                    <Input
+                      value={config.database?.host || ''}
+                      onChange={(e) => updateConfig('database.host', e.target.value)}
+                      className="h-6"
+                      placeholder="localhost"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <Label className="text-xs">Porta</Label>
+                    <Input
+                      value={config.database?.port || ''}
+                      onChange={(e) => updateConfig('database.port', e.target.value)}
+                      className="h-6"
+                      placeholder="5432"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <Label className="text-xs">Database</Label>
+                    <Input
+                      value={config.database?.database || ''}
+                      onChange={(e) => updateConfig('database.database', e.target.value)}
+                      className="h-6"
+                      placeholder="database_name"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <Label className="text-xs">Usuário</Label>
+                    <Input
+                      value={config.database?.username || ''}
+                      onChange={(e) => updateConfig('database.username', e.target.value)}
+                      className="h-6"
+                      placeholder="username"
+                    />
+                  </div>
+                  <div className="col-span-2 space-y-1">
+                    <Label className="text-xs">Senha</Label>
+                    <Input
+                      type="password"
+                      value={config.database?.password || ''}
+                      onChange={(e) => updateConfig('database.password', e.target.value)}
+                      className="h-6"
+                      placeholder="password"
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+          </SubConfigSection>
+
+          <SubConfigSection
+            title="Backup e Configurações"
+            isOpen={openSubSections.diversosBackup}
+            onToggle={() => toggleSubSection('diversosBackup')}
+          >
+            <div className="space-y-3">
               <div className="flex gap-2">
                 <Button
                   onClick={() => {
@@ -1909,75 +1918,80 @@ export const ConfigurationPanel = ({
                 </AlertDialogContent>
               </AlertDialog>
             </div>
+          </SubConfigSection>
 
-            {/* Dados da Loja */}
-            <div className="space-y-3 border-t pt-4">
-              <Label className="text-sm font-medium">Dados da Loja</Label>
-              <div className="space-y-3">
-                <div className="space-y-1">
-                  <Label className="text-xs">CNPJ</Label>
-                  <Input
-                    value={config.store?.cnpj || ''}
-                    onChange={(e) => {
-                      // Remove formatação e valida
-                      const cnpj = e.target.value.replace(/\D/g, '');
-                      updateConfig('store.cnpj', cnpj);
-                    }}
-                    className="h-6"
-                    placeholder="00.000.000/0000-00"
-                    maxLength={18}
-                    onBlur={(e) => {
-                      // Formatação para exibição
-                      const cnpj = e.target.value.replace(/\D/g, '');
-                      if (cnpj.length === 14) {
-                        const formatted = cnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
-                        e.target.value = formatted;
-                      }
-                    }}
-                  />
-                </div>
-                <div className="space-y-1">
-                  <Label className="text-xs">Razão Social</Label>
-                  <Input
-                    value={config.store?.razaoSocial || ''}
-                    onChange={(e) => updateConfig('store.razaoSocial', e.target.value)}
-                    className="h-6"
-                    placeholder="Empresa Ltda"
-                  />
-                </div>
-                <div className="space-y-1">
-                  <Label className="text-xs">Nome Fantasia</Label>
-                  <Input
-                    value={config.store?.nomeFantasia || ''}
-                    onChange={(e) => updateConfig('store.nomeFantasia', e.target.value)}
-                    className="h-6"
-                    placeholder="Nome da Loja"
-                  />
-                </div>
-                <div className="space-y-1">
-                  <Label className="text-xs">Número da Licença</Label>
-                  <Input
-                    value={config.store?.numeroLicenca || ''}
-                    onChange={(e) => updateConfig('store.numeroLicenca', e.target.value)}
-                    className="h-6"
-                    placeholder="LIC-12345"
-                  />
-                </div>
+          <SubConfigSection
+            title="Dados da Loja"
+            isOpen={openSubSections.diversosStore}
+            onToggle={() => toggleSubSection('diversosStore')}
+          >
+            <div className="space-y-3">
+              <div className="space-y-1">
+                <Label className="text-xs">CNPJ</Label>
+                <Input
+                  value={config.store?.cnpj || ''}
+                  onChange={(e) => {
+                    // Remove formatação e valida
+                    const cnpj = e.target.value.replace(/\D/g, '');
+                    updateConfig('store.cnpj', cnpj);
+                  }}
+                  className="h-6"
+                  placeholder="00.000.000/0000-00"
+                  maxLength={18}
+                  onBlur={(e) => {
+                    // Formatação para exibição
+                    const cnpj = e.target.value.replace(/\D/g, '');
+                    if (cnpj.length === 14) {
+                      const formatted = cnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
+                      e.target.value = formatted;
+                    }
+                  }}
+                />
               </div>
-            </div>
-
-            {/* Splash Screen */}
-            <div className="space-y-3 border-t pt-4">
-              <Label className="text-sm font-medium">Tela Inicial</Label>
-              <div className="flex items-center justify-between">
-                <Label className="text-xs">Exibir tela de splash</Label>
-                <Switch
-                  checked={config.splash?.enabled ?? true}
-                  onCheckedChange={(checked) => updateConfig('splash.enabled', checked)}
+              <div className="space-y-1">
+                <Label className="text-xs">Razão Social</Label>
+                <Input
+                  value={config.store?.razaoSocial || ''}
+                  onChange={(e) => updateConfig('store.razaoSocial', e.target.value)}
+                  className="h-6"
+                  placeholder="Empresa Ltda"
+                />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs">Nome Fantasia</Label>
+                <Input
+                  value={config.store?.nomeFantasia || ''}
+                  onChange={(e) => updateConfig('store.nomeFantasia', e.target.value)}
+                  className="h-6"
+                  placeholder="Nome da Loja"
+                />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs">Número da Licença</Label>
+                <Input
+                  value={config.store?.numeroLicenca || ''}
+                  onChange={(e) => updateConfig('store.numeroLicenca', e.target.value)}
+                  className="h-6"
+                  placeholder="LIC-12345"
                 />
               </div>
             </div>
-          </div>
+          </SubConfigSection>
+
+          <SubConfigSection
+            title="Tela Inicial"
+            isOpen={openSubSections.diversosScreen}
+            onToggle={() => toggleSubSection('diversosScreen')}
+          >
+            <div className="flex items-center justify-between">
+              <Label className="text-xs">Exibir tela de splash</Label>
+              <Switch
+                checked={config.splash?.enabled ?? true}
+                onCheckedChange={(checked) => updateConfig('splash.enabled', checked)}
+                className="scale-75"
+              />
+            </div>
+          </SubConfigSection>
         </ConfigSection>
 
         
