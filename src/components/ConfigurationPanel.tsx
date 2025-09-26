@@ -268,7 +268,7 @@ export const ConfigurationPanel = ({
                 <Switch 
                   checked={config.production.visible} 
                   onCheckedChange={(checked) => updateConfig('production.visible', checked)}
-                  className="scale-75"
+                  className="scale-50"
                 />
                 <Label className="text-xs">Exibir Coluna</Label>
               </div>
@@ -276,7 +276,7 @@ export const ConfigurationPanel = ({
                 <Switch 
                   checked={config.production.showBorder || false} 
                   onCheckedChange={(checked) => updateConfig('production.showBorder', checked)}
-                  className="scale-75"
+                  className="scale-50"
                 />
                 <Label className="text-xs">Tem Borda</Label>
               </div>
@@ -438,7 +438,7 @@ export const ConfigurationPanel = ({
               <Switch 
                 checked={config.ready.showBorder || false} 
                 onCheckedChange={(checked) => updateConfig('ready.showBorder', checked)}
-                className="scale-75"
+                className="scale-50"
               />
               <Label className="text-xs">Tem Borda</Label>
             </div>
@@ -675,7 +675,7 @@ export const ConfigurationPanel = ({
                 <Switch
                   checked={config.lastOrder.pulseAnimation}
                   onCheckedChange={(checked) => updateConfig('lastOrder.pulseAnimation', checked)}
-                  className="scale-75"
+                  className="scale-50"
                 />
                 <Label className="text-xs">Animação Pulsante</Label>
               </div>
@@ -683,7 +683,7 @@ export const ConfigurationPanel = ({
                 <Switch
                   checked={config.lastOrder.highlight}
                   onCheckedChange={(checked) => updateConfig('lastOrder.highlight', checked)}
-                  className="scale-75"
+                  className="scale-50"
                 />
                 <Label className="text-xs">Destacar Último Pedido</Label>
               </div>
@@ -707,7 +707,7 @@ export const ConfigurationPanel = ({
                 <Switch 
                   checked={config.advertising.visible} 
                   onCheckedChange={(checked) => updateConfig('advertising.visible', checked)}
-                  className="scale-75"
+                  className="scale-50"
                 />
                 <Label className="text-xs">Exibir Coluna</Label>
               </div>
@@ -715,7 +715,7 @@ export const ConfigurationPanel = ({
                 <Switch 
                   checked={config.advertising.headerVisible} 
                   onCheckedChange={(checked) => updateConfig('advertising.headerVisible', checked)}
-                  className="scale-75"
+                  className="scale-50"
                 />
                 <Label className="text-xs">Exibir Cabeçalho</Label>
               </div>
@@ -723,7 +723,7 @@ export const ConfigurationPanel = ({
                 <Switch 
                   checked={config.advertising.showBorder || false} 
                   onCheckedChange={(checked) => updateConfig('advertising.showBorder', checked)}
-                  className="scale-75"
+                  className="scale-50"
                 />
                 <Label className="text-xs">Tem Borda</Label>
               </div>
@@ -984,7 +984,7 @@ export const ConfigurationPanel = ({
                 <Switch
                   checked={config.sounds.production}
                   onCheckedChange={(checked) => updateConfig('sounds.production', checked)}
-                  className="scale-75"
+                  className="scale-50"
                 />
                 <Label className="text-xs">Som para Produção</Label>
               </div>
@@ -1049,7 +1049,7 @@ export const ConfigurationPanel = ({
                 <Switch
                   checked={config.sounds.ready}
                   onCheckedChange={(checked) => updateConfig('sounds.ready', checked)}
-                  className="scale-75"
+                  className="scale-50"
                 />
                 <Label className="text-xs">Som para Pronto</Label>
               </div>
@@ -1205,7 +1205,7 @@ export const ConfigurationPanel = ({
             <Switch
               checked={config.autoExpedition.enabled}
               onCheckedChange={(checked) => updateConfig('autoExpedition.enabled', checked)}
-              className="scale-75"
+              className="scale-50"
             />
             <Label className="text-xs">Utilizar Auto Expedição</Label>
           </div>
@@ -1234,7 +1234,7 @@ export const ConfigurationPanel = ({
               <Switch
                 checked={config.textToSpeech.enabled}
                 onCheckedChange={(checked) => updateConfig('textToSpeech.enabled', checked)}
-                className="scale-75"
+                className="scale-50"
               />
               <Label className="text-xs">Ativar Voz</Label>
             </div>
@@ -1339,7 +1339,7 @@ export const ConfigurationPanel = ({
                     <Switch
                       checked={config.textToSpeech.repeatEnabled || false}
                       onCheckedChange={(checked) => updateConfig('textToSpeech.repeatEnabled', checked)}
-                      className="scale-75"
+                      className="scale-50"
                     />
                     <Label className="text-xs">Repetir fala</Label>
                   </div>
