@@ -78,8 +78,19 @@ export const AnimatedWatermark: React.FC<AnimatedWatermarkProps> = ({
 
   return (
     <div className={`relative inline-block ${className}`}>
+      {/* Debug info */}
+      <div className="absolute -top-6 left-0 text-xs text-red-500 bg-white px-1">
+        isAnimating: {isAnimating ? 'true' : 'false'} | totalOrders: {totalOrders}
+      </div>
+
       {/* Container para a animação */}
-      <div className={`watermark-container ${isAnimating ? 'animate' : ''}`}>
+      <div 
+        className={`watermark-container ${isAnimating ? 'animate' : ''}`}
+        style={{ 
+          border: isAnimating ? '2px solid red' : '2px solid green',
+          backgroundColor: isAnimating ? 'rgba(255,0,0,0.1)' : 'rgba(0,255,0,0.1)'
+        }}
+      >
         {/* O inicial */}
         <span className="watermark-letter o-letter">O</span>
         
@@ -100,14 +111,12 @@ export const AnimatedWatermark: React.FC<AnimatedWatermarkProps> = ({
       </div>
 
       {/* Botão para repetir animação */}
-      {!autoPlay && (
-        <button 
-          onClick={handleReplay}
-          className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-xs opacity-50 hover:opacity-100 transition-opacity"
-        >
-          Replay
-        </button>
-      )}
+      <button 
+        onClick={() => startAnimation()}
+        className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-xs bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600"
+      >
+        Replay Animation
+      </button>
     </div>
   );
 };
