@@ -181,7 +181,7 @@ export const ConfigurationPanel = ({
   return (
     <div 
       className={cn(
-        "fixed top-0 w-1/3 h-full bg-white/30 backdrop-blur-sm shadow-xl z-50 flex flex-col border-gray-200",
+        "fixed top-0 w-1/3 h-full bg-white shadow-xl z-50 flex flex-col border-gray-200",
         panelPosition === 'right' ? 'right-0 border-l' : 'left-0 border-r'
       )}
     >
@@ -593,93 +593,100 @@ export const ConfigurationPanel = ({
           onToggle={() => toggleSection('lastOrder')}
           colorClass="text-amber-600"
         >
-          <div>
-            <Label className="text-sm font-medium">Altura: {config.lastOrder.height}px</Label>
-            <Slider
-              value={[config.lastOrder.height]}
-              onValueChange={([value]) => updateConfig('lastOrder.height', value)}
-              max={360}
-              min={40}
-              step={10}
-              className="mt-1 h-3"
-              style={{
-                '--tw-bg-opacity': '1',
-                background: `linear-gradient(to right, ${config.lastOrder.backgroundColor} 0%, ${config.lastOrder.backgroundColor} 100%)`
-              } as React.CSSProperties}
-            />
-          </div>
-          
-          <div>
-            <Label className="text-sm font-medium">Tamanho da Fonte: {config.lastOrder.fontSize}rem</Label>
-            <Slider
-              value={[config.lastOrder.fontSize]}
-              onValueChange={([value]) => updateConfig('lastOrder.fontSize', value)}
-              max={30}
-              min={1}
-              step={0.5}
-              className="mt-1 h-3"
-              style={{
-                '--tw-bg-opacity': '1',
-                background: `linear-gradient(to right, ${config.lastOrder.textColor || '#000000'} 0%, ${config.lastOrder.textColor || '#000000'} 100%)`
-              } as React.CSSProperties}
-            />
+          {/* Gerais */}
+          <div className="pb-3 mb-3 border-b-2 border-gray-300">
+            <h4 className="text-sm font-semibold mb-2 text-gray-700">Gerais</h4>
+            
+            <div>
+              <Label className="text-xs font-medium">Altura: {config.lastOrder.height}px</Label>
+              <Slider
+                value={[config.lastOrder.height]}
+                onValueChange={([value]) => updateConfig('lastOrder.height', value)}
+                max={360}
+                min={40}
+                step={10}
+                className="mt-1"
+              />
+            </div>
           </div>
 
-          <div>
-            <Label className="text-sm font-medium">Família da Fonte</Label>
-            <select
-              value={config.lastOrder.fontFamily || 'Arial'}
-              onChange={(e) => updateConfig('lastOrder.fontFamily', e.target.value)}
-              className="w-full mt-1 px-3 py-2 text-sm border border-gray-300 rounded-md bg-white"
-            >
-              <option value="Arial">Arial</option>
-              <option value="Times New Roman">Times New Roman</option>
-              <option value="Courier New">Courier New</option>
-              <option value="Calibri">Calibri</option>
-              <option value="Verdana">Verdana</option>
-              <option value="Georgia">Georgia</option>
-              <option value="Tahoma">Tahoma</option>
-              <option value="Impact">Impact</option>
-            </select>
+          {/* Aparência */}
+          <div className="pb-3 mb-3 border-b-2 border-gray-300">
+            <h4 className="text-sm font-semibold mb-2 text-gray-700">Aparência</h4>
+            
+            <div>
+              <Label className="text-xs font-medium">Tamanho da Fonte: {config.lastOrder.fontSize}rem</Label>
+              <Slider
+                value={[config.lastOrder.fontSize]}
+                onValueChange={([value]) => updateConfig('lastOrder.fontSize', value)}
+                max={30}
+                min={1}
+                step={0.5}
+                className="mt-1"
+              />
+            </div>
+
+            <div>
+              <Label className="text-xs">Família da Fonte</Label>
+              <select
+                value={config.lastOrder.fontFamily || 'Arial'}
+                onChange={(e) => updateConfig('lastOrder.fontFamily', e.target.value)}
+                className="w-full mt-1 px-3 py-1 text-xs border border-gray-300 rounded-md bg-white"
+              >
+                <option value="Arial">Arial</option>
+                <option value="Times New Roman">Times New Roman</option>
+                <option value="Courier New">Courier New</option>
+                <option value="Calibri">Calibri</option>
+                <option value="Verdana">Verdana</option>
+                <option value="Georgia">Georgia</option>
+                <option value="Tahoma">Tahoma</option>
+                <option value="Impact">Impact</option>
+              </select>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <Label className="text-xs">Cor da Fonte</Label>
+                <Input
+                  type="color"
+                  value={config.lastOrder.textColor || '#000000'}
+                  onChange={(e) => updateConfig('lastOrder.textColor', e.target.value)}
+                  className="h-8 mt-1 border-2"
+                />
+              </div>
+              <div>
+                <Label className="text-xs">Cor de Fundo</Label>
+                <Input
+                  type="color"
+                  value={config.lastOrder.backgroundColor || '#ffffff'}
+                  onChange={(e) => updateConfig('lastOrder.backgroundColor', e.target.value)}
+                  className="h-8 mt-1 border-2"
+                />
+              </div>
+            </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-2">
-            <div>
-              <Label className="text-sm font-medium">Cor da Fonte</Label>
-              <Input
-                type="color"
-                value={config.lastOrder.textColor || '#000000'}
-                onChange={(e) => updateConfig('lastOrder.textColor', e.target.value)}
-                className="h-12 mt-1 border-2"
-              />
-            </div>
-            <div>
-              <Label className="text-sm font-medium">Cor de Fundo</Label>
-              <Input
-                type="color"
-                value={config.lastOrder.backgroundColor || '#ffffff'}
-                onChange={(e) => updateConfig('lastOrder.backgroundColor', e.target.value)}
-                className="h-12 mt-1 border-2"
-              />
-            </div>
-          </div>
-          
-          <div className="space-y-3">
-            <div className="flex items-center space-x-2">
-              <Switch
-                checked={config.lastOrder.pulseAnimation}
-                onCheckedChange={(checked) => updateConfig('lastOrder.pulseAnimation', checked)}
-                className="scale-75"
-              />
-              <Label className="text-sm">Animação Pulsante</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Switch
-                checked={config.lastOrder.highlight}
-                onCheckedChange={(checked) => updateConfig('lastOrder.highlight', checked)}
-                className="scale-75"
-              />
-              <Label className="text-sm">Destacar Último Pedido</Label>
+          {/* Controles */}
+          <div>
+            <h4 className="text-sm font-semibold mb-2 text-gray-700">Controles</h4>
+            
+            <div className="space-y-2">
+              <div className="flex items-center space-x-2">
+                <Switch
+                  checked={config.lastOrder.pulseAnimation}
+                  onCheckedChange={(checked) => updateConfig('lastOrder.pulseAnimation', checked)}
+                  className="scale-75"
+                />
+                <Label className="text-xs">Animação Pulsante</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Switch
+                  checked={config.lastOrder.highlight}
+                  onCheckedChange={(checked) => updateConfig('lastOrder.highlight', checked)}
+                  className="scale-75"
+                />
+                <Label className="text-xs">Destacar Último Pedido</Label>
+              </div>
             </div>
           </div>
         </ConfigSection>
