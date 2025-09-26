@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
-import { Settings, Send, Maximize, Minimize } from 'lucide-react';
+import { Settings, Send, Maximize, Minimize, BookOpen } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 import { useIsTablet } from '../hooks/use-mobile';
+import { UserManual } from './UserManual';
 
 interface ControlPanelProps {
   onConfigClick: () => void;
@@ -202,6 +203,24 @@ export const ControlPanel = ({
           <div className="text-xs text-muted-foreground">
             Jelco Informática (2025)
           </div>
+          <UserManual>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-5 w-5 p-0 border-0"
+                  >
+                    <BookOpen className="w-3 h-3" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Manual do Usuário</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </UserManual>
           <Button
             variant="ghost"
             size="sm"
