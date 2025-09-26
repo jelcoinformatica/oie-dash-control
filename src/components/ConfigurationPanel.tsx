@@ -1935,7 +1935,7 @@ export const ConfigurationPanel = ({
             onToggle={() => toggleSubSection('diversosStore')}
             icon={<Store className="w-3 h-3" />}
           >
-            <div className="space-y-3">
+            <div className="space-y-1">
               <div className="space-y-1">
                 <Label className="text-xs">CNPJ</Label>
                 <Input
