@@ -12,6 +12,7 @@ import { defaultConfig } from '../data/defaultConfig';
 import { PanelConfig } from '../types/order';
 import { toast } from '../hooks/use-toast';
 import { useIsTablet } from '../hooks/use-mobile';
+import { Popover, PopoverContent, PopoverTrigger } from '../components/ui/popover';
 
 const Index = () => {
   const isTablet = useIsTablet();
@@ -22,6 +23,7 @@ const Index = () => {
   const [configOpen, setConfigOpen] = useState(false);
   const [showSplash, setShowSplash] = useState(false);
   const [isKioskMode, setIsKioskMode] = useState(true);
+  const [productionPopupOpen, setProductionPopupOpen] = useState(false);
   
   // Estabilizar ttsConfig para evitar recriações desnecessárias
   const ttsConfig = useMemo(() => 
@@ -322,13 +324,47 @@ const Index = () => {
               >
                 {/* Contador de produção quando coluna 1 está desativada */}
                 {!config.production.visible && (
-                  <div 
-                    className="absolute left-4 bg-gray-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold cursor-help"
-                    style={{ fontSize: '16px' }}
-                    title="Pedidos em Produção"
-                  >
-                    {productionOrders.length}
-                  </div>
+                  <Popover open={productionPopupOpen} onOpenChange={setProductionPopupOpen}>
+                    <PopoverTrigger asChild>
+                      <div 
+                        className="absolute left-4 bg-gray-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold cursor-pointer hover:bg-gray-700 transition-colors"
+                        style={{ fontSize: '16px' }}
+                        title="Clique para ver pedidos em produção"
+                      >
+                        {productionOrders.length}
+                      </div>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-80 max-h-96 overflow-y-auto" align="start">
+                      <div className="space-y-2">
+                        <h4 className="font-semibold text-sm mb-3">Pedidos em Produção ({productionOrders.length})</h4>
+                        {productionOrders.length === 0 ? (
+                          <p className="text-sm text-muted-foreground">Nenhum pedido em produção</p>
+                        ) : (
+                          <div className="space-y-2">
+                            {productionOrders.map((order) => (
+                              <OrderCard
+                                key={order.id}
+                                order={order}
+                                onClick={() => {
+                                  moveToReady(order.id);
+                                  setProductionPopupOpen(false);
+                                }}
+                                config={config}
+                                showNickname={config.production?.cardConfig?.showNickname ?? true}
+                                showItems={config.production?.cardConfig?.showItems ?? true}
+                                moduleIndicator={config.production?.cardConfig?.moduleIndicator ?? 'bullet'}
+                                fontSize={0.875}
+                                fontFamily={config.production.cardConfig.fontFamily}
+                                textColor={config.production.cardConfig.textColor}
+                                backgroundColor={config.production.cardConfig.backgroundColor}
+                                className="cursor-pointer hover:bg-gray-50 transition-colors"
+                              />
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </PopoverContent>
+                  </Popover>
                 )}
                 
                 <span>{config.ready.title}</span>
