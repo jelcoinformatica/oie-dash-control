@@ -21,11 +21,17 @@ export const AnimatedWatermark: React.FC<AnimatedWatermarkProps> = ({
 
   // Função para iniciar uma animação
   const startAnimation = () => {
+    console.log('AnimatedWatermark - startAnimation called, current isAnimating:', isAnimating);
     setIsAnimating(false);
-    setTimeout(() => setIsAnimating(true), 100);
+    setTimeout(() => {
+      console.log('AnimatedWatermark - Setting isAnimating to true');
+      setIsAnimating(true);
+    }, 100);
   };
 
   useEffect(() => {
+    console.log('AnimatedWatermark - useEffect triggered:', { autoPlay, totalOrders, repeatInterval });
+    
     // Limpar timers anteriores
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
@@ -35,17 +41,24 @@ export const AnimatedWatermark: React.FC<AnimatedWatermarkProps> = ({
     }
 
     if (autoPlay && totalOrders < 2) {
+      console.log('AnimatedWatermark - Starting animation cycle');
+      
       // Primeira animação após 500ms
       timeoutRef.current = setTimeout(() => {
+        console.log('AnimatedWatermark - Starting first animation');
         startAnimation();
       }, 500);
 
       // Repetir a cada 15 segundos enquanto tiver menos de 2 pedidos
       intervalRef.current = setInterval(() => {
+        console.log('AnimatedWatermark - Interval animation check, totalOrders:', totalOrders);
         if (totalOrders < 2) {
+          console.log('AnimatedWatermark - Starting interval animation');
           startAnimation();
         }
       }, repeatInterval);
+    } else {
+      console.log('AnimatedWatermark - Animation not started:', { autoPlay, totalOrders });
     }
 
     return () => {
