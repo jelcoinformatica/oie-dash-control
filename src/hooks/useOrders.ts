@@ -335,6 +335,36 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
       }
       
       await loadOrders(); // Recarregar para sincronizar
+      
+      // Mover pedidos de produção para prontos com intervalos (para não encavalar)
+      // Só fazer isso se há pedidos em produção
+      const currentProductionOrders = orders.filter(order => order.status === 'production');
+      if (currentProductionOrders.length > 0) {
+        const ordersToMove = Math.min(count, currentProductionOrders.length);
+        
+        // Mover os pedidos mais antigos com intervalos de 3-8 segundos
+        for (let i = 0; i < ordersToMove; i++) {
+          const delay = (i * (3000 + Math.random() * 5000)); // 3-8 segundos entre cada movimentação
+          
+          setTimeout(async () => {
+            // Recarregar orders atualizados antes de mover
+            const currentOrders = await fetchOrders();
+            const productionOrdersNow = currentOrders.filter(order => order.status === 'production');
+            
+            if (productionOrdersNow.length > 0) {
+              // Pegar o pedido mais antigo
+              const oldestOrder = productionOrdersNow.sort((a, b) => {
+                const dateA = new Date(a.ultimoConsumo || a.createdAt || 0);
+                const dateB = new Date(b.ultimoConsumo || b.createdAt || 0);
+                return dateA.getTime() - dateB.getTime();
+              })[0];
+              
+              await moveToReady(oldestOrder.id);
+            }
+          }, delay);
+        }
+      }
+      
       // toast({
       //   title: "Pedidos Gerados",
       //   description: `${count} novos pedidos foram criados respeitando os módulos ativos`,
@@ -347,7 +377,7 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
       //   variant: "destructive"
       // });
     }
-  }, [loadOrders]);
+  }, [loadOrders, orders, moveToReady]);
 
   const startSimulation = useCallback(() => {
     setIsSimulationActive(true);
