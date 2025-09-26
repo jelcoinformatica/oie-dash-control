@@ -100,7 +100,7 @@ export const ControlPanel = ({
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
-          oie! v.5.0 | Banco: &lt;colibri&gt; | Usuário: sa
+          <span className="font-nunito font-bold">oie! v.5.0</span> | Banco: &lt;colibri&gt; | Usuário: sa
         </div>
         
         {/* Prompt de expedição fixo no centro */}
