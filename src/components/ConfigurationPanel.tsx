@@ -692,35 +692,38 @@ export const ConfigurationPanel = ({
           onToggle={() => toggleSection('advertising')}
           colorClass="text-cyan-600"
         >
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <Switch 
-                checked={config.advertising.visible} 
-                onCheckedChange={(checked) => updateConfig('advertising.visible', checked)}
-                className="scale-75"
-              />
-              <Label className="text-sm">Exibir Coluna</Label>
+          {/* Gerais */}
+          <div className="pb-3 mb-3 border-b-2 border-gray-300">
+            <h4 className="text-sm font-semibold mb-2 text-gray-700">Gerais</h4>
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <Switch 
+                  checked={config.advertising.visible} 
+                  onCheckedChange={(checked) => updateConfig('advertising.visible', checked)}
+                  className="scale-75"
+                />
+                <Label className="text-xs">Exibir Coluna</Label>
+              </div>
+              <div className="flex items-center gap-2">
+                <Switch 
+                  checked={config.advertising.headerVisible} 
+                  onCheckedChange={(checked) => updateConfig('advertising.headerVisible', checked)}
+                  className="scale-75"
+                />
+                <Label className="text-xs">Exibir Cabeçalho</Label>
+              </div>
+              <div className="flex items-center gap-2">
+                <Switch 
+                  checked={config.advertising.showBorder || false} 
+                  onCheckedChange={(checked) => updateConfig('advertising.showBorder', checked)}
+                  className="scale-75"
+                />
+                <Label className="text-xs">Tem Borda</Label>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <Switch 
-                checked={config.advertising.headerVisible} 
-                onCheckedChange={(checked) => updateConfig('advertising.headerVisible', checked)}
-                className="scale-75"
-              />
-              <Label className="text-sm">Exibir Cabeçalho</Label>
-            </div>
-            <div className="flex items-center gap-2">
-              <Switch 
-                checked={config.advertising.showBorder || false} 
-                onCheckedChange={(checked) => updateConfig('advertising.showBorder', checked)}
-                className="scale-75"
-              />
-              <Label className="text-sm">Tem Borda</Label>
-            </div>
-          </div>
 
             <div>
-              <Label className="text-sm font-medium">Largura (%): {config.advertising.width}</Label>
+              <Label className="text-xs font-medium">Largura (%): {config.advertising.width}</Label>
               <Slider
                 value={[config.advertising.width]}
                 onValueChange={([value]) => updateConfig('advertising.width', value)}
@@ -730,221 +733,232 @@ export const ConfigurationPanel = ({
                 className="mt-1"
               />
             </div>
-
-          <div>
-            <Label className="text-sm font-medium">Altura do Cabeçalho: {config.advertising.headerHeight}px</Label>
-            <Slider
-              value={[config.advertising.headerHeight]}
-              onValueChange={([value]) => updateConfig('advertising.headerHeight', value)}
-              max={180}
-              min={32}
-              step={4}
-              className="mt-1"
-            />
-            <div className="text-xs text-gray-500 mt-1">
-              Dimensões baseadas no espaço real disponível (calculadas dinamicamente)
-            </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-1">
+          {/* Cabeçalho */}
+          <div className="pb-3 mb-3 border-b-2 border-gray-300">
+            <h4 className="text-sm font-semibold mb-2 text-gray-700">Cabeçalho</h4>
+            
             <div>
-              <Label className="text-xs">Cor Fundo Cabeçalho</Label>
-              <Input
-                type="color"
-                value={config.advertising.headerBg}
-                onChange={(e) => updateConfig('advertising.headerBg', e.target.value)}
-                className="h-8 mt-1 border-2"
+              <Label className="text-xs font-medium">Altura do Cabeçalho: {config.advertising.headerHeight}px</Label>
+              <Slider
+                value={[config.advertising.headerHeight]}
+                onValueChange={([value]) => updateConfig('advertising.headerHeight', value)}
+                max={180}
+                min={32}
+                step={4}
+                className="mt-1"
               />
+              <div className="text-xs text-gray-500 mt-1">
+                Dimensões baseadas no espaço real disponível (calculadas dinamicamente)
+              </div>
             </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <Label className="text-xs">Cor Fundo Cabeçalho</Label>
+                <Input
+                  type="color"
+                  value={config.advertising.headerBg}
+                  onChange={(e) => updateConfig('advertising.headerBg', e.target.value)}
+                  className="h-8 mt-1 border-2"
+                />
+              </div>
+              <div>
+                <Label className="text-xs">Cor Fonte Cabeçalho</Label>
+                <Input
+                  type="color"
+                  value={config.advertising.headerColor}
+                  onChange={(e) => updateConfig('advertising.headerColor', e.target.value)}
+                  className="h-8 mt-1 border-2"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Conteúdo */}
+          <div>
+            <h4 className="text-sm font-semibold mb-2 text-gray-700">Conteúdo</h4>
+            
             <div>
-              <Label className="text-xs">Cor Fonte Cabeçalho</Label>
-              <Input
-                type="color"
-                value={config.advertising.headerColor}
-                onChange={(e) => updateConfig('advertising.headerColor', e.target.value)}
-                className="h-8 mt-1 border-2"
-              />
-            </div>
-          </div>
-
-          <div>
-            <Label className="text-sm font-medium">URL do Website</Label>
-            <div className="flex items-center gap-2 mt-1">
-              <Input
-                value={config.advertising.websiteUrl || ''}
-                onChange={(e) => updateConfig('advertising.websiteUrl', e.target.value)}
-                placeholder="https://exemplo.com/pagina"
-                className="text-sm flex-1"
-              />
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  if (config.advertising.websiteUrl) {
-                    window.open(config.advertising.websiteUrl, '_blank');
-                  } else {
-                    toast({
-                      title: "Atenção",
-                      description: "Digite uma URL primeiro",
-                      variant: "destructive"
-                    });
-                  }
-                }}
-                disabled={!config.advertising.websiteUrl}
-                title="Testar URL em nova aba"
-              >
-                Testar
-              </Button>
-            </div>
-            <div className="text-xs text-black font-medium mt-1">
-              Se preenchido, será exibido como iframe (tem prioridade sobre imagem)
-            </div>
-          </div>
-
-          <div>
-            <Label className="text-sm font-medium">URL ou Path da Imagem</Label>
-            <div className="flex items-center gap-2 mt-1">
-              <Input
-                value={config.advertising.imageUrl || ''}
-                onChange={(e) => updateConfig('advertising.imageUrl', e.target.value)}
-                placeholder="https://exemplo.com/imagem.jpg ou /assets/imagem.jpg"
-                className="text-sm flex-1"
-              />
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  const input = document.createElement('input');
-                  input.type = 'file';
-                  input.accept = 'image/*';
-                  input.onchange = (e) => {
-                    const file = (e.target as HTMLInputElement).files?.[0];
-                    if (file) {
-                      // Criar URL temporária para visualização
-                      const fileUrl = URL.createObjectURL(file);
-                      updateConfig('advertising.imageUrl', fileUrl);
-                    }
-                  };
-                  input.click();
-                }}
-              >
-                ...
-              </Button>
-            </div>
-          </div>
-
-          <div className="space-y-2 border-t pt-3">
-            <div className="flex items-center gap-2">
-              <Switch 
-                checked={Boolean(config.advertising.newsMode)} 
-                onCheckedChange={(checked) => {
-                  console.log('Toggle changed to:', checked);
-                  updateConfig('advertising.newsMode', checked);
-                  
-                  // Limpar outras configurações quando ativar notícias
-                  if (checked) {
-                    setTimeout(() => {
-                      updateConfig('advertising.websiteUrl', '');
-                      updateConfig('advertising.imageUrl', '');
-                    }, 100);
-                  }
-                }}
-              />
-              <Label 
-                className="text-sm font-medium cursor-pointer"
-                onClick={() => {
-                  const newValue = !Boolean(config.advertising.newsMode);
-                  console.log('Label clicked, toggling to:', newValue);
-                  updateConfig('advertising.newsMode', newValue);
-                }}
-              >
-                Exibir Feed de Conteúdo
-              </Label>
-              <Button
-                type="button"
-                size="sm"
-                variant="outline"
-                className="text-xs bg-blue-500 text-white hover:bg-blue-600 border-blue-500 px-2 py-1"
-                onClick={() => {
-                  const newValue = !Boolean(config.advertising.newsMode);
-                  console.log('Manual toggle button clicked, changing to:', newValue);
-                  updateConfig('advertising.newsMode', newValue);
-                }}
-              >
-                Toggle Manual
-              </Button>
-            </div>
-            {config.advertising.newsMode && (
-              <div className="ml-6 space-y-3">
-                <div className="text-xs text-blue-600 bg-blue-50 p-2 rounded">
-                  ✓ Feed automático será exibido<br/>
-                  ✓ Rotação automática a cada 25 segundos<br/>
-                  ✓ Layout otimizado para espaço disponível<br/>
-                  🍽️ Perfeito para restaurantes: sites gastronômicos disponíveis
-                </div>
-                
-                <div>
-                  <Label className="text-xs font-medium">Fonte de Conteúdo</Label>
-                  <Select 
-                    value={config.advertising.newsSource || 'g1'} 
-                    onValueChange={(value) => updateConfig('advertising.newsSource', value)}
-                  >
-                    <SelectTrigger className="w-full mt-1">
-                      <SelectValue placeholder="Selecione a fonte" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="panelinha">Panelinha - Receitas e Culinária</SelectItem>
-                      <SelectItem value="cybercook">CyberCook - Receitas e Dicas</SelectItem>
-                      <SelectItem value="tudogostoso">TudoGostoso - Receitas</SelectItem>
-                      <SelectItem value="foodnetwork">Food Network - Gastronomia</SelectItem>
-                      <SelectItem value="g1">G1 - Notícias Globo</SelectItem>
-                      <SelectItem value="uol">UOL - Notícias</SelectItem>
-                      <SelectItem value="cnn">CNN Brasil</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div>
-                  <Label className="text-xs font-medium">Tamanho da Fonte: {config.advertising.newsFontSize || 2.5}rem</Label>
-                  <Slider
-                    value={[config.advertising.newsFontSize || 2.5]}
-                    onValueChange={([value]) => updateConfig('advertising.newsFontSize', value)}
-                    max={6}
-                    min={1}
-                    step={0.5}
-                    className="mt-1"
-                  />
-                  <div className="text-xs text-gray-500 mt-1">
-                    Ideal para visualização à distância na praça de alimentação
-                  </div>
-                </div>
-                
-                <div className="text-xs text-gray-600">
-                  🌐 <strong>URL Standalone:</strong> <code>{window.location.origin}/news</code>
-                </div>
+              <Label className="text-xs font-medium">URL do Website</Label>
+              <div className="flex items-center gap-2 mt-1">
+                <Input
+                  value={config.advertising.websiteUrl || ''}
+                  onChange={(e) => updateConfig('advertising.websiteUrl', e.target.value)}
+                  placeholder="https://exemplo.com/pagina"
+                  className="text-xs flex-1"
+                />
                 <Button
                   type="button"
                   variant="outline"
                   size="sm"
-                  onClick={() => window.open(`${window.location.origin}/news`, '_blank')}
-                  className="text-xs h-8"
+                  onClick={() => {
+                    if (config.advertising.websiteUrl) {
+                      window.open(config.advertising.websiteUrl, '_blank');
+                    } else {
+                      toast({
+                        title: "Atenção",
+                        description: "Digite uma URL primeiro",
+                        variant: "destructive"
+                      });
+                    }
+                  }}
+                  disabled={!config.advertising.websiteUrl}
+                  title="Testar URL em nova aba"
                 >
-                  Abrir URL de Notícias ↗
+                  Testar
                 </Button>
               </div>
-            )}
-          </div>
+              <div className="text-xs text-black font-medium mt-1">
+                Se preenchido, será exibido como iframe (tem prioridade sobre imagem)
+              </div>
+            </div>
 
-          <div>
-            <Label className="text-sm font-medium">Cor do Fundo da Coluna</Label>
-            <Input
-              type="color"
-              value={config.advertising.backgroundColor}
-              onChange={(e) => updateConfig('advertising.backgroundColor', e.target.value)}
-              className="w-20 h-6 mt-1 cursor-pointer"
-            />
+            <div>
+              <Label className="text-xs font-medium">URL ou Path da Imagem</Label>
+              <div className="flex items-center gap-2 mt-1">
+                <Input
+                  value={config.advertising.imageUrl || ''}
+                  onChange={(e) => updateConfig('advertising.imageUrl', e.target.value)}
+                  placeholder="https://exemplo.com/imagem.jpg ou /assets/imagem.jpg"
+                  className="text-xs flex-1"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    const input = document.createElement('input');
+                    input.type = 'file';
+                    input.accept = 'image/*';
+                    input.onchange = (e) => {
+                      const file = (e.target as HTMLInputElement).files?.[0];
+                      if (file) {
+                        // Criar URL temporária para visualização
+                        const fileUrl = URL.createObjectURL(file);
+                        updateConfig('advertising.imageUrl', fileUrl);
+                      }
+                    };
+                    input.click();
+                  }}
+                >
+                  ...
+                </Button>
+              </div>
+            </div>
+
+            <div className="space-y-2 border-t pt-3">
+              <div className="flex items-center gap-2">
+                <Switch 
+                  checked={Boolean(config.advertising.newsMode)} 
+                  onCheckedChange={(checked) => {
+                    console.log('Toggle changed to:', checked);
+                    updateConfig('advertising.newsMode', checked);
+                    
+                    // Limpar outras configurações quando ativar notícias
+                    if (checked) {
+                      setTimeout(() => {
+                        updateConfig('advertising.websiteUrl', '');
+                        updateConfig('advertising.imageUrl', '');
+                      }, 100);
+                    }
+                  }}
+                />
+                <Label 
+                  className="text-xs font-medium cursor-pointer"
+                  onClick={() => {
+                    const newValue = !Boolean(config.advertising.newsMode);
+                    console.log('Label clicked, toggling to:', newValue);
+                    updateConfig('advertising.newsMode', newValue);
+                  }}
+                >
+                  Exibir Feed de Conteúdo
+                </Label>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  className="text-xs bg-blue-500 text-white hover:bg-blue-600 border-blue-500 px-2 py-1"
+                  onClick={() => {
+                    const newValue = !Boolean(config.advertising.newsMode);
+                    console.log('Manual toggle button clicked, changing to:', newValue);
+                    updateConfig('advertising.newsMode', newValue);
+                  }}
+                >
+                  Toggle Manual
+                </Button>
+              </div>
+              {config.advertising.newsMode && (
+                <div className="ml-6 space-y-3">
+                  <div className="text-xs text-blue-600 bg-blue-50 p-2 rounded">
+                    ✓ Feed automático será exibido<br/>
+                    ✓ Rotação automática a cada 25 segundos<br/>
+                    ✓ Layout otimizado para espaço disponível<br/>
+                    🍽️ Perfeito para restaurantes: sites gastronômicos disponíveis
+                  </div>
+                  
+                  <div>
+                    <Label className="text-xs font-medium">Fonte de Conteúdo</Label>
+                    <Select 
+                      value={config.advertising.newsSource || 'g1'} 
+                      onValueChange={(value) => updateConfig('advertising.newsSource', value)}
+                    >
+                      <SelectTrigger className="w-full mt-1">
+                        <SelectValue placeholder="Selecione a fonte" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="panelinha">Panelinha - Receitas e Culinária</SelectItem>
+                        <SelectItem value="cybercook">CyberCook - Receitas e Dicas</SelectItem>
+                        <SelectItem value="tudogostoso">TudoGostoso - Receitas</SelectItem>
+                        <SelectItem value="foodnetwork">Food Network - Gastronomia</SelectItem>
+                        <SelectItem value="g1">G1 - Notícias Globo</SelectItem>
+                        <SelectItem value="uol">UOL - Notícias</SelectItem>
+                        <SelectItem value="cnn">CNN Brasil</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div>
+                    <Label className="text-xs font-medium">Tamanho da Fonte: {config.advertising.newsFontSize || 2.5}rem</Label>
+                    <Slider
+                      value={[config.advertising.newsFontSize || 2.5]}
+                      onValueChange={([value]) => updateConfig('advertising.newsFontSize', value)}
+                      max={6}
+                      min={1}
+                      step={0.5}
+                      className="mt-1"
+                    />
+                    <div className="text-xs text-gray-500 mt-1">
+                      Ideal para visualização à distância na praça de alimentação
+                    </div>
+                  </div>
+                  
+                  <div className="text-xs text-gray-600">
+                    🌐 <strong>URL Standalone:</strong> <code>{window.location.origin}/news</code>
+                  </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => window.open(`${window.location.origin}/news`, '_blank')}
+                    className="text-xs h-8"
+                  >
+                    Abrir URL de Notícias ↗
+                  </Button>
+                </div>
+              )}
+            </div>
+
+            <div>
+              <Label className="text-xs font-medium">Cor do Fundo da Coluna</Label>
+              <Input
+                type="color"
+                value={config.advertising.backgroundColor}
+                onChange={(e) => updateConfig('advertising.backgroundColor', e.target.value)}
+                className="w-20 h-6 mt-1 cursor-pointer"
+              />
+            </div>
           </div>
 
         </ConfigSection>
