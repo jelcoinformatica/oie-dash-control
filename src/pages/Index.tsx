@@ -11,8 +11,10 @@ import { SplashScreen } from '../components/SplashScreen';
 import { defaultConfig } from '../data/defaultConfig';
 import { PanelConfig } from '../types/order';
 import { toast } from '../hooks/use-toast';
+import { useIsTablet } from '../hooks/use-mobile';
 
 const Index = () => {
+  const isTablet = useIsTablet();
   const [config, setConfig] = useState<PanelConfig>(() => {
     return defaultConfig;
   });
@@ -272,7 +274,7 @@ const Index = () => {
         className="min-h-screen h-screen flex flex-col"
         style={{ backgroundColor: config.backgroundColor, position: 'relative' }}
       >
-      <div className="flex-1 flex gap-0.5 p-1 pt-1 h-full overflow-hidden">
+      <div className={`flex-1 flex gap-0.5 p-1 pt-1 h-full overflow-hidden ${isTablet ? 'pb-12' : ''}`}>
         {/* Coluna 1 - Produção */}
         {config.production.visible && (
           <div style={{ width: `${columnWidths.production}%` }} className="h-full">
@@ -404,7 +406,21 @@ const Index = () => {
       </div>
 
       {/* Painel de Controle Fixo */}
-      <div className="flex-shrink-0 z-50 bg-card border-t shadow-sm" style={{ height: '32px', minHeight: '32px' }}>
+      {!isTablet && (
+        <div className="flex-shrink-0 z-50 bg-card border-t shadow-sm" style={{ height: '32px', minHeight: '32px' }}>
+          <ControlPanel
+            onConfigClick={() => setConfigOpen(true)}
+            onExpedite={handleExpedite}
+            expeditionLog={expeditionLog}
+            configOpen={configOpen}
+            isKioskMode={isKioskMode}
+            onToggleKiosk={handleToggleKiosk}
+          />
+        </div>
+      )}
+
+      {/* Painel de Controle para Tablet (fixo na tela) */}
+      {isTablet && (
         <ControlPanel
           onConfigClick={() => setConfigOpen(true)}
           onExpedite={handleExpedite}
@@ -413,7 +429,7 @@ const Index = () => {
           isKioskMode={isKioskMode}
           onToggleKiosk={handleToggleKiosk}
         />
-      </div>
+      )}
 
       {/* Painel de Configuração */}
       <ConfigurationPanel

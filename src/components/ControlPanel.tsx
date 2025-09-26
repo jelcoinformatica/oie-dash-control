@@ -3,6 +3,7 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Settings, Send, Maximize, Minimize } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
+import { useIsTablet } from '../hooks/use-mobile';
 
 interface ControlPanelProps {
   onConfigClick: () => void;
@@ -24,6 +25,7 @@ export const ControlPanel = ({
   const [expeditionInput, setExpeditionInput] = useState('');
   const [recentAutoExpedited, setRecentAutoExpedited] = useState<Set<string>>(new Set());
   const inputRef = useRef<HTMLInputElement>(null);
+  const isTablet = useIsTablet();
 
   // Focus inicial no input quando componente monta
   useEffect(() => {
@@ -80,8 +82,15 @@ export const ControlPanel = ({
   };
 
   return (
-    <div className="bg-card border-t shadow-sm relative" style={{ height: '32px', minHeight: '32px' }}>
-      <div className="container mx-auto px-2 py-1 flex items-center justify-between h-full relative">
+    <div 
+      className={`bg-card border-t shadow-sm relative ${isTablet ? 'fixed bottom-0 left-0 right-0 z-[100]' : ''}`} 
+      style={{ 
+        height: isTablet ? '48px' : '32px', 
+        minHeight: isTablet ? '48px' : '32px',
+        boxShadow: isTablet ? '0 -4px 12px rgba(0, 0, 0, 0.1)' : undefined
+      }}
+    >
+      <div className={`container mx-auto px-2 flex items-center justify-between h-full relative ${isTablet ? 'py-2' : 'py-1'}`}>
         <div className="text-xs text-muted-foreground flex-shrink-0 flex items-center gap-1">
           <TooltipProvider>
             <Tooltip>
