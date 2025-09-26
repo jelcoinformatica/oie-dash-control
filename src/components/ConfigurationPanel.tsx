@@ -7,7 +7,7 @@ import { Slider } from './ui/slider';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from './ui/alert-dialog';
 import { PanelConfig } from '../types/order';
-import { Settings, Palette, Factory, CheckCircle, Monitor, Volume2, Clock, Puzzle, Cog, X, ChevronRight, ChevronDown, Plus, Minus, ChevronLeft, ArrowLeft, ArrowRight, Mic, Database, Download, Upload, Store, Eye } from 'lucide-react';
+import { Settings, Palette, Factory, CheckCircle, Monitor, Volume2, Clock, Puzzle, Cog, X, ChevronRight, ChevronDown, Plus, Minus, ChevronLeft, ArrowLeft, ArrowRight, Mic, Database, Download, Upload, Store, Eye, RotateCcw } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { defaultConfig } from '../data/defaultConfig';
 import { RadioGroup, RadioGroupItem } from './ui/radio-group';
@@ -1842,7 +1842,7 @@ export const ConfigurationPanel = ({
             icon={<Download className="w-3 h-3" />}
           >
             <div className="space-y-3">
-              <div className="flex gap-2">
+              <div className="grid grid-cols-2 gap-2">
                 <Button
                   onClick={() => {
                     const dataStr = JSON.stringify(config, null, 2);
@@ -1856,9 +1856,10 @@ export const ConfigurationPanel = ({
                   }}
                   variant="outline"
                   size="sm"
-                  className="flex-1"
+                  className="text-xs h-8"
                 >
-                  Exportar Configurações
+                  <Download className="w-3 h-3 mr-1" />
+                  Exportar
                 </Button>
                 <input
                   type="file"
@@ -1885,9 +1886,10 @@ export const ConfigurationPanel = ({
                   onClick={() => document.getElementById('import-config')?.click()}
                   variant="outline"
                   size="sm"
-                  className="flex-1"
+                  className="text-xs h-8"
                 >
-                  Restaurar Backup
+                  <Upload className="w-3 h-3 mr-1" />
+                  Restaurar
                 </Button>
               </div>
               
@@ -1896,9 +1898,10 @@ export const ConfigurationPanel = ({
                   <Button
                     variant="destructive"
                     size="sm"
-                    className="w-full"
+                    className="w-full text-xs h-8"
                   >
-                    Restaurar Configurações de Fábrica
+                    <RotateCcw className="w-3 h-3 mr-1" />
+                    Config. de Fábrica
                   </Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
