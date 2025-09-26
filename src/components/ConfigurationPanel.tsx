@@ -1407,23 +1407,23 @@ export const ConfigurationPanel = ({
                     value={config.modules.balcao.displayOption}
                     onValueChange={(value: 'numeroVenda' | 'numeroChamada' | 'apelido' | 'apelidoNumeroVenda') => 
                       updateConfig('modules.balcao.displayOption', value)}
-                    className="space-y-2"
+                    className="space-y-1"
                   >
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-1.5">
                       <RadioGroupItem value="numeroVenda" id="balcao-num-venda" />
                       <Label htmlFor="balcao-num-venda" className="text-xs">No. de venda</Label>
                     </div>
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-1.5">
                       <RadioGroupItem value="numeroChamada" id="balcao-num-chamada" />
                       <Label htmlFor="balcao-num-chamada" className="text-xs">No. da chamada</Label>
                     </div>
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-1.5">
                       <RadioGroupItem value="apelido" id="balcao-apelido" />
                       <Label htmlFor="balcao-apelido" className="text-xs">Apelido</Label>
                     </div>
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-1.5">
                       <RadioGroupItem value="apelidoNumeroVenda" id="balcao-apelido-num-venda" />
-                      <Label htmlFor="balcao-apelido-num-venda" className="text-sm">Apelido + No. de venda</Label>
+                      <Label htmlFor="balcao-apelido-num-venda" className="text-xs">Apelido + No. de venda</Label>
                     </div>
                   </RadioGroup>
                 </div>
@@ -1452,15 +1452,15 @@ export const ConfigurationPanel = ({
                     value={config.modules.entrega.displayOption}
                     onValueChange={(value: 'numeroEntrega' | 'numeroVenda') => 
                       updateConfig('modules.entrega.displayOption', value)}
-                    className="space-y-2"
+                    className="space-y-1"
                   >
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-1.5">
                       <RadioGroupItem value="numeroEntrega" id="entrega-num-entrega" />
-                      <Label htmlFor="entrega-num-entrega" className="text-sm">No. de entrega</Label>
+                      <Label htmlFor="entrega-num-entrega" className="text-xs">No. de entrega</Label>
                     </div>
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-1.5">
                       <RadioGroupItem value="numeroVenda" id="entrega-num-venda" />
-                      <Label htmlFor="entrega-num-venda" className="text-sm">No. da venda (iFood, Rappi...)</Label>
+                      <Label htmlFor="entrega-num-venda" className="text-xs">No. da venda (iFood, Rappi...)</Label>
                     </div>
                   </RadioGroup>
                 </div>
@@ -1489,15 +1489,15 @@ export const ConfigurationPanel = ({
                     value={config.modules.mesa.displayOption}
                     onValueChange={(value: 'numeroMesa' | 'apelidoNumeroMesa') => 
                       updateConfig('modules.mesa.displayOption', value)}
-                    className="space-y-2"
+                    className="space-y-1"
                   >
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-1.5">
                       <RadioGroupItem value="numeroMesa" id="mesa-num-mesa" />
-                      <Label htmlFor="mesa-num-mesa" className="text-sm">No. da Mesa</Label>
+                      <Label htmlFor="mesa-num-mesa" className="text-xs">No. da Mesa</Label>
                     </div>
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-1.5">
                       <RadioGroupItem value="apelidoNumeroMesa" id="mesa-apelido-num-mesa" />
-                      <Label htmlFor="mesa-apelido-num-mesa" className="text-sm">Apelido + No. da Mesa</Label>
+                      <Label htmlFor="mesa-apelido-num-mesa" className="text-xs">Apelido + No. da Mesa</Label>
                     </div>
                   </RadioGroup>
                 </div>
@@ -1526,27 +1526,27 @@ export const ConfigurationPanel = ({
                     value={config.modules.ficha.displayOption}
                     onValueChange={(value: 'numeroFicha' | 'numeroChamada' | 'nomeCliente' | 'fichaCliente' | 'localEntregaFicha') => 
                       updateConfig('modules.ficha.displayOption', value)}
-                    className="space-y-2"
+                    className="space-y-1"
                   >
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-1.5">
                       <RadioGroupItem value="numeroFicha" id="ficha-num-ficha" />
-                      <Label htmlFor="ficha-num-ficha" className="text-sm">No. da ficha</Label>
+                      <Label htmlFor="ficha-num-ficha" className="text-xs">No. da ficha</Label>
                     </div>
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-1.5">
                       <RadioGroupItem value="numeroChamada" id="ficha-num-chamada" />
-                      <Label htmlFor="ficha-num-chamada" className="text-sm">No. da chamada</Label>
+                      <Label htmlFor="ficha-num-chamada" className="text-xs">No. da chamada</Label>
                     </div>
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-1.5">
                       <RadioGroupItem value="nomeCliente" id="ficha-nome-cliente" />
-                      <Label htmlFor="ficha-nome-cliente" className="text-sm">Nome do Cliente</Label>
+                      <Label htmlFor="ficha-nome-cliente" className="text-xs">Nome do Cliente</Label>
                     </div>
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-1.5">
                       <RadioGroupItem value="fichaCliente" id="ficha-ficha-cliente" />
-                      <Label htmlFor="ficha-ficha-cliente" className="text-sm">No.Ficha + Nome do Cliente</Label>
+                      <Label htmlFor="ficha-ficha-cliente" className="text-xs">No.Ficha + Nome do Cliente</Label>
                     </div>
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-1.5">
                       <RadioGroupItem value="localEntregaFicha" id="ficha-local-entrega" />
-                      <Label htmlFor="ficha-local-entrega" className="text-sm">Local Entrega + No. da ficha</Label>
+                      <Label htmlFor="ficha-local-entrega" className="text-xs">Local Entrega + No. da ficha</Label>
                     </div>
                   </RadioGroup>
                 </div>
