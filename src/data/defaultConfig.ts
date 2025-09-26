@@ -131,6 +131,6 @@ export const defaultConfig: PanelConfig = {
     numeroLicenca: ''
   },
   splash: {
-    enabled: true
+    enabled: false
   }
 };
