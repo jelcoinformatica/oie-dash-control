@@ -334,31 +334,29 @@ const Index = () => {
                         {productionOrders.length}
                       </div>
                     </PopoverTrigger>
-                    <PopoverContent className="w-80 max-h-96 overflow-y-auto" align="start">
-                      <div className="space-y-2">
-                        <h4 className="font-semibold text-sm mb-3">Pedidos em Produção ({productionOrders.length})</h4>
+                    <PopoverContent className="w-60 max-h-96 overflow-y-auto" align="start">
+                      <div className="space-y-3">
+                        <h4 className="font-semibold text-sm text-center">Pedidos em Produção ({productionOrders.length})</h4>
                         {productionOrders.length === 0 ? (
-                          <p className="text-sm text-muted-foreground">Nenhum pedido em produção</p>
+                          <p className="text-sm text-muted-foreground text-center">Nenhum pedido em produção</p>
                         ) : (
-                          <div className="space-y-2">
+                          <div className="grid grid-cols-2 gap-2">
                             {productionOrders.map((order) => (
-                              <OrderCard
+                              <div
                                 key={order.id}
-                                order={order}
                                 onClick={() => {
                                   moveToReady(order.id);
                                   setProductionPopupOpen(false);
                                 }}
-                                config={config}
-                                showNickname={config.production?.cardConfig?.showNickname ?? true}
-                                showItems={config.production?.cardConfig?.showItems ?? true}
-                                moduleIndicator={config.production?.cardConfig?.moduleIndicator ?? 'bullet'}
-                                fontSize={0.875}
-                                fontFamily={config.production.cardConfig.fontFamily}
-                                textColor={config.production.cardConfig.textColor}
-                                backgroundColor={config.production.cardConfig.backgroundColor}
-                                className="cursor-pointer hover:bg-gray-50 transition-colors"
-                              />
+                                className="bg-gray-100 rounded-lg p-3 cursor-pointer hover:bg-gray-200 transition-colors flex flex-col items-center justify-center text-center min-h-[80px]"
+                              >
+                                <div className="text-2xl font-bold text-gray-800 mb-1">
+                                  {order.numeroPedido || order.number || '---'}
+                                </div>
+                                <div className="text-xs text-gray-600 truncate max-w-full">
+                                  {order.nomeCliente || order.nickname || ''}
+                                </div>
+                              </div>
                             ))}
                           </div>
                         )}
