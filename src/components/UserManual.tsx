@@ -217,13 +217,19 @@ export const UserManual = ({ children }: UserManualProps) => {
             <div className="p-4 bg-orange-50 border border-orange-200 rounded-lg">
               <h4 className="font-medium mb-2 flex items-center gap-2">
                 <Eye className="w-4 h-4 text-orange-600" />
-                Coluna Oculta
+                Visualização com Coluna Oculta
               </h4>
-              <p className="text-sm">
-                Quando a coluna produção está oculta, um contador cinza aparece no canto superior 
-                esquerdo da coluna Prontos, mostrando quantos pedidos estão em produção. 
-                Clique no contador para ver e interagir com os pedidos.
-              </p>
+              <div className="text-sm space-y-2">
+                <p><strong>Funcionalidade Especial:</strong></p>
+                <ul className="ml-4 space-y-1">
+                  <li>• Contador cinza aparece no canto superior esquerdo da coluna Prontos</li>
+                  <li>• Mostra quantos pedidos estão "Em Produção"</li>
+                  <li>• <strong>Clique no contador</strong> para ver todos os pedidos em produção</li>
+                  <li>• Mesmo com coluna fechada, ainda é possível interagir com os pedidos</li>
+                  <li>• Interface popup permite mover pedidos para "Prontos"</li>
+                </ul>
+                <p><strong>Vantagem:</strong> Economiza espaço na tela mantendo funcionalidade completa</p>
+              </div>
             </div>
           </div>
         </div>
@@ -346,8 +352,14 @@ export const UserManual = ({ children }: UserManualProps) => {
               </h4>
               <div className="space-y-3 text-sm">
                 <div>
-                  <strong>Feed RSS:</strong>
-                  <ul className="ml-4 mt-1 space-y-1">
+                  <strong>Feed RSS - Exemplo de Configuração:</strong>
+                  <div className="bg-muted/50 p-3 rounded mt-2 font-mono text-xs">
+                    <p><strong>URL:</strong> https://g1.globo.com/rss/g1/</p>
+                    <p><strong>Intervalo:</strong> 15 minutos</p>
+                    <p><strong>Máx. itens:</strong> 5</p>
+                    <p><strong>Filtro:</strong> "economia,política"</p>
+                  </div>
+                  <ul className="ml-4 mt-2 space-y-1">
                     <li>• URL do feed RSS personalizada</li>
                     <li>• Atualização automática (5-60 minutos)</li>
                     <li>• Filtros por categoria ou palavra-chave</li>
@@ -617,6 +629,34 @@ export const UserManual = ({ children }: UserManualProps) => {
 
             <div className="p-4 border bg-card/50 rounded-lg shadow-sm">
               <h4 className="font-medium mb-2 flex items-center gap-2">
+                <Play className="w-4 h-4 text-purple-500" />
+                Exemplo Prático - Som "Pronto" + TTS
+              </h4>
+              <div className="space-y-3 text-sm">
+                <div>
+                  <strong>Configuração Típica:</strong>
+                  <div className="bg-muted/50 p-3 rounded mt-2 font-mono text-xs">
+                    <p><strong>Evento:</strong> Pedido movido para "Prontos"</p>
+                    <p><strong>Sequência:</strong> Som → Pausa (0.5s) → Voz</p>
+                    <p><strong>Arquivo de Som:</strong> kds_sound_bell1.wav</p>
+                    <p><strong>Template TTS:</strong> "Pedido &#123;numero&#125; pronto para &#123;apelido&#125;"</p>
+                    <p><strong>Resultado Final:</strong> *DING* → "Pedido 123 pronto para Maria"</p>
+                  </div>
+                </div>
+                <div>
+                  <strong>Personalização Avançada:</strong>
+                  <ul className="ml-4 mt-1 space-y-1">
+                    <li>• Volume do som: 80% / Volume TTS: 90%</li>
+                    <li>• Velocidade da voz: 1.2x (um pouco mais rápida)</li>
+                    <li>• Pausas configuráveis entre som e fala</li>
+                    <li>• Templates diferentes por módulo</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div className="p-4 border bg-card/50 rounded-lg shadow-sm">
+              <h4 className="font-medium mb-2 flex items-center gap-2">
                 <Settings className="w-4 h-4 text-orange-500" />
                 Regras e Condições Avançadas
               </h4>
@@ -815,6 +855,20 @@ export const UserManual = ({ children }: UserManualProps) => {
               </p>
             </div>
 
+            <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+              <h4 className="font-medium mb-2 flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4 text-yellow-600" />
+                Importante - Dados Simulados
+              </h4>
+              <div className="text-sm space-y-1">
+                <p><strong>Sistema em Modo Demonstração:</strong></p>
+                <p>• Os pedidos simulados são apenas para fins didáticos</p>
+                <p>• Quando conectado a uma base de dados real, estes dados <strong>NÃO</strong> serão salvos</p>
+                <p>• Use livremente para treinamento e demonstrações</p>
+                <p>• Os dados reais permanecem totalmente seguros e inalterados</p>
+              </div>
+            </div>
+
             <div className="p-4 border bg-card/50 rounded-lg shadow-sm">
               <h4 className="font-medium mb-2">Configurações Disponíveis</h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
@@ -856,6 +910,22 @@ export const UserManual = ({ children }: UserManualProps) => {
             <div className="p-4 bg-green-50 rounded-lg">
               <h4 className="font-medium mb-2 flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-green-600" />
+                Integração "KDS da Hora!"
+              </h4>
+              <div className="text-sm space-y-2">
+                <p><strong>Sistema Integrado:</strong></p>
+                <ul className="ml-4 space-y-1">
+                  <li>• O sistema "KDS da Hora!" pode estar integrado ao Oie!</li>
+                  <li>• Mudança automática: PRODUÇÃO → PRONTO</li>
+                  <li>• Confirmação no KDS atualiza status automaticamente</li>
+                  <li>• Sincronização em tempo real entre sistemas</li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="p-4 bg-blue-50 rounded-lg">
+              <h4 className="font-medium mb-2 flex items-center gap-2">
+                <Eye className="w-4 h-4 text-blue-600" />
                 Casos de Uso
               </h4>
               <ul className="text-sm space-y-1">
@@ -1064,7 +1134,7 @@ export const UserManual = ({ children }: UserManualProps) => {
       <SheetTrigger asChild>
         {children}
       </SheetTrigger>
-      <SheetContent side="right" className="w-full sm:max-w-4xl p-0 overflow-hidden">
+      <SheetContent side="right" className="w-full sm:max-w-4xl p-0 overflow-hidden bg-background/85">
         <SheetHeader className="p-6 pb-4 border-b">
           <div className="flex items-center gap-3">
             <BookOpen className="w-6 h-6 text-blue-600" />
@@ -1093,7 +1163,7 @@ export const UserManual = ({ children }: UserManualProps) => {
           {/* Sidebar de navegação */}
           <div className="w-64 border-r bg-muted/20">
             <ScrollArea className="h-full">
-              <div className="p-4 space-y-2">
+              <div className="p-4 space-y-1">
                 {filteredSections.map((section) => (
                   <Button
                     key={section.id}
