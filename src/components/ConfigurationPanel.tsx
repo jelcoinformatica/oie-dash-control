@@ -1411,9 +1411,9 @@ export const ConfigurationPanel = ({
           onToggle={() => toggleSection('modules')}
           colorClass="text-yellow-600"
         >
-          <div className="pb-2 mb-3 border-b border-gray-200">
-            <h4 className="text-lg font-bold mb-3 text-gray-800">Configuração por Módulo</h4>
-            <p className="text-sm text-gray-600 mb-4">Configure individualmente quais módulos exibirão indicadores nos cards.</p>
+          <div className="pb-2 mb-2 border-b border-gray-200">
+            <h4 className="text-base font-semibold mb-2 text-gray-800">Configuração por Módulo</h4>
+            <p className="text-sm text-gray-600 mb-3">Configure individualmente quais módulos exibirão indicadores nos cards.</p>
           </div>
           
           {Object.entries(config.modules).map(([moduleKey, moduleConfig]) => {
@@ -1432,61 +1432,40 @@ export const ConfigurationPanel = ({
             };
             
             return (
-              <div key={moduleKey} className="space-y-3 p-3 rounded-lg border bg-gray-50/50">
+              <div key={moduleKey} className="space-y-1 p-2 rounded-lg border bg-gray-50/50">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="flex items-center gap-2">
-                      <div className="w-5 h-5 rounded-full bg-white shadow-md border border-gray-200 flex items-center justify-center">
-                        <div className={cn("w-3 h-3 rounded-full shadow-sm", moduleColors[moduleKey as keyof typeof moduleColors])}></div>
-                      </div>
-                      <Switch 
-                        checked={moduleConfig.enabled} 
-                        onCheckedChange={(checked) => updateConfig(`modules.${moduleKey}.enabled`, checked)}
-                        className="scale-50"
-                      />
-                      <Label className="text-sm font-medium text-gray-700">
-                        {moduleLabels[moduleKey as keyof typeof moduleLabels]}
-                      </Label>
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 rounded-full bg-white shadow-sm border border-gray-200 flex items-center justify-center">
+                      <div className={cn("w-2.5 h-2.5 rounded-full", moduleColors[moduleKey as keyof typeof moduleColors])}></div>
                     </div>
+                    <Switch 
+                      checked={moduleConfig.enabled} 
+                      onCheckedChange={(checked) => updateConfig(`modules.${moduleKey}.enabled`, checked)}
+                      className="scale-50"
+                    />
+                    <Label className="text-sm font-medium text-gray-700">
+                      {moduleLabels[moduleKey as keyof typeof moduleLabels]}
+                    </Label>
                     
                     {moduleConfig.enabled && (
-                      <div className="flex items-center gap-2 ml-4">
+                      <>
                         <Switch 
                           checked={moduleConfig.showIndicator || false} 
                           onCheckedChange={(checked) => updateConfig(`modules.${moduleKey}.showIndicator`, checked)}
-                          className="scale-50"
+                          className="scale-50 ml-2"
                         />
                         <Label className="text-xs text-gray-600">Exibir indicador</Label>
-                      </div>
+                      </>
                     )}
                   </div>
                   
-                  <div className="text-xs px-2 py-1 rounded-full">
-                    {moduleConfig.enabled ? (
-                      <div className="flex flex-col gap-1">
-                        <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full font-medium">
-                          Ativo
-                        </span>
-                        {moduleConfig.showIndicator ? (
-                          <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full font-medium text-xs">
-                            Indicador On
-                          </span>
-                        ) : (
-                          <span className="bg-gray-100 text-gray-600 px-2 py-1 rounded-full text-xs">
-                            Indicador Off
-                          </span>
-                        )}
-                      </div>
-                    ) : (
-                      <span className="bg-gray-100 text-gray-500 px-2 py-1 rounded-full">
-                        Inativo
-                      </span>
-                    )}
-                  </div>
+                  {moduleConfig.enabled && (
+                    <div className={cn("w-2 h-2 rounded-full", moduleConfig.showIndicator ? "bg-green-500" : "bg-gray-300")}></div>
+                  )}
                 </div>
 
                 {moduleConfig.enabled && (
-                  <div className="ml-4 space-y-2 border-l-2 border-gray-200 pl-4">
+                  <div className="ml-6 space-y-1 border-l-2 border-gray-200 pl-3">
                     <Label className="text-xs text-gray-500">Opção de Exibição:</Label>
                     {moduleKey === 'balcao' && (
                       <RadioGroup
