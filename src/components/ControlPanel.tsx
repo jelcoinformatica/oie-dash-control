@@ -100,7 +100,7 @@ export const ControlPanel = ({
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
-          <span className="font-nunito font-bold">oie! v.5.0</span> | Banco: &lt;colibri&gt; | Usuário: sa
+          <span style={{ fontFamily: 'Nunito, Arial, sans-serif', fontWeight: '700', textTransform: 'none' }}>oie! v.5.0</span> | Banco: &lt;colibri&gt; | Usuário: sa
         </div>
         
         {/* Prompt de expedição fixo no centro */}
