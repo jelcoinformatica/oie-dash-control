@@ -1870,14 +1870,36 @@ export const ConfigurationPanel = ({
           {/* Tipo de indicador global */}
           <div className="mt-4 p-3 rounded-lg bg-blue-50 border border-blue-200">
             <div className="space-y-2">
-              <Label className="text-sm font-medium text-gray-800">Tipo de Indicador</Label>
+              <Label className="text-sm font-medium text-gray-800">Tipo de Indicador no Card</Label>
               <select
-                value={config.production.cardConfig.moduleIndicator || 'none'}
+                value={config.production.cardConfig.moduleIndicator}
                 onChange={(e) => {
-                  const selectedValue = e.target.value as 'none' | 'bullet' | 'tag' | 'border';
-                  console.log('Selecionando tipo de indicador:', selectedValue);
-                  updateConfig('production.cardConfig.moduleIndicator', selectedValue);
-                  updateConfig('ready.cardConfig.moduleIndicator', selectedValue);
+                  const newValue = e.target.value as 'none' | 'bullet' | 'tag' | 'border';
+                  console.log('=== SELECIONANDO INDICADOR ===');
+                  console.log('Valor selecionado:', newValue);
+                  console.log('Valor atual:', config.production.cardConfig.moduleIndicator);
+                  
+                  // Força a atualização
+                  const newConfig = {
+                    ...config,
+                    production: {
+                      ...config.production,
+                      cardConfig: {
+                        ...config.production.cardConfig,
+                        moduleIndicator: newValue
+                      }
+                    },
+                    ready: {
+                      ...config.ready,
+                      cardConfig: {
+                        ...config.ready.cardConfig,
+                        moduleIndicator: newValue
+                      }
+                    }
+                  };
+                  
+                  console.log('Nova config:', newConfig.production.cardConfig.moduleIndicator);
+                  onConfigChange(newConfig);
                 }}
                 className="w-full h-8 px-3 text-sm border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
@@ -1887,13 +1909,14 @@ export const ConfigurationPanel = ({
                 <option value="border">Bordas coloridas</option>
               </select>
               <div className="text-xs text-gray-600">
-                {config.production.cardConfig.moduleIndicator === 'bullet' 
-                  ? "Bolinhas coloridas no canto superior direito" 
-                  : config.production.cardConfig.moduleIndicator === 'tag'
-                  ? "Etiquetas com cores pastel e nome do módulo/plataforma"
-                  : config.production.cardConfig.moduleIndicator === 'border'
-                  ? "Bordas coloridas em volta do cartão"
-                  : "Nenhum indicador será exibido"
+                Atual: {config.production.cardConfig.moduleIndicator || 'none'} - {
+                  config.production.cardConfig.moduleIndicator === 'bullet' 
+                    ? "Bolinhas coloridas no canto superior direito" 
+                    : config.production.cardConfig.moduleIndicator === 'tag'
+                    ? "Etiquetas com cores pastel e nome do módulo/plataforma"
+                    : config.production.cardConfig.moduleIndicator === 'border'
+                    ? "Bordas coloridas em volta do cartão"
+                    : "Nenhum indicador será exibido"
                 }
               </div>
               
@@ -1902,12 +1925,28 @@ export const ConfigurationPanel = ({
                 variant="outline"
                 size="sm"
                 onClick={() => {
-                  updateConfig('production.cardConfig.moduleIndicator', 'none');
-                  updateConfig('ready.cardConfig.moduleIndicator', 'none');
+                  const resetConfig = {
+                    ...config,
+                    production: {
+                      ...config.production,
+                      cardConfig: {
+                        ...config.production.cardConfig,
+                        moduleIndicator: 'none' as const
+                      }
+                    },
+                    ready: {
+                      ...config.ready,
+                      cardConfig: {
+                        ...config.ready.cardConfig,
+                        moduleIndicator: 'none' as const
+                      }
+                    }
+                  };
+                  onConfigChange(resetConfig);
                 }}
                 className="mt-2 text-xs"
               >
-                Resetar para padrão
+                Resetar para "Nenhum indicador"
               </Button>
             </div>
           </div>
