@@ -159,17 +159,19 @@ export const ControlPanel = ({
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
+        </div>
 
-          {/* Log dos últimos pedidos expedidos - após o ícone */}
-          {expeditionLog.length > 0 && (
-            <div className="flex items-center ml-2 flex-1 overflow-x-auto">
-              <div className="flex items-center gap-1 whitespace-nowrap">
+        {/* Log dos últimos pedidos expedidos - separado e limitado */}
+        {expeditionLog.length > 0 && (
+          <div className="absolute flex items-center justify-center w-full pointer-events-none">
+            <div className="flex items-center gap-1" style={{ marginLeft: '120px', maxWidth: 'calc(50% - 60px)' }}>
+              <div className="flex items-center gap-1 whitespace-nowrap overflow-hidden">
                 {expeditionLog.slice(0, 10).map((logEntry, index) => {
                   const entryKey = `${logEntry.orderNumber}-${logEntry.expeditionTime.getTime()}`;
                   const hasRecentEffect = recentAutoExpedited.has(entryKey);
                   
                   return (
-                    <div key={`${logEntry.orderNumber}-${index}`} className="flex items-center">
+                    <div key={`${logEntry.orderNumber}-${index}`} className="flex items-center pointer-events-auto">
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
@@ -206,8 +208,8 @@ export const ControlPanel = ({
                 })}
               </div>
             </div>
-          )}
-        </div>
+          </div>
+        )}
         
         <div className="flex items-center gap-2">
           <div className="text-xs text-muted-foreground">
