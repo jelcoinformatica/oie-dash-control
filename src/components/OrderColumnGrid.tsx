@@ -38,6 +38,10 @@ interface OrderColumnGridProps {
     fontFamily?: string;
     textColor?: string;
     backgroundColor?: string;
+    gapHorizontal?: number;
+    gapVertical?: number;
+    cardMinHeight?: number;
+    cardMaxHeight?: number;
   };
   lastOrderNumber?: string;
   lastOrderConfig?: {
@@ -88,7 +92,7 @@ export const OrderColumnGrid = ({
     return () => resizeObserver.disconnect();
   }, []);
 
-  // Calcular dimensões baseadas na largura real do container
+  // Calcular dimensões baseadas na configuração do usuário
   const { visibleOrders, cardHeight, adjustedFontSize } = useMemo(() => {
     if (containerDimensions.width === 0 || containerDimensions.height === 0) {
       return {
@@ -101,13 +105,19 @@ export const OrderColumnGrid = ({
     const baseFontSize = 16;
     const requestedFontSize = cardConfig?.fontSize || 1.2;
     
-    // Altura mais eficiente - reduzir multiplicador para aprovveitar melhor o espaço
-    const baseCardHeight = Math.max(50, requestedFontSize * 30); // Reduzido de 45 para 30
+    // Usar configurações de gap do usuário
+    const gapH = cardConfig?.gapHorizontal || 4;
+    const gapV = cardConfig?.gapVertical || 4;
+    const minHeight = cardConfig?.cardMinHeight || 60;
+    const maxHeight = cardConfig?.cardMaxHeight || 120;
     
-    // Ajustar fonte para caber na largura do card - usando largura proporcional
-    const gap = 4; // gap-1 = 4px
-    const totalGaps = gap * (columns - 1);
-    const availableWidth = containerDimensions.width - totalGaps;
+    // Altura baseada na fonte, limitada pelos valores min/max do usuário
+    const basedOnFontHeight = requestedFontSize * 30;
+    const cardHeight = Math.min(Math.max(basedOnFontHeight, minHeight), maxHeight);
+    
+    // Ajustar fonte para caber na largura do card
+    const totalGapsH = gapH * (columns - 1);
+    const availableWidth = containerDimensions.width - totalGapsH;
     const cardWidth = Math.floor(availableWidth / columns);
     
     let adjustedFontSize = requestedFontSize;
@@ -116,34 +126,8 @@ export const OrderColumnGrid = ({
       adjustedFontSize = Math.max(0.8, (cardWidth - 16) / (4 * baseFontSize * 0.6));
     }
     
-    // Primeiro, calcular quantas linhas caberiam com a altura base
-    let maxRows = Math.floor((containerDimensions.height + gap) / (baseCardHeight + gap));
-    
-    // Se sobrar muito espaço (mais de 30px), aumentar proporcionalmente o card
-    let cardHeight = baseCardHeight;
-    const usedSpace = maxRows * (cardHeight + gap) - gap;
-    const remainingSpace = containerDimensions.height - usedSpace;
-    
-    if (remainingSpace > 30 && maxRows > 0) {
-      // Distribuir o espaço extra entre os cards
-      const extraPerCard = Math.floor(remainingSpace / maxRows);
-      cardHeight = baseCardHeight + extraPerCard;
-      // Recalcular maxRows com a nova altura do card
-      maxRows = Math.floor((containerDimensions.height + gap) / (cardHeight + gap));
-    }
-    
-    console.log('OrderColumnGrid Debug:', {
-      containerHeight: containerDimensions.height,
-      baseCardHeight,
-      finalCardHeight: cardHeight,
-      gap,
-      maxRows,
-      calculatedSpace: maxRows * (cardHeight + gap) - gap,
-      unusedSpace: containerDimensions.height - (maxRows * (cardHeight + gap) - gap),
-      columns,
-      maxCards: maxRows * columns,
-      remainingSpace: containerDimensions.height - (maxRows * (baseCardHeight + gap) - gap)
-    });
+    // Calcular quantas linhas cabem com os gaps configurados pelo usuário
+    const maxRows = Math.floor((containerDimensions.height + gapV) / (cardHeight + gapV));
     
     // Limitar cards para não haver cortes
     const maxVisibleCards = Math.max(0, maxRows * columns);
@@ -154,7 +138,7 @@ export const OrderColumnGrid = ({
       cardHeight,
       adjustedFontSize
     };
-  }, [orders, columns, cardConfig?.fontSize, containerDimensions]);
+  }, [orders, columns, cardConfig?.fontSize, cardConfig?.gapHorizontal, cardConfig?.gapVertical, cardConfig?.cardMinHeight, cardConfig?.cardMaxHeight, containerDimensions]);
 
   return (
     <div 
@@ -162,10 +146,11 @@ export const OrderColumnGrid = ({
       className="w-full h-full overflow-hidden"
     >
       <div 
-        className="grid gap-1"
+        className="grid"
         style={{ 
           gridTemplateColumns: `repeat(${columns}, 1fr)`,
           gridTemplateRows: `repeat(auto-fit, ${cardHeight}px)`,
+          gap: `${cardConfig?.gapVertical || 4}px ${cardConfig?.gapHorizontal || 4}px`
         }}
       >
         {visibleOrders.map((order, index) => {

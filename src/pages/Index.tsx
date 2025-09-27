@@ -355,21 +355,25 @@ const Index = () => {
                         </div>
                         
                         <div className="flex-1 p-2 bg-gray-50" style={{ overflow: 'hidden' }}>
-                          <OrderColumnGrid
-                            orders={productionOrders}
-                            columns={config.production.cardConfig.columns}
-                            onOrderClick={(order) => moveToReady(order.id)}
-                            showNickname={config.production?.cardConfig?.showNickname ?? true}
-                            showItems={config.production?.cardConfig?.showItems ?? true}
-                            moduleIndicator={config.production?.cardConfig?.moduleIndicator ?? 'bullet'}
-                            config={config}
-                            cardConfig={{
-                              fontSize: config.production.cardConfig.fontSize,
-                              fontFamily: config.production.cardConfig.fontFamily,
-                              textColor: config.production.cardConfig.textColor,
-                              backgroundColor: config.production.cardConfig.backgroundColor
-                            }}
-                          />
+                      <OrderColumnGrid
+                        orders={productionOrders}
+                        columns={config.production.cardConfig.columns}
+                        onOrderClick={(order) => moveToReady(order.id)}
+                        showNickname={config.production?.cardConfig?.showNickname ?? true}
+                        showItems={config.production?.cardConfig?.showItems ?? true}
+                        moduleIndicator={config.production?.cardConfig?.moduleIndicator ?? 'bullet'}
+                        config={config}
+                        cardConfig={{
+                          fontSize: config.production.cardConfig.fontSize,
+                          fontFamily: config.production.cardConfig.fontFamily,
+                          textColor: config.production.cardConfig.textColor,
+                          backgroundColor: config.production.cardConfig.backgroundColor,
+                          gapHorizontal: config.production.cardConfig.gapHorizontal,
+                          gapVertical: config.production.cardConfig.gapVertical,
+                          cardMinHeight: config.production.cardConfig.cardMinHeight,
+                          cardMaxHeight: config.production.cardConfig.cardMaxHeight
+                        }}
+                      />
                         </div>
                       </div>
                     </div>
@@ -464,23 +468,27 @@ const Index = () => {
                     )}
                     
                     <div className="flex-1 p-2 bg-gray-50" style={{ overflow: 'hidden' }}>
-                      <OrderColumnGrid
-                        orders={readyOrders}
-                        columns={config.ready.cardConfig.columns}
-                        onOrderClick={(order) => expedite(order.numeroPedido || order.number || '')}
-                        showNickname={config.ready?.cardConfig?.showNickname ?? true}
-                        showItems={config.ready?.cardConfig?.showItems ?? true}
-                        moduleIndicator={config.ready?.cardConfig?.moduleIndicator ?? 'bullet'}
-                        config={config}
-                        cardConfig={{
-                          fontSize: config.ready?.cardConfig?.fontSize,
-                          fontFamily: config.ready?.cardConfig?.fontFamily,
-                          textColor: config.ready?.cardConfig?.textColor,
-                          backgroundColor: config.ready?.cardConfig?.backgroundColor
-                        }}
-                        lastOrderNumber={lastOrderNumber}
-                        lastOrderConfig={config.lastOrder}
-                      />
+                    <OrderColumnGrid
+                      orders={readyOrders}
+                      columns={config.ready.cardConfig.columns}
+                      onOrderClick={(order) => expedite(order.numeroPedido || order.number || '')}
+                      showNickname={config.ready?.cardConfig?.showNickname ?? true}
+                      showItems={config.ready?.cardConfig?.showItems ?? true}
+                      moduleIndicator={config.ready?.cardConfig?.moduleIndicator ?? 'bullet'}
+                      config={config}
+                      cardConfig={{
+                        fontSize: config.ready?.cardConfig?.fontSize,
+                        fontFamily: config.ready?.cardConfig?.fontFamily,
+                        textColor: config.ready?.cardConfig?.textColor,
+                        backgroundColor: config.ready?.cardConfig?.backgroundColor,
+                        gapHorizontal: config.ready.cardConfig.gapHorizontal,
+                        gapVertical: config.ready.cardConfig.gapVertical,
+                        cardMinHeight: config.ready.cardConfig.cardMinHeight,
+                        cardMaxHeight: config.ready.cardConfig.cardMaxHeight
+                      }}
+                      lastOrderNumber={lastOrderNumber}
+                      lastOrderConfig={config.lastOrder}
+                    />
                     </div>
                   </div>
                 </div>
@@ -559,21 +567,25 @@ const Index = () => {
                     </div>
                     
                     <div className="flex-1 p-2 bg-gray-50" style={{ overflow: 'hidden' }}>
-                      <OrderColumnGrid
-                        orders={productionOrders}
-                        columns={config.production.cardConfig.columns}
-                        onOrderClick={(order) => moveToReady(order.id)}
-                        showNickname={config.production?.cardConfig?.showNickname ?? true}
-                        showItems={config.production?.cardConfig?.showItems ?? true}
-                        moduleIndicator={config.production?.cardConfig?.moduleIndicator ?? 'bullet'}
-                        config={config}
-                        cardConfig={{
-                          fontSize: config.production.cardConfig.fontSize,
-                          fontFamily: config.production.cardConfig.fontFamily,
-                          textColor: config.production.cardConfig.textColor,
-                          backgroundColor: config.production.cardConfig.backgroundColor
-                        }}
-                      />
+                    <OrderColumnGrid
+                      orders={productionOrders}
+                      columns={config.production.cardConfig.columns}
+                      onOrderClick={(order) => moveToReady(order.id)}
+                      showNickname={config.production?.cardConfig?.showNickname ?? true}
+                      showItems={config.production?.cardConfig?.showItems ?? true}
+                      moduleIndicator={config.production?.cardConfig?.moduleIndicator ?? 'bullet'}
+                      config={config}
+                      cardConfig={{
+                        fontSize: config.production.cardConfig.fontSize,
+                        fontFamily: config.production.cardConfig.fontFamily,
+                        textColor: config.production.cardConfig.textColor,
+                        backgroundColor: config.production.cardConfig.backgroundColor,
+                        gapHorizontal: config.production.cardConfig.gapHorizontal,
+                        gapVertical: config.production.cardConfig.gapVertical,
+                        cardMinHeight: config.production.cardConfig.cardMinHeight,
+                        cardMaxHeight: config.production.cardConfig.cardMaxHeight
+                      }}
+                    />
                     </div>
                   </div>
                 </div>
@@ -671,7 +683,11 @@ const Index = () => {
                         fontSize: config.ready?.cardConfig?.fontSize,
                         fontFamily: config.ready?.cardConfig?.fontFamily,
                         textColor: config.ready?.cardConfig?.textColor,
-                        backgroundColor: config.ready?.cardConfig?.backgroundColor
+                        backgroundColor: config.ready?.cardConfig?.backgroundColor,
+                        gapHorizontal: config.ready.cardConfig.gapHorizontal,
+                        gapVertical: config.ready.cardConfig.gapVertical,
+                        cardMinHeight: config.ready.cardConfig.cardMinHeight,
+                        cardMaxHeight: config.ready.cardConfig.cardMaxHeight
                       }}
                       lastOrderNumber={lastOrderNumber}
                       lastOrderConfig={config.lastOrder}

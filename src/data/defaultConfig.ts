@@ -19,18 +19,22 @@ export const defaultConfig: PanelConfig = {
     headerFontFamily: 'Tahoma',
     headerFontSize: 2,
     showBorder: false,
-    cardConfig: {
-      columns: 2,
-      rows: 4,
-      height: 60,
-      backgroundColor: '#f3f4f6',
-      textColor: '#8C8C8C',
-      fontFamily: 'Tahoma',
-      fontSize: 3,
-      showNickname: true,
-      showItems: true,
-      moduleIndicator: 'none' as 'none' | 'bullet' | 'tag' | 'border'
-    }
+      cardConfig: {
+        columns: 2,
+        rows: 4,
+        height: 60,
+        backgroundColor: '#f3f4f6',
+        textColor: '#8C8C8C',
+        fontFamily: 'Tahoma',
+        fontSize: 3,
+        showNickname: true,
+        showItems: true,
+        moduleIndicator: 'none' as 'none' | 'bullet' | 'tag' | 'border',
+        gapHorizontal: 4,
+        gapVertical: 4,
+        cardMinHeight: 60,
+        cardMaxHeight: 120
+      }
   },
   ready: {
     visible: true,
@@ -42,18 +46,22 @@ export const defaultConfig: PanelConfig = {
     headerFontFamily: 'Tahoma',
     headerFontSize: 2,
     showBorder: true,
-    cardConfig: {
-      columns: 4,
-      rows: 2,
-      height: 60,
-      backgroundColor: '#FAFAFA',
-      textColor: '#000000',
-      fontFamily: 'Tahoma',
-      fontSize: 4,
-      showNickname: true,
-      showItems: true,
-      moduleIndicator: 'none' as 'none' | 'bullet' | 'tag' | 'border'
-    }
+      cardConfig: {
+        columns: 4,
+        rows: 2,
+        height: 60,
+        backgroundColor: '#FAFAFA',
+        textColor: '#000000',
+        fontFamily: 'Tahoma',
+        fontSize: 4,
+        showNickname: true,
+        showItems: true,
+        moduleIndicator: 'none' as 'none' | 'bullet' | 'tag' | 'border',
+        gapHorizontal: 4,
+        gapVertical: 4,
+        cardMinHeight: 70,
+        cardMaxHeight: 150
+      }
   },
   advertising: {
     visible: true,

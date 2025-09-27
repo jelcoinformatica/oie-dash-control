@@ -604,19 +604,74 @@ export const ConfigurationPanel = ({
                 </div>
               </div>
               
-              <div>
-                <Label className="text-xs">Indicador de Módulo</Label>
-                <select
-                  value={config.production.cardConfig.moduleIndicator || 'none'}
-                  onChange={(e) => updateConfig('production.cardConfig.moduleIndicator', e.target.value)}
-                  className="w-full mt-1 px-3 py-1 text-xs border border-gray-300 rounded-md bg-white"
-                >
-                  <option value="none">Nenhum indicador</option>
-                  <option value="bullet">Bullets (bolinhas)</option>
-                  <option value="tag">Etiquetas discretas</option>
-                  <option value="border">Bordas coloridas</option>
-                </select>
-              </div>
+               <div>
+                 <Label className="text-xs">Indicador de Módulo</Label>
+                 <select
+                   value={config.production.cardConfig.moduleIndicator || 'none'}
+                   onChange={(e) => updateConfig('production.cardConfig.moduleIndicator', e.target.value)}
+                   className="w-full mt-1 px-3 py-1 text-xs border border-gray-300 rounded-md bg-white"
+                 >
+                   <option value="none">Nenhum indicador</option>
+                   <option value="bullet">Bullets (bolinhas)</option>
+                   <option value="tag">Etiquetas discretas</option>
+                   <option value="border">Bordas coloridas</option>
+                 </select>
+               </div>
+
+               {/* Controles de Ajuste Fino */}
+               <div className="pt-2 border-t border-gray-200">
+                 <Label className="text-xs font-semibold text-gray-600">Ajuste Fino de Espaçamentos</Label>
+               </div>
+
+               <div className="grid grid-cols-2 gap-2">
+                 <div>
+                   <Label className="text-xs">Gap Horizontal: {config.production.cardConfig.gapHorizontal || 4}px</Label>
+                   <Slider
+                     value={[config.production.cardConfig.gapHorizontal || 4]}
+                     onValueChange={([value]) => updateConfig('production.cardConfig.gapHorizontal', value)}
+                     max={20}
+                     min={0}
+                     step={1}
+                     className="mt-1"
+                   />
+                 </div>
+                 <div>
+                   <Label className="text-xs">Gap Vertical: {config.production.cardConfig.gapVertical || 4}px</Label>
+                   <Slider
+                     value={[config.production.cardConfig.gapVertical || 4]}
+                     onValueChange={([value]) => updateConfig('production.cardConfig.gapVertical', value)}
+                     max={20}
+                     min={0}
+                     step={1}
+                     className="mt-1"
+                   />
+                 </div>
+               </div>
+
+               <div className="grid grid-cols-2 gap-2">
+                 <div>
+                   <Label className="text-xs">Altura Mín: {config.production.cardConfig.cardMinHeight || 60}px</Label>
+                   <Slider
+                     value={[config.production.cardConfig.cardMinHeight || 60]}
+                     onValueChange={([value]) => updateConfig('production.cardConfig.cardMinHeight', value)}
+                     max={150}
+                     min={40}
+                     step={5}
+                     className="mt-1"
+                   />
+                 </div>
+                 <div>
+                   <Label className="text-xs">Altura Máx: {config.production.cardConfig.cardMaxHeight || 120}px</Label>
+                   <Slider
+                     value={[config.production.cardConfig.cardMaxHeight || 120]}
+                     onValueChange={([value]) => updateConfig('production.cardConfig.cardMaxHeight', value)}
+                     max={200}
+                     min={60}
+                     step={5}
+                     className="mt-1"
+                   />
+                 </div>
+               </div>
             </div>
           </SubConfigSection>
         </ConfigSection>
@@ -797,19 +852,74 @@ export const ConfigurationPanel = ({
                 </div>
               </div>
               
-              <div>
-                <Label className="text-xs">Indicador de Módulo</Label>
-                <select
-                  value={config.ready.cardConfig.moduleIndicator || 'none'}
-                  onChange={(e) => updateConfig('ready.cardConfig.moduleIndicator', e.target.value)}
-                  className="w-full mt-1 px-3 py-1 text-xs border border-gray-300 rounded-md bg-white"
-                >
-                  <option value="none">Nenhum indicador</option>
-                  <option value="bullet">Bullets (bolinhas)</option>
-                  <option value="tag">Etiquetas discretas</option>
-                  <option value="border">Bordas coloridas</option>
-                </select>
-              </div>
+               <div>
+                 <Label className="text-xs">Indicador de Módulo</Label>
+                 <select
+                   value={config.ready.cardConfig.moduleIndicator || 'none'}
+                   onChange={(e) => updateConfig('ready.cardConfig.moduleIndicator', e.target.value)}
+                   className="w-full mt-1 px-3 py-1 text-xs border border-gray-300 rounded-md bg-white"
+                 >
+                   <option value="none">Nenhum indicador</option>
+                   <option value="bullet">Bullets (bolinhas)</option>
+                   <option value="tag">Etiquetas discretas</option>
+                   <option value="border">Bordas coloridas</option>
+                 </select>
+               </div>
+
+               {/* Controles de Ajuste Fino */}
+               <div className="pt-2 border-t border-gray-200">
+                 <Label className="text-xs font-semibold text-gray-600">Ajuste Fino de Espaçamentos</Label>
+               </div>
+
+               <div className="grid grid-cols-2 gap-2">
+                 <div>
+                   <Label className="text-xs">Gap Horizontal: {config.ready.cardConfig.gapHorizontal || 4}px</Label>
+                   <Slider
+                     value={[config.ready.cardConfig.gapHorizontal || 4]}
+                     onValueChange={([value]) => updateConfig('ready.cardConfig.gapHorizontal', value)}
+                     max={20}
+                     min={0}
+                     step={1}
+                     className="mt-1"
+                   />
+                 </div>
+                 <div>
+                   <Label className="text-xs">Gap Vertical: {config.ready.cardConfig.gapVertical || 4}px</Label>
+                   <Slider
+                     value={[config.ready.cardConfig.gapVertical || 4]}
+                     onValueChange={([value]) => updateConfig('ready.cardConfig.gapVertical', value)}
+                     max={20}
+                     min={0}
+                     step={1}
+                     className="mt-1"
+                   />
+                 </div>
+               </div>
+
+               <div className="grid grid-cols-2 gap-2">
+                 <div>
+                   <Label className="text-xs">Altura Mín: {config.ready.cardConfig.cardMinHeight || 70}px</Label>
+                   <Slider
+                     value={[config.ready.cardConfig.cardMinHeight || 70]}
+                     onValueChange={([value]) => updateConfig('ready.cardConfig.cardMinHeight', value)}
+                     max={150}
+                     min={40}
+                     step={5}
+                     className="mt-1"
+                   />
+                 </div>
+                 <div>
+                   <Label className="text-xs">Altura Máx: {config.ready.cardConfig.cardMaxHeight || 150}px</Label>
+                   <Slider
+                     value={[config.ready.cardConfig.cardMaxHeight || 150]}
+                     onValueChange={([value]) => updateConfig('ready.cardConfig.cardMaxHeight', value)}
+                     max={200}
+                     min={60}
+                     step={5}
+                     className="mt-1"
+                   />
+                 </div>
+               </div>
             </div>
           </SubConfigSection>
         </ConfigSection>

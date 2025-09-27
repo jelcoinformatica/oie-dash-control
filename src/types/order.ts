@@ -27,7 +27,12 @@ export interface OrderCardConfig {
   fontSize: number;
   showNickname?: boolean;
   showItems?: boolean;
-  moduleIndicator?: 'none' | 'bullet' | 'tag' | 'border'; // Nova opção para tipo de indicador
+  moduleIndicator?: 'none' | 'bullet' | 'tag' | 'border';
+  // Novos controles de ajuste fino
+  gapHorizontal?: number; // Gap horizontal entre cards (px)
+  gapVertical?: number;   // Gap vertical entre cards (px)
+  cardMinHeight?: number; // Altura mínima dos cards (px)
+  cardMaxHeight?: number; // Altura máxima dos cards (px)
 }
 
 export interface PanelIdentification {
