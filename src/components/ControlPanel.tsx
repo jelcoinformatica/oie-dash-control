@@ -163,7 +163,7 @@ export const ControlPanel = ({
 
         {/* Log dos últimos pedidos expedidos - posicionado à direita do centro */}
         {expeditionLog.length > 0 && (
-          <div className="absolute left-1/2 transform translate-x-16 flex items-center max-w-[300px] overflow-hidden">
+          <div className="absolute left-1/2 transform translate-x-16 flex items-center max-w-[300px] overflow-hidden z-10">
             <div className="flex items-center gap-0.5 whitespace-nowrap">
               {expeditionLog.slice(0, 8).map((logEntry, index) => {
                 const entryKey = `${logEntry.orderNumber}-${logEntry.expeditionTime.getTime()}`;
@@ -175,7 +175,7 @@ export const ControlPanel = ({
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <span 
-                            className={`text-xs px-0.5 rounded cursor-help transition-all duration-300 ${
+                            className={`text-xs px-1 py-0.5 rounded cursor-help transition-all duration-300 hover:bg-gray-100/50 ${
                               hasRecentEffect ? 'animate-pulse bg-red-100/20' : ''
                             }`}
                             style={{ 
@@ -188,7 +188,7 @@ export const ControlPanel = ({
                             {logEntry.orderNumber.replace(/[^\d]/g, '')}
                           </span>
                         </TooltipTrigger>
-                        <TooltipContent>
+                        <TooltipContent side="top" className="z-50">
                           <div className="text-xs">
                             <div>Pedido: {logEntry.orderNumber}</div>
                             <div>Expedido: {logEntry.expeditionTime.toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'})}</div>
