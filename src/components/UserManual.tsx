@@ -44,6 +44,9 @@ interface ManualSection {
 export const UserManual = ({ children }: UserManualProps) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeSection, setActiveSection] = useState('overview');
+  const [searchResults, setSearchResults] = useState<Array<{sectionId: string, matches: number}>>([]);
+  const [currentResultIndex, setCurrentResultIndex] = useState(0);
+  const [highlightedText, setHighlightedText] = useState('');
 
   const manualSections: ManualSection[] = [
     {
@@ -1249,17 +1252,184 @@ export const UserManual = ({ children }: UserManualProps) => {
     }
   ];
 
+  // Função para extrair texto de um elemento React
+  const extractTextFromReactNode = (node: React.ReactNode): string => {
+    if (typeof node === 'string') return node;
+    if (typeof node === 'number') return node.toString();
+    if (!node) return '';
+    
+    if (Array.isArray(node)) {
+      return node.map(extractTextFromReactNode).join(' ');
+    }
+    
+    if (typeof node === 'object' && 'props' in node) {
+      if (node.props?.children) {
+        return extractTextFromReactNode(node.props.children);
+      }
+    }
+    
+    return '';
+  };
+
+  // Função para destacar texto encontrado
+  const highlightText = (text: string, searchTerm: string): React.ReactNode => {
+    if (!searchTerm || !text) return text;
+    
+    const regex = new RegExp(`(${searchTerm})`, 'gi');
+    const parts = text.split(regex);
+    
+    return parts.map((part, index) => 
+      regex.test(part) ? (
+        <mark key={index} className="bg-yellow-300 dark:bg-yellow-600 px-1 rounded">
+          {part}
+        </mark>
+      ) : (
+        part
+      )
+    );
+  };
+
+  // Função para processar conteúdo React e destacar texto
+  const processReactNodeWithHighlight = (node: React.ReactNode, searchTerm: string): React.ReactNode => {
+    if (typeof node === 'string') {
+      return highlightText(node, searchTerm);
+    }
+    
+    if (typeof node === 'number') {
+      return highlightText(node.toString(), searchTerm);
+    }
+    
+    if (!node) return node;
+    
+    if (Array.isArray(node)) {
+      return node.map((child, index) => 
+        React.cloneElement(
+          <span key={index}>{processReactNodeWithHighlight(child, searchTerm)}</span>
+        )
+      );
+    }
+    
+    if (typeof node === 'object' && 'props' in node) {
+      const element = node as React.ReactElement;
+      if (element.props?.children) {
+        return React.cloneElement(element, {
+          ...element.props,
+          children: processReactNodeWithHighlight(element.props.children, searchTerm)
+        });
+      }
+    }
+    
+    return node;
+  };
+
+  // Busca avançada em todo o conteúdo
+  const performAdvancedSearch = (term: string) => {
+    if (!term) {
+      setSearchResults([]);
+      setCurrentResultIndex(0);
+      setHighlightedText('');
+      return;
+    }
+
+    const results: Array<{sectionId: string, matches: number}> = [];
+    
+    manualSections.forEach(section => {
+      let matches = 0;
+      
+      // Busca no título
+      if (section.title.toLowerCase().includes(term.toLowerCase())) {
+        matches++;
+      }
+      
+      // Busca nas keywords
+      section.keywords.forEach(keyword => {
+        if (keyword.toLowerCase().includes(term.toLowerCase())) {
+          matches++;
+        }
+      });
+      
+      // Busca no conteúdo
+      const contentText = extractTextFromReactNode(section.content);
+      const contentMatches = (contentText.toLowerCase().match(new RegExp(term.toLowerCase(), 'g')) || []).length;
+      matches += contentMatches;
+      
+      if (matches > 0) {
+        results.push({ sectionId: section.id, matches });
+      }
+    });
+    
+    setSearchResults(results);
+    setCurrentResultIndex(0);
+    setHighlightedText(term);
+    
+    // Navegar para o primeiro resultado
+    if (results.length > 0) {
+      scrollToSection(results[0].sectionId);
+    }
+  };
+
+  // Navegar para próximo resultado
+  const goToNextResult = () => {
+    if (searchResults.length === 0) return;
+    
+    const nextIndex = (currentResultIndex + 1) % searchResults.length;
+    setCurrentResultIndex(nextIndex);
+    scrollToSection(searchResults[nextIndex].sectionId);
+  };
+
+  // Navegar para resultado anterior
+  const goToPreviousResult = () => {
+    if (searchResults.length === 0) return;
+    
+    const prevIndex = currentResultIndex === 0 ? searchResults.length - 1 : currentResultIndex - 1;
+    setCurrentResultIndex(prevIndex);
+    scrollToSection(searchResults[prevIndex].sectionId);
+  };
+
+  // Manipular teclas na busca
+  const handleSearchKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (e.shiftKey) {
+        goToPreviousResult();
+      } else {
+        if (searchTerm && searchResults.length === 0) {
+          performAdvancedSearch(searchTerm);
+        } else {
+          goToNextResult();
+        }
+      }
+    }
+  };
+
   const filteredSections = useMemo(() => {
     if (!searchTerm) return manualSections;
     
     const lowercaseSearch = searchTerm.toLowerCase();
-    return manualSections.filter(section => 
-      section.title.toLowerCase().includes(lowercaseSearch) ||
-      section.keywords.some(keyword => keyword.toLowerCase().includes(lowercaseSearch))
-    );
+    return manualSections.filter(section => {
+      // Busca no título
+      if (section.title.toLowerCase().includes(lowercaseSearch)) return true;
+      
+      // Busca nas keywords
+      if (section.keywords.some(keyword => keyword.toLowerCase().includes(lowercaseSearch))) return true;
+      
+      // Busca no conteúdo
+      const contentText = extractTextFromReactNode(section.content);
+      return contentText.toLowerCase().includes(lowercaseSearch);
+    });
   }, [searchTerm, manualSections]);
 
-  const activeContent = manualSections.find(section => section.id === activeSection)?.content;
+  const activeContent = useMemo(() => {
+    const section = manualSections.find(section => section.id === activeSection);
+    if (!section) return null;
+    
+    // Se há termo de busca e texto destacado, processar o conteúdo
+    if (highlightedText && searchTerm) {
+      return processReactNodeWithHighlight(section.content, highlightedText);
+    }
+    
+    return section.content;
+  }, [activeSection, highlightedText, searchTerm, manualSections]);
 
   // Função para scroll automático para a seção
   const scrollToSection = (sectionId: string) => {
@@ -1295,14 +1465,46 @@ export const UserManual = ({ children }: UserManualProps) => {
                 </div>
               </div>
               
-              <div className="relative w-80">
-                <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
-                <Input
-                  placeholder="Buscar no manual..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
-                />
+               <div className="relative w-80">
+                 <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+                 <Input
+                   placeholder="Buscar no manual... (Enter para pesquisar)"
+                   value={searchTerm}
+                   onChange={(e) => {
+                     setSearchTerm(e.target.value);
+                     if (!e.target.value) {
+                       setSearchResults([]);
+                       setHighlightedText('');
+                       setCurrentResultIndex(0);
+                     }
+                   }}
+                   onKeyDown={handleSearchKeyDown}
+                   className="pl-10 pr-16"
+                   title="Enter: Próximo resultado | Shift+Enter: Resultado anterior"
+                 />
+                {searchTerm && (
+                  <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center gap-1">
+                    {searchResults.length > 0 && (
+                      <Badge variant="secondary" className="text-xs px-2 py-0">
+                        {currentResultIndex + 1}/{searchResults.length}
+                      </Badge>
+                    )}
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => {
+                        if (searchResults.length === 0) {
+                          performAdvancedSearch(searchTerm);
+                        } else {
+                          goToNextResult();
+                        }
+                      }}
+                      className="h-6 w-6 p-0"
+                    >
+                      <Search className="w-3 h-3" />
+                    </Button>
+                  </div>
+                )}
               </div>
             </div>
           </SheetHeader>
@@ -1312,24 +1514,37 @@ export const UserManual = ({ children }: UserManualProps) => {
             <div className="w-64 border-r bg-muted/20">
               <ScrollArea className="h-full">
                 <div className="p-3 space-y-1">
-                  {filteredSections.map((section) => (
-                    <button
-                      key={section.id}
-                      onClick={() => scrollToSection(section.id)}
-                      className={`w-full text-left px-3 py-2 rounded-md text-sm transition-all flex items-center gap-3 relative ${
-                        activeSection === section.id 
-                          ? 'bg-primary text-primary-foreground border-l-4 border-l-primary-foreground font-medium' 
-                          : 'text-muted-foreground hover:text-foreground hover:bg-muted/60 hover:border-l-4 hover:border-l-primary/60'
-                      }`}
-                    >
-                      <div className="flex-shrink-0">
-                        {section.icon}
-                      </div>
-                      <span className="font-medium truncate">
-                        {section.title}
-                      </span>
-                    </button>
-                  ))}
+                  {filteredSections.map((section) => {
+                    const hasResults = searchResults.some(result => result.sectionId === section.id);
+                    const isCurrentResult = searchResults.length > 0 && 
+                      searchResults[currentResultIndex]?.sectionId === section.id;
+                    
+                    return (
+                      <button
+                        key={section.id}
+                        onClick={() => scrollToSection(section.id)}
+                        className={`w-full text-left px-3 py-2 rounded-md text-sm transition-all flex items-center gap-3 relative ${
+                          activeSection === section.id 
+                            ? 'bg-primary text-primary-foreground border-l-4 border-l-primary-foreground font-medium' 
+                            : 'text-muted-foreground hover:text-foreground hover:bg-muted/60 hover:border-l-4 hover:border-l-primary/60'
+                        } ${
+                          isCurrentResult ? 'ring-2 ring-yellow-400' : ''
+                        }`}
+                      >
+                        <div className="flex-shrink-0">
+                          {section.icon}
+                        </div>
+                        <span className="font-medium truncate">
+                          {highlightedText ? highlightText(section.title, highlightedText) : section.title}
+                        </span>
+                        {hasResults && searchTerm && (
+                          <Badge variant="secondary" className="ml-auto text-xs">
+                            {searchResults.find(r => r.sectionId === section.id)?.matches}
+                          </Badge>
+                        )}
+                      </button>
+                    );
+                  })}
                 </div>
               </ScrollArea>
             </div>
@@ -1338,15 +1553,29 @@ export const UserManual = ({ children }: UserManualProps) => {
             <div className="flex-1">
               <ScrollArea className="h-full" data-section-content>
                 <div className="p-4">
-                  {activeContent || (
-                    <div className="text-center py-12">
-                      <Search className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-                      <h3 className="text-lg font-medium mb-2">Nenhum resultado encontrado</h3>
-                      <p className="text-sm text-muted-foreground">
-                        Tente buscar por outros termos ou navegue pelas seções disponíveis.
-                      </p>
-                    </div>
-                  )}
+                   {activeContent || (
+                     <div className="text-center py-12">
+                       <Search className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+                       <h3 className="text-lg font-medium mb-2">Nenhum resultado encontrado</h3>
+                       <p className="text-muted-foreground">
+                         {searchTerm 
+                           ? `Nenhum resultado para "${searchTerm}"`
+                           : 'Digite algo para pesquisar no manual'
+                         }
+                       </p>
+                       {searchTerm && (
+                         <div className="mt-4 space-y-2">
+                           <p className="text-sm text-muted-foreground">Dicas de busca:</p>
+                           <ul className="text-sm text-muted-foreground space-y-1">
+                             <li>• Use palavras-chave simples</li>
+                             <li>• Tente termos relacionados</li>
+                             <li>• Verifique a ortografia</li>
+                             <li>• Pressione Enter para buscar em todo o conteúdo</li>
+                           </ul>
+                         </div>
+                       )}
+                     </div>
+                   )}
                 </div>
               </ScrollArea>
             </div>

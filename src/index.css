@@ -249,3 +249,32 @@
 .manual-sheet {
   --radix-dialog-overlay-background-color: rgba(0, 0, 0, 0.8);
 }
+
+/* Destaque de busca no manual */
+.manual-sheet mark {
+  background-color: rgba(255, 255, 0, 0.3);
+  color: inherit;
+  padding: 2px 4px;
+  border-radius: 3px;
+  animation: highlight-pulse 1s ease-in-out;
+}
+
+.manual-sheet .dark mark {
+  background-color: rgba(255, 193, 7, 0.4);
+}
+
+@keyframes highlight-pulse {
+  0% { background-color: rgba(255, 255, 0, 0.6); }
+  100% { background-color: rgba(255, 255, 0, 0.3); }
+}
+
+/* Efeito de ring para resultado atual */
+.search-result-current {
+  animation: search-ring-pulse 2s ease-in-out infinite;
+}
+
+@keyframes search-ring-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0.7); }
+  70% { box-shadow: 0 0 0 10px rgba(234, 179, 8, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0); }
+}
