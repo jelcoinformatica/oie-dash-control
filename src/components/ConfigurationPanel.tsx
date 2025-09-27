@@ -1788,14 +1788,15 @@ export const ConfigurationPanel = ({
                           onCheckedChange={(checked) => updateConfig(`modules.${moduleKey}.showIndicator`, checked)}
                           className="scale-50 ml-2"
                         />
-                        <Label className="text-xs text-gray-600">Exibir indicador</Label>
+                        <div className="flex items-center gap-1">
+                          <div className={cn("w-1.5 h-1.5 rounded-full", moduleConfig.showIndicator ? "bg-green-500" : "bg-gray-300")}></div>
+                          <Label className="text-xs text-gray-600">Exibir indicador</Label>
+                        </div>
                       </>
                     )}
                   </div>
                   
-                  {moduleConfig.enabled && (
-                    <div className={cn("w-2 h-2 rounded-full", moduleConfig.showIndicator ? "bg-green-500" : "bg-gray-300")}></div>
-                  )}
+                  {/* Removido o bullet duplicado - agora está junto ao texto */}
                 </div>
 
                 {moduleConfig.enabled && (
