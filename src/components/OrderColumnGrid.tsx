@@ -122,6 +122,17 @@ export const OrderColumnGrid = ({
     // Resolvendo: N = (availableHeight + gap) / (cardHeight + gap)
     const maxRows = Math.floor((containerDimensions.height + gap) / (cardHeight + gap));
     
+    console.log('OrderColumnGrid Debug:', {
+      containerHeight: containerDimensions.height,
+      cardHeight,
+      gap,
+      maxRows,
+      calculatedSpace: maxRows * (cardHeight + gap) - gap,
+      unusedSpace: containerDimensions.height - (maxRows * (cardHeight + gap) - gap),
+      columns,
+      maxCards: maxRows * columns
+    });
+    
     // Limitar cards para não haver cortes
     const maxVisibleCards = Math.max(0, maxRows * columns);
     const visibleOrders = orders.slice(0, maxVisibleCards);
