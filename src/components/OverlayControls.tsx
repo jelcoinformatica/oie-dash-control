@@ -72,32 +72,32 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
     <div className="fixed inset-0 z-50 pointer-events-none">
       {/* Controles principais */}
       <div className="absolute top-4 right-4 pointer-events-auto">
-        <div className="bg-white/95 backdrop-blur-sm rounded-lg shadow-xl border p-4 space-y-3">
+        <div className="bg-white/95 backdrop-blur-sm rounded-lg shadow-xl border p-2 space-y-2">
           <div className="flex items-center justify-between">
-            <h3 className="font-semibold text-gray-800 flex items-center gap-2">
-              <Move3D className="w-4 h-4" />
+            <h3 className="font-semibold text-gray-800 flex items-center gap-2 text-sm">
+              <Move3D className="w-3 h-3" />
               Controles Diretos
             </h3>
             <Button
               onClick={onToggle}
               variant="ghost"
               size="sm"
-              className="h-6 w-6 p-0"
+              className="h-5 w-5 p-0"
             >
-              <X className="w-3 h-3" />
+              <X className="w-2 h-2" />
             </Button>
           </div>
           
-          <div className="space-y-2">
+          <div className="space-y-1">
             {/* Primeira linha - Cabeçalhos */}
-            <div className="grid grid-cols-1 gap-2">
+            <div className="grid grid-cols-1 gap-1">
               {controlButtons.filter(btn => btn.id === 'headers').map((button) => (
                 <Button
                   key={button.id}
                   onClick={() => setActiveControl(activeControl === button.id ? null : button.id)}
                   variant={activeControl === button.id ? "default" : "outline"}
                   size="sm"
-                  className={`text-xs ${activeControl === button.id ? button.color : ''}`}
+                  className={`text-xs h-7 ${activeControl === button.id ? button.color : ''}`}
                 >
                   {button.icon}
                   <span className="ml-1">{button.label}</span>
@@ -106,14 +106,14 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
             </div>
 
             {/* Segunda linha - Col 1; col 2; col 3 */}
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-3 gap-1">
               {controlButtons.filter(btn => ['col1', 'col2', 'col3'].includes(btn.id)).map((button) => (
                 <Button
                   key={button.id}
                   onClick={() => setActiveControl(activeControl === button.id ? null : button.id)}
                   variant={activeControl === button.id ? "default" : "outline"}
                   size="sm"
-                  className={`text-xs ${activeControl === button.id ? button.color : ''}`}
+                  className={`text-xs h-7 ${activeControl === button.id ? button.color : ''}`}
                 >
                   {button.icon}
                   <span className="ml-1">{button.label}</span>
@@ -122,14 +122,14 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
             </div>
 
             {/* Terceira linha - Ultimo pedido */}
-            <div className="grid grid-cols-1 gap-2">
+            <div className="grid grid-cols-1 gap-1">
               {controlButtons.filter(btn => btn.id === 'last-order').map((button) => (
                 <Button
                   key={button.id}
                   onClick={() => setActiveControl(activeControl === button.id ? null : button.id)}
                   variant={activeControl === button.id ? "default" : "outline"}
                   size="sm"
-                  className={`text-xs ${activeControl === button.id ? button.color : ''}`}
+                  className={`text-xs h-7 ${activeControl === button.id ? button.color : ''}`}
                 >
                   {button.icon}
                   <span className="ml-1">{button.label}</span>
