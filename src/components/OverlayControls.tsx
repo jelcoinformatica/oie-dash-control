@@ -150,20 +150,22 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
               ? 'left-4'
               : activeControl === 'col3'
               ? 'left-4'
+              : activeControl === 'last-order'
+              ? 'left-4'
               : 'left-1/2 transform -translate-x-1/2'
           }`}
         >
-          <div className="bg-white/95 backdrop-blur-sm rounded-lg shadow-xl border p-4 min-w-80">
+          <div className="bg-white/95 backdrop-blur-sm rounded-lg shadow-xl border p-3 min-w-72 text-xs">
             
             {activeControl === 'headers' && (
-              <div className="space-y-4">
-                <h4 className="font-medium text-gray-800 flex items-center gap-2">
-                  <Monitor className="w-4 h-4" />
+              <div className="space-y-2">
+                <h4 className="font-medium text-gray-800 flex items-center gap-2 text-sm">
+                  <Monitor className="w-3 h-3" />
                   Altura dos Cabeçalhos
                 </h4>
-                <div className="space-y-3">
+                <div className="space-y-1">
                   <div>
-                    <Label className="text-sm">Altura: {config.production.headerHeight}px</Label>
+                    <Label className="text-xs">Altura: {config.production.headerHeight}px</Label>
                     <Slider
                       value={[config.production.headerHeight]}
                       onValueChange={([value]) => {
@@ -176,7 +178,7 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
                       min={40}
                       max={120}
                       step={4}
-                      className="mt-2"
+                      className="mt-1 h-1"
                     />
                   </div>
                 </div>
@@ -184,16 +186,15 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
             )}
 
             {activeControl === 'col1' && (
-              <div className="space-y-4">
-                <h4 className="font-medium text-gray-800 flex items-center gap-2">
-                  <ArrowUpDown className="w-4 h-4 text-green-600" />
+              <div className="space-y-2">
+                <h4 className="font-medium text-gray-800 flex items-center gap-2 text-sm">
+                  <ArrowUpDown className="w-3 h-3 text-green-600" />
                   Coluna 1 - Em Produção
                 </h4>
-                <div className="space-y-4">
-                  <div className="space-y-3">
-                    <h5 className="text-sm font-medium text-gray-700">Colunas</h5>
+                <div className="space-y-2">
+                  <div className="space-y-1">
                     <div>
-                      <Label className="text-sm">Quantidade: {config.production.cardConfig.columns} colunas</Label>
+                      <Label className="text-xs">Quantidade: {config.production.cardConfig.columns} colunas</Label>
                       <Slider
                         value={[config.production.cardConfig.columns]}
                         onValueChange={([value]) => {
@@ -207,15 +208,14 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
                         min={1}
                         max={3}
                         step={1}
-                        className="mt-2"
+                        className="mt-1 h-1"
                       />
                     </div>
                   </div>
                   
-                  <div className="space-y-3">
-                    <h5 className="text-sm font-medium text-gray-700">Layout Vertical</h5>
+                  <div className="space-y-1">
                     <div>
-                      <Label className="text-sm">Gap Vertical: {config.production.cardConfig.gapVertical}px</Label>
+                      <Label className="text-xs">Gap Vertical: {config.production.cardConfig.gapVertical}px</Label>
                       <Slider
                         value={[config.production.cardConfig.gapVertical || 4]}
                         onValueChange={([value]) => {
@@ -229,11 +229,11 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
                         min={0}
                         max={20}
                         step={1}
-                        className="mt-2"
+                        className="mt-1 h-1"
                       />
                     </div>
                     <div>
-                      <Label className="text-sm">Altura do Card: {config.production.cardConfig.cardMinHeight}px</Label>
+                      <Label className="text-xs">Altura do Card: {config.production.cardConfig.cardMinHeight}px</Label>
                       <Slider
                         value={[config.production.cardConfig.cardMinHeight]}
                         onValueChange={([value]) => {
@@ -251,15 +251,14 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
                         min={40}
                         max={200}
                         step={5}
-                        className="mt-2"
+                        className="mt-1 h-1"
                       />
                     </div>
                   </div>
                   
-                  <div className="space-y-3">
-                    <h5 className="text-sm font-medium text-gray-700">Layout Horizontal</h5>
+                  <div className="space-y-1">
                     <div>
-                      <Label className="text-sm">Gap Horizontal: {config.production.cardConfig.gapHorizontal}px</Label>
+                      <Label className="text-xs">Gap Horizontal: {config.production.cardConfig.gapHorizontal}px</Label>
                       <Slider
                         value={[config.production.cardConfig.gapHorizontal || 4]}
                         onValueChange={([value]) => {
@@ -273,11 +272,11 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
                         min={0}
                         max={20}
                         step={1}
-                        className="mt-2"
+                        className="mt-1 h-1"
                       />
                     </div>
                     <div>
-                      <Label className="text-sm">Largura do Card: {config.production.cardConfig.cardWidth || 200}px</Label>
+                      <Label className="text-xs">Largura do Card: {config.production.cardConfig.cardWidth || 200}px</Label>
                       <Slider
                         value={[config.production.cardConfig.cardWidth || 200]}
                         onValueChange={([value]) => {
@@ -291,15 +290,14 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
                         min={120}
                         max={400}
                         step={10}
-                        className="mt-2"
+                        className="mt-1 h-1"
                       />
                     </div>
                   </div>
                   
-                  <div className="space-y-3">
-                    <h5 className="text-sm font-medium text-gray-700">Tipografia</h5>
+                  <div className="space-y-1">
                     <div>
-                      <Label className="text-sm">Tamanho da Fonte: {config.production.cardConfig.fontSize}</Label>
+                      <Label className="text-xs">Tamanho da Fonte: {config.production.cardConfig.fontSize}</Label>
                       <Slider
                         value={[config.production.cardConfig.fontSize]}
                         onValueChange={([value]) => {
@@ -313,15 +311,14 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
                         min={1.5}
                         max={6}
                         step={0.1}
-                        className="mt-2"
+                        className="mt-1 h-1"
                       />
                     </div>
                   </div>
                   
-                  <div className="space-y-3">
-                    <h5 className="text-sm font-medium text-gray-700">Bordas e Sombras</h5>
-                    <div className="flex items-center justify-between">
-                      <Label className="text-sm">Borda nos Cards</Label>
+                  <div className="space-y-1">
+                    <div className="flex items-center justify-between py-1">
+                      <Label className="text-xs">Borda nos Cards</Label>
                       <Switch
                         checked={config.production.showCardBorder}
                         onCheckedChange={(checked) => {
@@ -332,10 +329,11 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
                             }
                           });
                         }}
+                        className="scale-75"
                       />
                     </div>
-                    <div className="flex items-center justify-between">
-                      <Label className="text-sm">Sombra da Coluna</Label>
+                    <div className="flex items-center justify-between py-1">
+                      <Label className="text-xs">Sombra da Coluna</Label>
                       <Switch
                         checked={config.production.showShadow}
                         onCheckedChange={(checked) => {
@@ -346,6 +344,7 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
                             }
                           });
                         }}
+                        className="scale-75"
                       />
                     </div>
                   </div>
@@ -354,16 +353,15 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
             )}
 
             {activeControl === 'col2' && (
-              <div className="space-y-4">
-                <h4 className="font-medium text-gray-800 flex items-center gap-2">
-                  <ArrowUpDown className="w-4 h-4 text-indigo-600" />
+              <div className="space-y-2">
+                <h4 className="font-medium text-gray-800 flex items-center gap-2 text-sm">
+                  <ArrowUpDown className="w-3 h-3 text-indigo-600" />
                   Coluna 2 - Prontos
                 </h4>
-                <div className="space-y-4">
-                  <div className="space-y-3">
-                    <h5 className="text-sm font-medium text-gray-700">Colunas</h5>
+                <div className="space-y-2">
+                  <div className="space-y-1">
                     <div>
-                      <Label className="text-sm">Quantidade: {config.ready.cardConfig.columns} colunas</Label>
+                      <Label className="text-xs">Quantidade: {config.ready.cardConfig.columns} colunas</Label>
                       <Slider
                         value={[config.ready.cardConfig.columns]}
                         onValueChange={([value]) => {
@@ -377,15 +375,14 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
                         min={1}
                         max={6}
                         step={1}
-                        className="mt-2"
+                        className="mt-1 h-1"
                       />
                     </div>
                   </div>
                   
-                  <div className="space-y-3">
-                    <h5 className="text-sm font-medium text-gray-700">Layout Vertical</h5>
+                  <div className="space-y-1">
                     <div>
-                      <Label className="text-sm">Gap Vertical: {config.ready.cardConfig.gapVertical}px</Label>
+                      <Label className="text-xs">Gap Vertical: {config.ready.cardConfig.gapVertical}px</Label>
                       <Slider
                         value={[config.ready.cardConfig.gapVertical || 4]}
                         onValueChange={([value]) => {
@@ -399,11 +396,11 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
                         min={0}
                         max={20}
                         step={1}
-                        className="mt-2"
+                        className="mt-1 h-1"
                       />
                     </div>
                     <div>
-                      <Label className="text-sm">Altura do Card: {config.ready.cardConfig.cardMinHeight}px</Label>
+                      <Label className="text-xs">Altura do Card: {config.ready.cardConfig.cardMinHeight}px</Label>
                       <Slider
                         value={[config.ready.cardConfig.cardMinHeight]}
                         onValueChange={([value]) => {
@@ -421,15 +418,14 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
                         min={40}
                         max={200}
                         step={5}
-                        className="mt-2"
+                        className="mt-1 h-1"
                       />
                     </div>
                   </div>
                   
-                  <div className="space-y-3">
-                    <h5 className="text-sm font-medium text-gray-700">Layout Horizontal</h5>
+                  <div className="space-y-1">
                     <div>
-                      <Label className="text-sm">Gap Horizontal: {config.ready.cardConfig.gapHorizontal}px</Label>
+                      <Label className="text-xs">Gap Horizontal: {config.ready.cardConfig.gapHorizontal}px</Label>
                       <Slider
                         value={[config.ready.cardConfig.gapHorizontal || 4]}
                         onValueChange={([value]) => {
@@ -443,11 +439,11 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
                         min={0}
                         max={20}
                         step={1}
-                        className="mt-2"
+                        className="mt-1 h-1"
                       />
                     </div>
                     <div>
-                      <Label className="text-sm">Largura do Card: {config.ready.cardConfig.cardWidth || 200}px</Label>
+                      <Label className="text-xs">Largura do Card: {config.ready.cardConfig.cardWidth || 200}px</Label>
                       <Slider
                         value={[config.ready.cardConfig.cardWidth || 200]}
                         onValueChange={([value]) => {
@@ -461,15 +457,14 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
                         min={120}
                         max={400}
                         step={10}
-                        className="mt-2"
+                        className="mt-1 h-1"
                       />
                     </div>
                   </div>
                   
-                  <div className="space-y-3">
-                    <h5 className="text-sm font-medium text-gray-700">Tipografia</h5>
+                  <div className="space-y-1">
                     <div>
-                      <Label className="text-sm">Tamanho da Fonte: {config.ready.cardConfig.fontSize}</Label>
+                      <Label className="text-xs">Tamanho da Fonte: {config.ready.cardConfig.fontSize}</Label>
                       <Slider
                         value={[config.ready.cardConfig.fontSize]}
                         onValueChange={([value]) => {
@@ -483,15 +478,14 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
                         min={1.5}
                         max={6}
                         step={0.1}
-                        className="mt-2"
+                        className="mt-1 h-1"
                       />
                     </div>
                   </div>
                   
-                  <div className="space-y-3">
-                    <h5 className="text-sm font-medium text-gray-700">Bordas e Sombras</h5>
-                    <div className="flex items-center justify-between">
-                      <Label className="text-sm">Borda nos Cards</Label>
+                  <div className="space-y-1">
+                    <div className="flex items-center justify-between py-1">
+                      <Label className="text-xs">Borda nos Cards</Label>
                       <Switch
                         checked={config.ready.showCardBorder}
                         onCheckedChange={(checked) => {
@@ -502,10 +496,11 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
                             }
                           });
                         }}
+                        className="scale-75"
                       />
                     </div>
-                    <div className="flex items-center justify-between">
-                      <Label className="text-sm">Sombra da Coluna</Label>
+                    <div className="flex items-center justify-between py-1">
+                      <Label className="text-xs">Sombra da Coluna</Label>
                       <Switch
                         checked={config.ready.showShadow}
                         onCheckedChange={(checked) => {
@@ -516,6 +511,7 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
                             }
                           });
                         }}
+                        className="scale-75"
                       />
                     </div>
                   </div>
