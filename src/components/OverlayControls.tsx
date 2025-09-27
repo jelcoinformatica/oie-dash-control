@@ -141,7 +141,15 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
 
       {/* Painel de controle ativo */}
       {activeControl && (
-        <div className="absolute top-4 left-1/2 transform -translate-x-1/2 pointer-events-auto">
+        <div 
+          className={`absolute top-4 pointer-events-auto ${
+            activeControl === 'col1' 
+              ? 'right-4' 
+              : activeControl === 'col2'
+              ? 'left-4'
+              : 'left-1/2 transform -translate-x-1/2'
+          }`}
+        >
           <div className="bg-white/95 backdrop-blur-sm rounded-lg shadow-xl border p-4 min-w-80">
             
             {activeControl === 'headers' && (
@@ -331,8 +339,8 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
                             }
                           });
                         }}
-                        min={3}
-                        max={8}
+                        min={1}
+                        max={6}
                         step={1}
                         className="mt-2"
                       />
