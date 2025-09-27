@@ -337,11 +337,11 @@ const Index = () => {
                   maxSize={60}
                   className="h-full"
                 >
-                  <div className="h-full relative">
-                    <div className="flex flex-col h-full">
-                      <div 
-                        className={`bg-white rounded-lg shadow-lg flex flex-col overflow-hidden h-full ${config.production.showBorder ? 'ring-2 ring-blue-200' : ''}`}
-                      >
+                    <div className="h-full relative">
+                      <div className="flex flex-col h-full">
+                        <div 
+                          className={`bg-white rounded-lg flex flex-col overflow-hidden h-full ${config.production.showShadow ? 'shadow-lg' : ''} ${config.production.showBorder ? 'ring-2 ring-blue-200' : ''}`}
+                        >
                         <div 
                           className="flex items-center justify-center px-4 font-bold shadow-sm border-b rounded-t-lg relative"
                           style={{
@@ -397,7 +397,7 @@ const Index = () => {
               <div className="h-full relative">
                 <div className="flex flex-col h-full">
                   <div 
-                    className={`bg-white rounded-lg shadow-lg flex flex-col overflow-hidden h-full ${config.ready.showBorder ? 'ring-2 ring-blue-200' : ''}`}
+                    className={`bg-white rounded-lg flex flex-col overflow-hidden h-full ${config.ready.showShadow ? 'shadow-lg' : ''} ${config.ready.showBorder ? 'ring-2 ring-blue-200' : ''}`}
                   >
                     <div 
                       className="flex items-center justify-center px-4 font-bold shadow-sm border-b rounded-t-lg relative"
@@ -471,7 +471,7 @@ const Index = () => {
                       </div>
                     )}
                     
-                    <div className="flex-1 p-2 bg-gray-50" style={{ overflow: 'hidden' }}>
+                    <div className="flex-1 p-2 bg-white" style={{ overflow: 'hidden' }}>
                     <OrderColumnGrid
                       orders={readyOrders}
                       columns={config.ready.cardConfig.columns}
@@ -492,6 +492,7 @@ const Index = () => {
                       }}
                       lastOrderNumber={lastOrderNumber}
                       lastOrderConfig={config.lastOrder}
+                      showCardBorder={config.ready.showCardBorder}
                     />
                     </div>
                   </div>
@@ -527,6 +528,7 @@ const Index = () => {
                       newsMode={config.advertising.newsMode}
                       newsSource={config.advertising.newsSource}
                       newsFontSize={config.advertising.newsFontSize || 2.5}
+                      showShadow={config.advertising.showShadow}
                       className="h-full"
                       onToggleHeader={() => {
                         const newConfig = {
@@ -552,7 +554,7 @@ const Index = () => {
               <div style={{ width: `${(config.production.width / (config.production.width + config.ready.width + (config.advertising.visible ? config.advertising.width : 0))) * 100}%` }} className="h-full relative">
                 <div className="flex flex-col h-full">
                   <div 
-                    className={`bg-white rounded-lg shadow-lg flex flex-col overflow-hidden h-full ${config.production.showBorder ? 'ring-2 ring-blue-200' : ''}`}
+                    className={`bg-white rounded-lg flex flex-col overflow-hidden h-full ${config.production.showShadow ? 'shadow-lg' : ''} ${config.production.showBorder ? 'ring-2 ring-blue-200' : ''}`}
                   >
                     <div 
                       className="flex items-center justify-center px-4 font-bold shadow-sm border-b rounded-t-lg relative"
@@ -570,7 +572,7 @@ const Index = () => {
                       </div>
                     </div>
                     
-                    <div className="flex-1 p-2 bg-gray-50" style={{ overflow: 'hidden' }}>
+                    <div className="flex-1 p-2 bg-white" style={{ overflow: 'hidden' }}>
                     <OrderColumnGrid
                       orders={productionOrders}
                       columns={config.production.cardConfig.columns}
@@ -589,6 +591,7 @@ const Index = () => {
                         cardMinHeight: config.production.cardConfig.cardMinHeight,
                         cardMaxHeight: config.production.cardConfig.cardMaxHeight
                       }}
+                      showCardBorder={config.production.showCardBorder}
                     />
                     </div>
                   </div>
@@ -600,7 +603,7 @@ const Index = () => {
             <div style={{ width: `${(config.ready.width / (config.production.width + config.ready.width + (config.advertising.visible ? config.advertising.width : 0))) * 100}%` }} className="h-full relative">
               <div className="flex flex-col h-full">
                 <div 
-                  className={`bg-white rounded-lg shadow-lg flex flex-col overflow-hidden h-full ${config.ready.showBorder ? 'ring-2 ring-blue-200' : ''}`}
+                  className={`bg-white rounded-lg flex flex-col overflow-hidden h-full ${config.ready.showShadow ? 'shadow-lg' : ''} ${config.ready.showBorder ? 'ring-2 ring-blue-200' : ''}`}
                 >
                   <div 
                     className="flex items-center justify-center px-4 font-bold shadow-sm border-b rounded-t-lg relative"
@@ -674,7 +677,7 @@ const Index = () => {
                     </div>
                   )}
                   
-                  <div className="flex-1 p-2 bg-gray-50" style={{ overflow: 'hidden' }}>
+                  <div className="flex-1 p-2 bg-white" style={{ overflow: 'hidden' }}>
                     <OrderColumnGrid
                       orders={readyOrders}
                       columns={config.ready.cardConfig.columns}
@@ -695,6 +698,7 @@ const Index = () => {
                       }}
                       lastOrderNumber={lastOrderNumber}
                       lastOrderConfig={config.lastOrder}
+                      showCardBorder={config.ready.showCardBorder}
                     />
                   </div>
                 </div>
@@ -721,6 +725,7 @@ const Index = () => {
                   newsMode={config.advertising.newsMode}
                   newsSource={config.advertising.newsSource}
                   newsFontSize={config.advertising.newsFontSize || 2.5}
+                  showShadow={config.advertising.showShadow}
                   className="h-full"
                   onToggleHeader={() => {
                     const newConfig = {

@@ -53,6 +53,7 @@ interface OrderColumnGridProps {
     highlight: boolean;
     fontFamily?: string;
   };
+  showCardBorder?: boolean;
 }
 
 export const OrderColumnGrid = ({
@@ -65,7 +66,8 @@ export const OrderColumnGrid = ({
   config,
   cardConfig,
   lastOrderNumber,
-  lastOrderConfig
+  lastOrderConfig,
+  showCardBorder = false
 }: OrderColumnGridProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerDimensions, setContainerDimensions] = useState({ width: 0, height: 0 });
@@ -173,6 +175,7 @@ export const OrderColumnGrid = ({
               fontFamily={cardConfig?.fontFamily}
               textColor={isLastOrder ? lastOrderConfig?.textColor : cardConfig?.textColor}
               backgroundColor={isLastOrder ? lastOrderConfig?.backgroundColor : cardConfig?.backgroundColor}
+              showCardBorder={showCardBorder}
             />
           );
         })}

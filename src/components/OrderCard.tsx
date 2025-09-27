@@ -36,6 +36,7 @@ interface OrderCardProps {
   fontFamily?: string;
   textColor?: string;
   backgroundColor?: string;
+  showCardBorder?: boolean;
 }
 
 const moduleColors = {
@@ -77,7 +78,8 @@ export const OrderCard = ({
   fontSize = 2,
   fontFamily = 'Arial',
   textColor = '#374151',
-  backgroundColor = '#ffffff'
+  backgroundColor = '#ffffff',
+  showCardBorder = false
 }: OrderCardProps) => {
   const displayNumber = order.numeroPedido || order.number;
   const displayName = order.nomeCliente || order.nickname;
@@ -118,6 +120,8 @@ export const OrderCard = ({
         "flex flex-col items-center justify-center p-2 min-h-16",
         showModuleIndicator && moduleIndicator === 'border' 
           ? cn("border-2", moduleBorderColors[order.modulo])
+          : showCardBorder 
+          ? "border-2 border-gray-400"
           : "border-gray-300",
         className
       )}

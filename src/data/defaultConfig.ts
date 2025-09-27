@@ -19,6 +19,8 @@ export const defaultConfig: PanelConfig = {
     headerFontFamily: 'Tahoma',
     headerFontSize: 2,
     showBorder: false,
+    showShadow: false,
+    showCardBorder: false,
       cardConfig: {
         columns: 2,
         rows: 4,
@@ -46,6 +48,8 @@ export const defaultConfig: PanelConfig = {
     headerFontFamily: 'Tahoma',
     headerFontSize: 2,
     showBorder: true,
+    showShadow: false,
+    showCardBorder: false,
       cardConfig: {
         columns: 4,
         rows: 2,
@@ -79,7 +83,8 @@ export const defaultConfig: PanelConfig = {
     newsMode: false,
     newsSource: 'panelinha',
     newsFontSize: 2.5, // Tamanho da fonte para visualização à distância
-    showBorder: false
+    showBorder: false,
+    showShadow: false
   },
   lastOrder: {
     height: 180,

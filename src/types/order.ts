@@ -53,6 +53,8 @@ export interface ColumnConfig {
   headerFontFamily: string;
   headerFontSize: number;
   showBorder?: boolean;
+  showShadow?: boolean;
+  showCardBorder?: boolean;
   cardConfig: OrderCardConfig;
 }
 
@@ -79,6 +81,7 @@ export interface PanelConfig {
     newsSource?: 'g1' | 'uol' | 'cnn' | 'panelinha' | 'cybercook' | 'tudogostoso' | 'foodnetwork'; // Fontes expandidas
     newsFontSize?: number; // Tamanho da fonte das notícias
     showBorder?: boolean;
+    showShadow?: boolean;
   };
   lastOrder: {
     height: number;

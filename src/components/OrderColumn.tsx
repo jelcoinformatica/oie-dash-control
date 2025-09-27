@@ -51,6 +51,8 @@ interface OrderColumnProps {
   };
   columns: number;
   showBorder?: boolean;
+  showShadow?: boolean;
+  showCardBorder?: boolean;
 }
 
 const variantStyles = {
@@ -87,13 +89,16 @@ export const OrderColumn = ({
   config,
   cardConfig,
   columns,
-  showBorder = false
+  showBorder = false,
+  showShadow = false,
+  showCardBorder = false
 }: OrderColumnProps) => {
   return (
     <div className={cn("flex flex-col h-full", className)}>
       <div 
         className={cn(
-          "bg-white rounded-lg shadow-lg flex flex-col overflow-hidden h-full",
+          "bg-white rounded-lg flex flex-col overflow-hidden h-full",
+          showShadow ? 'shadow-lg' : '',
           showBorder ? 'ring-2 ring-blue-200' : ''
         )}
       >
@@ -119,7 +124,7 @@ export const OrderColumn = ({
           </div>
         </div>
         
-        <div className="order-column-content flex-1 p-2 bg-gray-50" style={{ overflow: 'hidden' }}>
+        <div className="order-column-content flex-1 p-2 bg-white" style={{ overflow: 'hidden' }}>
           <OrderColumnGrid
             orders={orders}
             columns={columns}
@@ -129,6 +134,7 @@ export const OrderColumn = ({
             moduleIndicator={moduleIndicator}
             config={config}
             cardConfig={cardConfig}
+            showCardBorder={showCardBorder}
           />
         </div>
       </div>

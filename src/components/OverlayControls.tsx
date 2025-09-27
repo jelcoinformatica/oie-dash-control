@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Button } from './ui/button';
 import { Slider } from './ui/slider';
 import { Label } from './ui/label';
+import { Switch } from './ui/switch';
 import { PanelConfig } from '../types/order';
 import { Settings, X, Move3D, ArrowUpDown, ArrowLeftRight, Target, Monitor } from 'lucide-react';
 
@@ -104,9 +105,9 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
               ))}
             </div>
 
-            {/* Segunda linha - Col 1; col 2 */}
-            <div className="grid grid-cols-2 gap-2">
-              {controlButtons.filter(btn => ['col1', 'col2'].includes(btn.id)).map((button) => (
+            {/* Segunda linha - Col 1; col 2; col 3 */}
+            <div className="grid grid-cols-3 gap-2">
+              {controlButtons.filter(btn => ['col1', 'col2', 'col3'].includes(btn.id)).map((button) => (
                 <Button
                   key={button.id}
                   onClick={() => setActiveControl(activeControl === button.id ? null : button.id)}
@@ -146,6 +147,8 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
             activeControl === 'col1' 
               ? 'right-4' 
               : activeControl === 'col2'
+              ? 'left-4'
+              : activeControl === 'col3'
               ? 'left-4'
               : 'left-1/2 transform -translate-x-1/2'
           }`}
@@ -314,6 +317,38 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
                       />
                     </div>
                   </div>
+                  
+                  <div className="space-y-3">
+                    <h5 className="text-sm font-medium text-gray-700">Bordas e Sombras</h5>
+                    <div className="flex items-center justify-between">
+                      <Label className="text-sm">Borda nos Cards</Label>
+                      <Switch
+                        checked={config.production.showCardBorder}
+                        onCheckedChange={(checked) => {
+                          updateConfig({
+                            production: { 
+                              ...config.production, 
+                              showCardBorder: checked
+                            }
+                          });
+                        }}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <Label className="text-sm">Sombra da Coluna</Label>
+                      <Switch
+                        checked={config.production.showShadow}
+                        onCheckedChange={(checked) => {
+                          updateConfig({
+                            production: { 
+                              ...config.production, 
+                              showShadow: checked
+                            }
+                          });
+                        }}
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
@@ -449,6 +484,38 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
                         max={6}
                         step={0.1}
                         className="mt-2"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-3">
+                    <h5 className="text-sm font-medium text-gray-700">Bordas e Sombras</h5>
+                    <div className="flex items-center justify-between">
+                      <Label className="text-sm">Borda nos Cards</Label>
+                      <Switch
+                        checked={config.ready.showCardBorder}
+                        onCheckedChange={(checked) => {
+                          updateConfig({
+                            ready: { 
+                              ...config.ready, 
+                              showCardBorder: checked
+                            }
+                          });
+                        }}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <Label className="text-sm">Sombra da Coluna</Label>
+                      <Switch
+                        checked={config.ready.showShadow}
+                        onCheckedChange={(checked) => {
+                          updateConfig({
+                            ready: { 
+                              ...config.ready, 
+                              showShadow: checked
+                            }
+                          });
+                        }}
                       />
                     </div>
                   </div>

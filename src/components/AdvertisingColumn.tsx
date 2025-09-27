@@ -12,6 +12,7 @@ interface AdvertisingColumnProps {
   headerColor?: string;
   backgroundColor?: string;
   showBorder?: boolean;
+  showShadow?: boolean;
   newsMode?: boolean;
   newsSource?: 'g1' | 'uol' | 'cnn' | 'panelinha' | 'cybercook' | 'tudogostoso' | 'foodnetwork';
   newsFontSize?: number; // Nova prop para tamanho da fonte
@@ -29,6 +30,7 @@ export const AdvertisingColumn = ({
   headerColor = "#ffffff", 
   backgroundColor = "#ffffff",
   showBorder = false,
+  showShadow = false,
   newsMode = false,
   newsSource = 'g1',
   newsFontSize = 2.5, // Tamanho padrão para visualização à distância
@@ -38,7 +40,8 @@ export const AdvertisingColumn = ({
   return (
     <div className={cn("flex flex-col h-full", className)}>
       <div className={cn(
-        "bg-white shadow-lg flex flex-col border border-gray-200 rounded-t-lg h-full overflow-hidden",
+        "bg-white flex flex-col border border-gray-200 rounded-t-lg h-full overflow-hidden",
+        showShadow ? 'shadow-lg' : '',
         showBorder && 'ring-2 ring-blue-200'
       )}>
         {showHeader && (
