@@ -52,6 +52,7 @@ export interface ColumnConfig {
 
 export interface PanelConfig {
   backgroundColor: string;
+  resizableColumns?: boolean;
   panel: PanelIdentification;
   production: ColumnConfig;
   ready: ColumnConfig;

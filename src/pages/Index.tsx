@@ -318,58 +318,238 @@ const Index = () => {
           </div>
         )}
       <div className={`flex-1 p-1 pt-1 h-full overflow-hidden ${isTablet ? 'pb-12' : ''}`}>
-        <ResizablePanelGroup 
-          direction="horizontal" 
-          className="h-full gap-0.5"
-          onLayout={handleResizeColumn}
-        >
-          {/* Coluna 1 - Produção */}
-          {config.production.visible && (
-            <>
-              <ResizablePanel 
-                defaultSize={config.production.width}
-                minSize={15}
-                maxSize={60}
-                className="h-full"
-              >
-                <div className="h-full relative">
-                  <OrderColumn
-                    title={config.production.title}
-                    orders={productionOrders}
-                    onOrderClick={(order) => moveToReady(order.id)}
-                    variant="production"
-                    showNickname={config.production?.cardConfig?.showNickname ?? true}
-                    showItems={config.production?.cardConfig?.showItems ?? true}
-                    moduleIndicator={config.production?.cardConfig?.moduleIndicator ?? 'bullet'}
-                    headerBg={config.production.headerBg}
-                    headerColor={config.production.headerColor}
-                    headerHeight={config.production.headerHeight}
-                    headerFontSize={config.production.headerFontSize}
-                    headerFontFamily={config.production.headerFontFamily}
-                    config={config}
-                    cardConfig={{
-                      fontSize: config.production.cardConfig.fontSize,
-                      fontFamily: config.production.cardConfig.fontFamily,
-                      textColor: config.production.cardConfig.textColor,
-                      backgroundColor: config.production.cardConfig.backgroundColor
-                    }}
-                    columns={config.production.cardConfig.columns}
-                    showBorder={config.production.showBorder}
-                  />
-                </div>
-              </ResizablePanel>
-              <ResizableHandle withHandle />
-            </>
-          )}
-
-          {/* Coluna 2 - Prontos */}
-          <ResizablePanel 
-            defaultSize={config.ready.width}
-            minSize={30}
-            maxSize={70}
-            className="h-full"
+        {config.resizableColumns !== false ? (
+          <ResizablePanelGroup 
+            direction="horizontal" 
+            className="h-full gap-0.5"
+            onLayout={handleResizeColumn}
           >
-            <div className="h-full relative">
+            {/* Coluna 1 - Produção */}
+            {config.production.visible && (
+              <>
+                <ResizablePanel 
+                  defaultSize={config.production.width}
+                  minSize={15}
+                  maxSize={60}
+                  className="h-full"
+                >
+                  <div className="h-full relative">
+                    <OrderColumn
+                      title={config.production.title}
+                      orders={productionOrders}
+                      onOrderClick={(order) => moveToReady(order.id)}
+                      variant="production"
+                      showNickname={config.production?.cardConfig?.showNickname ?? true}
+                      showItems={config.production?.cardConfig?.showItems ?? true}
+                      moduleIndicator={config.production?.cardConfig?.moduleIndicator ?? 'bullet'}
+                      headerBg={config.production.headerBg}
+                      headerColor={config.production.headerColor}
+                      headerHeight={config.production.headerHeight}
+                      headerFontSize={config.production.headerFontSize}
+                      headerFontFamily={config.production.headerFontFamily}
+                      config={config}
+                      cardConfig={{
+                        fontSize: config.production.cardConfig.fontSize,
+                        fontFamily: config.production.cardConfig.fontFamily,
+                        textColor: config.production.cardConfig.textColor,
+                        backgroundColor: config.production.cardConfig.backgroundColor
+                      }}
+                      columns={config.production.cardConfig.columns}
+                      showBorder={config.production.showBorder}
+                    />
+                  </div>
+                </ResizablePanel>
+                <ResizableHandle withHandle />
+              </>
+            )}
+
+            {/* Coluna 2 - Prontos */}
+            <ResizablePanel 
+              defaultSize={config.ready.width}
+              minSize={30}
+              maxSize={70}
+              className="h-full"
+            >
+              <div className="h-full relative">
+                <div className="flex flex-col h-full">
+                  <div 
+                    className={`bg-white rounded-lg shadow-lg flex flex-col overflow-hidden h-full ${config.ready.showBorder ? 'ring-2 ring-blue-200' : ''}`}
+                  >
+                    <div 
+                      className="flex items-center justify-center px-4 font-bold shadow-sm border-b rounded-t-lg relative"
+                      style={{
+                        backgroundColor: config.ready.headerBg,
+                        color: config.ready.headerColor,
+                        height: `${config.ready.headerHeight}px`,
+                        fontSize: `${config.ready.headerFontSize}rem`,
+                        fontFamily: config.ready.headerFontFamily
+                      }}
+                    >
+                      {/* Contador de produção quando coluna 1 está desativada */}
+                      {!config.production.visible && (
+                        <Popover open={productionPopupOpen} onOpenChange={setProductionPopupOpen}>
+                          <PopoverTrigger asChild>
+                            <div 
+                              className="absolute left-4 bg-gray-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold cursor-pointer hover:bg-gray-700 transition-colors"
+                              style={{ fontSize: '16px' }}
+                              title="Clique para ver pedidos em produção"
+                            >
+                              {productionOrders.length}
+                            </div>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-60 max-h-96 overflow-y-auto" align="start">
+                            <div className="space-y-3">
+                              <h4 className="font-semibold text-sm text-center">Pedidos em Produção ({productionOrders.length})</h4>
+                              {productionOrders.length === 0 ? (
+                                <p className="text-sm text-muted-foreground text-center">Nenhum pedido em produção</p>
+                              ) : (
+                                <div className="grid grid-cols-2 gap-2">
+                                  {productionOrders.map((order) => (
+                                    <div
+                                      key={order.id}
+                                      onClick={() => {
+                                        moveToReady(order.id);
+                                        setProductionPopupOpen(false);
+                                      }}
+                                      className="bg-gray-100 rounded-lg p-3 cursor-pointer hover:bg-gray-200 transition-colors flex flex-col items-center justify-center text-center min-h-[80px]"
+                                    >
+                                      <div className="text-2xl font-bold text-gray-800 mb-1">
+                                        {order.numeroPedido || order.number || '---'}
+                                      </div>
+                                      <div className="text-xs text-gray-600 truncate max-w-full">
+                                        {order.nomeCliente || order.nickname || ''}
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          </PopoverContent>
+                        </Popover>
+                      )}
+                      
+                      <span>{config.ready.title}</span>
+                      
+                      <div className="absolute right-4 bg-white/20 px-2 py-1 rounded-full font-bold" style={{ fontSize: '16px' }}>
+                        {readyOrders.length + (lastOrderNumber && config.lastOrder.highlight ? 1 : 0)}
+                      </div>
+                    </div>
+                    
+                    {/* Último Pedido Fixo */}
+                    {lastOrderNumber && config.lastOrder.highlight && (
+                      <div className="flex-shrink-0">
+                        <LastOrderDisplay
+                          orderNumber={lastOrderNumber}
+                          nickname={lastOrderData?.nomeCliente}
+                          config={config.lastOrder}
+                          onExpedite={handleExpedite}
+                        />
+                      </div>
+                    )}
+                    
+                    <div className="flex-1 p-2 bg-gray-50" style={{ overflow: 'hidden' }}>
+                      <OrderColumnGrid
+                        orders={readyOrders}
+                        columns={config.ready.cardConfig.columns}
+                        onOrderClick={(order) => expedite(order.numeroPedido || order.number || '')}
+                        showNickname={config.ready?.cardConfig?.showNickname ?? true}
+                        showItems={config.ready?.cardConfig?.showItems ?? true}
+                        moduleIndicator={config.ready?.cardConfig?.moduleIndicator ?? 'bullet'}
+                        config={config}
+                        cardConfig={{
+                          fontSize: config.ready?.cardConfig?.fontSize,
+                          fontFamily: config.ready?.cardConfig?.fontFamily,
+                          textColor: config.ready?.cardConfig?.textColor,
+                          backgroundColor: config.ready?.cardConfig?.backgroundColor
+                        }}
+                        lastOrderNumber={lastOrderNumber}
+                        lastOrderConfig={config.lastOrder}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ResizablePanel>
+
+            {/* Coluna 3 - Publicidade */}
+            {config.advertising.visible && (
+              <>
+                <ResizableHandle withHandle />
+                <ResizablePanel 
+                  defaultSize={config.advertising.width}
+                  minSize={15}
+                  maxSize={50}
+                  className="h-full"
+                >
+                  <div className="h-full relative">
+                    {config.panel.displayLocation === 'column3' && (
+                      <div className="absolute top-2 right-2 bg-primary/90 backdrop-blur-sm text-primary-foreground rounded px-2 py-1 text-xs font-medium shadow-sm z-10">
+                        P{config.panel.id}
+                      </div>
+                    )}
+                    <AdvertisingColumn
+                      title={config.advertising.headerTitle}
+                      showHeader={config.advertising.headerVisible}
+                      headerBg={config.advertising.headerBg}
+                      headerColor={config.advertising.headerColor}
+                      headerHeight={config.advertising.headerHeight}
+                      backgroundColor={config.advertising.backgroundColor}
+                      imageUrl={config.advertising.imageUrl}
+                      websiteUrl={config.advertising.websiteUrl}
+                      newsMode={config.advertising.newsMode}
+                      newsSource={config.advertising.newsSource}
+                      newsFontSize={config.advertising.newsFontSize || 2.5}
+                      className="h-full"
+                      onToggleHeader={() => {
+                        const newConfig = {
+                          ...config,
+                          advertising: {
+                            ...config.advertising,
+                            headerVisible: !config.advertising.headerVisible
+                          }
+                        };
+                        setConfig(newConfig);
+                        localStorage.setItem('oie-config', JSON.stringify(newConfig));
+                      }}
+                    />
+                  </div>
+                </ResizablePanel>
+              </>
+            )}
+          </ResizablePanelGroup>
+        ) : (
+          <div className={`flex gap-0.5 h-full`}>
+            {/* Layout fixo quando redimensionamento está desabilitado */}
+            {config.production.visible && (
+              <div style={{ width: `${(config.production.width / (config.production.width + config.ready.width + (config.advertising.visible ? config.advertising.width : 0))) * 100}%` }} className="h-full relative">
+                <OrderColumn
+                  title={config.production.title}
+                  orders={productionOrders}
+                  onOrderClick={(order) => moveToReady(order.id)}
+                  variant="production"
+                  showNickname={config.production?.cardConfig?.showNickname ?? true}
+                  showItems={config.production?.cardConfig?.showItems ?? true}
+                  moduleIndicator={config.production?.cardConfig?.moduleIndicator ?? 'bullet'}
+                  headerBg={config.production.headerBg}
+                  headerColor={config.production.headerColor}
+                  headerHeight={config.production.headerHeight}
+                  headerFontSize={config.production.headerFontSize}
+                  headerFontFamily={config.production.headerFontFamily}
+                  config={config}
+                  cardConfig={{
+                    fontSize: config.production.cardConfig.fontSize,
+                    fontFamily: config.production.cardConfig.fontFamily,
+                    textColor: config.production.cardConfig.textColor,
+                    backgroundColor: config.production.cardConfig.backgroundColor
+                  }}
+                  columns={config.production.cardConfig.columns}
+                  showBorder={config.production.showBorder}
+                />
+              </div>
+            )}
+
+            {/* Coluna 2 - Prontos */}
+            <div style={{ width: `${(config.ready.width / (config.production.width + config.ready.width + (config.advertising.visible ? config.advertising.width : 0))) * 100}%` }} className="h-full relative">
               <div className="flex flex-col h-full">
                 <div 
                   className={`bg-white rounded-lg shadow-lg flex flex-col overflow-hidden h-full ${config.ready.showBorder ? 'ring-2 ring-blue-200' : ''}`}
@@ -468,54 +648,44 @@ const Index = () => {
                 </div>
               </div>
             </div>
-          </ResizablePanel>
 
-          {/* Coluna 3 - Publicidade */}
-          {config.advertising.visible && (
-            <>
-              <ResizableHandle withHandle />
-              <ResizablePanel 
-                defaultSize={config.advertising.width}
-                minSize={15}
-                maxSize={50}
-                className="h-full"
-              >
-                <div className="h-full relative">
-                  {config.panel.displayLocation === 'column3' && (
-                    <div className="absolute top-2 right-2 bg-primary/90 backdrop-blur-sm text-primary-foreground rounded px-2 py-1 text-xs font-medium shadow-sm z-10">
-                      P{config.panel.id}
-                    </div>
-                  )}
-                  <AdvertisingColumn
-                    title={config.advertising.headerTitle}
-                    showHeader={config.advertising.headerVisible}
-                    headerBg={config.advertising.headerBg}
-                    headerColor={config.advertising.headerColor}
-                    headerHeight={config.advertising.headerHeight}
-                    backgroundColor={config.advertising.backgroundColor}
-                    imageUrl={config.advertising.imageUrl}
-                    websiteUrl={config.advertising.websiteUrl}
-                    newsMode={config.advertising.newsMode}
-                    newsSource={config.advertising.newsSource}
-                    newsFontSize={config.advertising.newsFontSize || 2.5}
-                    className="h-full"
-                    onToggleHeader={() => {
-                      const newConfig = {
-                        ...config,
-                        advertising: {
-                          ...config.advertising,
-                          headerVisible: !config.advertising.headerVisible
-                        }
-                      };
-                      setConfig(newConfig);
-                      localStorage.setItem('oie-config', JSON.stringify(newConfig));
-                    }}
-                  />
-                </div>
-              </ResizablePanel>
-            </>
-          )}
-        </ResizablePanelGroup>
+            {/* Coluna 3 - Publicidade */}
+            {config.advertising.visible && (
+              <div style={{ width: `${(config.advertising.width / (config.production.width + config.ready.width + config.advertising.width)) * 100}%` }} className="h-full relative">
+                {config.panel.displayLocation === 'column3' && (
+                  <div className="absolute top-2 right-2 bg-primary/90 backdrop-blur-sm text-primary-foreground rounded px-2 py-1 text-xs font-medium shadow-sm z-10">
+                    P{config.panel.id}
+                  </div>
+                )}
+                <AdvertisingColumn
+                  title={config.advertising.headerTitle}
+                  showHeader={config.advertising.headerVisible}
+                  headerBg={config.advertising.headerBg}
+                  headerColor={config.advertising.headerColor}
+                  headerHeight={config.advertising.headerHeight}
+                  backgroundColor={config.advertising.backgroundColor}
+                  imageUrl={config.advertising.imageUrl}
+                  websiteUrl={config.advertising.websiteUrl}
+                  newsMode={config.advertising.newsMode}
+                  newsSource={config.advertising.newsSource}
+                  newsFontSize={config.advertising.newsFontSize || 2.5}
+                  className="h-full"
+                  onToggleHeader={() => {
+                    const newConfig = {
+                      ...config,
+                      advertising: {
+                        ...config.advertising,
+                        headerVisible: !config.advertising.headerVisible
+                      }
+                    };
+                    setConfig(newConfig);
+                    localStorage.setItem('oie-config', JSON.stringify(newConfig));
+                  }}
+                />
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Painel de Controle Fixo */}

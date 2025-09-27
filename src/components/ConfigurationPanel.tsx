@@ -356,14 +356,24 @@ export const ConfigurationPanel = ({
           onToggle={() => toggleSection('background')}
           colorClass="text-purple-600"
         >
-          <div>
-            <Label className="text-xs font-medium">Cor de Fundo</Label>
-            <Input
-              type="color"
-              value={config.backgroundColor}
-              onChange={(e) => updateConfig('backgroundColor', e.target.value)}
-              className="h-8 mt-1 border-2"
-            />
+          <div className="space-y-3">
+            <div>
+              <Label className="text-xs font-medium">Cor de Fundo</Label>
+              <Input
+                type="color"
+                value={config.backgroundColor}
+                onChange={(e) => updateConfig('backgroundColor', e.target.value)}
+                className="h-8 mt-1 border-2"
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <Switch 
+                checked={config.resizableColumns ?? true} 
+                onCheckedChange={(checked) => updateConfig('resizableColumns', checked)}
+                className="scale-50"
+              />
+              <Label className="text-xs">Permitir Redimensionar Colunas</Label>
+            </div>
           </div>
         </ConfigSection>
 

@@ -2,6 +2,7 @@ import { PanelConfig } from '../types/order';
 
 export const defaultConfig: PanelConfig = {
   backgroundColor: '#ffffff',
+  resizableColumns: true,
   panel: {
     id: 1,
     name: 'Painel Principal',
