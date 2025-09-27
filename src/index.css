@@ -239,3 +239,13 @@
     font-weight: 700 !important;
     text-transform: none !important;
   }
+
+/* Manual do usuário - backdrop mais escuro */
+.manual-sheet [data-radix-dialog-overlay] {
+  background-color: rgba(0, 0, 0, 0.8) !important;
+  backdrop-filter: blur(4px);
+}
+
+.manual-sheet {
+  --radix-dialog-overlay-background-color: rgba(0, 0, 0, 0.8);
+}

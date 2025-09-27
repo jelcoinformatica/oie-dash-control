@@ -1278,21 +1278,24 @@ export const UserManual = ({ children }: UserManualProps) => {
       <SheetTrigger asChild>
         {children}
       </SheetTrigger>
-      <SheetContent side="right" className="w-full sm:max-w-5xl bg-background overflow-hidden p-0 flex items-center justify-center">
-        <div className="w-full max-h-[85vh] my-[7.5vh] bg-background border rounded-lg shadow-lg flex flex-col">
-          <SheetHeader className="p-6 pb-4 border-b bg-background">
-            <div className="flex items-center gap-3">
-              <BookOpen className="w-6 h-6 text-blue-600" />
-              <div>
-                <SheetTitle className="text-xl">Manual do Usuário</SheetTitle>
-                <SheetDescription>
-                  Guia completo do Sistema KDS Oie! v5.0
-                </SheetDescription>
+      <SheetContent 
+        side="right" 
+        className="w-full sm:max-w-5xl bg-background overflow-hidden p-0 flex items-center justify-center manual-sheet"
+      >
+        <div className="w-full max-h-[95vh] my-[2.5vh] bg-background border rounded-lg shadow-xl flex flex-col">
+          <SheetHeader className="p-4 pb-3 border-b bg-background">
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <BookOpen className="w-6 h-6 text-blue-600" />
+                <div>
+                  <SheetTitle className="text-xl">Manual do Usuário</SheetTitle>
+                  <SheetDescription className="text-sm">
+                    Guia completo do Sistema KDS Oie! v5.0
+                  </SheetDescription>
+                </div>
               </div>
-            </div>
-            
-            <div className="flex items-center gap-2 mt-4">
-              <div className="relative flex-1">
+              
+              <div className="relative w-80">
                 <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
                 <Input
                   placeholder="Buscar no manual..."
@@ -1308,7 +1311,7 @@ export const UserManual = ({ children }: UserManualProps) => {
             {/* Sidebar de navegação */}
             <div className="w-64 border-r bg-muted/20">
               <ScrollArea className="h-full">
-                <div className="p-4 space-y-1">
+                <div className="p-3 space-y-1">
                   {filteredSections.map((section) => (
                     <button
                       key={section.id}
@@ -1334,7 +1337,7 @@ export const UserManual = ({ children }: UserManualProps) => {
             {/* Conteúdo principal */}
             <div className="flex-1">
               <ScrollArea className="h-full" data-section-content>
-                <div className="p-6">
+                <div className="p-4">
                   {activeContent || (
                     <div className="text-center py-12">
                       <Search className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
