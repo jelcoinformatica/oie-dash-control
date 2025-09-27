@@ -53,14 +53,14 @@ export const defaultConfig: PanelConfig = {
         backgroundColor: '#FAFAFA',
         textColor: '#000000',
         fontFamily: 'Tahoma',
-        fontSize: 4,
+        fontSize: 3,
         showNickname: true,
         showItems: true,
         moduleIndicator: 'none' as 'none' | 'bullet' | 'tag' | 'border',
         gapHorizontal: 4,
         gapVertical: 4,
-        cardMinHeight: 70,
-        cardMaxHeight: 150
+        cardMinHeight: 60,
+        cardMaxHeight: 120
       }
   },
   advertising: {
