@@ -92,7 +92,7 @@ export const ControlPanel = ({
       }}
     >
       <div className={`container mx-auto px-2 flex items-center justify-between h-full relative ${isTablet ? 'py-2' : 'py-1'}`}>
-        <div className="text-xs text-muted-foreground flex-shrink-0 flex items-center gap-1">
+        <div className="text-xs text-muted-foreground flex-shrink-0 flex items-center gap-2">
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -110,7 +110,15 @@ export const ControlPanel = ({
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
-          <span>Oie! v.5.0</span>
+          
+          <div className="flex items-center gap-1">
+            <span>Oie! v.5.0.1</span>
+            <span className="text-muted-foreground/60">|</span>
+            <span>Host: <span className="font-mono text-xs">servidor</span></span>
+            <span className="text-muted-foreground/60">|</span>
+            <span>Banco: <span className="font-mono text-xs">colibri</span></span>
+          </div>
+          
           <UserManual>
             <Button
               variant="ghost"
@@ -201,9 +209,6 @@ export const ControlPanel = ({
         </div>
         
         <div className="flex items-center gap-2">
-          <div className="text-xs text-muted-foreground">
-            Jelco Informática (2025)
-          </div>
           <Button
             variant="ghost"
             size="sm"
