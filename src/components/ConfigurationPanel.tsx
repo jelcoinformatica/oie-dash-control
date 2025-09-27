@@ -1901,18 +1901,21 @@ export const ConfigurationPanel = ({
               <Select
                 value={config.production.cardConfig.moduleIndicator || 'tag'}
                 onValueChange={(value) => {
+                  console.log('Selecionando tipo de indicador:', value);
+                  console.log('Config antes:', config.production.cardConfig);
                   updateConfig('production.cardConfig.moduleIndicator', value);
                   updateConfig('ready.cardConfig.moduleIndicator', value);
+                  console.log('Config depois:', config.production.cardConfig);
                 }}
               >
-                <SelectTrigger className="w-full h-8">
+                <SelectTrigger className="w-full h-8 bg-white">
                   <SelectValue placeholder="Selecione o tipo de indicador" />
                 </SelectTrigger>
-                <SelectContent className="bg-white">
-                  <SelectItem value="bullet">Bullets (bolinhas coloridas)</SelectItem>
-                  <SelectItem value="tag">Etiquetas discretas</SelectItem>
-                  <SelectItem value="border">Bordas coloridas</SelectItem>
-                  <SelectItem value="none">Nenhum indicador</SelectItem>
+                <SelectContent className="bg-white border border-gray-300 shadow-lg z-50">
+                  <SelectItem value="bullet" className="hover:bg-gray-100">Bullets (bolinhas coloridas)</SelectItem>
+                  <SelectItem value="tag" className="hover:bg-gray-100">Etiquetas discretas</SelectItem>
+                  <SelectItem value="border" className="hover:bg-gray-100">Bordas coloridas</SelectItem>
+                  <SelectItem value="none" className="hover:bg-gray-100">Nenhum indicador</SelectItem>
                 </SelectContent>
               </Select>
               <div className="text-xs text-gray-600">
