@@ -163,42 +163,27 @@ export const ControlPanel = ({
                     <TooltipProvider key={`${logEntry.orderNumber}-${index}`}>
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <span 
-                            className={`text-xs px-1 rounded cursor-help transition-all duration-300 ${
-                              hasRecentEffect ? 'animate-pulse bg-red-100/20' : ''
-                            }`}
-                            style={{ 
-                              color: logEntry.isAutoExpedition 
-                                ? 'rgba(220, 38, 127, 0.8)' // Rosa pastel para autoexpedição
-                                : 'rgba(0, 0, 0, 0.6)' // Cor normal
-                            }}
-                          >
-                            {logEntry.orderNumber.match(/^(IF|DD|RA|UB)-/) ? (
-                              <div className="flex flex-col items-center" style={{ fontSize: '10px' }}>
-                                 <span style={{ 
-                                   fontStyle: 'italic', 
-                                   fontWeight: 'normal',
-                                   fontSize: '5.5px',
-                                   lineHeight: '0.9'
-                                 }}>
-                                   {logEntry.orderNumber.split('-')[0]}
-                                 </span>
-                                <span style={{ fontSize: '11px' }}>
-                                  {logEntry.orderNumber.split('-')[1]}
-                                </span>
-                              </div>
-                            ) : (
-                              logEntry.orderNumber
-                            )}
-                          </span>
+                           <span 
+                             className={`text-xs px-1 rounded cursor-help transition-all duration-300 ${
+                               hasRecentEffect ? 'animate-pulse bg-red-100/20' : ''
+                             }`}
+                             style={{ 
+                               color: logEntry.isAutoExpedition 
+                                 ? 'rgba(220, 38, 127, 0.8)' // Rosa pastel para autoexpedição
+                                 : 'rgba(0, 0, 0, 0.6)' // Cor normal
+                             }}
+                           >
+                             {/* Extrair apenas os números do pedido */}
+                             {logEntry.orderNumber.replace(/[^\d]/g, '')}
+                           </span>
                         </TooltipTrigger>
-                        <TooltipContent>
-                          <div className="text-xs">
-                            {logEntry.nickname && <div>Apelido: {logEntry.nickname}</div>}
-                            <div>Expedido: {logEntry.expeditionTime.toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'})}</div>
-                            {logEntry.isAutoExpedition && <div className="text-red-400">Auto-expedição</div>}
-                          </div>
-                        </TooltipContent>
+                         <TooltipContent>
+                           <div className="text-xs">
+                             <div>Pedido: {logEntry.orderNumber}</div>
+                             <div>Expedido: {logEntry.expeditionTime.toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'})}</div>
+                             {logEntry.isAutoExpedition && <div className="text-red-400">Auto-expedição</div>}
+                           </div>
+                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
                   );
