@@ -112,7 +112,7 @@ export const ControlPanel = ({
           </TooltipProvider>
           
           <div className="flex items-center gap-1">
-            <span>Oie! v.5.0.1</span>
+            <span>Oie! <span className="font-mono text-xs">v.5.0.1</span></span>
             <span className="text-muted-foreground/60">|</span>
             <span>Host: <span className="font-mono text-xs">servidor</span></span>
             <span className="text-muted-foreground/60">|</span>
