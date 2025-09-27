@@ -361,18 +361,14 @@ export const ConfigurationPanel = ({
           onToggle={() => toggleSection('overlayControls')}
           colorClass="text-purple-600"
         >
-          <div className="space-y-3">
-            <div className="flex items-center justify-between p-3 border border-purple-200 rounded-lg bg-purple-50/50">
-              <div className="flex items-center gap-2">
-                <Switch
-                  checked={config.overlayControls?.enabled || false}
-                  onCheckedChange={(checked) => updateConfig('overlayControls.enabled', checked)}
-                  className="scale-50"
-                />
-                <div>
-                  <Label className="text-sm font-medium text-gray-700">Ajustes em tempo real</Label>
-                </div>
-              </div>
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <Switch
+                checked={config.overlayControls?.enabled || false}
+                onCheckedChange={(checked) => updateConfig('overlayControls.enabled', checked)}
+                className="scale-50"
+              />
+              <Label className="text-xs">Ajustes em tempo real</Label>
             </div>
             <div className="flex items-center gap-2">
               <Switch 
