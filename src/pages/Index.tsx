@@ -12,6 +12,7 @@ import { defaultConfig } from '../data/defaultConfig';
 import { PanelConfig } from '../types/order';
 import { toast } from '../hooks/use-toast';
 import { useIsTablet } from '../hooks/use-mobile';
+import { PanelIdentification } from '../components/PanelIdentification';
 import { Popover, PopoverContent, PopoverTrigger } from '../components/ui/popover';
 
 const Index = () => {
@@ -267,12 +268,15 @@ const Index = () => {
 
   return (
     <>
+      {/* Identificação do Painel */}
+      <PanelIdentification panel={config.panel} />
+
       {/* Splash Screen */}
       {showSplash && (
         <SplashScreen onComplete={() => setShowSplash(false)} />
       )}
 
-      <div 
+      <div
         className="min-h-screen h-screen flex flex-col"
         style={{ backgroundColor: config.backgroundColor, position: 'relative' }}
       >

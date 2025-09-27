@@ -30,6 +30,12 @@ export interface OrderCardConfig {
   moduleIndicator?: 'none' | 'bullet' | 'tag' | 'border'; // Nova opção para tipo de indicador
 }
 
+export interface PanelIdentification {
+  id: number;
+  name: string;
+  location: string;
+}
+
 export interface ColumnConfig {
   visible: boolean;
   title: string;
@@ -45,6 +51,7 @@ export interface ColumnConfig {
 
 export interface PanelConfig {
   backgroundColor: string;
+  panel: PanelIdentification;
   production: ColumnConfig;
   ready: ColumnConfig;
   advertising: {

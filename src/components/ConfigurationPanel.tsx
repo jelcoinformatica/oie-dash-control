@@ -110,6 +110,7 @@ export const ConfigurationPanel = ({
 }: ConfigurationPanelProps) => {
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
     background: false,
+    panel: false,
     production: false,
     ready: false,
     lastOrder: false,
@@ -145,6 +146,7 @@ export const ConfigurationPanel = ({
     if (open) {
       setOpenSections({
         background: false,
+        panel: false,
         production: false,
         ready: false,
         lastOrder: false,
@@ -168,6 +170,7 @@ export const ConfigurationPanel = ({
     const newState = !allOpen;
     setOpenSections({
       background: newState,
+      panel: newState,
       production: newState,
       ready: newState,
       lastOrder: newState,
@@ -360,6 +363,57 @@ export const ConfigurationPanel = ({
               onChange={(e) => updateConfig('backgroundColor', e.target.value)}
               className="h-8 mt-1 border-2"
             />
+          </div>
+        </ConfigSection>
+
+        {/* Identificação do Painel */}
+        <ConfigSection
+          title="Identificação do Painel"
+          icon={<Monitor className="w-4 h-4" />}
+          isOpen={openSections.panel}
+          onToggle={() => toggleSection('panel')}
+          colorClass="text-indigo-600"
+        >
+          <div className="space-y-3">
+            <div>
+              <Label className="text-xs font-medium">Número do Painel</Label>
+              <Input
+                type="number"
+                min="1"
+                value={config.panel.id}
+                onChange={(e) => onConfigChange({
+                  ...config,
+                  panel: { ...config.panel, id: parseInt(e.target.value) || 1 }
+                })}
+                className="mt-1"
+              />
+            </div>
+            <div>
+              <Label className="text-xs font-medium">Nome do Painel</Label>
+              <Input
+                type="text"
+                value={config.panel.name}
+                onChange={(e) => onConfigChange({
+                  ...config,
+                  panel: { ...config.panel, name: e.target.value }
+                })}
+                className="mt-1"
+                placeholder="Ex: Painel Principal"
+              />
+            </div>
+            <div>
+              <Label className="text-xs font-medium">Localização</Label>
+              <Input
+                type="text"
+                value={config.panel.location}
+                onChange={(e) => onConfigChange({
+                  ...config,
+                  panel: { ...config.panel, location: e.target.value }
+                })}
+                className="mt-1"
+                placeholder="Ex: Balcão Principal"
+              />
+            </div>
           </div>
         </ConfigSection>
 

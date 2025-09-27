@@ -2,6 +2,11 @@ import { PanelConfig } from '../types/order';
 
 export const defaultConfig: PanelConfig = {
   backgroundColor: '#ffffff',
+  panel: {
+    id: 1,
+    name: 'Painel Principal',
+    location: 'Balcão Principal'
+  },
   production: {
     visible: true,
     title: 'EM PRODUÇÃO',
