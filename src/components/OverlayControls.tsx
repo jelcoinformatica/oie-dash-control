@@ -72,7 +72,7 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
     <div className="fixed inset-0 z-50 pointer-events-none">
       {/* Controles principais */}
       <div className="absolute top-4 right-4 pointer-events-auto">
-        <div className="bg-white/95 backdrop-blur-sm rounded-lg shadow-xl border p-2 space-y-1 min-w-48">
+        <div className="bg-white/95 backdrop-blur-sm rounded-lg shadow-xl border p-2 space-y-1">
           <div className="flex items-center justify-between">
             <h3 className="font-semibold text-gray-800 flex items-center gap-1 text-xs">
               <Move3D className="w-3 h-3" />
@@ -90,30 +90,31 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
           
           <div className="space-y-1">
             {/* Primeira linha - Cabeçalhos */}
-            <div className="grid grid-cols-3 gap-1">
+            <div className="flex gap-1">
               {controlButtons.filter(btn => btn.id === 'headers').map((button) => (
                 <Button
                   key={button.id}
                   onClick={() => setActiveControl(activeControl === button.id ? null : button.id)}
                   variant={activeControl === button.id ? "default" : "outline"}
                   size="sm"
-                  className={`text-xs h-7 col-span-2 ${activeControl === button.id ? button.color : ''}`}
+                  className={`text-xs h-7 flex-1 border-gray-500 text-gray-700 hover:bg-gray-100 ${activeControl === button.id ? button.color : ''}`}
                 >
                   {button.icon}
                   <span className="ml-1">{button.label}</span>
                 </Button>
               ))}
+              <div className="w-16"></div>
             </div>
 
             {/* Segunda linha - Col 1; col 2; col 3 */}
-            <div className="grid grid-cols-3 gap-1">
+            <div className="flex gap-1">
               {controlButtons.filter(btn => ['col1', 'col2', 'col3'].includes(btn.id)).map((button) => (
                 <Button
                   key={button.id}
                   onClick={() => setActiveControl(activeControl === button.id ? null : button.id)}
                   variant={activeControl === button.id ? "default" : "outline"}
                   size="sm"
-                  className={`text-xs h-7 ${activeControl === button.id ? button.color : ''}`}
+                  className={`text-xs h-7 flex-1 border-gray-500 text-gray-700 hover:bg-gray-100 ${activeControl === button.id ? button.color : ''}`}
                 >
                   {button.icon}
                   <span className="ml-1">{button.label}</span>
@@ -122,19 +123,20 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
             </div>
 
             {/* Terceira linha - Ultimo pedido */}
-            <div className="grid grid-cols-3 gap-1">
+            <div className="flex gap-1">
               {controlButtons.filter(btn => btn.id === 'last-order').map((button) => (
                 <Button
                   key={button.id}
                   onClick={() => setActiveControl(activeControl === button.id ? null : button.id)}
                   variant={activeControl === button.id ? "default" : "outline"}
                   size="sm"
-                  className={`text-xs h-7 col-span-2 ${activeControl === button.id ? button.color : ''}`}
+                  className={`text-xs h-7 flex-1 border-gray-500 text-gray-700 hover:bg-gray-100 ${activeControl === button.id ? button.color : ''}`}
                 >
                   {button.icon}
                   <span className="ml-1">{button.label}</span>
                 </Button>
               ))}
+              <div className="w-16"></div>
             </div>
           </div>
         </div>
