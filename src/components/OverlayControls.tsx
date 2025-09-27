@@ -90,14 +90,14 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
           
           <div className="space-y-1">
             {/* Primeira linha - Cabeçalhos */}
-            <div className="grid grid-cols-1 gap-1">
+            <div className="grid grid-cols-3 gap-1">
               {controlButtons.filter(btn => btn.id === 'headers').map((button) => (
                 <Button
                   key={button.id}
                   onClick={() => setActiveControl(activeControl === button.id ? null : button.id)}
                   variant={activeControl === button.id ? "default" : "outline"}
                   size="sm"
-                  className={`text-xs h-7 ${activeControl === button.id ? button.color : ''}`}
+                  className={`text-xs h-7 col-span-2 ${activeControl === button.id ? button.color : ''}`}
                 >
                   {button.icon}
                   <span className="ml-1">{button.label}</span>
@@ -122,14 +122,14 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
             </div>
 
             {/* Terceira linha - Ultimo pedido */}
-            <div className="grid grid-cols-1 gap-1">
+            <div className="grid grid-cols-3 gap-1">
               {controlButtons.filter(btn => btn.id === 'last-order').map((button) => (
                 <Button
                   key={button.id}
                   onClick={() => setActiveControl(activeControl === button.id ? null : button.id)}
                   variant={activeControl === button.id ? "default" : "outline"}
                   size="sm"
-                  className={`text-xs h-7 ${activeControl === button.id ? button.color : ''}`}
+                  className={`text-xs h-7 col-span-2 ${activeControl === button.id ? button.color : ''}`}
                 >
                   {button.icon}
                   <span className="ml-1">{button.label}</span>
