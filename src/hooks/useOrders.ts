@@ -297,10 +297,10 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
   
   const generateOrders = useCallback(async (count: number, config?: any) => {
     try {
+      console.log(`🎯 Iniciando geração de ${count} pedidos...`);
+      
       // Limpar a flag de pedidos zerados quando gerar novos pedidos
       localStorage.removeItem('orders-cleared');
-      
-      const newOrders: Order[] = [];
       
       // Verificar módulos ativos
       const activeModules = [];
@@ -312,72 +312,41 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
       // Se nenhum módulo ativo, usar ficha como padrão
       const modulesToUse = activeModules.length > 0 ? activeModules : ['ficha'];
       
+      console.log(`📋 Módulos ativos: ${modulesToUse.join(', ')}`);
+      
+      // Contar pedidos antes da geração
+      const ordersBefore = await fetchOrders();
+      console.log(`📊 Pedidos antes da geração: ${ordersBefore.length} (Produção: ${ordersBefore.filter(o => o.status === 'production').length}, Prontos: ${ordersBefore.filter(o => o.status === 'ready').length})`);
+      
+      // Gerar todos os pedidos sequencialmente
       for (let i = 0; i < count; i++) {
-        // 60% dos pedidos de entrega serão de delivery online se entrega estiver ativa
-        const isEntregaActive = modulesToUse.includes('entrega');
-        const isDeliveryOnline = isEntregaActive && Math.random() < 0.6;
+        console.log(`⚙️ Gerando pedido ${i + 1}/${count}...`);
         
-        if (isDeliveryOnline) {
-          // Gerar pedido de delivery online com diferentes siglas
-          const deliveryTypes = ['IF', 'DD', 'RA', 'UB']; // iFood, Delivery Direto, Rappi, Uber
-          const randomType = deliveryTypes[Math.floor(Math.random() * deliveryTypes.length)];
-          const deliveryNumber = `${randomType}-${Math.floor(Math.random() * 90000) + 10000}`;
-          
-          const deliveryOrder = await addSimulatedOrder(['entrega']);
-          deliveryOrder.numeroPedido = deliveryNumber;
-          deliveryOrder.number = deliveryNumber;
-          deliveryOrder.modulo = 'entrega' as 'balcao' | 'mesa' | 'entrega' | 'ficha';
-          newOrders.push(deliveryOrder);
-        } else {
+        try {
           const newOrder = await addSimulatedOrder(modulesToUse);
-          newOrders.push(newOrder);
+          console.log(`🆕 Pedido criado: ${newOrder.numeroPedido} (${newOrder.modulo})`);
+        } catch (error) {
+          console.error(`❌ Erro ao criar pedido ${i + 1}:`, error);
         }
       }
       
-      await loadOrders(); // Recarregar para sincronizar
+      console.log(`✅ Processo de geração concluído`);
       
-      // Mover pedidos de produção para prontos com intervalos (para não encavalar)
-      // Só fazer isso se há pedidos em produção
-      const currentProductionOrders = orders.filter(order => order.status === 'production');
-      if (currentProductionOrders.length > 0) {
-        const ordersToMove = Math.min(count, currentProductionOrders.length);
-        
-        // Mover os pedidos mais antigos com intervalos de 3-8 segundos
-        for (let i = 0; i < ordersToMove; i++) {
-          const delay = (i * (3000 + Math.random() * 5000)); // 3-8 segundos entre cada movimentação
-          
-          setTimeout(async () => {
-            // Recarregar orders atualizados antes de mover
-            const currentOrders = await fetchOrders();
-            const productionOrdersNow = currentOrders.filter(order => order.status === 'production');
-            
-            if (productionOrdersNow.length > 0) {
-              // Pegar o pedido mais antigo
-              const oldestOrder = productionOrdersNow.sort((a, b) => {
-                const dateA = new Date(a.ultimoConsumo || a.createdAt || 0);
-                const dateB = new Date(b.ultimoConsumo || b.createdAt || 0);
-                return dateA.getTime() - dateB.getTime();
-              })[0];
-              
-              await moveToReady(oldestOrder.id);
-            }
-          }, delay);
-        }
-      }
+      // Aguardar um pouco antes de recarregar para garantir que todos foram salvos
+      await new Promise(resolve => setTimeout(resolve, 200));
       
-      // toast({
-      //   title: "Pedidos Gerados",
-      //   description: `${count} novos pedidos foram criados respeitando os módulos ativos`,
-      //   variant: "default"
-      // });
+      const ordersAfterGeneration = await fetchOrders();
+      console.log(`📊 Pedidos após geração: ${ordersAfterGeneration.length} (Produção: ${ordersAfterGeneration.filter(o => o.status === 'production').length}, Prontos: ${ordersAfterGeneration.filter(o => o.status === 'ready').length})`);
+      
+      // Recarregar para sincronizar o estado React
+      await loadOrders();
+      
+      console.log(`🔄 Estado recarregado completo`);
+      
     } catch (error) {
-      // toast({
-      //   title: "Erro",
-      //   description: "Falha ao gerar pedidos",
-      //   variant: "destructive"
-      // });
+      console.error('❌ Erro geral ao gerar pedidos:', error);
     }
-  }, [loadOrders, orders, moveToReady]);
+  }, [loadOrders]);
 
   const startSimulation = useCallback(() => {
     setIsSimulationActive(true);
