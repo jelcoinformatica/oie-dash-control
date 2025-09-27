@@ -164,8 +164,8 @@ export const ControlPanel = ({
         {/* Log dos últimos pedidos expedidos - posicionado à direita do centro */}
         {expeditionLog.length > 0 && (
           <TooltipProvider>
-            <div className="absolute left-1/2 transform translate-x-16 flex items-center max-w-[200px] overflow-hidden z-10">
-              <div className="flex items-center gap-1 whitespace-nowrap overflow-hidden">
+            <div className="absolute left-1/2 transform translate-x-16 flex items-center max-w-[320px] overflow-visible z-10">
+              <div className="flex items-center gap-1 whitespace-nowrap">
                 {expeditionLog.slice(0, 8).map((logEntry, index) => {
                   const entryKey = `${logEntry.orderNumber}-${logEntry.expeditionTime.getTime()}`;
                   const hasRecentEffect = recentAutoExpedited.has(entryKey);
