@@ -276,9 +276,9 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
                           lastOrder: { ...config.lastOrder, height: value }
                         });
                       }}
-                      min={80}
-                      max={300}
-                      step={10}
+                      min={50}
+                      max={500}
+                      step={5}
                       className="mt-2"
                     />
                   </div>
@@ -291,9 +291,9 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
                           lastOrder: { ...config.lastOrder, fontSize: value }
                         });
                       }}
-                      min={4}
-                      max={16}
-                      step={0.5}
+                      min={2}
+                      max={20}
+                      step={0.2}
                       className="mt-2"
                     />
                   </div>

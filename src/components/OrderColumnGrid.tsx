@@ -129,6 +129,14 @@ export const OrderColumnGrid = ({
     // Calcular quantas linhas cabem com os gaps configurados pelo usuário
     const maxRows = Math.floor((containerDimensions.height + gapV) / (cardHeight + gapV));
     
+    console.log(`🔍 OrderColumnGrid Debug (${columns} cols):`, {
+      containerHeight: containerDimensions.height,
+      cardHeight,
+      gapV,
+      maxRows,
+      totalCards: orders.length
+    });
+    
     // Limitar cards para não haver cortes
     const maxVisibleCards = Math.max(0, maxRows * columns);
     const visibleOrders = orders.slice(0, maxVisibleCards);
