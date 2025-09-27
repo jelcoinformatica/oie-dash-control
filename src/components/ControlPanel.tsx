@@ -115,7 +115,7 @@ export const ControlPanel = ({
             <Button
               variant="ghost"
               size="sm"
-              className="h-4 w-4 p-0 border-0"
+              className="h-4 w-4 p-0 border-0 flex items-center justify-center"
             >
               <BookOpen className="w-3 h-3 text-muted-foreground" />
             </Button>
@@ -208,9 +208,9 @@ export const ControlPanel = ({
             variant="ghost"
             size="sm"
             onClick={onConfigClick}
-            className="h-5 w-5 p-0 border-0"
+            className="h-5 w-5 p-0 border-0 flex items-center justify-center"
           >
-            <Settings className="w-3 h-3" />
+            <Settings className="w-3 h-3 text-muted-foreground" />
           </Button>
         </div>
       </div>
