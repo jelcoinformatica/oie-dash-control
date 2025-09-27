@@ -421,7 +421,7 @@ export const ConfigurationPanel = ({
                   ...config,
                   panel: { ...config.panel, id: parseInt(e.target.value) || 1 }
                 })}
-                className="mt-1"
+                className="mt-1 h-8"
               />
             </div>
             <div>
@@ -433,7 +433,7 @@ export const ConfigurationPanel = ({
                   ...config,
                   panel: { ...config.panel, name: e.target.value }
                 })}
-                className="mt-1"
+                className="mt-1 h-8"
                 placeholder="Ex: Painel Principal"
               />
             </div>
@@ -446,7 +446,7 @@ export const ConfigurationPanel = ({
                   ...config,
                   panel: { ...config.panel, location: e.target.value }
                 })}
-                className="mt-1"
+                className="mt-1 h-8"
                 placeholder="Ex: Balcão Principal"
               />
             </div>
