@@ -1898,19 +1898,23 @@ export const ConfigurationPanel = ({
           <div className="mt-4 p-3 rounded-lg bg-blue-50 border border-blue-200">
             <div className="space-y-2">
               <Label className="text-sm font-medium text-gray-800">Tipo de Indicador</Label>
-              <select
+              <Select
                 value={config.production.cardConfig.moduleIndicator || 'tag'}
-                onChange={(e) => {
-                  updateConfig('production.cardConfig.moduleIndicator', e.target.value);
-                  updateConfig('ready.cardConfig.moduleIndicator', e.target.value);
+                onValueChange={(value) => {
+                  updateConfig('production.cardConfig.moduleIndicator', value);
+                  updateConfig('ready.cardConfig.moduleIndicator', value);
                 }}
-                className="w-full mt-1 px-3 py-1 text-xs border border-gray-300 rounded-md bg-white"
               >
-                <option value="bullet">Bullets (bolinhas coloridas)</option>
-                <option value="tag">Etiquetas discretas</option>
-                <option value="border">Bordas coloridas</option>
-                <option value="none">Nenhum indicador</option>
-              </select>
+                <SelectTrigger className="w-full h-8">
+                  <SelectValue placeholder="Selecione o tipo de indicador" />
+                </SelectTrigger>
+                <SelectContent className="bg-white">
+                  <SelectItem value="bullet">Bullets (bolinhas coloridas)</SelectItem>
+                  <SelectItem value="tag">Etiquetas discretas</SelectItem>
+                  <SelectItem value="border">Bordas coloridas</SelectItem>
+                  <SelectItem value="none">Nenhum indicador</SelectItem>
+                </SelectContent>
+              </Select>
               <div className="text-xs text-gray-600">
                 {config.production.cardConfig.moduleIndicator === 'bullet' 
                   ? "Bolinhas coloridas no canto superior direito" 
@@ -1918,28 +1922,28 @@ export const ConfigurationPanel = ({
                   ? "Etiquetas com cores pastel e nome do módulo/plataforma"
                   : config.production.cardConfig.moduleIndicator === 'border'
                   ? "Bordas coloridas em volta do cartão"
-                  : "Sem indicação visual do módulo"
+                  : "Nenhum indicador será exibido"
                 }
               </div>
             </div>
+          </div>
             
-            {/* Resumo visual do status da coluna */}
-            <div className="mt-3 pt-3 border-t border-blue-200">
-              <div className="flex items-center gap-2">
-                <div className={cn(
-                  "w-3 h-3 rounded-full",
-                  Object.values(config.modules).some(m => m.enabled && m.showIndicator) 
-                    ? "bg-green-500" 
-                    : "bg-gray-400"
-                )}></div>
-                <span className="text-sm font-medium text-gray-700">
-                  Status: {
-                    Object.values(config.modules).some(m => m.enabled && m.showIndicator)
-                      ? "Alguns módulos exibirão indicadores"
-                      : "Nenhum módulo exibirá indicadores"
-                  }
-                </span>
-              </div>
+          {/* Resumo visual do status da coluna */}
+          <div className="mt-3 pt-3 border-t border-blue-200">
+            <div className="flex items-center gap-2">
+              <div className={cn(
+                "w-3 h-3 rounded-full",
+                Object.values(config.modules).some(m => m.enabled && m.showIndicator) 
+                  ? "bg-green-500" 
+                  : "bg-gray-400"
+              )}></div>
+              <span className="text-sm font-medium text-gray-700">
+                Status: {
+                  Object.values(config.modules).some(m => m.enabled && m.showIndicator)
+                    ? "Alguns módulos exibirão indicadores"
+                    : "Nenhum módulo exibirá indicadores"
+                }
+              </span>
             </div>
           </div>
         </ConfigSection>
