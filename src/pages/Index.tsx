@@ -272,20 +272,24 @@ const Index = () => {
         <SplashScreen onComplete={() => setShowSplash(false)} />
       )}
 
-      {/* Identificação do Painel - Acima dos Cabeçalhos */}
+      {/* Header de Identificação do Painel */}
       {config.panel.displayLocation === 'above-headers' && (
-        <div className="fixed top-4 left-4 z-50 bg-background/90 backdrop-blur-sm border rounded-lg px-3 py-2 shadow-lg">
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
-            <div className="text-sm">
-              <span className="font-semibold text-primary">Painel {config.panel.id}</span>
-              <span className="text-muted-foreground mx-2">•</span>
-              <span className="text-foreground">{config.panel.name}</span>
+        <div 
+          className="w-full flex items-center justify-center py-4 border-b"
+          style={{
+            backgroundColor: config.ready.headerBg,
+            color: config.ready.headerColor,
+            height: `${config.ready.headerHeight}px`,
+            fontFamily: config.ready.headerFontFamily,
+            fontSize: `${config.ready.headerFontSize}rem`
+          }}
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-3 h-3 bg-current rounded-full animate-pulse opacity-80"></div>
+            <div className="text-center font-bold">
+              PAINEL {config.panel.id} - {config.panel.name.toUpperCase()}
               {config.panel.location && (
-                <>
-                  <span className="text-muted-foreground mx-2">•</span>
-                  <span className="text-muted-foreground text-xs">{config.panel.location}</span>
-                </>
+                <span className="ml-3 opacity-80">• {config.panel.location.toUpperCase()}</span>
               )}
             </div>
           </div>
@@ -293,7 +297,7 @@ const Index = () => {
       )}
 
       <div
-        className="min-h-screen h-screen flex flex-col"
+        className="flex-1 flex flex-col"
         style={{ backgroundColor: config.backgroundColor, position: 'relative' }}
       >
       <div className={`flex-1 flex gap-0.5 p-1 pt-1 h-full overflow-hidden ${isTablet ? 'pb-12' : ''}`}>
