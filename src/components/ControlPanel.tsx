@@ -162,7 +162,7 @@ export const ControlPanel = ({
 
           {/* Log dos últimos pedidos expedidos - à direita do prompt */}
           {expeditionLog.length > 0 && (
-            <div className="flex items-center ml-2 max-w-[280px] overflow-hidden">
+            <div className="flex items-center ml-2 max-w-[320px] overflow-hidden">
               <div className="flex items-center gap-0.5 whitespace-nowrap">
                 {expeditionLog.slice(0, 8).map((logEntry, index) => {
                   const entryKey = `${logEntry.orderNumber}-${logEntry.expeditionTime.getTime()}`;
@@ -199,7 +199,7 @@ export const ControlPanel = ({
                       
                       {/* Bullet separator - não mostrar depois do último item */}
                       {index < expeditionLog.slice(0, 8).length - 1 && (
-                        <span className="text-gray-400 mx-0.5 text-xs">•</span>
+                        <span className="text-gray-600 mx-0.5 text-xs">•</span>
                       )}
                     </div>
                   );
