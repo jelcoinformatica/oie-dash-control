@@ -34,7 +34,7 @@ export interface PanelIdentification {
   id: number;
   name: string;
   location: string;
-  displayLocation: 'column1' | 'column2' | 'column3' | 'above-headers' | 'none';
+  displayLocation: 'column3' | 'above-headers' | 'none';
 }
 
 export interface ColumnConfig {

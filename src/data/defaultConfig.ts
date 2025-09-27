@@ -6,7 +6,7 @@ export const defaultConfig: PanelConfig = {
     id: 1,
     name: 'Painel Principal',
     location: 'Balcão Principal',
-    displayLocation: 'none' as 'column1' | 'column2' | 'column3' | 'above-headers' | 'none'
+    displayLocation: 'none' as 'column3' | 'above-headers' | 'none'
   },
   production: {
     visible: true,

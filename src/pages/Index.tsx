@@ -300,11 +300,6 @@ const Index = () => {
         {/* Coluna 1 - Produção */}
         {config.production.visible && (
           <div style={{ width: `${columnWidths.production}%` }} className="h-full relative">
-            {config.panel.displayLocation === 'column1' && (
-              <div className="absolute top-2 right-2 bg-primary/90 backdrop-blur-sm text-primary-foreground rounded px-2 py-1 text-xs font-medium shadow-sm z-10">
-                P{config.panel.id}
-              </div>
-            )}
             <OrderColumn
               title={config.production.title}
               orders={productionOrders}
@@ -333,11 +328,6 @@ const Index = () => {
 
         {/* Coluna 2 - Prontos */}
         <div style={{ width: `${columnWidths.ready}%` }} className="h-full relative">
-          {config.panel.displayLocation === 'column2' && (
-            <div className="absolute top-2 right-2 bg-primary/90 backdrop-blur-sm text-primary-foreground rounded px-2 py-1 text-xs font-medium shadow-sm z-10">
-              P{config.panel.id}
-            </div>
-          )}
           <div className="flex flex-col h-full">
             <div 
               className={`bg-white rounded-lg shadow-lg flex flex-col overflow-hidden h-full ${config.ready.showBorder ? 'ring-2 ring-blue-200' : ''}`}

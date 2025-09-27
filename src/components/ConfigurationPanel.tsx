@@ -2076,23 +2076,21 @@ export const ConfigurationPanel = ({
                   <Label className="text-xs">Onde Exibir</Label>
                   <Select
                     value={config.panel.displayLocation}
-                    onValueChange={(value: 'column1' | 'column2' | 'column3' | 'above-headers' | 'none') => 
-                      onConfigChange({
-                        ...config,
-                        panel: { ...config.panel, displayLocation: value }
-                      })
-                    }
+                     onValueChange={(value: 'column3' | 'above-headers' | 'none') => 
+                       onConfigChange({
+                         ...config,
+                         panel: { ...config.panel, displayLocation: value }
+                       })
+                     }
                   >
                     <SelectTrigger className="h-6">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="none">Não exibir</SelectItem>
-                      <SelectItem value="column1">Coluna 1</SelectItem>
-                      <SelectItem value="column2">Coluna 2</SelectItem>
-                      <SelectItem value="column3">Coluna 3</SelectItem>
-                      <SelectItem value="above-headers">Acima dos cabeçalhos</SelectItem>
-                    </SelectContent>
+                     <SelectContent>
+                       <SelectItem value="none">Não exibir</SelectItem>
+                       <SelectItem value="column3">Coluna 3</SelectItem>
+                       <SelectItem value="above-headers">Header</SelectItem>
+                     </SelectContent>
                   </Select>
                 </div>
               </div>
