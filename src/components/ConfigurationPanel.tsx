@@ -7,7 +7,7 @@ import { Slider } from './ui/slider';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from './ui/alert-dialog';
 import { PanelConfig } from '../types/order';
-import { Settings, Palette, Factory, CheckCircle, Monitor, Volume2, Clock, Puzzle, Cog, X, ChevronRight, ChevronDown, Plus, Minus, ChevronLeft, ArrowLeft, ArrowRight, Mic, Database, Download, Upload, Store, Eye, RotateCcw, Lightbulb } from 'lucide-react';
+import { Settings, Palette, Factory, CheckCircle, Monitor, Volume2, Clock, Puzzle, Cog, X, ChevronRight, ChevronDown, Plus, Minus, ChevronLeft, ArrowLeft, ArrowRight, Mic, Database, Download, Upload, Store, Eye, RotateCcw, Lightbulb, Zap } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { defaultConfig } from '../data/defaultConfig';
 import { RadioGroup, RadioGroupItem } from './ui/radio-group';
@@ -356,30 +356,29 @@ export const ConfigurationPanel = ({
         {/* Controles Diretos */}
         <ConfigSection
           title="Controles Diretos"
-          icon={<Settings className="w-4 h-4" />}
+          icon={<Zap className="w-4 h-4" />}
           isOpen={openSections.overlayControls}
           onToggle={() => toggleSection('overlayControls')}
           colorClass="text-purple-600"
         >
           <div className="space-y-3">
             <div className="flex items-center justify-between p-3 border border-purple-200 rounded-lg bg-purple-50/50">
-              <div>
-                <Label className="text-sm font-medium text-gray-700">Liberar Controles</Label>
-                <p className="text-xs text-gray-500 mt-1">
-                  Permite acesso aos controles diretos de ajuste em tempo real
-                </p>
+              <div className="flex items-center gap-2">
+                <Switch
+                  checked={config.overlayControls?.enabled || false}
+                  onCheckedChange={(checked) => updateConfig('overlayControls.enabled', checked)}
+                  className="scale-50"
+                />
+                <div>
+                  <Label className="text-sm font-medium text-gray-700">Ajustes em tempo real</Label>
+                </div>
               </div>
-              <Switch
-                checked={config.overlayControls?.enabled || false}
-                onCheckedChange={(checked) => updateConfig('overlayControls.enabled', checked)}
-                className="scale-75"
-              />
             </div>
             <div className="flex items-center gap-2">
               <Switch 
                 checked={config.resizableColumns ?? true} 
                 onCheckedChange={(checked) => updateConfig('resizableColumns', checked)}
-                className="scale-75"
+                className="scale-50"
               />
               <Label className="text-xs">Ajuste fino Colunas</Label>
             </div>
@@ -954,9 +953,9 @@ export const ConfigurationPanel = ({
           </SubConfigSection>
         </ConfigSection>
 
-        {/* Último Pedido */}
+        {/* Coluna 2 - Ultimo Pedido */}
         <ConfigSection
-          title="Último Pedido"
+          title="Coluna 2 - Ultimo Pedido"
           icon={<Monitor className="w-4 h-4" />}
           isOpen={openSections.lastOrder}
           onToggle={() => toggleSection('lastOrder')}
