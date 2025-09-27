@@ -242,12 +242,12 @@
 
 /* Manual do usuário - backdrop mais escuro */
 .manual-sheet [data-radix-dialog-overlay] {
-  background-color: rgba(0, 0, 0, 0.8) !important;
+  background-color: rgba(0, 0, 0, 0.88) !important;
   backdrop-filter: blur(4px);
 }
 
 .manual-sheet {
-  --radix-dialog-overlay-background-color: rgba(0, 0, 0, 0.8);
+  --radix-dialog-overlay-background-color: rgba(0, 0, 0, 0.88);
 }
 
 /* Destaque de busca no manual */
