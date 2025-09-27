@@ -353,9 +353,9 @@ export const ConfigurationPanel = ({
         <div className="flex-1 overflow-y-auto">
         
         
-        {/* Controle de Overlay */}
+        {/* Controles Diretos */}
         <ConfigSection
-          title="Controles Overlay"
+          title="Controles Diretos"
           icon={<Settings className="w-4 h-4" />}
           isOpen={openSections.overlayControls}
           onToggle={() => toggleSection('overlayControls')}
@@ -372,7 +372,16 @@ export const ConfigurationPanel = ({
               <Switch
                 checked={config.overlayControls?.enabled || false}
                 onCheckedChange={(checked) => updateConfig('overlayControls.enabled', checked)}
+                className="scale-75"
               />
+            </div>
+            <div className="flex items-center gap-2">
+              <Switch 
+                checked={config.resizableColumns ?? true} 
+                onCheckedChange={(checked) => updateConfig('resizableColumns', checked)}
+                className="scale-75"
+              />
+              <Label className="text-xs">Ajuste fino Colunas</Label>
             </div>
           </div>
         </ConfigSection>
@@ -394,14 +403,6 @@ export const ConfigurationPanel = ({
                 onChange={(e) => updateConfig('backgroundColor', e.target.value)}
                 className="h-8 mt-1 border-2"
               />
-            </div>
-            <div className="flex items-center gap-2">
-              <Switch 
-                checked={config.resizableColumns ?? true} 
-                onCheckedChange={(checked) => updateConfig('resizableColumns', checked)}
-                className="scale-50"
-              />
-              <Label className="text-xs">Permitir Redimensionar Colunas</Label>
             </div>
           </div>
         </ConfigSection>
@@ -1750,8 +1751,8 @@ export const ConfigurationPanel = ({
           colorClass="text-yellow-600"
         >
           <div className="pb-2 mb-2 border-b border-gray-200">
-            <h4 className="text-base font-semibold mb-2 text-gray-800">Configuração por Módulo</h4>
-            <p className="text-sm text-gray-600 mb-3">Configure individualmente quais módulos exibirão indicadores nos cards.</p>
+            <h4 className="text-sm font-medium mb-1 text-gray-700">Configuração por Módulo</h4>
+            <p className="text-xs text-gray-500 mb-2">Configure quais módulos exibirão indicadores nos cards.</p>
           </div>
           
           {Object.entries(config.modules).map(([moduleKey, moduleConfig]) => {
