@@ -1871,26 +1871,24 @@ export const ConfigurationPanel = ({
           <div className="mt-4 p-3 rounded-lg bg-blue-50 border border-blue-200">
             <div className="space-y-2">
               <Label className="text-sm font-medium text-gray-800">Tipo de Indicador</Label>
-              <Select
-                value={config.production.cardConfig.moduleIndicator || 'tag'}
-                onValueChange={(value) => {
-                  console.log('Selecionando tipo de indicador:', value);
-                  console.log('Config antes:', config.production.cardConfig);
-                  updateConfig('production.cardConfig.moduleIndicator', value);
-                  updateConfig('ready.cardConfig.moduleIndicator', value);
-                  console.log('Config depois:', config.production.cardConfig);
+              <select
+                value={config.production.cardConfig.moduleIndicator || 'none'}
+                onChange={(e) => {
+                  console.log('Selecionando tipo de indicador:', e.target.value);
+                  console.log('Config antes:', config.production.cardConfig.moduleIndicator);
+                  updateConfig('production.cardConfig.moduleIndicator', e.target.value);
+                  updateConfig('ready.cardConfig.moduleIndicator', e.target.value);
+                  setTimeout(() => {
+                    console.log('Config depois:', config.production.cardConfig.moduleIndicator);
+                  }, 100);
                 }}
+                className="w-full h-8 px-3 text-sm border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
-                <SelectTrigger className="w-full h-8 bg-white">
-                  <SelectValue placeholder="Selecione o tipo de indicador" />
-                </SelectTrigger>
-                <SelectContent className="bg-white border border-gray-300 shadow-lg z-50">
-                  <SelectItem value="bullet" className="hover:bg-gray-100">Bullets (bolinhas coloridas)</SelectItem>
-                  <SelectItem value="tag" className="hover:bg-gray-100">Etiquetas discretas</SelectItem>
-                  <SelectItem value="border" className="hover:bg-gray-100">Bordas coloridas</SelectItem>
-                  <SelectItem value="none" className="hover:bg-gray-100">Nenhum indicador</SelectItem>
-                </SelectContent>
-              </Select>
+                <option value="none">Nenhum indicador</option>
+                <option value="bullet">Bullets (bolinhas coloridas)</option>
+                <option value="tag">Etiquetas discretas</option>
+                <option value="border">Bordas coloridas</option>
+              </select>
               <div className="text-xs text-gray-600">
                 {config.production.cardConfig.moduleIndicator === 'bullet' 
                   ? "Bolinhas coloridas no canto superior direito" 
