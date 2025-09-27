@@ -180,6 +180,28 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
                 </h4>
                 <div className="space-y-4">
                   <div className="space-y-3">
+                    <h5 className="text-sm font-medium text-gray-700">Colunas</h5>
+                    <div>
+                      <Label className="text-sm">Quantidade: {config.production.cardConfig.columns} colunas</Label>
+                      <Slider
+                        value={[config.production.cardConfig.columns]}
+                        onValueChange={([value]) => {
+                          updateConfig({
+                            production: { 
+                              ...config.production, 
+                              cardConfig: { ...config.production.cardConfig, columns: value }
+                            }
+                          });
+                        }}
+                        min={1}
+                        max={3}
+                        step={1}
+                        className="mt-2"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-3">
                     <h5 className="text-sm font-medium text-gray-700">Layout Vertical</h5>
                     <div>
                       <Label className="text-sm">Gap Vertical: {config.production.cardConfig.gapVertical}px</Label>
@@ -277,6 +299,28 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
                   Coluna 2 - Prontos
                 </h4>
                 <div className="space-y-4">
+                  <div className="space-y-3">
+                    <h5 className="text-sm font-medium text-gray-700">Colunas</h5>
+                    <div>
+                      <Label className="text-sm">Quantidade: {config.ready.cardConfig.columns} colunas</Label>
+                      <Slider
+                        value={[config.ready.cardConfig.columns]}
+                        onValueChange={([value]) => {
+                          updateConfig({
+                            ready: { 
+                              ...config.ready, 
+                              cardConfig: { ...config.ready.cardConfig, columns: value }
+                            }
+                          });
+                        }}
+                        min={3}
+                        max={8}
+                        step={1}
+                        className="mt-2"
+                      />
+                    </div>
+                  </div>
+                  
                   <div className="space-y-3">
                     <h5 className="text-sm font-medium text-gray-700">Layout Vertical</h5>
                     <div>
