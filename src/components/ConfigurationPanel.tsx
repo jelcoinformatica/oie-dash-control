@@ -7,7 +7,7 @@ import { Slider } from './ui/slider';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from './ui/alert-dialog';
 import { PanelConfig } from '../types/order';
-import { Settings, Palette, Factory, CheckCircle, Monitor, Volume2, Clock, Puzzle, Cog, X, ChevronRight, ChevronDown, Plus, Minus, ChevronLeft, ArrowLeft, ArrowRight, Mic, Database, Download, Upload, Store, Eye, RotateCcw, Lightbulb, Zap } from 'lucide-react';
+import { Settings, Palette, Factory, CheckCircle, Monitor, Volume2, Clock, Puzzle, Cog, X, ChevronRight, ChevronDown, Plus, Minus, ChevronLeft, ArrowLeft, ArrowRight, Mic, Database, Download, Upload, Store, Eye, RotateCcw, Lightbulb, Zap, History, Megaphone, Wrench } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { defaultConfig } from '../data/defaultConfig';
 import { RadioGroup, RadioGroupItem } from './ui/radio-group';
@@ -359,7 +359,7 @@ export const ConfigurationPanel = ({
           icon={<Zap className="w-4 h-4" />}
           isOpen={openSections.overlayControls}
           onToggle={() => toggleSection('overlayControls')}
-          colorClass="text-purple-600"
+          colorClass="text-blue-600"
         >
           <div className="space-y-2">
             <div className="flex items-center gap-2">
@@ -387,7 +387,7 @@ export const ConfigurationPanel = ({
           icon={<Palette className="w-4 h-4" />}
           isOpen={openSections.background}
           onToggle={() => toggleSection('background')}
-          colorClass="text-purple-600"
+          colorClass="text-blue-600"
         >
           <div className="space-y-3">
             <div>
@@ -408,7 +408,7 @@ export const ConfigurationPanel = ({
           icon={<Monitor className="w-4 h-4" />}
           isOpen={openSections.panel}
           onToggle={() => toggleSection('panel')}
-          colorClass="text-indigo-600"
+          colorClass="text-blue-600"
         >
           <div className="space-y-2">
             <div>
@@ -707,7 +707,7 @@ export const ConfigurationPanel = ({
           icon={<CheckCircle className="w-4 h-4" />}
           isOpen={openSections.ready}
           onToggle={() => toggleSection('ready')}
-          colorClass="text-green-600"
+          colorClass="text-blue-600"
         >
           <SubConfigSection
             title="Gerais"
@@ -952,10 +952,10 @@ export const ConfigurationPanel = ({
         {/* Coluna 2 - Ultimo Pedido */}
         <ConfigSection
           title="Coluna 2 - Ultimo Pedido"
-          icon={<Monitor className="w-4 h-4" />}
+          icon={<History className="w-4 h-4" />}
           isOpen={openSections.lastOrder}
           onToggle={() => toggleSection('lastOrder')}
-          colorClass="text-amber-600"
+          colorClass="text-blue-600"
         >
           {/* Gerais */}
           <div className="pb-3 mb-3 border-b-2 border-gray-300">
@@ -1058,10 +1058,10 @@ export const ConfigurationPanel = ({
         {/* Coluna 3 - Publicidade */}
         <ConfigSection
           title="Coluna 3 - Publicidade"
-          icon={<Monitor className="w-4 h-4" />}
+          icon={<Megaphone className="w-4 h-4" />}
           isOpen={openSections.advertising}
           onToggle={() => toggleSection('advertising')}
-          colorClass="text-cyan-600"
+          colorClass="text-blue-600"
         >
           <SubConfigSection
             title="Gerais"
@@ -1337,7 +1337,7 @@ export const ConfigurationPanel = ({
           icon={<Volume2 className="w-4 h-4" />}
           isOpen={openSections.sounds}
           onToggle={() => toggleSection('sounds')}
-          colorClass="text-yellow-600"
+          colorClass="text-blue-600"
         >
           <div className="space-y-4">
             <div className="space-y-3">
@@ -1714,7 +1714,7 @@ export const ConfigurationPanel = ({
           icon={<Clock className="w-4 h-4" />}
           isOpen={openSections.autoExpedition}
           onToggle={() => toggleSection('autoExpedition')}
-          colorClass="text-orange-600"
+          colorClass="text-blue-600"
         >
           <div className="flex items-center space-x-2">
             <Switch
@@ -1743,7 +1743,7 @@ export const ConfigurationPanel = ({
           icon={<Puzzle className="w-4 h-4" />}
           isOpen={openSections.modules}
           onToggle={() => toggleSection('modules')}
-          colorClass="text-yellow-600"
+          colorClass="text-blue-600"
         >
           <div className="pb-2 mb-2 border-b border-gray-200">
             <h4 className="text-sm font-medium mb-1 text-gray-700">Configuração por Módulo</h4>
@@ -1951,10 +1951,10 @@ export const ConfigurationPanel = ({
         {/* Diversos */}
         <ConfigSection
           title="Diversos"
-          icon={<Settings className="w-4 h-4" />}
+          icon={<Wrench className="w-4 h-4" />}
           isOpen={openSections.diversos}
           onToggle={() => toggleSection('diversos')}
-          colorClass="text-gray-600"
+          colorClass="text-blue-600"
         >
           <SubConfigSection
             title="Conexão com Banco"
@@ -2292,7 +2292,7 @@ export const ConfigurationPanel = ({
           icon={<Cog className="w-4 h-4" />}
           isOpen={openSections.simulation}
           onToggle={() => toggleSection('simulation')}
-          colorClass="text-teal-600"
+          colorClass="text-blue-600"
         >
           <div className="space-y-4">
             {/* Resumo Dinâmico da Simulação */}
