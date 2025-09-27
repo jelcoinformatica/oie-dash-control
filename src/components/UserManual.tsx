@@ -47,6 +47,7 @@ export const UserManual = ({ children }: UserManualProps) => {
   const [searchResults, setSearchResults] = useState<Array<{sectionId: string, matches: number}>>([]);
   const [currentResultIndex, setCurrentResultIndex] = useState(0);
   const [highlightedText, setHighlightedText] = useState('');
+  const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout | null>(null);
 
   const manualSections: ManualSection[] = [
     {
@@ -1386,21 +1387,58 @@ export const UserManual = ({ children }: UserManualProps) => {
     scrollToSection(searchResults[prevIndex].sectionId);
   };
 
-  // Manipular teclas na busca
+  // Busca automática com debounce
+  const handleSearchChange = (value: string) => {
+    setSearchTerm(value);
+    
+    // Limpar timeout anterior
+    if (searchTimeout) {
+      clearTimeout(searchTimeout);
+    }
+    
+    if (!value) {
+      setSearchResults([]);
+      setHighlightedText('');
+      setCurrentResultIndex(0);
+      return;
+    }
+    
+    // Criar novo timeout para busca automática
+    const newTimeout = setTimeout(() => {
+      performAdvancedSearch(value);
+    }, 300); // 300ms de delay
+    
+    setSearchTimeout(newTimeout);
+  };
+
+  // Manipular teclas na busca (agora só para navegação)
   const handleSearchKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       e.preventDefault();
       if (e.shiftKey) {
         goToPreviousResult();
       } else {
-        if (searchTerm && searchResults.length === 0) {
-          performAdvancedSearch(searchTerm);
-        } else {
-          goToNextResult();
-        }
+        goToNextResult();
       }
     }
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      goToNextResult();
+    }
+    if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      goToPreviousResult();
+    }
   };
+
+  // Limpar timeout quando componente for desmontado
+  React.useEffect(() => {
+    return () => {
+      if (searchTimeout) {
+        clearTimeout(searchTimeout);
+      }
+    };
+  }, [searchTimeout]);
 
   const filteredSections = useMemo(() => {
     if (!searchTerm) return manualSections;
@@ -1468,44 +1506,33 @@ export const UserManual = ({ children }: UserManualProps) => {
                <div className="relative w-80">
                  <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
                  <Input
-                   placeholder="Buscar no manual... (Enter para pesquisar)"
+                   placeholder="Buscar no manual... (busca automática)"
                    value={searchTerm}
-                   onChange={(e) => {
-                     setSearchTerm(e.target.value);
-                     if (!e.target.value) {
-                       setSearchResults([]);
-                       setHighlightedText('');
-                       setCurrentResultIndex(0);
-                     }
-                   }}
+                   onChange={(e) => handleSearchChange(e.target.value)}
                    onKeyDown={handleSearchKeyDown}
                    className="pl-10 pr-16"
-                   title="Enter: Próximo resultado | Shift+Enter: Resultado anterior"
+                   title="Enter/↓: Próximo resultado | Shift+Enter/↑: Resultado anterior"
                  />
-                {searchTerm && (
-                  <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center gap-1">
-                    {searchResults.length > 0 && (
-                      <Badge variant="secondary" className="text-xs px-2 py-0">
-                        {currentResultIndex + 1}/{searchResults.length}
-                      </Badge>
-                    )}
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => {
-                        if (searchResults.length === 0) {
-                          performAdvancedSearch(searchTerm);
-                        } else {
-                          goToNextResult();
-                        }
-                      }}
-                      className="h-6 w-6 p-0"
-                    >
-                      <Search className="w-3 h-3" />
-                    </Button>
-                  </div>
-                )}
-              </div>
+                 {searchTerm && (
+                   <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center gap-1">
+                     {searchResults.length > 0 && (
+                       <Badge variant="secondary" className="text-xs px-2 py-0">
+                         {currentResultIndex + 1}/{searchResults.length}
+                       </Badge>
+                     )}
+                     <Button
+                       size="sm"
+                       variant="ghost"
+                       onClick={goToNextResult}
+                       className="h-6 w-6 p-0"
+                       disabled={searchResults.length === 0}
+                       title="Próximo resultado"
+                     >
+                       <Search className="w-3 h-3" />
+                     </Button>
+                   </div>
+                 )}
+               </div>
             </div>
           </SheetHeader>
 
@@ -1567,10 +1594,10 @@ export const UserManual = ({ children }: UserManualProps) => {
                          <div className="mt-4 space-y-2">
                            <p className="text-sm text-muted-foreground">Dicas de busca:</p>
                            <ul className="text-sm text-muted-foreground space-y-1">
-                             <li>• Use palavras-chave simples</li>
-                             <li>• Tente termos relacionados</li>
-                             <li>• Verifique a ortografia</li>
-                             <li>• Pressione Enter para buscar em todo o conteúdo</li>
+                           <li>• Use palavras-chave simples</li>
+                           <li>• Tente termos relacionados</li>
+                           <li>• Verifique a ortografia</li>
+                           <li>• Use ↑↓ ou Enter para navegar</li>
                            </ul>
                          </div>
                        )}
