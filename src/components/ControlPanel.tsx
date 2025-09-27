@@ -210,6 +210,9 @@ export const ControlPanel = ({
         </div>
         
         <div className="flex items-center gap-2">
+          <div className="text-xs text-muted-foreground">
+            Jelco Informática (2025)
+          </div>
           <Button
             variant="ghost"
             size="sm"
