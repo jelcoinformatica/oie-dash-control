@@ -206,9 +206,10 @@ export const UserManual = ({ children }: UserManualProps) => {
                   <ul className="ml-4 mt-1 space-y-1">
                     <li>• Mostrar/ocultar apelido</li>
                     <li>• Mostrar/ocultar itens</li>
-                    <li>• Indicador de módulo</li>
+                    <li>• Tipo de indicador no card</li>
                     <li>• Número de colunas</li>
                     <li>• Cores personalizadas</li>
+                    <li>• Espaçamentos configuráveis</li>
                   </ul>
                 </div>
               </div>
@@ -810,23 +811,34 @@ export const UserManual = ({ children }: UserManualProps) => {
             </div>
 
             <div className="p-4 border bg-card/50 rounded-lg shadow-sm">
-              <h4 className="font-medium mb-2">Indicadores Visuais</h4>
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                <div>
-                  <strong>Etiqueta (padrão):</strong>
-                  <p>Pequeno círculo colorido no cartão</p>
+              <h4 className="font-medium mb-2">Tipo de Indicador no Card</h4>
+              <div className="space-y-3 text-sm">
+                <p>Configure como os módulos serão identificados visualmente nos cartões de pedidos.</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <strong>Nenhum indicador:</strong>
+                    <p>Cartões sem identificação visual de módulo</p>
+                  </div>
+                  <div>
+                    <strong>Bullets:</strong>
+                    <p>Pequenos círculos coloridos no canto superior direito</p>
+                  </div>
+                  <div>
+                    <strong>Etiquetas:</strong>
+                    <p>Tags retangulares com texto do módulo</p>
+                  </div>
+                  <div>
+                    <strong>Bordas:</strong>
+                    <p>Borda colorida ao redor do cartão inteiro</p>
+                  </div>
                 </div>
-                <div>
-                  <strong>Background:</strong>
-                  <p>Fundo do cartão na cor do módulo</p>
-                </div>
-                <div>
-                  <strong>Border:</strong>
-                  <p>Borda colorida no cartão</p>
-                </div>
-                <div>
-                  <strong>Nenhum:</strong>
-                  <p>Sem indicação visual</p>
+                <div className="p-3 bg-muted/50 rounded">
+                  <p className="font-medium mb-2">Configuração Global:</p>
+                  <ul className="space-y-1">
+                    <li>• Aplica-se a todas as colunas (Produção e Prontos)</li>
+                    <li>• Cores automáticas por módulo (azul=balcão, verde=mesa, laranja=entrega, roxo=ficha)</li>
+                    <li>• Configuração dinâmica - mudanças aparecem instantaneamente</li>
+                  </ul>
                 </div>
               </div>
             </div>
@@ -940,6 +952,136 @@ export const UserManual = ({ children }: UserManualProps) => {
       )
     },
     {
+      id: 'overlay-controls',
+      title: 'Controles Diretos',
+      icon: <MousePointer className="w-4 h-4" />,
+      keywords: ['controles', 'diretos', 'overlay', 'tempo real', 'ajustes', 'rápidos', 'configuração instantânea'],
+      content: (
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold">Controles Diretos em Tempo Real</h3>
+          
+          <div className="space-y-4">
+            <div className="p-4 border bg-card/50 rounded-lg shadow-sm">
+              <h4 className="font-medium mb-2 flex items-center gap-2">
+                <MousePointer className="w-4 h-4 text-blue-500" />
+                O que são os Controles Diretos
+              </h4>
+              <p className="text-sm">
+                Interface de controles sobrepostos que permite ajustar configurações visuais em tempo real, 
+                sem precisar abrir o painel de configurações principal. Ideal para ajustes rápidos durante o uso.
+              </p>
+            </div>
+
+            <div className="p-4 border bg-card/50 rounded-lg shadow-sm">
+              <h4 className="font-medium mb-2 flex items-center gap-2">
+                <Eye className="w-4 h-4 text-green-500" />
+                Como Ativar
+              </h4>
+              <div className="space-y-2 text-sm">
+                <p><strong>Localização:</strong> Configurações → Overlays → Controles Diretos</p>
+                <p><strong>Ativação:</strong> Marque a opção "Ativar Controles Diretos"</p>
+                <p><strong>Interface:</strong> Aparece como um painel flutuante no lado direito da tela</p>
+              </div>
+            </div>
+
+            <div className="p-4 border bg-card/50 rounded-lg shadow-sm">
+              <h4 className="font-medium mb-2">Controles Disponíveis</h4>
+              <div className="space-y-3 text-sm">
+                <div>
+                  <strong>Cabeçalhos (Headers):</strong>
+                  <ul className="ml-4 mt-1 space-y-1">
+                    <li>• Altura dos cabeçalhos (40px - 120px)</li>
+                    <li>• Ajuste em tempo real com slider</li>
+                    <li>• Visualização imediata das mudanças</li>
+                  </ul>
+                </div>
+                <div>
+                  <strong>Coluna 1 (Produção):</strong>
+                  <ul className="ml-4 mt-1 space-y-1">
+                    <li>• Número de colunas no grid (1-4)</li>
+                    <li>• Espaçamento horizontal entre cards</li>
+                    <li>• Espaçamento vertical entre cards</li>
+                    <li>• Tamanho da fonte dos cards</li>
+                  </ul>
+                </div>
+                <div>
+                  <strong>Coluna 2 (Prontos):</strong>
+                  <ul className="ml-4 mt-1 space-y-1">
+                    <li>• Número de colunas no grid (1-4)</li>
+                    <li>• Espaçamento horizontal entre cards</li>
+                    <li>• Espaçamento vertical entre cards</li>
+                    <li>• Tamanho da fonte dos cards</li>
+                  </ul>
+                </div>
+                <div>
+                  <strong>Último Pedido:</strong>
+                  <ul className="ml-4 mt-1 space-y-1">
+                    <li>• Altura da área do último pedido</li>
+                    <li>• Tamanho da fonte do último pedido</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div className="p-4 border bg-card/50 rounded-lg shadow-sm">
+              <h4 className="font-medium mb-2 flex items-center gap-2">
+                <Maximize className="w-4 h-4 text-purple-500" />
+                Interface dos Controles
+              </h4>
+              <div className="space-y-3 text-sm">
+                <div>
+                  <strong>Navegação por Abas:</strong>
+                  <ul className="ml-4 mt-1 space-y-1">
+                    <li>• Headers - Controles dos cabeçalhos</li>
+                    <li>• Col1 - Configurações da coluna Produção</li>
+                    <li>• Col2 - Configurações da coluna Prontos</li>
+                    <li>• Last-Order - Área do último pedido</li>
+                  </ul>
+                </div>
+                <div>
+                  <strong>Controles Visuais:</strong>
+                  <ul className="ml-4 mt-1 space-y-1">
+                    <li>• Sliders com valores mínimos e máximos</li>
+                    <li>• Labels descritivos para cada controle</li>
+                    <li>• Feedback visual imediato das alterações</li>
+                    <li>• Botão de minimizar/expandir</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+              <h4 className="font-medium mb-2 flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-green-600" />
+                Vantagens dos Controles Diretos
+              </h4>
+              <ul className="text-sm space-y-1">
+                <li>• <strong>Ajustes em Tempo Real:</strong> Ver mudanças instantaneamente</li>
+                <li>• <strong>Facilidade de Uso:</strong> Não precisa abrir configurações</li>
+                <li>• <strong>Otimização Rápida:</strong> Ideal para calibrar a tela</li>
+                <li>• <strong>Interface Limpa:</strong> Pode ser minimizado quando não usar</li>
+                <li>• <strong>Salvamento Automático:</strong> Mudanças são salvas automaticamente</li>
+              </ul>
+            </div>
+
+            <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+              <h4 className="font-medium mb-2 flex items-center gap-2">
+                <HelpCircle className="w-4 h-4 text-blue-600" />
+                Casos de Uso Ideais
+              </h4>
+              <ul className="text-sm space-y-1">
+                <li>• Ajustar layout para diferentes tamanhos de tela</li>
+                <li>• Otimizar espaçamento durante horários de pico</li>
+                <li>• Calibrar tamanhos de fonte para melhor legibilidade</li>
+                <li>• Fazer ajustes finos após mudanças de configuração</li>
+                <li>• Demonstrações e treinamentos em tempo real</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      )
+    },
+    {
       id: 'configuration',
       title: 'Configurações Avançadas',
       icon: <Settings className="w-4 h-4" />,
@@ -973,6 +1115,7 @@ export const UserManual = ({ children }: UserManualProps) => {
                     <li>• Prontos</li>
                     <li>• Publicidade</li>
                     <li>• Splash Screen</li>
+                    <li>• Controles Diretos</li>
                   </ul>
                 </div>
                 <div>
@@ -983,6 +1126,7 @@ export const UserManual = ({ children }: UserManualProps) => {
                     <li>• Auto-Expedição</li>
                     <li>• Módulos</li>
                     <li>• Simulação</li>
+                    <li>• Tipo de Indicador no Card</li>
                   </ul>
                 </div>
               </div>
