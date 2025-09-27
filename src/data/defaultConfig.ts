@@ -158,5 +158,8 @@ export const defaultConfig: PanelConfig = {
   },
   splash: {
     enabled: false
+  },
+  overlayControls: {
+    enabled: false
   }
 };

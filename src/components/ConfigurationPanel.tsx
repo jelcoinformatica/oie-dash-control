@@ -109,7 +109,7 @@ export const ConfigurationPanel = ({
   generateOrders
 }: ConfigurationPanelProps) => {
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
-    realtime: false,
+    overlayControls: false,
     background: false,
     panel: false,
     production: false,
@@ -147,7 +147,7 @@ export const ConfigurationPanel = ({
   useEffect(() => {
     if (open) {
       setOpenSections({
-        realtime: false,
+        overlayControls: false,
         background: false,
         panel: false,
         production: false,
@@ -172,7 +172,7 @@ export const ConfigurationPanel = ({
     const allOpen = Object.values(openSections).every(Boolean);
     const newState = !allOpen;
     setOpenSections({
-      realtime: newState,
+      overlayControls: newState,
       background: newState,
       panel: newState,
       production: newState,
@@ -352,136 +352,27 @@ export const ConfigurationPanel = ({
         {/* Content */}
         <div className="flex-1 overflow-y-auto">
         
-        {/* Controles Mestres em Tempo Real */}
+        
+        {/* Controle de Overlay */}
         <ConfigSection
-          title="⚡ Controles Tempo Real"
-          icon={<Lightbulb className="w-4 h-4" />}
-          isOpen={openSections.realtime}
-          onToggle={() => toggleSection('realtime')}
-          colorClass="text-yellow-600"
+          title="Controles Overlay"
+          icon={<Settings className="w-4 h-4" />}
+          isOpen={openSections.overlayControls}
+          onToggle={() => toggleSection('overlayControls')}
+          colorClass="text-purple-600"
         >
-          <div className="space-y-4 bg-yellow-50/50 p-3 rounded-lg">
-            {/* Altura dos Cabeçalhos */}
-            <div className="space-y-3 p-3 border border-yellow-200 rounded-lg bg-white">
-              <h4 className="text-sm font-semibold text-yellow-700">🏢 Altura dos Cabeçalhos (Todos)</h4>
-              <div className="space-y-2">
-                <Label className="text-xs text-gray-600">Altura: {config.production.headerHeight}px</Label>
-                <Slider
-                  value={[config.production.headerHeight]}
-                  onValueChange={([value]) => {
-                    const newConfig = {
-                      ...config,
-                      production: { ...config.production, headerHeight: value },
-                      ready: { ...config.ready, headerHeight: value },
-                      advertising: { ...config.advertising, headerHeight: value }
-                    };
-                    onConfigChange(newConfig);
-                  }}
-                  min={40}
-                  max={120}
-                  step={4}
-                  className="mt-1"
-                />
+          <div className="space-y-3">
+            <div className="flex items-center justify-between p-3 border border-purple-200 rounded-lg bg-purple-50/50">
+              <div>
+                <Label className="text-sm font-medium text-gray-700">Liberar Controles</Label>
+                <p className="text-xs text-gray-500 mt-1">
+                  Permite acesso aos controles diretos de ajuste em tempo real
+                </p>
               </div>
-            </div>
-
-            {/* Gap Vertical dos Cards */}
-            <div className="space-y-3 p-3 border border-yellow-200 rounded-lg bg-white">
-              <h4 className="text-sm font-semibold text-yellow-700">📏 Espaçamento Vertical dos Cards</h4>
-              <div className="space-y-2">
-                <Label className="text-xs text-gray-600">Gap Vertical: {config.production.cardConfig.gapVertical}px</Label>
-                <Slider
-                  value={[config.production.cardConfig.gapVertical || 4]}
-                  onValueChange={([value]) => {
-                    const newConfig = {
-                      ...config,
-                      production: { 
-                        ...config.production, 
-                        cardConfig: { ...config.production.cardConfig, gapVertical: value }
-                      },
-                      ready: { 
-                        ...config.ready, 
-                        cardConfig: { ...config.ready.cardConfig, gapVertical: value }
-                      }
-                    };
-                    onConfigChange(newConfig);
-                  }}
-                  min={0}
-                  max={20}
-                  step={1}
-                  className="mt-1"
-                />
-              </div>
-            </div>
-
-            {/* Gap Horizontal dos Cards */}
-            <div className="space-y-3 p-3 border border-yellow-200 rounded-lg bg-white">
-              <h4 className="text-sm font-semibold text-yellow-700">↔️ Espaçamento Horizontal dos Cards</h4>
-              <div className="space-y-2">
-                <Label className="text-xs text-gray-600">Gap Horizontal: {config.production.cardConfig.gapHorizontal}px</Label>
-                <Slider
-                  value={[config.production.cardConfig.gapHorizontal || 4]}
-                  onValueChange={([value]) => {
-                    const newConfig = {
-                      ...config,
-                      production: { 
-                        ...config.production, 
-                        cardConfig: { ...config.production.cardConfig, gapHorizontal: value }
-                      },
-                      ready: { 
-                        ...config.ready, 
-                        cardConfig: { ...config.ready.cardConfig, gapHorizontal: value }
-                      }
-                    };
-                    onConfigChange(newConfig);
-                  }}
-                  min={0}
-                  max={20}
-                  step={1}
-                  className="mt-1"
-                />
-              </div>
-            </div>
-
-            {/* Último Pedido */}
-            <div className="space-y-3 p-3 border border-yellow-200 rounded-lg bg-white">
-              <h4 className="text-sm font-semibold text-yellow-700">🎯 Último Pedido</h4>
-              <div className="space-y-3">
-                <div className="space-y-2">
-                  <Label className="text-xs text-gray-600">Altura: {config.lastOrder.height}px</Label>
-                  <Slider
-                    value={[config.lastOrder.height]}
-                    onValueChange={([value]) => {
-                      const newConfig = {
-                        ...config,
-                        lastOrder: { ...config.lastOrder, height: value }
-                      };
-                      onConfigChange(newConfig);
-                    }}
-                    min={80}
-                    max={300}
-                    step={10}
-                    className="mt-1"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-xs text-gray-600">Tamanho da Fonte: {config.lastOrder.fontSize}</Label>
-                  <Slider
-                    value={[config.lastOrder.fontSize]}
-                    onValueChange={([value]) => {
-                      const newConfig = {
-                        ...config,
-                        lastOrder: { ...config.lastOrder, fontSize: value }
-                      };
-                      onConfigChange(newConfig);
-                    }}
-                    min={4}
-                    max={16}
-                    step={0.5}
-                    className="mt-1"
-                  />
-                </div>
-              </div>
+              <Switch
+                checked={config.overlayControls?.enabled || false}
+                onCheckedChange={(checked) => updateConfig('overlayControls.enabled', checked)}
+              />
             </div>
           </div>
         </ConfigSection>

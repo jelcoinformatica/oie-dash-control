@@ -778,13 +778,15 @@ const Index = () => {
         generateOrders={(count) => generateOrders(count, config)}
       />
       
-      {/* Controles Overlay */}
-      <OverlayControls
-        config={config}
-        onConfigChange={handleConfigChange}
-        visible={overlayControlsVisible}
-        onToggle={() => setOverlayControlsVisible(!overlayControlsVisible)}
-      />
+      {/* Controles Overlay - só aparecem se estiverem habilitados */}
+      {config.overlayControls?.enabled && (
+        <OverlayControls
+          config={config}
+          onConfigChange={handleConfigChange}
+          visible={overlayControlsVisible}
+          onToggle={() => setOverlayControlsVisible(!overlayControlsVisible)}
+        />
+      )}
       
       {/* Overlay */}
       {configOpen && (

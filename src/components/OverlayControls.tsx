@@ -20,22 +20,19 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
   };
 
   const controlButtons = [
+    // Primeira linha - Cabeçalhos
     {
       id: 'headers',
       label: 'Cabeçalhos',
       icon: <Monitor className="w-4 h-4" />,
-      color: 'bg-blue-500 hover:bg-blue-600'
+      color: 'bg-blue-500 hover:bg-blue-600',
+      fullWidth: true
     },
+    // Segunda linha - Col 1 vertical; col 2 vertical
     {
       id: 'col1-vertical',
       label: 'Col1 Vertical',
       icon: <ArrowUpDown className="w-4 h-4" />,
-      color: 'bg-green-500 hover:bg-green-600'
-    },
-    {
-      id: 'col1-horizontal',
-      label: 'Col1 Horizontal',
-      icon: <ArrowLeftRight className="w-4 h-4" />,
       color: 'bg-green-500 hover:bg-green-600'
     },
     {
@@ -44,17 +41,26 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
       icon: <ArrowUpDown className="w-4 h-4" />,
       color: 'bg-indigo-500 hover:bg-indigo-600'
     },
+    // Terceira linha - Col 1 horizontal; Col2 horizontal
+    {
+      id: 'col1-horizontal',
+      label: 'Col1 Horizontal',
+      icon: <ArrowLeftRight className="w-4 h-4" />,
+      color: 'bg-green-500 hover:bg-green-600'
+    },
     {
       id: 'col2-horizontal',
       label: 'Col2 Horizontal',
       icon: <ArrowLeftRight className="w-4 h-4" />,
       color: 'bg-indigo-500 hover:bg-indigo-600'
     },
+    // Quarta linha - Ultimo pedido (abaixo de Col2 horizontal)
     {
       id: 'last-order',
       label: 'Último Pedido',
       icon: <Target className="w-4 h-4" />,
-      color: 'bg-orange-500 hover:bg-orange-600'
+      color: 'bg-orange-500 hover:bg-orange-600',
+      fullWidth: true
     }
   ];
 
@@ -94,19 +100,70 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
             </Button>
           </div>
           
-          <div className="grid grid-cols-3 gap-2">
-            {controlButtons.map((button) => (
-              <Button
-                key={button.id}
-                onClick={() => setActiveControl(activeControl === button.id ? null : button.id)}
-                variant={activeControl === button.id ? "default" : "outline"}
-                size="sm"
-                className={`text-xs ${activeControl === button.id ? button.color : ''}`}
-              >
-                {button.icon}
-                <span className="ml-1">{button.label}</span>
-              </Button>
-            ))}
+          <div className="space-y-2">
+            {/* Primeira linha - Cabeçalhos */}
+            <div className="grid grid-cols-1 gap-2">
+              {controlButtons.filter(btn => btn.id === 'headers').map((button) => (
+                <Button
+                  key={button.id}
+                  onClick={() => setActiveControl(activeControl === button.id ? null : button.id)}
+                  variant={activeControl === button.id ? "default" : "outline"}
+                  size="sm"
+                  className={`text-xs ${activeControl === button.id ? button.color : ''}`}
+                >
+                  {button.icon}
+                  <span className="ml-1">{button.label}</span>
+                </Button>
+              ))}
+            </div>
+
+            {/* Segunda linha - Col 1 vertical; col 2 vertical */}
+            <div className="grid grid-cols-2 gap-2">
+              {controlButtons.filter(btn => ['col1-vertical', 'col2-vertical'].includes(btn.id)).map((button) => (
+                <Button
+                  key={button.id}
+                  onClick={() => setActiveControl(activeControl === button.id ? null : button.id)}
+                  variant={activeControl === button.id ? "default" : "outline"}
+                  size="sm"
+                  className={`text-xs ${activeControl === button.id ? button.color : ''}`}
+                >
+                  {button.icon}
+                  <span className="ml-1">{button.label}</span>
+                </Button>
+              ))}
+            </div>
+
+            {/* Terceira linha - Col 1 horizontal; Col2 horizontal */}
+            <div className="grid grid-cols-2 gap-2">
+              {controlButtons.filter(btn => ['col1-horizontal', 'col2-horizontal'].includes(btn.id)).map((button) => (
+                <Button
+                  key={button.id}
+                  onClick={() => setActiveControl(activeControl === button.id ? null : button.id)}
+                  variant={activeControl === button.id ? "default" : "outline"}
+                  size="sm"
+                  className={`text-xs ${activeControl === button.id ? button.color : ''}`}
+                >
+                  {button.icon}
+                  <span className="ml-1">{button.label}</span>
+                </Button>
+              ))}
+            </div>
+
+            {/* Quarta linha - Ultimo pedido */}
+            <div className="grid grid-cols-1 gap-2">
+              {controlButtons.filter(btn => btn.id === 'last-order').map((button) => (
+                <Button
+                  key={button.id}
+                  onClick={() => setActiveControl(activeControl === button.id ? null : button.id)}
+                  variant={activeControl === button.id ? "default" : "outline"}
+                  size="sm"
+                  className={`text-xs ${activeControl === button.id ? button.color : ''}`}
+                >
+                  {button.icon}
+                  <span className="ml-1">{button.label}</span>
+                </Button>
+              ))}
+            </div>
           </div>
         </div>
       </div>

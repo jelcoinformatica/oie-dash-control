@@ -158,4 +158,7 @@ export interface PanelConfig {
   splash?: {
     enabled: boolean;
   };
+  overlayControls?: {
+    enabled: boolean;
+  };
 }
