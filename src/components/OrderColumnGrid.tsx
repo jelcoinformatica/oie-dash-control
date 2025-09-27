@@ -101,8 +101,8 @@ export const OrderColumnGrid = ({
     const baseFontSize = 16;
     const requestedFontSize = cardConfig?.fontSize || 1.2;
     
-    // Altura proporcional ao tamanho da fonte
-    const cardHeight = Math.max(60, requestedFontSize * 45);
+    // Altura mais eficiente - reduzir multiplicador para aprovveitar melhor o espaço
+    const baseCardHeight = Math.max(50, requestedFontSize * 30); // Reduzido de 45 para 30
     
     // Ajustar fonte para caber na largura do card - usando largura proporcional
     const gap = 4; // gap-1 = 4px
@@ -116,21 +116,33 @@ export const OrderColumnGrid = ({
       adjustedFontSize = Math.max(0.8, (cardWidth - 16) / (4 * baseFontSize * 0.6));
     }
     
-    // Calcular quantas linhas cabem perfeitamente
-    // Se temos N linhas, temos N-1 gaps entre elas
-    // Fórmula: availableHeight = N * cardHeight + (N-1) * gap
-    // Resolvendo: N = (availableHeight + gap) / (cardHeight + gap)
-    const maxRows = Math.floor((containerDimensions.height + gap) / (cardHeight + gap));
+    // Primeiro, calcular quantas linhas caberiam com a altura base
+    let maxRows = Math.floor((containerDimensions.height + gap) / (baseCardHeight + gap));
+    
+    // Se sobrar muito espaço (mais de 30px), aumentar proporcionalmente o card
+    let cardHeight = baseCardHeight;
+    const usedSpace = maxRows * (cardHeight + gap) - gap;
+    const remainingSpace = containerDimensions.height - usedSpace;
+    
+    if (remainingSpace > 30 && maxRows > 0) {
+      // Distribuir o espaço extra entre os cards
+      const extraPerCard = Math.floor(remainingSpace / maxRows);
+      cardHeight = baseCardHeight + extraPerCard;
+      // Recalcular maxRows com a nova altura do card
+      maxRows = Math.floor((containerDimensions.height + gap) / (cardHeight + gap));
+    }
     
     console.log('OrderColumnGrid Debug:', {
       containerHeight: containerDimensions.height,
-      cardHeight,
+      baseCardHeight,
+      finalCardHeight: cardHeight,
       gap,
       maxRows,
       calculatedSpace: maxRows * (cardHeight + gap) - gap,
       unusedSpace: containerDimensions.height - (maxRows * (cardHeight + gap) - gap),
       columns,
-      maxCards: maxRows * columns
+      maxCards: maxRows * columns,
+      remainingSpace: containerDimensions.height - (maxRows * (baseCardHeight + gap) - gap)
     });
     
     // Limitar cards para não haver cortes
