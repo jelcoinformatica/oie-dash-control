@@ -1768,7 +1768,7 @@ export const ConfigurationPanel = ({
             return (
               <div key={moduleKey} className="space-y-1 p-2 rounded-lg border bg-gray-50/50">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <div className="w-4 h-4 rounded-full bg-white shadow-sm border border-gray-200 flex items-center justify-center">
                       <div className={cn("w-2.5 h-2.5 rounded-full", moduleColors[moduleKey as keyof typeof moduleColors])}></div>
                     </div>
@@ -1780,24 +1780,19 @@ export const ConfigurationPanel = ({
                     <Label className="text-sm font-medium text-gray-700">
                       {moduleLabels[moduleKey as keyof typeof moduleLabels]}
                     </Label>
-                    
-                    {moduleConfig.enabled && (
-                      <>
-                        <Switch 
-                          checked={moduleConfig.showIndicator || false} 
-                          onCheckedChange={(checked) => updateConfig(`modules.${moduleKey}.showIndicator`, checked)}
-                          className="scale-50 ml-2"
-                        />
-                        <div className="flex items-center gap-1">
-                          <div className={cn("w-1.5 h-1.5 rounded-full", moduleConfig.showIndicator ? "bg-green-500" : "bg-gray-300")}></div>
-                          <Label className="text-xs text-gray-600">Exibir indicador</Label>
-                        </div>
-                      </>
-                    )}
                   </div>
-                  
-                  {/* Removido o bullet duplicado - agora está junto ao texto */}
                 </div>
+                
+                {moduleConfig.enabled && (
+                  <div className="flex items-center gap-2 ml-6 mt-1">
+                    <Switch 
+                      checked={moduleConfig.showIndicator || false} 
+                      onCheckedChange={(checked) => updateConfig(`modules.${moduleKey}.showIndicator`, checked)}
+                      className="scale-50"
+                    />
+                    <Label className="text-xs text-gray-600">Exibir indicador</Label>
+                  </div>
+                )}
 
                 {moduleConfig.enabled && (
                   <div className="ml-6 space-y-1 border-l-2 border-gray-200 pl-3">
