@@ -131,7 +131,7 @@ export const ControlPanel = ({
           </UserManual>
         </div>
         
-        {/* Prompt de expedição fixo no centro */}
+        {/* Prompt de expedição perfeitamente centralizado */}
         <div className="absolute left-1/2 transform -translate-x-1/2 flex items-center gap-1">
           <Input
             ref={inputRef}
@@ -159,55 +159,55 @@ export const ControlPanel = ({
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
-
-          {/* Log dos últimos pedidos expedidos - à direita do prompt */}
-          {expeditionLog.length > 0 && (
-            <div className="flex items-center ml-2 max-w-[320px] overflow-hidden">
-              <div className="flex items-center gap-0.5 whitespace-nowrap">
-                {expeditionLog.slice(0, 8).map((logEntry, index) => {
-                  const entryKey = `${logEntry.orderNumber}-${logEntry.expeditionTime.getTime()}`;
-                  const hasRecentEffect = recentAutoExpedited.has(entryKey);
-                  
-                  return (
-                    <div key={`${logEntry.orderNumber}-${index}`} className="flex items-center">
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <span 
-                              className={`text-xs px-0.5 rounded cursor-help transition-all duration-300 ${
-                                hasRecentEffect ? 'animate-pulse bg-red-100/20' : ''
-                              }`}
-                              style={{ 
-                                color: logEntry.isAutoExpedition 
-                                  ? 'rgba(220, 38, 127, 0.8)' // Rosa pastel para autoexpedição
-                                  : 'rgba(0, 0, 0, 0.6)' // Cor normal
-                              }}
-                            >
-                              {/* Extrair apenas os números do pedido */}
-                              {logEntry.orderNumber.replace(/[^\d]/g, '')}
-                            </span>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <div className="text-xs">
-                              <div>Pedido: {logEntry.orderNumber}</div>
-                              <div>Expedido: {logEntry.expeditionTime.toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'})}</div>
-                              {logEntry.isAutoExpedition && <div className="text-red-400">Auto-expedição</div>}
-                            </div>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                      
-                      {/* Bullet separator - não mostrar depois do último item */}
-                      {index < expeditionLog.slice(0, 8).length - 1 && (
-                        <span className="text-gray-600 mx-0.5 text-xs">•</span>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
         </div>
+
+        {/* Log dos últimos pedidos expedidos - posicionado à direita do centro */}
+        {expeditionLog.length > 0 && (
+          <div className="absolute left-1/2 transform translate-x-16 flex items-center max-w-[300px] overflow-hidden">
+            <div className="flex items-center gap-0.5 whitespace-nowrap">
+              {expeditionLog.slice(0, 8).map((logEntry, index) => {
+                const entryKey = `${logEntry.orderNumber}-${logEntry.expeditionTime.getTime()}`;
+                const hasRecentEffect = recentAutoExpedited.has(entryKey);
+                
+                return (
+                  <div key={`${logEntry.orderNumber}-${index}`} className="flex items-center">
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span 
+                            className={`text-xs px-0.5 rounded cursor-help transition-all duration-300 ${
+                              hasRecentEffect ? 'animate-pulse bg-red-100/20' : ''
+                            }`}
+                            style={{ 
+                              color: logEntry.isAutoExpedition 
+                                ? 'rgba(220, 38, 127, 0.8)' // Rosa pastel para autoexpedição
+                                : 'rgba(0, 0, 0, 0.6)' // Cor normal
+                            }}
+                          >
+                            {/* Extrair apenas os números do pedido */}
+                            {logEntry.orderNumber.replace(/[^\d]/g, '')}
+                          </span>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <div className="text-xs">
+                            <div>Pedido: {logEntry.orderNumber}</div>
+                            <div>Expedido: {logEntry.expeditionTime.toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'})}</div>
+                            {logEntry.isAutoExpedition && <div className="text-red-400">Auto-expedição</div>}
+                          </div>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                    
+                    {/* Bullet separator - não mostrar depois do último item */}
+                    {index < expeditionLog.slice(0, 8).length - 1 && (
+                      <span className="text-gray-600 mx-0.5 text-xs">•</span>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
         
         <div className="flex items-center gap-2">
           <div className="text-xs text-muted-foreground">
