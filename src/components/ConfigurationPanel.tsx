@@ -1928,35 +1928,6 @@ export const ConfigurationPanel = ({
                     : "Nenhum indicador será exibido"
                 }
               </div>
-              
-              {/* Botão para resetar */}
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  const resetConfig = {
-                    ...config,
-                    production: {
-                      ...config.production,
-                      cardConfig: {
-                        ...config.production.cardConfig,
-                        moduleIndicator: 'none' as const
-                      }
-                    },
-                    ready: {
-                      ...config.ready,
-                      cardConfig: {
-                        ...config.ready.cardConfig,
-                        moduleIndicator: 'none' as const
-                      }
-                    }
-                  };
-                  onConfigChange(resetConfig);
-                }}
-                className="mt-2 text-xs"
-              >
-                Resetar para "Nenhum indicador"
-              </Button>
             </div>
           </div>
             
