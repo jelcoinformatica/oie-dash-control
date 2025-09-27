@@ -163,8 +163,8 @@ export const ControlPanel = ({
 
         {/* Log dos últimos pedidos expedidos - posicionado à direita do centro */}
         {expeditionLog.length > 0 && (
-          <div className="absolute left-1/2 transform translate-x-16 flex items-center max-w-[300px] overflow-hidden z-10">
-            <div className="flex items-center gap-0.5 whitespace-nowrap">
+          <div className="absolute left-1/2 transform translate-x-16 flex items-center max-w-[350px] overflow-hidden z-10">
+            <div className="flex items-center gap-2 whitespace-nowrap">
               {expeditionLog.slice(0, 8).map((logEntry, index) => {
                 const entryKey = `${logEntry.orderNumber}-${logEntry.expeditionTime.getTime()}`;
                 const hasRecentEffect = recentAutoExpedited.has(entryKey);
@@ -175,7 +175,7 @@ export const ControlPanel = ({
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <span 
-                            className={`text-xs px-1 py-0.5 rounded cursor-help transition-all duration-300 hover:bg-gray-100/50 ${
+                            className={`text-xs px-2 py-1 rounded cursor-help transition-all duration-300 hover:bg-gray-100/50 inline-block ${
                               hasRecentEffect ? 'animate-pulse bg-red-100/20' : ''
                             }`}
                             style={{ 
@@ -200,7 +200,7 @@ export const ControlPanel = ({
                     
                     {/* Bullet separator - não mostrar depois do último item */}
                     {index < expeditionLog.slice(0, 8).length - 1 && (
-                      <span className="text-gray-600 mx-0.5 text-xs">•</span>
+                      <span className="text-gray-600 mx-1 text-xs select-none">•</span>
                     )}
                   </div>
                 );
