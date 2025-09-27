@@ -9,7 +9,7 @@ import { UserManual } from './UserManual';
 interface ControlPanelProps {
   onConfigClick: () => void;
   onExpedite: (orderNumber: string) => void;
-  expeditionLog?: Array<{orderNumber: string, nickname?: string, expeditionTime: Date, isAutoExpedition?: boolean}>;
+  expeditionLog?: Array<{orderNumber: string, nickname?: string, expeditionTime: Date, createdAt?: Date, isAutoExpedition?: boolean}>;
   configOpen?: boolean;
   isKioskMode?: boolean;
   onToggleKiosk: () => void;
@@ -190,8 +190,10 @@ export const ControlPanel = ({
                         </TooltipTrigger>
                         <TooltipContent side="top" className="z-[100] bg-gray-800 text-white border border-gray-600">
                           <div className="text-xs">
-                            <div>Pedido: {logEntry.orderNumber}</div>
                             <div>Expedido: {logEntry.expeditionTime.toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'})}</div>
+                            {logEntry.createdAt && (
+                              <div>Tempo: {Math.floor((logEntry.expeditionTime.getTime() - logEntry.createdAt.getTime()) / 60000)}min</div>
+                            )}
                             {logEntry.isAutoExpedition && <div className="text-red-400">Auto-expedição</div>}
                           </div>
                         </TooltipContent>

@@ -27,7 +27,7 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
   const [lastOrderData, setLastOrderData] = useState<Order | null>(null);
   const [loading, setLoading] = useState(false);
   const [isSimulationActive, setIsSimulationActive] = useState(false);
-  const [expeditionLog, setExpeditionLog] = useState<Array<{orderNumber: string, nickname?: string, expeditionTime: Date, isAutoExpedition?: boolean}>>([]);
+  const [expeditionLog, setExpeditionLog] = useState<Array<{orderNumber: string, nickname?: string, expeditionTime: Date, createdAt?: Date, isAutoExpedition?: boolean}>>([]);
   
   const { speak } = useTextToSpeech();
   const previousLastOrderNumber = useRef<string>('');
@@ -182,6 +182,7 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
           orderNumber: order.numeroPedido || order.number || '',
           nickname: order.nomeCliente,
           expeditionTime: new Date(),
+          createdAt: order.createdAt || order.ultimoConsumo || new Date(),
           isAutoExpedition: false
         }, ...prev].slice(0, 10));
           
@@ -226,6 +227,7 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
           orderNumber: order.numeroPedido || order.number || '',
           nickname: order.nomeCliente,
           expeditionTime: new Date(),
+          createdAt: order.createdAt || order.ultimoConsumo || new Date(),
           isAutoExpedition: false
         }, ...prev].slice(0, 10));
         
