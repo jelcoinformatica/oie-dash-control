@@ -206,12 +206,15 @@ export const OrderCard = ({
         </div>
 
         {/* Apelido embaixo */}
-        <div className="flex-shrink-0 h-4 flex items-end justify-center">
+        <div className="flex-shrink-0 w-full flex items-center justify-center px-1">
           {displayName && showNickname && displayNumber && (
             <div 
-              className="font-medium text-center leading-none"
+              className="font-medium text-center leading-tight break-words hyphens-auto w-full"
               style={{ 
-                fontSize: `${fontSize * 0.5}rem`
+                fontSize: `${fontSize * 0.5}rem`,
+                wordBreak: 'break-word',
+                overflowWrap: 'break-word',
+                hyphens: 'auto'
               }}
             >
               {displayName}
