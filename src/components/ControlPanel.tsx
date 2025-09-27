@@ -116,7 +116,8 @@ export const ControlPanel = ({
             <span className="text-muted-foreground/60">|</span>
             <span>Host: <span className="font-mono text-xs">servidor</span></span>
             <span className="text-muted-foreground/60">|</span>
-            <span>Banco: <span className="font-mono text-xs">colibri</span></span>
+            <span>Database: <span className="font-mono text-xs">colibri</span></span>
+            <span className="text-muted-foreground/60">|</span>
           </div>
           
           <UserManual>
