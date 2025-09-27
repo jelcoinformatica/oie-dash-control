@@ -175,7 +175,7 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
                           advertising: { ...config.advertising, headerHeight: value }
                         });
                       }}
-                      min={40}
+                      min={20}
                       max={120}
                       step={4}
                       className="mt-1 h-1"
@@ -520,14 +520,14 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
             )}
 
             {activeControl === 'last-order' && (
-              <div className="space-y-4">
-                <h4 className="font-medium text-gray-800 flex items-center gap-2">
-                  <Target className="w-4 h-4" />
+              <div className="space-y-2">
+                <h4 className="font-medium text-gray-800 flex items-center gap-2 text-sm">
+                  <Target className="w-3 h-3 text-orange-600" />
                   Último Pedido
                 </h4>
-                <div className="space-y-3">
+                <div className="space-y-1">
                   <div>
-                    <Label className="text-sm">Altura: {config.lastOrder.height}px</Label>
+                    <Label className="text-xs">Altura: {config.lastOrder.height}px</Label>
                     <Slider
                       value={[config.lastOrder.height]}
                       onValueChange={([value]) => {
@@ -535,14 +535,14 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
                           lastOrder: { ...config.lastOrder, height: value }
                         });
                       }}
-                      min={50}
-                      max={500}
+                      min={30}
+                      max={300}
                       step={5}
-                      className="mt-2"
+                      className="mt-1 h-1"
                     />
                   </div>
                   <div>
-                    <Label className="text-sm">Tamanho da Fonte: {config.lastOrder.fontSize}</Label>
+                    <Label className="text-xs">Tamanho da Fonte: {config.lastOrder.fontSize}</Label>
                     <Slider
                       value={[config.lastOrder.fontSize]}
                       onValueChange={([value]) => {
@@ -550,10 +550,10 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
                           lastOrder: { ...config.lastOrder, fontSize: value }
                         });
                       }}
-                      min={2}
-                      max={20}
+                      min={1}
+                      max={15}
                       step={0.2}
-                      className="mt-2"
+                      className="mt-1 h-1"
                     />
                   </div>
                 </div>
