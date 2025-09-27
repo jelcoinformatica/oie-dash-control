@@ -159,24 +159,22 @@ export const ControlPanel = ({
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
-        </div>
 
-        {/* Log dos últimos pedidos expedidos - separado e limitado */}
-        {expeditionLog.length > 0 && (
-          <div className="absolute flex items-center justify-center w-full pointer-events-none">
-            <div className="flex items-center gap-1" style={{ marginLeft: '120px', maxWidth: 'calc(50% - 60px)' }}>
-              <div className="flex items-center gap-1 whitespace-nowrap overflow-hidden">
-                {expeditionLog.slice(0, 10).map((logEntry, index) => {
+          {/* Log dos últimos pedidos expedidos - à direita do prompt */}
+          {expeditionLog.length > 0 && (
+            <div className="flex items-center ml-3 max-w-[200px] overflow-hidden">
+              <div className="flex items-center gap-0.5 whitespace-nowrap">
+                {expeditionLog.slice(0, 8).map((logEntry, index) => {
                   const entryKey = `${logEntry.orderNumber}-${logEntry.expeditionTime.getTime()}`;
                   const hasRecentEffect = recentAutoExpedited.has(entryKey);
                   
                   return (
-                    <div key={`${logEntry.orderNumber}-${index}`} className="flex items-center pointer-events-auto">
+                    <div key={`${logEntry.orderNumber}-${index}`} className="flex items-center">
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <span 
-                              className={`text-xs px-1 rounded cursor-help transition-all duration-300 ${
+                              className={`text-xs px-0.5 rounded cursor-help transition-all duration-300 ${
                                 hasRecentEffect ? 'animate-pulse bg-red-100/20' : ''
                               }`}
                               style={{ 
@@ -200,16 +198,16 @@ export const ControlPanel = ({
                       </TooltipProvider>
                       
                       {/* Bullet separator - não mostrar depois do último item */}
-                      {index < expeditionLog.slice(0, 10).length - 1 && (
-                        <span className="text-gray-400 mx-1 text-xs">•</span>
+                      {index < expeditionLog.slice(0, 8).length - 1 && (
+                        <span className="text-gray-400 mx-0.5 text-xs">•</span>
                       )}
                     </div>
                   );
                 })}
               </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
         
         <div className="flex items-center gap-2">
           <div className="text-xs text-muted-foreground">
