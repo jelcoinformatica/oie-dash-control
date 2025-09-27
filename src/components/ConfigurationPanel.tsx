@@ -1874,13 +1874,10 @@ export const ConfigurationPanel = ({
               <select
                 value={config.production.cardConfig.moduleIndicator || 'none'}
                 onChange={(e) => {
-                  console.log('Selecionando tipo de indicador:', e.target.value);
-                  console.log('Config antes:', config.production.cardConfig.moduleIndicator);
-                  updateConfig('production.cardConfig.moduleIndicator', e.target.value);
-                  updateConfig('ready.cardConfig.moduleIndicator', e.target.value);
-                  setTimeout(() => {
-                    console.log('Config depois:', config.production.cardConfig.moduleIndicator);
-                  }, 100);
+                  const selectedValue = e.target.value as 'none' | 'bullet' | 'tag' | 'border';
+                  console.log('Selecionando tipo de indicador:', selectedValue);
+                  updateConfig('production.cardConfig.moduleIndicator', selectedValue);
+                  updateConfig('ready.cardConfig.moduleIndicator', selectedValue);
                 }}
                 className="w-full h-8 px-3 text-sm border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
@@ -1899,6 +1896,19 @@ export const ConfigurationPanel = ({
                   : "Nenhum indicador será exibido"
                 }
               </div>
+              
+              {/* Botão para resetar */}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  updateConfig('production.cardConfig.moduleIndicator', 'none');
+                  updateConfig('ready.cardConfig.moduleIndicator', 'none');
+                }}
+                className="mt-2 text-xs"
+              >
+                Resetar para padrão
+              </Button>
             </div>
           </div>
             
