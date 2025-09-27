@@ -410,7 +410,7 @@ export const ConfigurationPanel = ({
           onToggle={() => toggleSection('panel')}
           colorClass="text-indigo-600"
         >
-          <div className="space-y-3">
+          <div className="space-y-2">
             <div>
               <Label className="text-xs font-medium">Número do Painel</Label>
               <Input
