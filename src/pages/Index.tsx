@@ -7,6 +7,7 @@ import { LastOrderDisplay } from '../components/LastOrderDisplay';
 import { AdvertisingColumn } from '../components/AdvertisingColumn';
 import { ControlPanel } from '../components/ControlPanel';
 import { ConfigurationPanel } from '../components/ConfigurationPanel';
+import { OverlayControls } from '../components/OverlayControls';
 import { SplashScreen } from '../components/SplashScreen';
 import { defaultConfig } from '../data/defaultConfig';
 import { PanelConfig } from '../types/order';
@@ -25,6 +26,7 @@ const Index = () => {
   const [showSplash, setShowSplash] = useState(false);
   const [isKioskMode, setIsKioskMode] = useState(true);
   const [productionPopupOpen, setProductionPopupOpen] = useState(false);
+  const [overlayControlsVisible, setOverlayControlsVisible] = useState(false);
   
   // Estabilizar ttsConfig para evitar recriações desnecessárias
   const ttsConfig = useMemo(() => 
@@ -201,7 +203,9 @@ const Index = () => {
 
   const handleConfigChange = (newConfig: PanelConfig) => {
     setConfig(newConfig);
-    // Não salva no localStorage aqui para permitir visualização em tempo real
+    // Salva imediatamente para controles overlay
+    localStorage.setItem('oie-config', JSON.stringify(newConfig));
+    // Não salva no localStorage aqui para permitir visualização em tempo real do painel de configuração
   };
 
   const handleSaveConfig = () => {
@@ -772,6 +776,14 @@ const Index = () => {
         onCancel={handleCancelConfig}
         clearAllOrders={clearAllOrders}
         generateOrders={(count) => generateOrders(count, config)}
+      />
+      
+      {/* Controles Overlay */}
+      <OverlayControls
+        config={config}
+        onConfigChange={handleConfigChange}
+        visible={overlayControlsVisible}
+        onToggle={() => setOverlayControlsVisible(!overlayControlsVisible)}
       />
       
       {/* Overlay */}
