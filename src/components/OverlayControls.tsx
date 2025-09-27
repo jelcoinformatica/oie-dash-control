@@ -27,16 +27,28 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
       color: 'bg-blue-500 hover:bg-blue-600'
     },
     {
-      id: 'vertical-gap',
-      label: 'Gap Vertical',
+      id: 'col1-vertical',
+      label: 'Col1 Vertical',
       icon: <ArrowUpDown className="w-4 h-4" />,
       color: 'bg-green-500 hover:bg-green-600'
     },
     {
-      id: 'horizontal-gap',
-      label: 'Gap Horizontal',
+      id: 'col1-horizontal',
+      label: 'Col1 Horizontal',
       icon: <ArrowLeftRight className="w-4 h-4" />,
-      color: 'bg-purple-500 hover:bg-purple-600'
+      color: 'bg-green-500 hover:bg-green-600'
+    },
+    {
+      id: 'col2-vertical',
+      label: 'Col2 Vertical',
+      icon: <ArrowUpDown className="w-4 h-4" />,
+      color: 'bg-indigo-500 hover:bg-indigo-600'
+    },
+    {
+      id: 'col2-horizontal',
+      label: 'Col2 Horizontal',
+      icon: <ArrowLeftRight className="w-4 h-4" />,
+      color: 'bg-indigo-500 hover:bg-indigo-600'
     },
     {
       id: 'last-order',
@@ -82,7 +94,7 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
             </Button>
           </div>
           
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-3 gap-2">
             {controlButtons.map((button) => (
               <Button
                 key={button.id}
@@ -132,11 +144,11 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
               </div>
             )}
 
-            {activeControl === 'vertical-gap' && (
+            {activeControl === 'col1-vertical' && (
               <div className="space-y-4">
                 <h4 className="font-medium text-gray-800 flex items-center gap-2">
-                  <ArrowUpDown className="w-4 h-4" />
-                  Espaçamento Vertical dos Cards
+                  <ArrowUpDown className="w-4 h-4 text-green-600" />
+                  Coluna 1 - Gap Vertical
                 </h4>
                 <div className="space-y-3">
                   <div>
@@ -148,7 +160,61 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
                           production: { 
                             ...config.production, 
                             cardConfig: { ...config.production.cardConfig, gapVertical: value }
-                          },
+                          }
+                        });
+                      }}
+                      min={0}
+                      max={20}
+                      step={1}
+                      className="mt-2"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeControl === 'col1-horizontal' && (
+              <div className="space-y-4">
+                <h4 className="font-medium text-gray-800 flex items-center gap-2">
+                  <ArrowLeftRight className="w-4 h-4 text-green-600" />
+                  Coluna 1 - Gap Horizontal
+                </h4>
+                <div className="space-y-3">
+                  <div>
+                    <Label className="text-sm">Gap Horizontal: {config.production.cardConfig.gapHorizontal}px</Label>
+                    <Slider
+                      value={[config.production.cardConfig.gapHorizontal || 4]}
+                      onValueChange={([value]) => {
+                        updateConfig({
+                          production: { 
+                            ...config.production, 
+                            cardConfig: { ...config.production.cardConfig, gapHorizontal: value }
+                          }
+                        });
+                      }}
+                      min={0}
+                      max={20}
+                      step={1}
+                      className="mt-2"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeControl === 'col2-vertical' && (
+              <div className="space-y-4">
+                <h4 className="font-medium text-gray-800 flex items-center gap-2">
+                  <ArrowUpDown className="w-4 h-4 text-indigo-600" />
+                  Coluna 2 - Gap Vertical
+                </h4>
+                <div className="space-y-3">
+                  <div>
+                    <Label className="text-sm">Gap Vertical: {config.ready.cardConfig.gapVertical}px</Label>
+                    <Slider
+                      value={[config.ready.cardConfig.gapVertical || 4]}
+                      onValueChange={([value]) => {
+                        updateConfig({
                           ready: { 
                             ...config.ready, 
                             cardConfig: { ...config.ready.cardConfig, gapVertical: value }
@@ -165,23 +231,19 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
               </div>
             )}
 
-            {activeControl === 'horizontal-gap' && (
+            {activeControl === 'col2-horizontal' && (
               <div className="space-y-4">
                 <h4 className="font-medium text-gray-800 flex items-center gap-2">
-                  <ArrowLeftRight className="w-4 h-4" />
-                  Espaçamento Horizontal dos Cards
+                  <ArrowLeftRight className="w-4 h-4 text-indigo-600" />
+                  Coluna 2 - Gap Horizontal
                 </h4>
                 <div className="space-y-3">
                   <div>
-                    <Label className="text-sm">Gap Horizontal: {config.production.cardConfig.gapHorizontal}px</Label>
+                    <Label className="text-sm">Gap Horizontal: {config.ready.cardConfig.gapHorizontal}px</Label>
                     <Slider
-                      value={[config.production.cardConfig.gapHorizontal || 4]}
+                      value={[config.ready.cardConfig.gapHorizontal || 4]}
                       onValueChange={([value]) => {
                         updateConfig({
-                          production: { 
-                            ...config.production, 
-                            cardConfig: { ...config.production.cardConfig, gapHorizontal: value }
-                          },
                           ready: { 
                             ...config.ready, 
                             cardConfig: { ...config.ready.cardConfig, gapHorizontal: value }
