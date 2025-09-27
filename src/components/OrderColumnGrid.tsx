@@ -117,9 +117,10 @@ export const OrderColumnGrid = ({
     }
     
     // Calcular quantas linhas cabem perfeitamente
-    const totalVerticalGaps = gap;
-    const availableHeight = containerDimensions.height - totalVerticalGaps;
-    const maxRows = Math.floor(availableHeight / (cardHeight + gap));
+    // Se temos N linhas, temos N-1 gaps entre elas
+    // Fórmula: availableHeight = N * cardHeight + (N-1) * gap
+    // Resolvendo: N = (availableHeight + gap) / (cardHeight + gap)
+    const maxRows = Math.floor((containerDimensions.height + gap) / (cardHeight + gap));
     
     // Limitar cards para não haver cortes
     const maxVisibleCards = Math.max(0, maxRows * columns);
