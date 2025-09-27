@@ -272,34 +272,33 @@ const Index = () => {
         <SplashScreen onComplete={() => setShowSplash(false)} />
       )}
 
-      {/* Header de Identificação do Painel */}
-      {config.panel.displayLocation === 'above-headers' && (
-        <div 
-          className="w-full flex items-center justify-center py-4 border-b"
-          style={{
-            backgroundColor: config.ready.headerBg,
-            color: config.ready.headerColor,
-            height: `${config.ready.headerHeight}px`,
-            fontFamily: config.ready.headerFontFamily,
-            fontSize: `${config.ready.headerFontSize}rem`
-          }}
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-3 h-3 bg-current rounded-full animate-pulse opacity-80"></div>
-            <div className="text-center font-bold">
-              PAINEL {config.panel.id} - {config.panel.name.toUpperCase()}
-              {config.panel.location && (
-                <span className="ml-3 opacity-80">• {config.panel.location.toUpperCase()}</span>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-
       <div
-        className="flex-1 flex flex-col"
+        className="min-h-screen h-screen flex flex-col"
         style={{ backgroundColor: config.backgroundColor, position: 'relative' }}
       >
+        {/* Header de Identificação do Painel */}
+        {config.panel.displayLocation === 'above-headers' && (
+          <div 
+            className="w-full flex items-center justify-center py-4 border-b flex-shrink-0"
+            style={{
+              backgroundColor: config.ready.headerBg,
+              color: config.ready.headerColor,
+              height: `${config.ready.headerHeight}px`,
+              fontFamily: config.ready.headerFontFamily,
+              fontSize: `${config.ready.headerFontSize}rem`
+            }}
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-3 h-3 bg-current rounded-full animate-pulse opacity-80"></div>
+              <div className="text-center font-bold">
+                PAINEL {config.panel.id} - {config.panel.name.toUpperCase()}
+                {config.panel.location && (
+                  <span className="ml-3 opacity-80">• {config.panel.location.toUpperCase()}</span>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
       <div className={`flex-1 flex gap-0.5 p-1 pt-1 h-full overflow-hidden ${isTablet ? 'pb-12' : ''}`}>
         {/* Coluna 1 - Produção */}
         {config.production.visible && (
