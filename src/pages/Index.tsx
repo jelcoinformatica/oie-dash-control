@@ -12,7 +12,6 @@ import { defaultConfig } from '../data/defaultConfig';
 import { PanelConfig } from '../types/order';
 import { toast } from '../hooks/use-toast';
 import { useIsTablet } from '../hooks/use-mobile';
-import { PanelIdentification } from '../components/PanelIdentification';
 import { Popover, PopoverContent, PopoverTrigger } from '../components/ui/popover';
 
 const Index = () => {
@@ -268,12 +267,29 @@ const Index = () => {
 
   return (
     <>
-      {/* Identificação do Painel */}
-      <PanelIdentification panel={config.panel} />
-
       {/* Splash Screen */}
       {showSplash && (
         <SplashScreen onComplete={() => setShowSplash(false)} />
+      )}
+
+      {/* Identificação do Painel - Acima dos Cabeçalhos */}
+      {config.panel.displayLocation === 'above-headers' && (
+        <div className="fixed top-4 left-4 z-50 bg-background/90 backdrop-blur-sm border rounded-lg px-3 py-2 shadow-lg">
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
+            <div className="text-sm">
+              <span className="font-semibold text-primary">Painel {config.panel.id}</span>
+              <span className="text-muted-foreground mx-2">•</span>
+              <span className="text-foreground">{config.panel.name}</span>
+              {config.panel.location && (
+                <>
+                  <span className="text-muted-foreground mx-2">•</span>
+                  <span className="text-muted-foreground text-xs">{config.panel.location}</span>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
       )}
 
       <div
@@ -283,7 +299,12 @@ const Index = () => {
       <div className={`flex-1 flex gap-0.5 p-1 pt-1 h-full overflow-hidden ${isTablet ? 'pb-12' : ''}`}>
         {/* Coluna 1 - Produção */}
         {config.production.visible && (
-          <div style={{ width: `${columnWidths.production}%` }} className="h-full">
+          <div style={{ width: `${columnWidths.production}%` }} className="h-full relative">
+            {config.panel.displayLocation === 'column1' && (
+              <div className="absolute top-2 right-2 bg-primary/90 backdrop-blur-sm text-primary-foreground rounded px-2 py-1 text-xs font-medium shadow-sm z-10">
+                P{config.panel.id}
+              </div>
+            )}
             <OrderColumn
               title={config.production.title}
               orders={productionOrders}
@@ -311,7 +332,12 @@ const Index = () => {
         )}
 
         {/* Coluna 2 - Prontos */}
-        <div style={{ width: `${columnWidths.ready}%` }} className="h-full">
+        <div style={{ width: `${columnWidths.ready}%` }} className="h-full relative">
+          {config.panel.displayLocation === 'column2' && (
+            <div className="absolute top-2 right-2 bg-primary/90 backdrop-blur-sm text-primary-foreground rounded px-2 py-1 text-xs font-medium shadow-sm z-10">
+              P{config.panel.id}
+            </div>
+          )}
           <div className="flex flex-col h-full">
             <div 
               className={`bg-white rounded-lg shadow-lg flex flex-col overflow-hidden h-full ${config.ready.showBorder ? 'ring-2 ring-blue-200' : ''}`}
@@ -413,7 +439,12 @@ const Index = () => {
 
         {/* Coluna 3 - Publicidade */}
         {config.advertising.visible && (
-          <div style={{ width: `${columnWidths.advertising}%` }} className="h-full">
+          <div style={{ width: `${columnWidths.advertising}%` }} className="h-full relative">
+            {config.panel.displayLocation === 'column3' && (
+              <div className="absolute top-2 right-2 bg-primary/90 backdrop-blur-sm text-primary-foreground rounded px-2 py-1 text-xs font-medium shadow-sm z-10">
+                P{config.panel.id}
+              </div>
+            )}
             <AdvertisingColumn
               title={config.advertising.headerTitle}
               showHeader={config.advertising.headerVisible}

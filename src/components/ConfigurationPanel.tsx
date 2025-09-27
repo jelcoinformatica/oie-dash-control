@@ -138,6 +138,7 @@ export const ConfigurationPanel = ({
     diversosDatabase: false,
     diversosBackup: false,
     diversosStore: false,
+    diversosPanel: false,
     diversosScreen: false
   });
 
@@ -2045,6 +2046,80 @@ export const ConfigurationPanel = ({
                   onChange={(e) => updateConfig('store.numeroLicenca', e.target.value)}
                   className="h-6"
                   placeholder="LIC-12345"
+                />
+              </div>
+            </div>
+          </SubConfigSection>
+
+          <SubConfigSection
+            title="Identificação do Painel"
+            isOpen={openSubSections.diversosPanel}
+            onToggle={() => toggleSubSection('diversosPanel')}
+            icon={<Monitor className="w-3 h-3" />}
+          >
+            <div className="space-y-3">
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <Label className="text-xs">Número do Painel</Label>
+                  <Input
+                    type="number"
+                    min="1"
+                    value={config.panel.id}
+                    onChange={(e) => onConfigChange({
+                      ...config,
+                      panel: { ...config.panel, id: parseInt(e.target.value) || 1 }
+                    })}
+                    className="h-6"
+                  />
+                </div>
+                <div>
+                  <Label className="text-xs">Onde Exibir</Label>
+                  <Select
+                    value={config.panel.displayLocation}
+                    onValueChange={(value: 'column1' | 'column2' | 'column3' | 'above-headers' | 'none') => 
+                      onConfigChange({
+                        ...config,
+                        panel: { ...config.panel, displayLocation: value }
+                      })
+                    }
+                  >
+                    <SelectTrigger className="h-6">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">Não exibir</SelectItem>
+                      <SelectItem value="column1">Coluna 1</SelectItem>
+                      <SelectItem value="column2">Coluna 2</SelectItem>
+                      <SelectItem value="column3">Coluna 3</SelectItem>
+                      <SelectItem value="above-headers">Acima dos cabeçalhos</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <div>
+                <Label className="text-xs">Nome do Painel</Label>
+                <Input
+                  type="text"
+                  value={config.panel.name}
+                  onChange={(e) => onConfigChange({
+                    ...config,
+                    panel: { ...config.panel, name: e.target.value }
+                  })}
+                  className="h-6"
+                  placeholder="Ex: Painel Principal"
+                />
+              </div>
+              <div>
+                <Label className="text-xs">Localização</Label>
+                <Input
+                  type="text"
+                  value={config.panel.location}
+                  onChange={(e) => onConfigChange({
+                    ...config,
+                    panel: { ...config.panel, location: e.target.value }
+                  })}
+                  className="h-6"
+                  placeholder="Ex: Balcão Principal"
                 />
               </div>
             </div>
