@@ -163,15 +163,17 @@ export const ControlPanel = ({
 
         {/* Log dos últimos pedidos expedidos - posicionado à direita do centro */}
         {expeditionLog.length > 0 && (
-          <div className="absolute left-1/2 transform translate-x-16 flex items-center max-w-[350px] overflow-hidden z-10">
-            <div className="flex items-center gap-2 whitespace-nowrap">
-              {expeditionLog.slice(0, 8).map((logEntry, index) => {
-                const entryKey = `${logEntry.orderNumber}-${logEntry.expeditionTime.getTime()}`;
-                const hasRecentEffect = recentAutoExpedited.has(entryKey);
-                
-                return (
-                  <div key={`${logEntry.orderNumber}-${index}`} className="flex items-center">
-                    <TooltipProvider>
+          <TooltipProvider>
+            <div className="absolute left-1/2 transform translate-x-16 flex items-center max-w-[350px] overflow-visible z-10">
+              <div className="flex items-center gap-2 whitespace-nowrap">
+                {expeditionLog.slice(0, 8).map((logEntry, index) => {
+                  const entryKey = `${logEntry.orderNumber}-${logEntry.expeditionTime.getTime()}`;
+                  const hasRecentEffect = recentAutoExpedited.has(entryKey);
+                  
+                  console.log('Rendering log entry:', logEntry.orderNumber); // Debug log
+                  
+                  return (
+                    <div key={`${logEntry.orderNumber}-${index}`} className="flex items-center">
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <span 
@@ -183,12 +185,14 @@ export const ControlPanel = ({
                                 ? 'rgba(220, 38, 127, 0.8)' // Rosa pastel para autoexpedição
                                 : 'rgba(0, 0, 0, 0.6)' // Cor normal
                             }}
+                            onMouseEnter={() => console.log('Mouse entered log:', logEntry.orderNumber)} // Debug log
+                            onMouseLeave={() => console.log('Mouse left log:', logEntry.orderNumber)} // Debug log
                           >
                             {/* Extrair apenas os números do pedido */}
                             {logEntry.orderNumber.replace(/[^\d]/g, '')}
                           </span>
                         </TooltipTrigger>
-                        <TooltipContent side="top" className="z-50">
+                        <TooltipContent side="top" className="z-[100] bg-gray-800 text-white border border-gray-600">
                           <div className="text-xs">
                             <div>Pedido: {logEntry.orderNumber}</div>
                             <div>Expedido: {logEntry.expeditionTime.toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'})}</div>
@@ -196,17 +200,17 @@ export const ControlPanel = ({
                           </div>
                         </TooltipContent>
                       </Tooltip>
-                    </TooltipProvider>
-                    
-                    {/* Bullet separator - não mostrar depois do último item */}
-                    {index < expeditionLog.slice(0, 8).length - 1 && (
-                      <span className="text-gray-600 mx-1 text-xs select-none">•</span>
-                    )}
-                  </div>
-                );
-              })}
+                      
+                      {/* Bullet separator - não mostrar depois do último item */}
+                      {index < expeditionLog.slice(0, 8).length - 1 && (
+                        <span className="text-gray-600 mx-1 text-xs select-none pointer-events-none">•</span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
-          </div>
+          </TooltipProvider>
         )}
         
         <div className="flex items-center gap-2">
