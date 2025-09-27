@@ -244,6 +244,28 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
                       className="mt-2"
                     />
                   </div>
+                  <div>
+                    <Label className="text-sm">Altura do Card: {config.production.cardConfig.cardMinHeight}px</Label>
+                    <Slider
+                      value={[config.production.cardConfig.cardMinHeight]}
+                      onValueChange={([value]) => {
+                        updateConfig({
+                          production: { 
+                            ...config.production, 
+                            cardConfig: { 
+                              ...config.production.cardConfig, 
+                              cardMinHeight: value,
+                              cardMaxHeight: Math.max(value, config.production.cardConfig.cardMaxHeight)
+                            }
+                          }
+                        });
+                      }}
+                      min={40}
+                      max={200}
+                      step={5}
+                      className="mt-2"
+                    />
+                  </div>
                 </div>
               </div>
             )}
@@ -317,6 +339,28 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
                       min={1.5}
                       max={6}
                       step={0.1}
+                      className="mt-2"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-sm">Altura do Card: {config.ready.cardConfig.cardMinHeight}px</Label>
+                    <Slider
+                      value={[config.ready.cardConfig.cardMinHeight]}
+                      onValueChange={([value]) => {
+                        updateConfig({
+                          ready: { 
+                            ...config.ready, 
+                            cardConfig: { 
+                              ...config.ready.cardConfig, 
+                              cardMinHeight: value,
+                              cardMaxHeight: Math.max(value, config.ready.cardConfig.cardMaxHeight)
+                            }
+                          }
+                        });
+                      }}
+                      min={40}
+                      max={200}
+                      step={5}
                       className="mt-2"
                     />
                   </div>
