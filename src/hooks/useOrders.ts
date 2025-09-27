@@ -177,13 +177,13 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
             }
           }
           
-        // Adicionar ao log de expedição (no início da lista)
+        // Adicionar ao log de expedição (no início da lista) - manter últimos 10
         setExpeditionLog(prev => [{
           orderNumber: order.numeroPedido || order.number || '',
           nickname: order.nomeCliente,
           expeditionTime: new Date(),
           isAutoExpedition: false
-        }, ...prev.slice(0, 9)]);
+        }, ...prev].slice(0, 10));
           
           // toast({
           //   title: "Pedido Retornado",
@@ -221,13 +221,13 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
           }
         }
         
-        // Adicionar ao log de expedição (no início da lista)
+        // Adicionar ao log de expedição (no início da lista) - manter últimos 10
         setExpeditionLog(prev => [{
           orderNumber: order.numeroPedido || order.number || '',
           nickname: order.nomeCliente,
           expeditionTime: new Date(),
           isAutoExpedition: false
-        }, ...prev.slice(0, 9)]);
+        }, ...prev].slice(0, 10));
         
         // toast({
         //   title: "Pedido Expedido",
