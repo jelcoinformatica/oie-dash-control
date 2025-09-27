@@ -1756,14 +1756,23 @@ export const ConfigurationPanel = ({
                   </div>
                 </div>
                 
-                {moduleConfig.enabled && (
+                 {moduleConfig.enabled && (
                   <div className="flex items-center gap-2 ml-6 mt-1">
                     <Switch 
                       checked={moduleConfig.showIndicator || false} 
                       onCheckedChange={(checked) => updateConfig(`modules.${moduleKey}.showIndicator`, checked)}
                       className="scale-50"
                     />
-                    <Label className="text-xs text-gray-600">Exibir indicador</Label>
+                    <Label className="text-xs text-gray-600">
+                      {config.production.cardConfig.moduleIndicator === 'bullet' 
+                        ? "Exibir Bullets"
+                        : config.production.cardConfig.moduleIndicator === 'tag'
+                        ? "Exibir Etiquetas"
+                        : config.production.cardConfig.moduleIndicator === 'border'
+                        ? "Exibir Bordas"
+                        : "Exibir indicador"
+                      }
+                    </Label>
                   </div>
                 )}
 
@@ -1963,8 +1972,24 @@ export const ConfigurationPanel = ({
               <span className="text-sm font-medium text-gray-700">
                 Status: {
                   Object.values(config.modules).some(m => m.enabled && m.showIndicator)
-                    ? "Alguns módulos exibirão indicadores"
-                    : "Nenhum módulo exibirá indicadores"
+                    ? `Alguns módulos exibirão ${
+                        config.production.cardConfig.moduleIndicator === 'bullet' 
+                          ? 'bullets'
+                          : config.production.cardConfig.moduleIndicator === 'tag'
+                          ? 'etiquetas'
+                          : config.production.cardConfig.moduleIndicator === 'border'
+                          ? 'bordas'
+                          : 'indicadores'
+                      }`
+                    : `Nenhum módulo exibirá ${
+                        config.production.cardConfig.moduleIndicator === 'bullet' 
+                          ? 'bullets'
+                          : config.production.cardConfig.moduleIndicator === 'tag'
+                          ? 'etiquetas'
+                          : config.production.cardConfig.moduleIndicator === 'border'
+                          ? 'bordas'
+                          : 'indicadores'
+                      }`
                 }
               </span>
             </div>
