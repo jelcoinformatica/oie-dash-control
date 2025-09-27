@@ -205,7 +205,7 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
               <div className="space-y-4">
                 <h4 className="font-medium text-gray-800 flex items-center gap-2">
                   <ArrowUpDown className="w-4 h-4 text-green-600" />
-                  Coluna 1 - Gap Vertical
+                  Coluna 1 - Vertical & Fonte
                 </h4>
                 <div className="space-y-3">
                   <div>
@@ -226,6 +226,24 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
                       className="mt-2"
                     />
                   </div>
+                  <div>
+                    <Label className="text-sm">Tamanho da Fonte: {config.production.cardConfig.fontSize}</Label>
+                    <Slider
+                      value={[config.production.cardConfig.fontSize]}
+                      onValueChange={([value]) => {
+                        updateConfig({
+                          production: { 
+                            ...config.production, 
+                            cardConfig: { ...config.production.cardConfig, fontSize: value }
+                          }
+                        });
+                      }}
+                      min={1.5}
+                      max={6}
+                      step={0.1}
+                      className="mt-2"
+                    />
+                  </div>
                 </div>
               </div>
             )}
@@ -234,7 +252,7 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
               <div className="space-y-4">
                 <h4 className="font-medium text-gray-800 flex items-center gap-2">
                   <ArrowLeftRight className="w-4 h-4 text-green-600" />
-                  Coluna 1 - Gap Horizontal
+                  Coluna 1 - Horizontal
                 </h4>
                 <div className="space-y-3">
                   <div>
@@ -263,7 +281,7 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
               <div className="space-y-4">
                 <h4 className="font-medium text-gray-800 flex items-center gap-2">
                   <ArrowUpDown className="w-4 h-4 text-indigo-600" />
-                  Coluna 2 - Gap Vertical
+                  Coluna 2 - Vertical & Fonte
                 </h4>
                 <div className="space-y-3">
                   <div>
@@ -284,6 +302,24 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
                       className="mt-2"
                     />
                   </div>
+                  <div>
+                    <Label className="text-sm">Tamanho da Fonte: {config.ready.cardConfig.fontSize}</Label>
+                    <Slider
+                      value={[config.ready.cardConfig.fontSize]}
+                      onValueChange={([value]) => {
+                        updateConfig({
+                          ready: { 
+                            ...config.ready, 
+                            cardConfig: { ...config.ready.cardConfig, fontSize: value }
+                          }
+                        });
+                      }}
+                      min={1.5}
+                      max={6}
+                      step={0.1}
+                      className="mt-2"
+                    />
+                  </div>
                 </div>
               </div>
             )}
@@ -292,7 +328,7 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
               <div className="space-y-4">
                 <h4 className="font-medium text-gray-800 flex items-center gap-2">
                   <ArrowLeftRight className="w-4 h-4 text-indigo-600" />
-                  Coluna 2 - Gap Horizontal
+                  Coluna 2 - Horizontal
                 </h4>
                 <div className="space-y-3">
                   <div>
