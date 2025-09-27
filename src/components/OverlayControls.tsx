@@ -28,33 +28,20 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
       color: 'bg-blue-500 hover:bg-blue-600',
       fullWidth: true
     },
-    // Segunda linha - Col 1 vertical; col 2 vertical
+    // Segunda linha - Col 1; col 2
     {
-      id: 'col1-vertical',
-      label: 'Col1 Vertical',
+      id: 'col1',
+      label: 'Coluna 1',
       icon: <ArrowUpDown className="w-4 h-4" />,
       color: 'bg-green-500 hover:bg-green-600'
     },
     {
-      id: 'col2-vertical',
-      label: 'Col2 Vertical',
+      id: 'col2',
+      label: 'Coluna 2',
       icon: <ArrowUpDown className="w-4 h-4" />,
       color: 'bg-indigo-500 hover:bg-indigo-600'
     },
-    // Terceira linha - Col 1 horizontal; Col2 horizontal
-    {
-      id: 'col1-horizontal',
-      label: 'Col1 Horizontal',
-      icon: <ArrowLeftRight className="w-4 h-4" />,
-      color: 'bg-green-500 hover:bg-green-600'
-    },
-    {
-      id: 'col2-horizontal',
-      label: 'Col2 Horizontal',
-      icon: <ArrowLeftRight className="w-4 h-4" />,
-      color: 'bg-indigo-500 hover:bg-indigo-600'
-    },
-    // Quarta linha - Ultimo pedido (abaixo de Col2 horizontal)
+    // Terceira linha - Ultimo pedido
     {
       id: 'last-order',
       label: 'Último Pedido',
@@ -117,9 +104,9 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
               ))}
             </div>
 
-            {/* Segunda linha - Col 1 vertical; col 2 vertical */}
+            {/* Segunda linha - Col 1; col 2 */}
             <div className="grid grid-cols-2 gap-2">
-              {controlButtons.filter(btn => ['col1-vertical', 'col2-vertical'].includes(btn.id)).map((button) => (
+              {controlButtons.filter(btn => ['col1', 'col2'].includes(btn.id)).map((button) => (
                 <Button
                   key={button.id}
                   onClick={() => setActiveControl(activeControl === button.id ? null : button.id)}
@@ -133,23 +120,7 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
               ))}
             </div>
 
-            {/* Terceira linha - Col 1 horizontal; Col2 horizontal */}
-            <div className="grid grid-cols-2 gap-2">
-              {controlButtons.filter(btn => ['col1-horizontal', 'col2-horizontal'].includes(btn.id)).map((button) => (
-                <Button
-                  key={button.id}
-                  onClick={() => setActiveControl(activeControl === button.id ? null : button.id)}
-                  variant={activeControl === button.id ? "default" : "outline"}
-                  size="sm"
-                  className={`text-xs ${activeControl === button.id ? button.color : ''}`}
-                >
-                  {button.icon}
-                  <span className="ml-1">{button.label}</span>
-                </Button>
-              ))}
-            </div>
-
-            {/* Quarta linha - Ultimo pedido */}
+            {/* Terceira linha - Ultimo pedido */}
             <div className="grid grid-cols-1 gap-2">
               {controlButtons.filter(btn => btn.id === 'last-order').map((button) => (
                 <Button
@@ -201,197 +172,197 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
               </div>
             )}
 
-            {activeControl === 'col1-vertical' && (
+            {activeControl === 'col1' && (
               <div className="space-y-4">
                 <h4 className="font-medium text-gray-800 flex items-center gap-2">
                   <ArrowUpDown className="w-4 h-4 text-green-600" />
-                  Coluna 1 - Vertical & Fonte
+                  Coluna 1 - Em Produção
                 </h4>
-                <div className="space-y-3">
-                  <div>
-                    <Label className="text-sm">Gap Vertical: {config.production.cardConfig.gapVertical}px</Label>
-                    <Slider
-                      value={[config.production.cardConfig.gapVertical || 4]}
-                      onValueChange={([value]) => {
-                        updateConfig({
-                          production: { 
-                            ...config.production, 
-                            cardConfig: { ...config.production.cardConfig, gapVertical: value }
-                          }
-                        });
-                      }}
-                      min={0}
-                      max={20}
-                      step={1}
-                      className="mt-2"
-                    />
-                  </div>
-                  <div>
-                    <Label className="text-sm">Tamanho da Fonte: {config.production.cardConfig.fontSize}</Label>
-                    <Slider
-                      value={[config.production.cardConfig.fontSize]}
-                      onValueChange={([value]) => {
-                        updateConfig({
-                          production: { 
-                            ...config.production, 
-                            cardConfig: { ...config.production.cardConfig, fontSize: value }
-                          }
-                        });
-                      }}
-                      min={1.5}
-                      max={6}
-                      step={0.1}
-                      className="mt-2"
-                    />
-                  </div>
-                  <div>
-                    <Label className="text-sm">Altura do Card: {config.production.cardConfig.cardMinHeight}px</Label>
-                    <Slider
-                      value={[config.production.cardConfig.cardMinHeight]}
-                      onValueChange={([value]) => {
-                        updateConfig({
-                          production: { 
-                            ...config.production, 
-                            cardConfig: { 
-                              ...config.production.cardConfig, 
-                              cardMinHeight: value,
-                              cardMaxHeight: Math.max(value, config.production.cardConfig.cardMaxHeight)
+                <div className="space-y-4">
+                  <div className="space-y-3">
+                    <h5 className="text-sm font-medium text-gray-700">Layout Vertical</h5>
+                    <div>
+                      <Label className="text-sm">Gap Vertical: {config.production.cardConfig.gapVertical}px</Label>
+                      <Slider
+                        value={[config.production.cardConfig.gapVertical || 4]}
+                        onValueChange={([value]) => {
+                          updateConfig({
+                            production: { 
+                              ...config.production, 
+                              cardConfig: { ...config.production.cardConfig, gapVertical: value }
                             }
-                          }
-                        });
-                      }}
-                      min={40}
-                      max={200}
-                      step={5}
-                      className="mt-2"
-                    />
+                          });
+                        }}
+                        min={0}
+                        max={20}
+                        step={1}
+                        className="mt-2"
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-sm">Altura do Card: {config.production.cardConfig.cardMinHeight}px</Label>
+                      <Slider
+                        value={[config.production.cardConfig.cardMinHeight]}
+                        onValueChange={([value]) => {
+                          updateConfig({
+                            production: { 
+                              ...config.production, 
+                              cardConfig: { 
+                                ...config.production.cardConfig, 
+                                cardMinHeight: value,
+                                cardMaxHeight: Math.max(value, config.production.cardConfig.cardMaxHeight)
+                              }
+                            }
+                          });
+                        }}
+                        min={40}
+                        max={200}
+                        step={5}
+                        className="mt-2"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-3">
+                    <h5 className="text-sm font-medium text-gray-700">Layout Horizontal</h5>
+                    <div>
+                      <Label className="text-sm">Gap Horizontal: {config.production.cardConfig.gapHorizontal}px</Label>
+                      <Slider
+                        value={[config.production.cardConfig.gapHorizontal || 4]}
+                        onValueChange={([value]) => {
+                          updateConfig({
+                            production: { 
+                              ...config.production, 
+                              cardConfig: { ...config.production.cardConfig, gapHorizontal: value }
+                            }
+                          });
+                        }}
+                        min={0}
+                        max={20}
+                        step={1}
+                        className="mt-2"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-3">
+                    <h5 className="text-sm font-medium text-gray-700">Tipografia</h5>
+                    <div>
+                      <Label className="text-sm">Tamanho da Fonte: {config.production.cardConfig.fontSize}</Label>
+                      <Slider
+                        value={[config.production.cardConfig.fontSize]}
+                        onValueChange={([value]) => {
+                          updateConfig({
+                            production: { 
+                              ...config.production, 
+                              cardConfig: { ...config.production.cardConfig, fontSize: value }
+                            }
+                          });
+                        }}
+                        min={1.5}
+                        max={6}
+                        step={0.1}
+                        className="mt-2"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
             )}
 
-            {activeControl === 'col1-horizontal' && (
-              <div className="space-y-4">
-                <h4 className="font-medium text-gray-800 flex items-center gap-2">
-                  <ArrowLeftRight className="w-4 h-4 text-green-600" />
-                  Coluna 1 - Horizontal
-                </h4>
-                <div className="space-y-3">
-                  <div>
-                    <Label className="text-sm">Gap Horizontal: {config.production.cardConfig.gapHorizontal}px</Label>
-                    <Slider
-                      value={[config.production.cardConfig.gapHorizontal || 4]}
-                      onValueChange={([value]) => {
-                        updateConfig({
-                          production: { 
-                            ...config.production, 
-                            cardConfig: { ...config.production.cardConfig, gapHorizontal: value }
-                          }
-                        });
-                      }}
-                      min={0}
-                      max={20}
-                      step={1}
-                      className="mt-2"
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {activeControl === 'col2-vertical' && (
+            {activeControl === 'col2' && (
               <div className="space-y-4">
                 <h4 className="font-medium text-gray-800 flex items-center gap-2">
                   <ArrowUpDown className="w-4 h-4 text-indigo-600" />
-                  Coluna 2 - Vertical & Fonte
+                  Coluna 2 - Prontos
                 </h4>
-                <div className="space-y-3">
-                  <div>
-                    <Label className="text-sm">Gap Vertical: {config.ready.cardConfig.gapVertical}px</Label>
-                    <Slider
-                      value={[config.ready.cardConfig.gapVertical || 4]}
-                      onValueChange={([value]) => {
-                        updateConfig({
-                          ready: { 
-                            ...config.ready, 
-                            cardConfig: { ...config.ready.cardConfig, gapVertical: value }
-                          }
-                        });
-                      }}
-                      min={0}
-                      max={20}
-                      step={1}
-                      className="mt-2"
-                    />
-                  </div>
-                  <div>
-                    <Label className="text-sm">Tamanho da Fonte: {config.ready.cardConfig.fontSize}</Label>
-                    <Slider
-                      value={[config.ready.cardConfig.fontSize]}
-                      onValueChange={([value]) => {
-                        updateConfig({
-                          ready: { 
-                            ...config.ready, 
-                            cardConfig: { ...config.ready.cardConfig, fontSize: value }
-                          }
-                        });
-                      }}
-                      min={1.5}
-                      max={6}
-                      step={0.1}
-                      className="mt-2"
-                    />
-                  </div>
-                  <div>
-                    <Label className="text-sm">Altura do Card: {config.ready.cardConfig.cardMinHeight}px</Label>
-                    <Slider
-                      value={[config.ready.cardConfig.cardMinHeight]}
-                      onValueChange={([value]) => {
-                        updateConfig({
-                          ready: { 
-                            ...config.ready, 
-                            cardConfig: { 
-                              ...config.ready.cardConfig, 
-                              cardMinHeight: value,
-                              cardMaxHeight: Math.max(value, config.ready.cardConfig.cardMaxHeight)
+                <div className="space-y-4">
+                  <div className="space-y-3">
+                    <h5 className="text-sm font-medium text-gray-700">Layout Vertical</h5>
+                    <div>
+                      <Label className="text-sm">Gap Vertical: {config.ready.cardConfig.gapVertical}px</Label>
+                      <Slider
+                        value={[config.ready.cardConfig.gapVertical || 4]}
+                        onValueChange={([value]) => {
+                          updateConfig({
+                            ready: { 
+                              ...config.ready, 
+                              cardConfig: { ...config.ready.cardConfig, gapVertical: value }
                             }
-                          }
-                        });
-                      }}
-                      min={40}
-                      max={200}
-                      step={5}
-                      className="mt-2"
-                    />
+                          });
+                        }}
+                        min={0}
+                        max={20}
+                        step={1}
+                        className="mt-2"
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-sm">Altura do Card: {config.ready.cardConfig.cardMinHeight}px</Label>
+                      <Slider
+                        value={[config.ready.cardConfig.cardMinHeight]}
+                        onValueChange={([value]) => {
+                          updateConfig({
+                            ready: { 
+                              ...config.ready, 
+                              cardConfig: { 
+                                ...config.ready.cardConfig, 
+                                cardMinHeight: value,
+                                cardMaxHeight: Math.max(value, config.ready.cardConfig.cardMaxHeight)
+                              }
+                            }
+                          });
+                        }}
+                        min={40}
+                        max={200}
+                        step={5}
+                        className="mt-2"
+                      />
+                    </div>
                   </div>
-                </div>
-              </div>
-            )}
-
-            {activeControl === 'col2-horizontal' && (
-              <div className="space-y-4">
-                <h4 className="font-medium text-gray-800 flex items-center gap-2">
-                  <ArrowLeftRight className="w-4 h-4 text-indigo-600" />
-                  Coluna 2 - Horizontal
-                </h4>
-                <div className="space-y-3">
-                  <div>
-                    <Label className="text-sm">Gap Horizontal: {config.ready.cardConfig.gapHorizontal}px</Label>
-                    <Slider
-                      value={[config.ready.cardConfig.gapHorizontal || 4]}
-                      onValueChange={([value]) => {
-                        updateConfig({
-                          ready: { 
-                            ...config.ready, 
-                            cardConfig: { ...config.ready.cardConfig, gapHorizontal: value }
-                          }
-                        });
-                      }}
-                      min={0}
-                      max={20}
-                      step={1}
-                      className="mt-2"
-                    />
+                  
+                  <div className="space-y-3">
+                    <h5 className="text-sm font-medium text-gray-700">Layout Horizontal</h5>
+                    <div>
+                      <Label className="text-sm">Gap Horizontal: {config.ready.cardConfig.gapHorizontal}px</Label>
+                      <Slider
+                        value={[config.ready.cardConfig.gapHorizontal || 4]}
+                        onValueChange={([value]) => {
+                          updateConfig({
+                            ready: { 
+                              ...config.ready, 
+                              cardConfig: { ...config.ready.cardConfig, gapHorizontal: value }
+                            }
+                          });
+                        }}
+                        min={0}
+                        max={20}
+                        step={1}
+                        className="mt-2"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-3">
+                    <h5 className="text-sm font-medium text-gray-700">Tipografia</h5>
+                    <div>
+                      <Label className="text-sm">Tamanho da Fonte: {config.ready.cardConfig.fontSize}</Label>
+                      <Slider
+                        value={[config.ready.cardConfig.fontSize]}
+                        onValueChange={([value]) => {
+                          updateConfig({
+                            ready: { 
+                              ...config.ready, 
+                              cardConfig: { ...config.ready.cardConfig, fontSize: value }
+                            }
+                          });
+                        }}
+                        min={1.5}
+                        max={6}
+                        step={0.1}
+                        className="mt-2"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
