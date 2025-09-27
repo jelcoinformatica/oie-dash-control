@@ -29,7 +29,7 @@ export const defaultConfig: PanelConfig = {
         fontSize: 3,
         showNickname: true,
         showItems: true,
-        moduleIndicator: 'bullet' as 'none' | 'bullet' | 'tag' | 'border',
+        moduleIndicator: 'none' as 'none' | 'bullet' | 'tag' | 'border',
         gapHorizontal: 4,
         gapVertical: 4,
         cardMinHeight: 60,
@@ -56,7 +56,7 @@ export const defaultConfig: PanelConfig = {
         fontSize: 3,
         showNickname: true,
         showItems: true,
-        moduleIndicator: 'bullet' as 'none' | 'bullet' | 'tag' | 'border',
+        moduleIndicator: 'none' as 'none' | 'bullet' | 'tag' | 'border',
         gapHorizontal: 4,
         gapVertical: 4,
         cardMinHeight: 60,
@@ -76,8 +76,8 @@ export const defaultConfig: PanelConfig = {
     backgroundColor: '#ffffff',
     imageUrl: undefined,
     websiteUrl: undefined,
-    newsMode: true, // Ativado por padrão para testes
-    newsSource: 'panelinha', // Fonte padrão das notícias - gastronômico como principal
+    newsMode: false,
+    newsSource: 'panelinha',
     newsFontSize: 2.5, // Tamanho da fonte para visualização à distância
     showBorder: false
   },
@@ -92,7 +92,7 @@ export const defaultConfig: PanelConfig = {
   },
   sounds: {
     production: false,
-    ready: true,
+    ready: false,
     productionFile: '/sounds/kds_sound_bell1.wav',
     readyFile: 'generated', // Indica uso do som gerado integrado
     readySoundType: 'padrao', // Som estilo aeroporto como padrão
