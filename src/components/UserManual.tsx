@@ -1363,9 +1363,16 @@ export const UserManual = ({ children }: UserManualProps) => {
     setCurrentResultIndex(0);
     setHighlightedText(term);
     
-    // Navegar para o primeiro resultado
+    // Navegar para o primeiro resultado e garantir posicionamento correto
     if (results.length > 0) {
-      scrollToSection(results[0].sectionId);
+      setActiveSection(results[0].sectionId);
+      // Força o scroll para o topo após mudança de seção
+      setTimeout(() => {
+        const contentElement = document.querySelector('[data-section-content]');
+        if (contentElement) {
+          contentElement.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      }, 100);
     }
   };
 
@@ -1375,7 +1382,15 @@ export const UserManual = ({ children }: UserManualProps) => {
     
     const nextIndex = (currentResultIndex + 1) % searchResults.length;
     setCurrentResultIndex(nextIndex);
-    scrollToSection(searchResults[nextIndex].sectionId);
+    setActiveSection(searchResults[nextIndex].sectionId);
+    
+    // Garantir posicionamento no topo
+    setTimeout(() => {
+      const contentElement = document.querySelector('[data-section-content]');
+      if (contentElement) {
+        contentElement.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }, 50);
   };
 
   // Navegar para resultado anterior
@@ -1384,7 +1399,15 @@ export const UserManual = ({ children }: UserManualProps) => {
     
     const prevIndex = currentResultIndex === 0 ? searchResults.length - 1 : currentResultIndex - 1;
     setCurrentResultIndex(prevIndex);
-    scrollToSection(searchResults[prevIndex].sectionId);
+    setActiveSection(searchResults[prevIndex].sectionId);
+    
+    // Garantir posicionamento no topo
+    setTimeout(() => {
+      const contentElement = document.querySelector('[data-section-content]');
+      if (contentElement) {
+        contentElement.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }, 50);
   };
 
   // Busca automática com debounce
@@ -1472,13 +1495,18 @@ export const UserManual = ({ children }: UserManualProps) => {
   // Função para scroll automático para a seção
   const scrollToSection = (sectionId: string) => {
     setActiveSection(sectionId);
-    // Pequeno delay para garantir que o conteúdo seja renderizado antes do scroll
+    
+    // Garantir que sempre role para o topo da seção
     setTimeout(() => {
       const contentElement = document.querySelector('[data-section-content]');
       if (contentElement) {
-        contentElement.scrollTo({ top: 0, behavior: 'smooth' });
+        // Sempre rolar para o topo do conteúdo da seção ativa
+        contentElement.scrollTo({ 
+          top: 0, 
+          behavior: 'smooth' 
+        });
       }
-    }, 100);
+    }, 50); // Delay menor para resposta mais rápida
   };
 
   return (
@@ -1580,29 +1608,31 @@ export const UserManual = ({ children }: UserManualProps) => {
             <div className="flex-1">
               <ScrollArea className="h-full" data-section-content>
                 <div className="p-4">
-                   {activeContent || (
-                     <div className="text-center py-12">
-                       <Search className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-                       <h3 className="text-lg font-medium mb-2">Nenhum resultado encontrado</h3>
-                       <p className="text-muted-foreground">
-                         {searchTerm 
-                           ? `Nenhum resultado para "${searchTerm}"`
-                           : 'Digite algo para pesquisar no manual'
-                         }
-                       </p>
-                       {searchTerm && (
-                         <div className="mt-4 space-y-2">
-                           <p className="text-sm text-muted-foreground">Dicas de busca:</p>
-                           <ul className="text-sm text-muted-foreground space-y-1">
-                           <li>• Use palavras-chave simples</li>
-                           <li>• Tente termos relacionados</li>
-                           <li>• Verifique a ortografia</li>
-                           <li>• Use ↑↓ ou Enter para navegar</li>
-                           </ul>
-                         </div>
-                       )}
-                     </div>
-                   )}
+                  <div key={activeSection} className="section-content">
+                    {activeContent || (
+                      <div className="text-center py-12">
+                        <Search className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+                        <h3 className="text-lg font-medium mb-2">Nenhum resultado encontrado</h3>
+                        <p className="text-muted-foreground">
+                          {searchTerm 
+                            ? `Nenhum resultado para "${searchTerm}"`
+                            : 'Digite algo para pesquisar no manual'
+                          }
+                        </p>
+                        {searchTerm && (
+                          <div className="mt-4 space-y-2">
+                            <p className="text-sm text-muted-foreground">Dicas de busca:</p>
+                            <ul className="text-sm text-muted-foreground space-y-1">
+                              <li>• Use palavras-chave simples</li>
+                              <li>• Tente termos relacionados</li>
+                              <li>• Verifique a ortografia</li>
+                              <li>• Use ↑↓ ou Enter para navegar</li>
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </ScrollArea>
             </div>
