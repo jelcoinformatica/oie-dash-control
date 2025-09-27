@@ -334,29 +334,45 @@ const Index = () => {
                   className="h-full"
                 >
                   <div className="h-full relative">
-                    <OrderColumn
-                      title={config.production.title}
-                      orders={productionOrders}
-                      onOrderClick={(order) => moveToReady(order.id)}
-                      variant="production"
-                      showNickname={config.production?.cardConfig?.showNickname ?? true}
-                      showItems={config.production?.cardConfig?.showItems ?? true}
-                      moduleIndicator={config.production?.cardConfig?.moduleIndicator ?? 'bullet'}
-                      headerBg={config.production.headerBg}
-                      headerColor={config.production.headerColor}
-                      headerHeight={config.production.headerHeight}
-                      headerFontSize={config.production.headerFontSize}
-                      headerFontFamily={config.production.headerFontFamily}
-                      config={config}
-                      cardConfig={{
-                        fontSize: config.production.cardConfig.fontSize,
-                        fontFamily: config.production.cardConfig.fontFamily,
-                        textColor: config.production.cardConfig.textColor,
-                        backgroundColor: config.production.cardConfig.backgroundColor
-                      }}
-                      columns={config.production.cardConfig.columns}
-                      showBorder={config.production.showBorder}
-                    />
+                    <div className="flex flex-col h-full">
+                      <div 
+                        className={`bg-white rounded-lg shadow-lg flex flex-col overflow-hidden h-full ${config.production.showBorder ? 'ring-2 ring-blue-200' : ''}`}
+                      >
+                        <div 
+                          className="flex items-center justify-center px-4 font-bold shadow-sm border-b rounded-t-lg relative"
+                          style={{
+                            backgroundColor: config.production.headerBg,
+                            color: config.production.headerColor,
+                            height: `${config.production.headerHeight}px`,
+                            fontSize: `${config.production.headerFontSize}rem`,
+                            fontFamily: config.production.headerFontFamily
+                          }}
+                        >
+                          <span>{config.production.title}</span>
+                          <div className="absolute right-4 bg-white/20 px-2 py-1 rounded-full font-bold" style={{ fontSize: '16px' }}>
+                            {productionOrders.length}
+                          </div>
+                        </div>
+                        
+                        <div className="flex-1 p-2 bg-gray-50" style={{ overflow: 'hidden' }}>
+                          <OrderColumnGrid
+                            orders={productionOrders}
+                            columns={config.production.cardConfig.columns}
+                            onOrderClick={(order) => moveToReady(order.id)}
+                            showNickname={config.production?.cardConfig?.showNickname ?? true}
+                            showItems={config.production?.cardConfig?.showItems ?? true}
+                            moduleIndicator={config.production?.cardConfig?.moduleIndicator ?? 'bullet'}
+                            config={config}
+                            cardConfig={{
+                              fontSize: config.production.cardConfig.fontSize,
+                              fontFamily: config.production.cardConfig.fontFamily,
+                              textColor: config.production.cardConfig.textColor,
+                              backgroundColor: config.production.cardConfig.backgroundColor
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </ResizablePanel>
                 <ResizableHandle withHandle />
@@ -522,29 +538,45 @@ const Index = () => {
             {/* Layout fixo quando redimensionamento está desabilitado */}
             {config.production.visible && (
               <div style={{ width: `${(config.production.width / (config.production.width + config.ready.width + (config.advertising.visible ? config.advertising.width : 0))) * 100}%` }} className="h-full relative">
-                <OrderColumn
-                  title={config.production.title}
-                  orders={productionOrders}
-                  onOrderClick={(order) => moveToReady(order.id)}
-                  variant="production"
-                  showNickname={config.production?.cardConfig?.showNickname ?? true}
-                  showItems={config.production?.cardConfig?.showItems ?? true}
-                  moduleIndicator={config.production?.cardConfig?.moduleIndicator ?? 'bullet'}
-                  headerBg={config.production.headerBg}
-                  headerColor={config.production.headerColor}
-                  headerHeight={config.production.headerHeight}
-                  headerFontSize={config.production.headerFontSize}
-                  headerFontFamily={config.production.headerFontFamily}
-                  config={config}
-                  cardConfig={{
-                    fontSize: config.production.cardConfig.fontSize,
-                    fontFamily: config.production.cardConfig.fontFamily,
-                    textColor: config.production.cardConfig.textColor,
-                    backgroundColor: config.production.cardConfig.backgroundColor
-                  }}
-                  columns={config.production.cardConfig.columns}
-                  showBorder={config.production.showBorder}
-                />
+                <div className="flex flex-col h-full">
+                  <div 
+                    className={`bg-white rounded-lg shadow-lg flex flex-col overflow-hidden h-full ${config.production.showBorder ? 'ring-2 ring-blue-200' : ''}`}
+                  >
+                    <div 
+                      className="flex items-center justify-center px-4 font-bold shadow-sm border-b rounded-t-lg relative"
+                      style={{
+                        backgroundColor: config.production.headerBg,
+                        color: config.production.headerColor,
+                        height: `${config.production.headerHeight}px`,
+                        fontSize: `${config.production.headerFontSize}rem`,
+                        fontFamily: config.production.headerFontFamily
+                      }}
+                    >
+                      <span>{config.production.title}</span>
+                      <div className="absolute right-4 bg-white/20 px-2 py-1 rounded-full font-bold" style={{ fontSize: '16px' }}>
+                        {productionOrders.length}
+                      </div>
+                    </div>
+                    
+                    <div className="flex-1 p-2 bg-gray-50" style={{ overflow: 'hidden' }}>
+                      <OrderColumnGrid
+                        orders={productionOrders}
+                        columns={config.production.cardConfig.columns}
+                        onOrderClick={(order) => moveToReady(order.id)}
+                        showNickname={config.production?.cardConfig?.showNickname ?? true}
+                        showItems={config.production?.cardConfig?.showItems ?? true}
+                        moduleIndicator={config.production?.cardConfig?.moduleIndicator ?? 'bullet'}
+                        config={config}
+                        cardConfig={{
+                          fontSize: config.production.cardConfig.fontSize,
+                          fontFamily: config.production.cardConfig.fontFamily,
+                          textColor: config.production.cardConfig.textColor,
+                          backgroundColor: config.production.cardConfig.backgroundColor
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
             )}
 
