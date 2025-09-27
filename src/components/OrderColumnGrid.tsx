@@ -133,16 +133,6 @@ export const OrderColumnGrid = ({
     const maxVisibleCards = Math.max(0, maxRows * columns);
     const visibleOrders = orders.slice(0, maxVisibleCards);
     
-    console.log(`🔍 OrderColumnGrid Debug (${columns} cols):`, {
-      containerHeight: containerDimensions.height,
-      cardHeight,
-      gapV,
-      maxRows,
-      calculatedMaxCards: maxVisibleCards,
-      actualVisibleCards: visibleOrders.length,
-      totalCards: orders.length
-    });
-    
     return {
       visibleOrders,
       cardHeight,
