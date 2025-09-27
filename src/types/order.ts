@@ -33,6 +33,7 @@ export interface OrderCardConfig {
   gapVertical?: number;   // Gap vertical entre cards (px)
   cardMinHeight?: number; // Altura mínima dos cards (px)
   cardMaxHeight?: number; // Altura máxima dos cards (px)
+  cardWidth?: number;     // Largura dos cards (px)
 }
 
 export interface PanelIdentification {

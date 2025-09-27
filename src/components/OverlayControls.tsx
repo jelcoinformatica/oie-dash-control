@@ -265,6 +265,24 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
                         className="mt-2"
                       />
                     </div>
+                    <div>
+                      <Label className="text-sm">Largura do Card: {config.production.cardConfig.cardWidth || 200}px</Label>
+                      <Slider
+                        value={[config.production.cardConfig.cardWidth || 200]}
+                        onValueChange={([value]) => {
+                          updateConfig({
+                            production: { 
+                              ...config.production, 
+                              cardConfig: { ...config.production.cardConfig, cardWidth: value }
+                            }
+                          });
+                        }}
+                        min={120}
+                        max={400}
+                        step={10}
+                        className="mt-2"
+                      />
+                    </div>
                   </div>
                   
                   <div className="space-y-3">
@@ -382,6 +400,24 @@ export const OverlayControls = ({ config, onConfigChange, visible, onToggle }: O
                         min={0}
                         max={20}
                         step={1}
+                        className="mt-2"
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-sm">Largura do Card: {config.ready.cardConfig.cardWidth || 200}px</Label>
+                      <Slider
+                        value={[config.ready.cardConfig.cardWidth || 200]}
+                        onValueChange={([value]) => {
+                          updateConfig({
+                            ready: { 
+                              ...config.ready, 
+                              cardConfig: { ...config.ready.cardConfig, cardWidth: value }
+                            }
+                          });
+                        }}
+                        min={120}
+                        max={400}
+                        step={10}
                         className="mt-2"
                       />
                     </div>
