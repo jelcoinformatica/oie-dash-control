@@ -627,20 +627,6 @@ export const ConfigurationPanel = ({
                     className="h-8 mt-1 border-2"
                   />
                 </div>
-              </div>
-              
-               <div>
-                 <Label className="text-xs">Indicador de Módulo</Label>
-                 <select
-                   value={config.production.cardConfig.moduleIndicator || 'none'}
-                   onChange={(e) => updateConfig('production.cardConfig.moduleIndicator', e.target.value)}
-                   className="w-full mt-1 px-3 py-1 text-xs border border-gray-300 rounded-md bg-white"
-                 >
-                   <option value="none">Nenhum indicador</option>
-                   <option value="bullet">Bullets (bolinhas)</option>
-                   <option value="tag">Etiquetas discretas</option>
-                   <option value="border">Bordas coloridas</option>
-                 </select>
                </div>
 
                {/* Controles de Ajuste Fino */}
@@ -877,19 +863,6 @@ export const ConfigurationPanel = ({
                 </div>
               </div>
               
-               <div>
-                 <Label className="text-xs">Indicador de Módulo</Label>
-                 <select
-                   value={config.ready.cardConfig.moduleIndicator || 'none'}
-                   onChange={(e) => updateConfig('ready.cardConfig.moduleIndicator', e.target.value)}
-                   className="w-full mt-1 px-3 py-1 text-xs border border-gray-300 rounded-md bg-white"
-                 >
-                   <option value="none">Nenhum indicador</option>
-                   <option value="bullet">Bullets (bolinhas)</option>
-                   <option value="tag">Etiquetas discretas</option>
-                   <option value="border">Bordas coloridas</option>
-                 </select>
-               </div>
 
                {/* Controles de Ajuste Fino */}
                <div className="pt-2 border-t border-gray-200">
