@@ -53,7 +53,7 @@ const Index = () => {
     expeditionLog,
     clearAllOrders,
     generateOrders
-  } = useOrders(ttsConfig, autoExpeditionConfig, config);
+  } = useOrders(ttsConfig, autoExpeditionConfig, config.database?.apiBaseUrl || defaultConfig.database.apiBaseUrl, config.database?.useMockData ?? defaultConfig.database.useMockData, config);
 
   // Simulação automática
   useEffect(() => {
@@ -119,6 +119,7 @@ const Index = () => {
             }
           },
           splash: { ...defaultConfig.splash, ...parsedConfig.splash },
+          dataFetching: { ...defaultConfig.dataFetching, ...parsedConfig.dataFetching },
         };
         
         console.log('Setting merged config from localStorage...');

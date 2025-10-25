@@ -4,7 +4,7 @@
     let ultimoPedido = 125;
     let destacarUltimoPedido = true;
     let actionHistory = [];
-    
+
     // Função para criar um card
     function createCard(id, type, badgeType = null, isUltimoPedido = false) {
       const card = document.createElement('div');
@@ -14,17 +14,17 @@
       }
       card.textContent = id;
       card.dataset.id = id;
-      
+
       // Adiciona badge se especificado
       if (badgeType) {
         const badge = document.createElement('div');
         badge.className = `card-badge ${badgeType}`;
         card.appendChild(badge);
       }
-      
+
       return card;
     }
-    
+
     // Função para atualizar a exibição dos cards
     function updateCardDisplay(type) {
       if (type === 'prod') {
@@ -32,69 +32,96 @@
         const rows = parseInt(document.getElementById('card1-rows').value);
         const cardHeight = parseInt(document.getElementById('card1-height').value);
         const container = document.getElementById('cards-producao');
-        
+
         // Atualizar variáveis CSS
         document.documentElement.style.setProperty('--card1-cols', cols);
         document.documentElement.style.setProperty('--card1-rows', rows);
         document.documentElement.style.setProperty('--card1-height', cardHeight + 'px');
-        
+
         // Limpar container
         container.innerHTML = '';
-        
+
         // Adicionar cards visíveis
         const maxVisible = cols * rows;
         for (let i = 0; i < Math.min(maxVisible, allProdCards.length); i++) {
           container.appendChild(allProdCards[i]);
         }
-        
+
       } else if (type === 'prontos') {
         const cols = parseInt(document.getElementById('card2-cols').value);
         const rows = parseInt(document.getElementById('card2-rows').value);
         const cardHeight = parseInt(document.getElementById('card2-height').value);
         const container = document.getElementById('cards-prontos');
-        
+
         // Atualizar variáveis CSS
         document.documentElement.style.setProperty('--card2-cols', cols);
         document.documentElement.style.setProperty('--card2-rows', rows);
         document.documentElement.style.setProperty('--card2-height', cardHeight + 'px');
-        
+
         // Limpar container
         container.innerHTML = '';
-        
+
         // Adicionar cards visíveis
         const maxVisible = cols * rows;
         let cardsToShow = [...allProntosCards];
-        
+
         // Se não estiver destacando o último pedido, adicionar o último pedido como primeiro card
         if (!destacarUltimoPedido && ultimoPedido) {
           const ultimoPedidoCard = createCard(ultimoPedido, 'prontos', 'badge-gold', true);
           cardsToShow.unshift(ultimoPedidoCard);
         }
-        
+
         for (let i = 0; i < Math.min(maxVisible, cardsToShow.length); i++) {
           container.appendChild(cardsToShow[i]);
         }
       }
-      
+
       // Atualizar contadores totais
       document.getElementById('prod-total').textContent = allProdCards.length;
       document.getElementById('prontos-total').textContent = allProntosCards.length + (!destacarUltimoPedido ? 1 : 0);
-      
+
       // Atualizar animação para os cards do último pedido
       updatePulseAnimation();
     }
-    
-    // Função para adicionar cards
-    function addCards() {
-      // Cards de produção com badges (20 cards)
-      for (let i = 1; i <= 20; i++) {
-        const badges = ['badge-green', 'badge-blue', 'badge-red', 'badge-purple'];
-        const badgeType = badges[i % 4];
-        const card = createCard(100 + i, 'prod', badgeType);
-        allProdCards.push(card);
+
+    // Função para buscar dados da API de produção
+    async function fetchProductionData() {
+      const configDB = JSON.parse(localStorage.getItem('configDB') || '{}');
+      const apiBaseUrl = configDB.apiBaseUrl || 'http://localhost:3000'; // Valor padrão
+
+      try {
+        const response = await fetch(`${apiBaseUrl}/lista_producao`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log('Dados da API de produção:', data);
+        return data;
+      } catch (error) {
+        console.error('Erro ao buscar dados da API de produção:', error);
+        return [];
       }
+    }
+
+    // Função para adicionar cards
+    async function addCards() {
+      // Limpar todos os cards existentes antes de adicionar novos
+      allProdCards.length = 0;
+      allProntosCards.length = 0;
+
+      // Buscar dados da API de produção
+      const productionOrders = await fetchProductionData();
+      console.log('Pedidos de produção recebidos:', productionOrders);
+
+      // Adicionar cards de produção com base nos dados da API
+      productionOrders.forEach(order => {
+        const badges = ['badge-green', 'badge-blue', 'badge-red', 'badge-purple'];
+        const badgeType = badges[order.id % 4]; // Assumindo que 'id' pode ser usado para badge
+        const card = createCard(order.id, 'prod', badgeType);
+        allProdCards.push(card);
+      });
       
-      // Cards prontos (6 cards)
+      // Cards prontos (6 cards) - mantido para simulação ou outro propósito
       const prontosNumbers = [201, 202, 203, 204, 205, 206];
       prontosNumbers.forEach(num => {
         const card = createCard(num, 'prontos');
@@ -105,7 +132,7 @@
       updateCardDisplay('prod');
       updateCardDisplay('prontos');
     }
-    
+
     // Função para lidar com upload de imagem
     function handleImageUpload(event) {
       const file = event.target.files[0];
@@ -121,7 +148,7 @@
         reader.readAsDataURL(file);
       }
     }
-    
+
     // Função para carregar imagem por URL
     function loadImageFromUrl() {
       const url = document.getElementById('publicidade-url').value;
@@ -133,32 +160,32 @@
         document.getElementById('size-info').style.display = 'none';
       }
     }
-    
+
     // Função para atualizar informações de tamanho da imagem
     function updateImageSizeInfo() {
       const container = document.querySelector('.publicidade-content');
       const headerVisible = getComputedStyle(document.getElementById('publicidade-header')).display !== 'none';
-      
+
       // Calcular altura disponível
       let availableHeight = container.clientHeight;
       if (headerVisible) {
         const headerHeight = getComputedStyle(document.getElementById('publicidade-header')).height;
         availableHeight -= parseInt(headerHeight);
       }
-      
+
       // Calcular largura disponível
       const availableWidth = container.clientWidth;
-      
+
       // Atualizar display
       document.getElementById('size-info').querySelector('.pixels').textContent = 
         `${availableWidth} x ${availableHeight} px`;
-      
+
       // Mostrar apenas se não houver imagem
       const hasImage = document.getElementById('publicidade-img').style.display === 'block';
       document.getElementById('size-info').style.display = hasImage ? 'none' : 'block';
       document.getElementById('watermark').style.display = hasImage ? 'none' : 'block';
     }
-    
+
     // Função para alternar colunas
     function toggleColumn(col) {
       const checkbox = document.getElementById(`${col}-visible`);
@@ -175,7 +202,7 @@
         updateImageSizeInfo();
       }
     }
-    
+
     // Função para atualizar o layout quando colunas são ocultadas
     function updateLayout() {
       const col1Visible = document.getElementById('col1-visible').checked;
@@ -194,7 +221,7 @@
         document.documentElement.style.setProperty('--col2-width', document.getElementById('col2-width').value + '%');
       }
     }
-    
+
     // Função para atualizar a animação pulsante
     function updatePulseAnimation() {
       const pulseEnabled = document.getElementById('pulse-animation').checked;
@@ -219,12 +246,12 @@
         }
       });
     }
-    
+
     // Função para alternar a animação pulsante
     function togglePulseAnimation(enabled) {
       updatePulseAnimation();
     }
-    
+
     // Função para alternar destaque do último pedido
     function toggleDestaqueUltimoPedido(enabled) {
       destacarUltimoPedido = enabled;
@@ -235,7 +262,7 @@
       // Atualizar a exibição dos cards prontos
       updateCardDisplay('prontos');
     }
-    
+
     // Função para expedir pedido
     function expedir() {
       const input = document.getElementById('expedicao-input');
@@ -275,17 +302,17 @@
       
       input.value = '';
     }
-    
+
     // Função para verificar se o pedido está na produção
     function isInProducao(numeroPedido) {
       return allProdCards.some(card => parseInt(card.textContent) === numeroPedido);
     }
-    
+
     // Função para verificar se o pedido está nos prontos
     function isInProntos(numeroPedido) {
       return allProntosCards.some(card => parseInt(card.textContent) === numeroPedido);
     }
-    
+
     // Função para mover pedido para prontos
     function moverParaProntos(numeroPedido) {
       // Move pedido anterior para "Prontos"
@@ -309,7 +336,7 @@
       updateCardDisplay('prod');
       updateCardDisplay('prontos');
     }
-    
+
     // Função para expedir pedido
     function expedirPedido(numeroPedido) {
       // Remover dos prontos (se estiver na lista)
@@ -329,7 +356,7 @@
       // Atualizar exibição
       updateCardDisplay('prontos');
     }
-    
+
     // Função para devolver pedido para produção
     function devolverParaProducao(numeroPedido) {
       // Remove o pedido dos prontos
@@ -361,7 +388,7 @@
       updateCardDisplay('prod');
       updateCardDisplay('prontos');
     }
-    
+
     // Função para adicionar ao histórico de ações
     function addToHistory(value) {
       actionHistory.unshift(value);
@@ -372,7 +399,7 @@
       // Atualizar histórico
       updateHistoryDisplay();
     }
-    
+
     // Função para atualizar a exibição do histórico
     function updateHistoryDisplay() {
       const historyContainer = document.getElementById('action-history');
@@ -389,7 +416,7 @@
         historyContainer.appendChild(historyItem);
       });
     }
-    
+
     // Função para salvar configurações
     function saveConfig() {
       const config = {};
@@ -406,7 +433,7 @@
       // Salvar no localStorage
       localStorage.setItem('panelConfig', JSON.stringify(config));
     }
-    
+
     // Função para carregar configurações
     function loadConfig() {
       const saved = localStorage.getItem('panelConfig');
@@ -433,19 +460,19 @@
         }
       }
     }
-    
+
     // Botão de configuração
     document.getElementById('btn-config').onclick = () => {
       const panel = document.getElementById('panel-config');
       panel.style.display = 'block';
     };
-    
+
     // Botão de fechar
     document.getElementById('btn-close').onclick = () => {
       const panel = document.getElementById('panel-config');
       panel.style.display = 'none';
     };
-    
+
     // Botão para expandir/recolher todas as seções
     document.getElementById('btn-toggle-all').addEventListener('click', function() {
       const details = document.querySelectorAll('.config-section');
@@ -455,7 +482,7 @@
         detail.open = !isAllOpen;
       });
     });
-    
+
     // Função para atualizar a cor do contador no cabeçalho
     function updateHeaderColor(col, color) {
       // Aplica a cor do título
@@ -470,7 +497,7 @@
       // Aplica a cor do contador
       document.documentElement.style.setProperty(`--${col}-counter-color`, counterColor);
     }
-    
+
     // Função para testar o som
     function testSound(inputId) {
       const input = document.getElementById(inputId);
@@ -483,12 +510,12 @@
         alert('Nenhum arquivo de som selecionado.');
       }
     }
-    
+
     // Função para atualizar o fundo da aplicação
     function updateAppBg(color) {
       document.documentElement.style.setProperty('--app-bg', color);
     }
-    
+
     // Funções para os modais
     function openModal(modalId) {
       document.getElementById(`modal-${modalId}`).style.display = 'flex';
@@ -500,10 +527,11 @@
           const config = JSON.parse(savedConfig);
           document.getElementById('db-servidor').value = config.servidor || '';
           document.getElementById('db-banco').value = config.banco || '';
-          document.getElementById('db-usuario').value = config.usuario || '';
-          document.getElementById('db-senha').value = config.senha || '';
+          document.getElementById('db-usuario').value = document.getElementById('db-usuario').value; // Keep existing value for security
+          document.getElementById('db-senha').value = document.getElementById('db-senha').value; // Keep existing value for security
           document.getElementById('db-porta').value = config.porta || '3306';
           document.getElementById('db-tabela').value = config.tabela || '';
+          document.getElementById('db-api-base-url').value = config.apiBaseUrl || 'http://localhost:3000'; // Carregar apiBaseUrl
         }
       }
       
@@ -590,7 +618,8 @@
         usuario: document.getElementById('db-usuario').value,
         senha: document.getElementById('db-senha').value,
         porta: document.getElementById('db-porta').value,
-        tabela: document.getElementById('db-tabela').value
+        tabela: document.getElementById('db-tabela').value,
+        apiBaseUrl: document.getElementById('db-api-base-url').value // Adicionar apiBaseUrl aqui
       };
       
       localStorage.setItem('configDB', JSON.stringify(configDB));
@@ -742,6 +771,7 @@
     window.addEventListener('load', () => {
       // Adicionar cards
       addCards();
+      console.log('Cards iniciais adicionados.');
       
       // Atualizar ao redimensionar
       window.addEventListener('resize', () => {
@@ -793,7 +823,6 @@
       updateHeaderColor('col1', document.getElementById('col1-header-color').value);
       updateHeaderColor('col2', document.getElementById('col2-header-color').value);
     });
-
 
 
 let simuladorAtivo = false;
@@ -886,30 +915,4 @@ function alternarSimulacao() {
     if (btn1) btn1.innerText = "Iniciar Simulação";
     if (btn2) btn2.style.display = "none";
   }
-}
-</script><script>
-let intervaloSimulador = null;
-function iniciarSimulacao() {
-  if (intervaloSimulador) return;
-  const intervalo = (parseInt(document.getElementById('sim_intervalo')?.value || "15") || 15) * 1000;
-  intervaloSimulador = setInterval(gerarPedidoSimulado, intervalo);
-  gerarPedidoSimulado();
-  document.getElementById('btn-simulacao')?.classList.add('ativo');
-  document.getElementById('btn-simulacao')?.innerText = "Parar Simulação";
-}
-function pararSimulacao() {
-  clearInterval(intervaloSimulador);
-  intervaloSimulador = null;
-  document.getElementById('btn-simulacao')?.classList.remove('ativo');
-  document.getElementById('btn-simulacao')?.innerText = "Iniciar Simulação";
-}
-function gerarPedidoSimulado() {
-  const container = document.getElementById("col1-conteudo");
-  if (!container) return;
-  const numero = Math.floor(100 + Math.random() * 900);
-  const card = document.createElement("div");
-  card.className = "card simulacao";
-  card.style.cssText = "background:#fff;border:2px solid #000;margin:6px;padding:10px;font-size:22px;text-align:center;border-radius:6px;";
-  card.innerText = numero;
-  container.appendChild(card);
 }

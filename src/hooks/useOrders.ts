@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { Order } from '../types/order';
-import { fetchOrders, updateOrderStatus, expediteOrder, addSimulatedOrder } from '../services/orderService';
+import { fetchOrders, updateOrderStatus, expediteOrder, addSimulatedOrder, fetchProductionOrders, fetchReadyOrders } from '../services/orderService';
 import { useTextToSpeech } from './useTextToSpeech';
 
 interface TTSConfig {
@@ -21,94 +21,75 @@ interface AutoExpeditionConfig {
   minutes: number;
 }
 
-export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpeditionConfig, config?: any) => {
+export const useOrders = (ttsConfig: TTSConfig, autoExpeditionConfig: AutoExpeditionConfig, apiBaseUrl: string, useMockData: boolean, config?: any) => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [lastOrderNumber, setLastOrderNumber] = useState<string>('');
   const [lastOrderData, setLastOrderData] = useState<Order | null>(null);
   const [loading, setLoading] = useState(false);
   const [isSimulationActive, setIsSimulationActive] = useState(false);
   const [expeditionLog, setExpeditionLog] = useState<Array<{orderNumber: string, nickname?: string, expeditionTime: Date, createdAt?: Date, isAutoExpedition?: boolean}>>([]);
+  const [productionOrders, setProductionOrders] = useState<Order[]>([]);
+  const [readyOrders, setReadyOrders] = useState<Order[]>([]);
   
   const { speak } = useTextToSpeech();
   const previousLastOrderNumber = useRef<string>('');
   const ttsConfigRef = useRef(ttsConfig);
   const autoExpeditionConfigRef = useRef(autoExpeditionConfig);
   const autoExpeditionTimeoutRef = useRef<NodeJS.Timeout>();
+  const apiBaseUrlRef = useRef(apiBaseUrl);
+  const useMockDataRef = useRef(useMockData);
   
   // Atualizar refs quando configs mudarem
   useEffect(() => {
     ttsConfigRef.current = ttsConfig;
     autoExpeditionConfigRef.current = autoExpeditionConfig;
-  }, [ttsConfig, autoExpeditionConfig]);
+    apiBaseUrlRef.current = apiBaseUrl;
+    useMockDataRef.current = useMockData;
+  }, [ttsConfig, autoExpeditionConfig, apiBaseUrl, useMockData]);
 
   const loadOrders = useCallback(async () => {
-    // Evitar múltiplas chamadas simultâneas
     if (loading) return;
     
     try {
       setLoading(true);
-      const data = await fetchOrders();
       
-      // Só atualizar se os dados realmente mudaram
-      setOrders(prevOrders => {
-        const hasChanged = JSON.stringify(prevOrders) !== JSON.stringify(data);
-        return hasChanged ? data : prevOrders;
-      });
-      
-      // Encontrar o último pedido 'ready' - busca mais robusta
-      const readyOrders = data.filter(order => order.status === 'ready');
-      if (readyOrders.length > 0) {
-        // Ordenar por data de atualização mais recente
-        const sortedReadyOrders = readyOrders.sort((a, b) => {
-          const dateA = new Date(a.updatedAt || a.ultimoConsumo || 0);
-          const dateB = new Date(b.updatedAt || b.ultimoConsumo || 0);
-          return dateB.getTime() - dateA.getTime();
-        });
-        
-        const lastReadyOrder = sortedReadyOrders[0];
-        const newLastOrderNumber = lastReadyOrder.numeroPedido || lastReadyOrder.number || '';
-        
-        // Só atualizar se realmente mudou
-        if (newLastOrderNumber !== lastOrderNumber) {
-          // Armazenar dados completos do último pedido
-          setLastOrderData(lastReadyOrder);
-          
-          // Verificar se é um novo pedido e falar se TTS habilitado
-          if (newLastOrderNumber !== previousLastOrderNumber.current && previousLastOrderNumber.current !== '' && ttsConfigRef.current?.enabled) {
-            const nickname = lastReadyOrder.nomeCliente;
-            const textToSpeak = nickname ? `Pedido ${newLastOrderNumber}, ${nickname}` : `Pedido ${newLastOrderNumber}`;
-            const soundFile = config?.sounds?.ready && config?.sounds?.readyFile 
-              ? config.sounds.readyFile 
-              : undefined;
-            const readySoundType = config?.sounds?.readySoundType || 'padrao';
-            const airportTones = config?.sounds?.airportTones || 2;
-            const deliveryPlatform = lastReadyOrder.localEntrega || '';
-            speak(textToSpeak, newLastOrderNumber, nickname || '', ttsConfigRef.current, soundFile, readySoundType, airportTones, deliveryPlatform);
-          }
-          
-          previousLastOrderNumber.current = newLastOrderNumber;
-          setLastOrderNumber(newLastOrderNumber);
+      // Busca os pedidos em produção e prontos simultaneamente
+      const [productionData, readyData] = await Promise.all([
+        fetchProductionOrders(apiBaseUrlRef.current, useMockDataRef.current),
+        fetchReadyOrders(apiBaseUrlRef.current, useMockDataRef.current)
+      ]);
+
+      console.log('Pedidos em produção:', productionData);
+      console.log('Pedidos prontos:', readyData);
+
+      // Atualiza os estados
+      setProductionOrders(productionData);
+      setReadyOrders(readyData);
+
+      // Processa o último pedido pronto (se houver)
+      if (readyData.length > 0) {
+        const lastReady = readyData[0];
+        if (lastReady.numeroPedido !== lastOrderNumber) {
+          setLastOrderData(lastReady);
+          setLastOrderNumber(lastReady.numeroPedido);
         }
-      } else if (lastOrderNumber) {
-        // Só limpar se havia um último pedido
-        setLastOrderNumber('');
-        setLastOrderData(null);
-        previousLastOrderNumber.current = '';
       }
+
+      console.log('Estados atualizados:', {
+        producao: productionData.length,
+        prontos: readyData.length
+      });
+
     } catch (error) {
-      // toast({
-      //   title: "Erro",
-      //   description: "Falha ao carregar pedidos",
-      //   variant: "destructive"
-      // });
+      console.error('Erro ao carregar pedidos:', error);
     } finally {
       setLoading(false);
     }
-  }, [speak, loading, lastOrderNumber]);
-
+  }, [loading, lastOrderNumber]); // Manter lastOrderNumber para a lógica interna de comparação
+  
   const moveToReady = useCallback(async (orderId: string) => {
     try {
-      const updatedOrder = await updateOrderStatus(orderId, 'ready');
+      const updatedOrder = await updateOrderStatus(orderId, 'ready', apiBaseUrlRef.current);
       setOrders(prev => prev.map(o => 
         o.id === orderId ? updatedOrder : o
       ));
@@ -141,7 +122,7 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
       //   variant: "destructive"
       // });
     }
-  }, [orders, lastOrderNumber, speak]);
+  }, [orders, lastOrderNumber, speak, apiBaseUrlRef.current]);
 
   const expedite = useCallback(async (orderNumber: string) => {
     try {
@@ -154,7 +135,7 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
         });
         
         if (order) {
-          const updatedOrder = await updateOrderStatus(order.id, 'production');
+          const updatedOrder = await updateOrderStatus(order.id, 'production', apiBaseUrlRef.current);
           setOrders(prev => prev.map(o => 
             o.id === order.id ? updatedOrder : o
           ));
@@ -201,7 +182,7 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
       });
       
       if (order) {
-        await expediteOrder(order.id);
+        await expediteOrder(order.id, apiBaseUrlRef.current);
         setOrders(prev => prev.filter(o => o.id !== order.id));
         
         // Se foi expedido o último pedido, encontrar novo último pedido
@@ -243,7 +224,7 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
       //   variant: "destructive"
       // });
     }
-  }, [orders, lastOrderNumber]);
+  }, [orders, lastOrderNumber, apiBaseUrlRef.current]);
   
   // Auto-expedição otimizada
   useEffect(() => {
@@ -262,7 +243,7 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
       if (orders.some(o => o.status === 'ready' && (o.numeroPedido || o.number) === lastOrderNumber)) {
         try {
           console.log('Auto-expedindo pedido:', lastOrderNumber);
-          await expedite(lastOrderNumber);
+          await expedite(lastOrderNumber, apiBaseUrlRef.current);
         } catch (error) {
           console.error('Erro na auto-expedição:', error);
         }
@@ -285,7 +266,7 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
     
     // Importar e usar a função de clear do service
     const { clearAllOrdersService } = await import('../services/orderService');
-    clearAllOrdersService();
+    clearAllOrdersService(apiBaseUrlRef.current, useMockDataRef.current);
     
     // Marcar no localStorage que os pedidos foram zerados
     localStorage.setItem('orders-cleared', 'true');
@@ -317,7 +298,7 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
       console.log(`📋 Módulos ativos: ${modulesToUse.join(', ')}`);
       
       // Contar pedidos antes da geração
-      const ordersBefore = await fetchOrders();
+      const ordersBefore = await fetchOrders(apiBaseUrlRef.current, useMockDataRef.current);
       console.log(`📊 Pedidos antes da geração: ${ordersBefore.length} (Produção: ${ordersBefore.filter(o => o.status === 'production').length}, Prontos: ${ordersBefore.filter(o => o.status === 'ready').length})`);
       
       // Gerar todos os pedidos sequencialmente
@@ -325,7 +306,7 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
         console.log(`⚙️ Gerando pedido ${i + 1}/${count}...`);
         
         try {
-          const newOrder = await addSimulatedOrder(modulesToUse);
+          const newOrder = await addSimulatedOrder(modulesToUse, apiBaseUrlRef.current, useMockDataRef.current);
           console.log(`🆕 Pedido criado: ${newOrder.numeroPedido} (${newOrder.modulo})`);
         } catch (error) {
           console.error(`❌ Erro ao criar pedido ${i + 1}:`, error);
@@ -337,7 +318,7 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
       // Aguardar um pouco antes de recarregar para garantir que todos foram salvos
       await new Promise(resolve => setTimeout(resolve, 200));
       
-      const ordersAfterGeneration = await fetchOrders();
+      const ordersAfterGeneration = await fetchOrders(apiBaseUrlRef.current, useMockDataRef.current);
       console.log(`📊 Pedidos após geração: ${ordersAfterGeneration.length} (Produção: ${ordersAfterGeneration.filter(o => o.status === 'production').length}, Prontos: ${ordersAfterGeneration.filter(o => o.status === 'ready').length})`);
       
       // Recarregar para sincronizar o estado React
@@ -348,7 +329,7 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
     } catch (error) {
       console.error('❌ Erro geral ao gerar pedidos:', error);
     }
-  }, [loadOrders]);
+  }, [loadOrders, apiBaseUrlRef.current, useMockDataRef.current]);
 
   const startSimulation = useCallback(() => {
     setIsSimulationActive(true);
@@ -358,40 +339,29 @@ export const useOrders = (ttsConfig?: TTSConfig, autoExpeditionConfig?: AutoExpe
     setIsSimulationActive(false);
   }, []);
 
-  // Carregar pedidos inicialmente e periodicamente com otimização
+  // Ref para a função loadOrders para evitar "stale closure" no setInterval
+  const loadOrdersRef = useRef(loadOrders);
   useEffect(() => {
-    loadOrders();
-    
-    // Polling mais inteligente - apenas se necessário
-    const interval = setInterval(() => {
-      // Só fazer polling se não estiver em uma operação ativa
-      if (!loading) {
-        loadOrders();
-      }
-    }, 10000); // Reduzir frequência para 10 segundos
-    
-    return () => clearInterval(interval);
-  }, []); // Remover loadOrders das dependências para evitar re-criação do interval
+    loadOrdersRef.current = loadOrders;
+  }, [loadOrders]);
 
-  // Separar a lógica de loadOrders para não recriar o interval constantemente
+  // Efeito para carregar os pedidos inicial e periodicamente.
   useEffect(() => {
-    if (orders.length === 0 && !loading) {
-      loadOrders();
+    // 1. Carrega os pedidos imediatamente ao montar o componente.
+    loadOrdersRef.current();
+
+    // 2. Configura um intervalo para atualizações periódicas a cada 10 segundos.
+    const intervalId = setInterval(() => {
+      console.log('Polling for new orders...');
+      // Chama a versão mais recente da função loadOrders através da ref.
+      loadOrdersRef.current();
+    }, 10000); // 10 segundos
+
+    // 3. Limpa o intervalo quando o componente é desmontado.
+    return () => {
+      clearInterval(intervalId);
     }
-  }, [loadOrders, orders.length, loading]);
-
-  // Filtrar pedidos por status, excluindo o último pedido dos prontos apenas se for destacado
-  const productionOrders = orders.filter(order => order.status === 'production');
-  const readyOrders = orders.filter(order => {
-    if (order.status !== 'ready') return false;
-    
-    // Se highlight está ativado, excluir o último pedido (será exibido no container especial)
-    // Se highlight está desativado, incluir o último pedido na lista normal
-    const isLastOrder = (order.numeroPedido || order.number) === lastOrderNumber;
-    const shouldHighlight = config?.lastOrder?.highlight ?? true;
-    
-    return shouldHighlight ? !isLastOrder : true;
-  });
+  }, []); // Executa apenas uma vez, na montagem do componente.
 
   return {
     orders,

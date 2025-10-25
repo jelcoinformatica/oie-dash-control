@@ -81,9 +81,10 @@ export const OrderCard = ({
   backgroundColor = '#ffffff',
   showCardBorder = false
 }: OrderCardProps) => {
-  const displayNumber = order.numeroPedido || order.number;
+  // Garante que o número do pedido seja sempre uma string para evitar erros com .match()
+  const displayNumber = String(order.numeroPedido || order.number || '');
   const displayName = order.nomeCliente || order.nickname;
-  const isOnlineDelivery = displayNumber?.match(/^(IF|DD|RA|UB)-/);
+  const isOnlineDelivery = displayNumber.match(/^(IF|DD|RA|UB)-/);
   
   // Para delivery online, o nome da plataforma vai na etiqueta
   const getDeliveryPlatformName = (prefix: string) => {

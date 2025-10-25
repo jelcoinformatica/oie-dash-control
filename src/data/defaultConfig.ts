@@ -153,7 +153,9 @@ export const defaultConfig: PanelConfig = {
     username: '',
     password: '',
     port: '',
-    kdsIntegration: false
+    kdsIntegration: false,
+    apiBaseUrl: 'http://localhost:3000',
+    useMockData: false
   },
   store: {
     cnpj: '',

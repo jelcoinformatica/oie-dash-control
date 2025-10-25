@@ -152,6 +152,8 @@ export interface PanelConfig {
     password?: string;
     port?: string;
     kdsIntegration?: boolean;
+    apiBaseUrl?: string;
+    useMockData?: boolean;
   };
   store?: {
     cnpj?: string;
@@ -164,5 +166,9 @@ export interface PanelConfig {
   };
   overlayControls?: {
     enabled: boolean;
+  };
+  dataFetching?: {
+    initialDelaySeconds: number;
+    refreshIntervalSeconds: number;
   };
 }

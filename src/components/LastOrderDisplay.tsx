@@ -34,6 +34,10 @@ export const LastOrderDisplay = ({
     backgroundColor: config?.backgroundColor || '#fef3c7'
   };
 
+  // Garante que o número do pedido seja sempre uma string antes de usar métodos de string.
+  // Também lida com casos onde orderNumber pode ser null ou undefined.
+  const displayNumber = String(orderNumber || '');
+
   // Get order details to show nickname
   const handleClick = () => {
     if (onExpedite) {
@@ -42,9 +46,9 @@ export const LastOrderDisplay = ({
   };
 
   // Calcular tamanho da fonte baseado no tipo de pedido
-  const adjustedFontSize = orderNumber.match(/^(IF|DD|RA|UB)-/) && orderNumber.length > 6 
-    ? safeConfig.fontSize * 0.6 
-    : safeConfig.fontSize;
+  const adjustedFontSize = (displayNumber.match(/^(IF|DD|RA|UB)-/) ? 
+    safeConfig.fontSize * 0.6 : 
+    safeConfig.fontSize);
   
   // Calcular tamanho da fonte do apelido como 50% do número ajustado
   const nicknameFontSize = adjustedFontSize * 0.5;
@@ -69,29 +73,29 @@ export const LastOrderDisplay = ({
       <div className="relative h-full flex flex-col items-center justify-center">
           <div className="flex flex-col items-center">
             <span className="leading-none font-bold">
-              {orderNumber.match(/^(IF|DD|RA|UB)-/) ? (
+              {displayNumber.match(/^(IF|DD|RA|UB)-/) ? (
                 <div className="flex flex-col items-center">
-                   <span style={{ 
-                     fontStyle: 'italic', 
-                     fontWeight: 'normal',
-                     fontSize: `${adjustedFontSize * 0.5}rem`,
-                     lineHeight: '0.9'
-                   }}>
-                     {(() => {
-                       const prefix = orderNumber.split('-')[0];
-                       switch (prefix) {
-                         case 'IF': return 'iFood';
-                         case 'RA': return 'Rappi';
-                         default: return prefix;
-                       }
-                     })()}
-                   </span>
+                  <span style={{ 
+                    fontStyle: 'italic', 
+                    fontWeight: 'normal',
+                    fontSize: `${adjustedFontSize * 0.5}rem`,
+                    lineHeight: '0.9'
+                  }}>
+                    {(() => {
+                      const prefix = displayNumber.split('-')[0];
+                      switch (prefix) {
+                        case 'IF': return 'iFood';
+                        case 'RA': return 'Rappi';
+                        default: return prefix;
+                      }
+                    })()}
+                  </span>
                   <span style={{ fontSize: `${adjustedFontSize * 1.2}rem` }}>
-                    {orderNumber.split('-')[1]}
+                    {displayNumber.split('-')[1]}
                   </span>
                 </div>
               ) : (
-                orderNumber
+                displayNumber
               )}
             </span>
             {nickname && (
