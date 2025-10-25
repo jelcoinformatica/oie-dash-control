@@ -243,7 +243,7 @@ export const useOrders = (ttsConfig: TTSConfig, autoExpeditionConfig: AutoExpedi
       if (orders.some(o => o.status === 'ready' && (o.numeroPedido || o.number) === lastOrderNumber)) {
         try {
           console.log('Auto-expedindo pedido:', lastOrderNumber);
-          await expedite(lastOrderNumber, apiBaseUrlRef.current);
+          await expedite(lastOrderNumber);
         } catch (error) {
           console.error('Erro na auto-expedição:', error);
         }
