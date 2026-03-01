@@ -21,6 +21,7 @@ export const defaultConfig: PanelConfig = {
     showBorder: false,
     showShadow: false,
     showCardBorder: false,
+    columnBackground: '#f3f4f6',
       cardConfig: {
         columns: 2,
         rows: 4,
@@ -50,6 +51,7 @@ export const defaultConfig: PanelConfig = {
     showBorder: true,
     showShadow: false,
     showCardBorder: false,
+    columnBackground: '#FAFAFA',
       cardConfig: {
         columns: 2,
         rows: 4,

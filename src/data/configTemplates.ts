@@ -57,6 +57,7 @@ export const configTemplates: ConfigTemplate[] = [
         ...current.production,
         headerBg: '#1a1a1a',
         headerColor: '#a0a0a0',
+        columnBackground: '#141414',
         cardConfig: {
           ...current.production.cardConfig,
           backgroundColor: '#1e1e1e',
@@ -67,22 +68,17 @@ export const configTemplates: ConfigTemplate[] = [
         ...current.ready,
         headerBg: '#D4AF37',
         headerColor: '#0a0a0a',
-        showBorder: true,
+        showBorder: false,
+        columnBackground: '#000000',
         cardConfig: {
           ...current.ready.cardConfig,
-          backgroundColor: '#141414',
+          backgroundColor: '#000000',
           textColor: '#D4AF37',
         },
       },
-      advertising: {
-        ...current.advertising,
-        headerBg: '#1a1a1a',
-        headerColor: '#D4AF37',
-        backgroundColor: '#0a0a0a',
-      },
       lastOrder: {
         ...current.lastOrder,
-        backgroundColor: '#0a0a0a',
+        backgroundColor: '#000000',
         textColor: '#D4AF37',
       },
     }),
@@ -106,6 +102,7 @@ export const configTemplates: ConfigTemplate[] = [
         ...current.production,
         headerBg: '#333333',
         headerColor: '#ffffff',
+        columnBackground: '#1a1a1a',
         cardConfig: {
           ...current.production.cardConfig,
           backgroundColor: '#1a1a1a',
@@ -118,18 +115,13 @@ export const configTemplates: ConfigTemplate[] = [
         headerBg: '#0033CC',
         headerColor: '#FFFF00',
         showBorder: true,
+        columnBackground: '#001166',
         cardConfig: {
           ...current.ready.cardConfig,
           backgroundColor: '#001166',
           textColor: '#FFFF00',
           fontSize: 4,
         },
-      },
-      advertising: {
-        ...current.advertising,
-        headerBg: '#333333',
-        headerColor: '#ffffff',
-        backgroundColor: '#000000',
       },
       lastOrder: {
         ...current.lastOrder,
@@ -157,6 +149,7 @@ export const configTemplates: ConfigTemplate[] = [
         ...current.production,
         headerBg: '#e0e0e0',
         headerColor: '#333333',
+        columnBackground: '#f0f0f0',
         cardConfig: {
           ...current.production.cardConfig,
           backgroundColor: '#ffffff',
@@ -168,17 +161,12 @@ export const configTemplates: ConfigTemplate[] = [
         headerBg: '#2196F3',
         headerColor: '#ffffff',
         showBorder: false,
+        columnBackground: '#f0f0f0',
         cardConfig: {
           ...current.ready.cardConfig,
           backgroundColor: '#ffffff',
           textColor: '#1565C0',
         },
-      },
-      advertising: {
-        ...current.advertising,
-        headerBg: '#e0e0e0',
-        headerColor: '#333333',
-        backgroundColor: '#f5f5f5',
       },
       lastOrder: {
         ...current.lastOrder,
@@ -206,6 +194,7 @@ export const configTemplates: ConfigTemplate[] = [
         ...current.production,
         headerBg: '#3E2723',
         headerColor: '#BCAAA4',
+        columnBackground: '#2C1810',
         cardConfig: {
           ...current.production.cardConfig,
           backgroundColor: '#3E2723',
@@ -217,17 +206,12 @@ export const configTemplates: ConfigTemplate[] = [
         headerBg: '#BF360C',
         headerColor: '#FFF8E1',
         showBorder: true,
+        columnBackground: '#2C1810',
         cardConfig: {
           ...current.ready.cardConfig,
           backgroundColor: '#4E342E',
           textColor: '#FFE0B2',
         },
-      },
-      advertising: {
-        ...current.advertising,
-        headerBg: '#3E2723',
-        headerColor: '#BCAAA4',
-        backgroundColor: '#2C1810',
       },
       lastOrder: {
         ...current.lastOrder,
