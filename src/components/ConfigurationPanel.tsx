@@ -1308,18 +1308,7 @@ export const ConfigurationPanel = ({
                     }}
                     className="scale-75"
                   />
-                  <Label 
-                    className="text-xs font-medium cursor-pointer flex-1"
-                    onClick={() => {
-                      const newValue = !Boolean(config.advertising.qrCodeMode);
-                      updateConfig('advertising.qrCodeMode', newValue);
-                      if (newValue) {
-                        updateConfig('advertising.newsMode', false);
-                        updateConfig('advertising.websiteUrl', '');
-                        updateConfig('advertising.imageUrl', '');
-                      }
-                    }}
-                  >
+                  <Label className="text-xs font-medium flex-1">
                     📱 QR Code - Acompanhe seu Pedido
                   </Label>
                 </div>
