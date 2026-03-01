@@ -368,7 +368,7 @@ const Index = () => {
                           </div>
                         </div>
                         
-                        <div className="flex-1 p-2 bg-gray-50" style={{ overflow: 'hidden' }}>
+                        <div className="flex-1 p-0 bg-gray-50" style={{ overflow: 'hidden' }}>
                       <OrderColumnGrid
                         orders={productionOrders}
                         columns={config.production.cardConfig.columns}
@@ -481,7 +481,7 @@ const Index = () => {
                       </div>
                     )}
                     
-                    <div className="flex-1 p-2 bg-white" style={{ overflow: 'hidden' }}>
+                    <div className="flex-1 p-0 bg-white" style={{ overflow: 'hidden' }}>
                     <OrderColumnGrid
                       orders={readyOrders}
                       columns={config.ready.cardConfig.columns}
@@ -688,7 +688,7 @@ const Index = () => {
                     </div>
                   )}
                   
-                  <div className="flex-1 p-2 bg-white" style={{ overflow: 'hidden' }}>
+                  <div className="flex-1 p-0 bg-white" style={{ overflow: 'hidden' }}>
                     <OrderColumnGrid
                       orders={readyOrders}
                       columns={config.ready.cardConfig.columns}
