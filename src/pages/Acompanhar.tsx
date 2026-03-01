@@ -70,12 +70,47 @@ const Acompanhar = () => {
   useEffect(() => { loadOrders(); const i = setInterval(loadOrders, 5000); return () => clearInterval(i); }, [loadOrders]);
 
   // --- ALERT ---
+  const playAlertSound = useCallback(() => {
+    try {
+      // Gerar tom de alerta chamativo via Web Audio API (mais alto e penetrante)
+      const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const playTone = (freq: number, startTime: number, duration: number) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'square';
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(0.6, startTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, startTime + duration);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(startTime);
+        osc.stop(startTime + duration);
+      };
+      // Padrão: 3 bips agudos rápidos, pausa, repete 2x
+      const now = ctx.currentTime;
+      for (let rep = 0; rep < 3; rep++) {
+        const base = now + rep * 1.2;
+        playTone(1200, base, 0.15);
+        playTone(1500, base + 0.2, 0.15);
+        playTone(1800, base + 0.4, 0.25);
+      }
+    } catch {}
+    // Também tocar o WAV como backup
+    try {
+      const a = new Audio('/sounds/kds_sound_bell1.wav');
+      a.volume = 1;
+      a.play().catch(() => {});
+    } catch {}
+  }, []);
+
   const triggerAlert = useCallback((order: Order) => {
     setAlertOrder(order);
-    if (navigator.vibrate) navigator.vibrate([300, 100, 300, 100, 300]);
-    try { const a = new Audio('/sounds/kds_sound_bell1.wav'); a.volume = 1; a.play().catch(() => {}); } catch {}
-    setTimeout(() => setAlertOrder(null), 10000);
-  }, []);
+    if (navigator.vibrate) navigator.vibrate([300, 100, 300, 100, 500, 200, 300, 100, 300]);
+    playAlertSound();
+    // Repetir som após 3s para chamar mais atenção
+    const repeat = setTimeout(() => playAlertSound(), 3000);
+    setTimeout(() => { setAlertOrder(null); clearTimeout(repeat); }, 10000);
+  }, [playAlertSound]);
 
   const checkMyOrderReady = useCallback((order: Order) => {
     if (myOrderIdsRef.current.includes(order.id)) {
