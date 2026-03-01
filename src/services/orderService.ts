@@ -157,7 +157,7 @@ export const updateOrderStatus = async (orderId: string, newStatus: 'production'
 };
 
 // Função para adicionar pedido simulado
-export const addSimulatedOrder = async (allowedModules: string[] | undefined, apiBaseUrl: string, useMockData: boolean): Promise<Order> => {
+export const addSimulatedOrder = async (allowedModules: string[] | undefined, apiBaseUrl: string, useMockData: boolean, allowedPlatforms?: string[]): Promise<Order> => {
   await new Promise(resolve => setTimeout(resolve, 100));
   
   if (useMockData) {
@@ -190,7 +190,8 @@ export const addSimulatedOrder = async (allowedModules: string[] | undefined, ap
       if (orderNumber.startsWith('IF-')) return 'iFood Delivery';
       if (orderNumber.startsWith('DD-')) return 'Delivery Direto';
       if (orderNumber.startsWith('RA-')) return 'Rappi Delivery';
-      if (orderNumber.startsWith('UB-')) return 'Uber Eats';
+      if (orderNumber.startsWith('KE-')) return 'Keeta Delivery';
+      if (orderNumber.startsWith('99-')) return '99 Food Delivery';
       return 'Delivery Online';
     };
  
@@ -199,19 +200,25 @@ export const addSimulatedOrder = async (allowedModules: string[] | undefined, ap
       if (orderNumber.startsWith('IF-')) return 'Combo iFood';
       if (orderNumber.startsWith('DD-')) return 'Combo Delivery Direto';
       if (orderNumber.startsWith('RA-')) return 'Combo Rappi';
-      if (orderNumber.startsWith('UB-')) return 'Combo Uber Eats';
+      if (orderNumber.startsWith('KE-')) return 'Combo Keeta';
+      if (orderNumber.startsWith('99-')) return 'Combo 99 Food';
       return 'Combo Delivery';
     };
     
+    // Plataformas de delivery disponíveis
+    const defaultPlatforms = ['IF', 'RA', 'DD', 'KE', '99'];
+    const platforms = allowedPlatforms && allowedPlatforms.length > 0 
+      ? allowedPlatforms 
+      : defaultPlatforms;
+    
     // Para pedidos de entrega, 70% devem ter prefixo de delivery online
     let orderNumber: string;
-    if (selectedModule === 'entrega' && Math.random() < 0.7) {
-      // Gerar número com 5 dígitos para delivery online
-      const deliveryTypes = ['IF', 'DD', 'RA', 'UB']; // iFood, Delivery Direto, Rappi, Uber
-      const randomType = deliveryTypes[Math.floor(Math.random() * deliveryTypes.length)];
-      orderNumber = `${randomType}-${Math.floor(Math.random() * 90000) + 10000}`;
+    if (selectedModule === 'entrega' && platforms.length > 0 && Math.random() < 0.7) {
+      const randomPlatform = platforms[Math.floor(Math.random() * platforms.length)];
+      orderNumber = `${randomPlatform}-${Math.floor(Math.random() * 90000) + 10000}`;
+    } else if (selectedModule === 'entrega' && platforms.includes('interno')) {
+      orderNumber = (Math.floor(Math.random() * 900) + 100).toString();
     } else {
-      // Número padrão de 3 dígitos
       orderNumber = (Math.floor(Math.random() * 900) + 100).toString();
     }
  
@@ -225,7 +232,7 @@ export const addSimulatedOrder = async (allowedModules: string[] | undefined, ap
       status: 'production',
       ultimoConsumo: new Date(),
       dataContabil: new Date(),
-      localEntrega: selectedModule === 'entrega' && (orderNumber.startsWith('IF-') || orderNumber.startsWith('DD-') || orderNumber.startsWith('RA-') || orderNumber.startsWith('UB-'))
+      localEntrega: selectedModule === 'entrega' && /^(IF|DD|RA|KE|99)-/.test(orderNumber)
         ? getDeliveryPlatformName(orderNumber)
         : `Local ${Math.floor(Math.random() * 20) + 1}`,
       nomeCliente: selectedNickname,
@@ -234,7 +241,7 @@ export const addSimulatedOrder = async (allowedModules: string[] | undefined, ap
       nickname: selectedNickname,
       createdAt: new Date(),
       updatedAt: new Date(),
-      items: selectedModule === 'entrega' && (orderNumber.startsWith('IF-') || orderNumber.startsWith('DD-') || orderNumber.startsWith('RA-') || orderNumber.startsWith('UB-'))
+      items: selectedModule === 'entrega' && /^(IF|DD|RA|KE|99)-/.test(orderNumber)
         ? [getDeliveryPlatformItems(orderNumber), 'Taxa de Entrega']
         : Array.from({ length: Math.floor(Math.random() * 3) + 1 }, () => 
             items[Math.floor(Math.random() * items.length)]

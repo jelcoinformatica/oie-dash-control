@@ -2482,7 +2482,41 @@ export const ConfigurationPanel = ({
                   Pré-requisito: API local não está acessível no preview. A simulação manual usa modo local automaticamente.
                 </div>
               )}
-            
+
+            {/* Seleção de Plataformas de Delivery */}
+            <div className="space-y-2 border-t pt-3">
+              <Label className="text-xs font-semibold">Plataformas de Delivery na Simulação:</Label>
+              <p className="text-xs text-gray-500">Selecione quais tipos de pedido de entrega serão gerados</p>
+              <div className="grid grid-cols-2 gap-2">
+                {[
+                  { key: 'IF', label: 'iFood', icon: '🍔' },
+                  { key: 'RA', label: 'Rappi', icon: '🛵' },
+                  { key: 'DD', label: 'Delivery Direto', icon: '📦' },
+                  { key: 'KE', label: 'Keeta', icon: '🏍️' },
+                  { key: '99', label: '99 Food', icon: '🚗' },
+                  { key: 'interno', label: 'Interno (sem plataforma)', icon: '🏠' },
+                ].map(platform => {
+                  const currentPlatforms = config.simulation?.deliveryPlatforms || ['IF', 'RA', 'DD', 'KE', '99'];
+                  const isChecked = currentPlatforms.includes(platform.key);
+                  return (
+                    <label key={platform.key} className="flex items-center gap-1.5 text-xs cursor-pointer">
+                      <Checkbox
+                        checked={isChecked}
+                        onCheckedChange={(checked) => {
+                          const current = config.simulation?.deliveryPlatforms || ['IF', 'RA', 'DD', 'KE', '99'];
+                          const updated = checked
+                            ? [...current, platform.key]
+                            : current.filter(p => p !== platform.key);
+                          updateConfig('simulation.deliveryPlatforms', updated);
+                        }}
+                      />
+                      <span>{platform.icon} {platform.label}</span>
+                    </label>
+                  );
+                })}
+              </div>
+            </div>
+
             <div className="space-y-3 border-t pt-3">
               <div className="space-y-2">
                 <Label className="text-xs font-medium">Simulação Automática:</Label>
