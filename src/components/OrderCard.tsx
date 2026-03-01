@@ -1,3 +1,4 @@
+import { useRef, useEffect, useState } from 'react';
 import { Order } from '../types/order';
 import { cn } from '../lib/utils';
 
@@ -65,6 +66,125 @@ const moduleLabels = {
   mesa: 'Mesa',
   entrega: 'Entrega', 
   ficha: 'Ficha'
+};
+
+// Componente que auto-ajusta fontes para caber no card
+const AutoFitCardContent = ({
+  isOnlineDelivery,
+  displayNumber,
+  displayName,
+  showNickname,
+  showModuleIndicator,
+  moduleIndicator,
+  fontSize,
+  getDeliveryPlatformName
+}: {
+  isOnlineDelivery: RegExpMatchArray | null;
+  displayNumber: string;
+  displayName: string | undefined;
+  showNickname: boolean;
+  showModuleIndicator: boolean;
+  moduleIndicator: string;
+  fontSize: number;
+  getDeliveryPlatformName: (prefix: string) => string;
+}) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(1);
+
+  const mainNumber = isOnlineDelivery ? displayNumber.split('-')[1] : displayNumber;
+  const hasName = !!(displayName && showNickname && displayNumber);
+  const showPrefix = isOnlineDelivery && (!showModuleIndicator || moduleIndicator === 'bullet');
+
+  // Calcula escala ideal baseada no container
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    
+    const measure = () => {
+      const containerH = el.clientHeight;
+      const containerW = el.clientWidth;
+      if (containerH === 0 || containerW === 0) return;
+
+      // Estimar alturas dos elementos
+      const basePx = fontSize * 16; // rem -> px
+      const numberH = basePx * 1.1;
+      const nameH = hasName ? Math.min(fontSize * 0.45, 1) * 16 * 1.3 : 0;
+      const prefixH = showPrefix ? fontSize * 0.4 * 16 : 0;
+      const padding = 8;
+      
+      const totalNeeded = numberH + nameH + prefixH + padding;
+      
+      if (totalNeeded > containerH) {
+        setScale(Math.max(0.5, containerH / totalNeeded));
+      } else {
+        setScale(1);
+      }
+    };
+
+    measure();
+    const obs = new ResizeObserver(measure);
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [fontSize, hasName, showPrefix]);
+
+  const scaledFontSize = fontSize * scale;
+  const nameFontSize = Math.min(scaledFontSize * 0.45, 1);
+
+  return (
+    <div ref={containerRef} className="w-full h-full flex flex-col justify-between items-center py-1 overflow-hidden">
+      {/* Prefixo no topo */}
+      <div className="flex-shrink-0 flex items-start justify-center" style={{ minHeight: 0 }}>
+        {showPrefix && (
+          <span style={{ 
+            fontStyle: 'italic', 
+            fontWeight: 'normal',
+            fontSize: `${scaledFontSize * 0.4}rem`,
+            lineHeight: '1'
+          }}>
+            {getDeliveryPlatformName(displayNumber.split('-')[0])}
+          </span>
+        )}
+      </div>
+
+      {/* Número principal no centro */}
+      <div className="flex-1 flex items-center justify-center min-h-0">
+        <div className="font-bold text-center">
+          {displayNumber ? (
+            <span style={{ 
+              fontSize: `${(mainNumber || '').length > 8 ? scaledFontSize * 0.8 : scaledFontSize}rem`,
+              lineHeight: '1'
+            }}>
+              {mainNumber}
+            </span>
+          ) : displayName ? (
+            <span style={{ 
+              fontSize: `${(displayName.length > 8 ? scaledFontSize * 0.8 : scaledFontSize)}rem`,
+              lineHeight: '1'
+            }}>
+              {displayName}
+            </span>
+          ) : (
+            <span style={{ fontSize: `${scaledFontSize}rem`, lineHeight: '1' }}>S/N</span>
+          )}
+        </div>
+      </div>
+
+      {/* Nome embaixo */}
+      <div className="flex-shrink-0 w-full flex items-end justify-center px-1 overflow-hidden" style={{ minHeight: 0 }}>
+        {hasName && (
+          <div 
+            className="font-medium text-center leading-tight w-full overflow-hidden text-ellipsis whitespace-nowrap"
+            style={{ 
+              fontSize: `${nameFontSize}rem`,
+              lineHeight: '1.2',
+            }}
+          >
+            {displayName}
+          </div>
+        )}
+      </div>
+    </div>
+  );
 };
 
 export const OrderCard = ({ 
@@ -159,77 +279,16 @@ export const OrderCard = ({
       )}
       
       {/* Layout com posições fixas */}
-      <div className="w-full h-full flex flex-col justify-between items-center py-1">
-        {/* Prefixo no topo - só mostra se não há etiqueta ou se etiqueta não está mostrando o delivery */}
-        <div className="flex-shrink-0 h-4 flex items-start justify-center">
-          {isOnlineDelivery && (!showModuleIndicator || moduleIndicator === 'bullet') && (
-            <span style={{ 
-              fontStyle: 'italic', 
-              fontWeight: 'normal',
-              fontSize: `${fontSize * 0.4}rem`,
-              lineHeight: '1'
-            }}>
-              {getDeliveryPlatformName(displayNumber.split('-')[0])}
-            </span>
-          )}
-        </div>
-
-        {/* Número principal no centro */}
-        <div className="flex-1 flex items-center justify-center">
-          <div className="font-bold text-center">
-            {displayNumber ? (
-              displayNumber.match(/^(IF|DD|RA|UB)-/) ? (
-                <span style={{ 
-                  fontSize: `${fontSize}rem`,
-                  lineHeight: '1'
-                }}>
-                  {displayNumber.split('-')[1]}
-                </span>
-              ) : (
-                <span style={{ 
-                  fontSize: displayNumber.length > 8 
-                    ? `${fontSize * 0.8}rem` 
-                    : `${fontSize}rem`,
-                  lineHeight: '1'
-                }}>
-                  {displayNumber}
-                </span>
-              )
-            ) : displayName ? (
-              <span style={{ 
-                fontSize: displayName.length > 8 ? `${fontSize * 0.8}rem` : `${fontSize}rem`,
-                lineHeight: '1'
-              }}>
-                {displayName}
-              </span>
-            ) : (
-              <span style={{ fontSize: `${fontSize}rem`, lineHeight: '1' }}>
-                S/N
-              </span>
-            )}
-          </div>
-        </div>
-
-        {/* Apelido embaixo */}
-        <div className="flex-shrink-0 w-full flex items-center justify-center px-1 overflow-hidden" style={{ maxHeight: '40%' }}>
-          {displayName && showNickname && displayNumber && (
-            <div 
-              className="font-medium text-center leading-tight w-full overflow-hidden"
-              style={{ 
-                fontSize: `${Math.min(fontSize * 0.5, 1.2)}rem`,
-                lineHeight: '1.15',
-                display: '-webkit-box',
-                WebkitLineClamp: 2,
-                WebkitBoxOrient: 'vertical' as const,
-                wordBreak: 'break-word',
-                overflowWrap: 'break-word',
-              }}
-            >
-              {displayName}
-            </div>
-          )}
-        </div>
-      </div>
+      <AutoFitCardContent
+        isOnlineDelivery={isOnlineDelivery}
+        displayNumber={displayNumber}
+        displayName={displayName}
+        showNickname={showNickname}
+        showModuleIndicator={showModuleIndicator}
+        moduleIndicator={moduleIndicator}
+        fontSize={fontSize}
+        getDeliveryPlatformName={getDeliveryPlatformName}
+      />
       
       {/* Hidden optional content */}
       <div className="hidden">
