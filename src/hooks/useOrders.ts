@@ -52,25 +52,15 @@ export const useOrders = (ttsConfig: TTSConfig, autoExpeditionConfig: AutoExpedi
     
     try {
       setLoading(true);
-      
+
+      const forceMockSimulation = localStorage.getItem('simulation-force-mock') === 'true';
+      const shouldUseMock = useMockDataRef.current || forceMockSimulation;
+
       // Busca os pedidos em produção e prontos simultaneamente
-      let productionData: Order[] = [];
-      let readyData: Order[] = [];
-      
-      try {
-        [productionData, readyData] = await Promise.all([
-          fetchProductionOrders(apiBaseUrlRef.current, useMockDataRef.current),
-          fetchReadyOrders(apiBaseUrlRef.current, useMockDataRef.current)
-        ]);
-      } catch {
-        // Se a API falhar, tenta com mock data (para simulação funcionar)
-        if (!useMockDataRef.current) {
-          [productionData, readyData] = await Promise.all([
-            fetchProductionOrders(apiBaseUrlRef.current, true),
-            fetchReadyOrders(apiBaseUrlRef.current, true)
-          ]);
-        }
-      }
+      const [productionData, readyData] = await Promise.all([
+        fetchProductionOrders(apiBaseUrlRef.current, shouldUseMock),
+        fetchReadyOrders(apiBaseUrlRef.current, shouldUseMock)
+      ]);
 
       console.log('Pedidos em produção:', productionData);
       console.log('Pedidos prontos:', readyData);
@@ -87,6 +77,7 @@ export const useOrders = (ttsConfig: TTSConfig, autoExpeditionConfig: AutoExpedi
           setLastOrderNumber(lastReady.numeroPedido);
         }
       }
+
 
       console.log('Estados atualizados:', {
         producao: productionData.length,
@@ -277,9 +268,17 @@ export const useOrders = (ttsConfig: TTSConfig, autoExpeditionConfig: AutoExpedi
     setLastOrderData(null);
     setExpeditionLog([]);
     
-    // Importar e usar a função de clear do service
-    const { clearAllOrdersService } = await import('../services/orderService');
-    clearAllOrdersService(apiBaseUrlRef.current, useMockDataRef.current);
+    try {
+      // Importar e usar a função de clear do service
+      const { clearAllOrdersService } = await import('../services/orderService');
+      const forceMockSimulation = localStorage.getItem('simulation-force-mock') === 'true';
+      await clearAllOrdersService(apiBaseUrlRef.current, useMockDataRef.current || forceMockSimulation);
+    } catch (error) {
+      console.error('Erro ao zerar pedidos, aplicando fallback local:', error);
+      const { clearAllOrdersService } = await import('../services/orderService');
+      await clearAllOrdersService(apiBaseUrlRef.current, true);
+      localStorage.setItem('simulation-force-mock', 'true');
+    }
     
     // Marcar no localStorage que os pedidos foram zerados
     localStorage.setItem('orders-cleared', 'true');
@@ -297,7 +296,7 @@ export const useOrders = (ttsConfig: TTSConfig, autoExpeditionConfig: AutoExpedi
       
       // Limpar a flag de pedidos zerados quando gerar novos pedidos
       localStorage.removeItem('orders-cleared');
-      
+      localStorage.setItem('simulation-force-mock', 'true');
       // Verificar módulos ativos
       const activeModules = [];
       if (config?.modules?.balcao?.enabled) activeModules.push('balcao');
