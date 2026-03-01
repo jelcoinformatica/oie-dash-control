@@ -1297,14 +1297,15 @@ export const ConfigurationPanel = ({
                   <Switch 
                     checked={Boolean(config.advertising.qrCodeMode)} 
                     onCheckedChange={(checked) => {
-                      updateConfig('advertising.qrCodeMode', checked);
-                      if (checked) {
-                        setTimeout(() => {
-                          updateConfig('advertising.newsMode', false);
-                          updateConfig('advertising.websiteUrl', '');
-                          updateConfig('advertising.imageUrl', '');
-                        }, 100);
-                      }
+                      const newConfig = {
+                        ...config,
+                        advertising: {
+                          ...config.advertising,
+                          qrCodeMode: checked,
+                          ...(checked ? { newsMode: false, websiteUrl: '', imageUrl: '' } : {})
+                        }
+                      };
+                      onConfigChange(newConfig);
                     }}
                     className="scale-75"
                   />
