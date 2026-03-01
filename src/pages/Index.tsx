@@ -504,7 +504,8 @@ const Index = () => {
                         gapHorizontal: config.ready.cardConfig.gapHorizontal,
                         gapVertical: config.ready.cardConfig.gapVertical,
                         cardMinHeight: config.ready.cardConfig.cardMinHeight,
-                        cardMaxHeight: config.ready.cardConfig.cardMaxHeight
+                        cardMaxHeight: config.ready.cardConfig.cardMaxHeight,
+                        cardBorderColor: config.ready.cardConfig.cardBorderColor
                       }}
                       lastOrderNumber={lastOrderNumber}
                       lastOrderConfig={config.lastOrder}
@@ -607,7 +608,8 @@ const Index = () => {
                         gapHorizontal: config.production.cardConfig.gapHorizontal,
                         gapVertical: config.production.cardConfig.gapVertical,
                         cardMinHeight: config.production.cardConfig.cardMinHeight,
-                        cardMaxHeight: config.production.cardConfig.cardMaxHeight
+                        cardMaxHeight: config.production.cardConfig.cardMaxHeight,
+                        cardBorderColor: config.production.cardConfig.cardBorderColor
                       }}
                       showCardBorder={config.production.showCardBorder}
                     />
@@ -712,7 +714,8 @@ const Index = () => {
                         gapHorizontal: config.ready.cardConfig.gapHorizontal,
                         gapVertical: config.ready.cardConfig.gapVertical,
                         cardMinHeight: config.ready.cardConfig.cardMinHeight,
-                        cardMaxHeight: config.ready.cardConfig.cardMaxHeight
+                        cardMaxHeight: config.ready.cardConfig.cardMaxHeight,
+                        cardBorderColor: config.ready.cardConfig.cardBorderColor
                       }}
                       lastOrderNumber={lastOrderNumber}
                       lastOrderConfig={config.lastOrder}

@@ -38,6 +38,7 @@ interface OrderCardProps {
   textColor?: string;
   backgroundColor?: string;
   showCardBorder?: boolean;
+  cardBorderColor?: string;
 }
 
 const platformLogos: Record<string, string> = {
@@ -207,7 +208,8 @@ export const OrderCard = ({
   fontFamily = 'Arial',
   textColor = '#374151',
   backgroundColor = '#ffffff',
-  showCardBorder = false
+  showCardBorder = false,
+  cardBorderColor = '#9ca3af'
 }: OrderCardProps) => {
   // Garante que o número do pedido seja sempre uma string para evitar erros com .match()
   const displayNumber = String(order.numeroPedido || order.number || '');
@@ -247,15 +249,15 @@ export const OrderCard = ({
   return (
     <div
       className={cn(
-        "border rounded-lg cursor-pointer relative",
+        "rounded-lg cursor-pointer relative",
         "hover:shadow-md transition-all duration-200 hover:scale-[1.02]",
         "animate-card-appear",
         "flex flex-col items-center justify-center p-2 min-h-16",
         showModuleIndicator && moduleIndicator === 'border' 
           ? cn("border-2", moduleBorderColors[order.modulo])
           : showCardBorder 
-          ? "border-2 border-gray-400"
-          : "border-gray-300",
+          ? "border-2"
+          : "border border-gray-300",
         className
       )}
       onClick={onClick}
@@ -264,7 +266,10 @@ export const OrderCard = ({
         color: textColor,
         fontFamily,
         height: '100%',
-        width: '100%'
+        width: '100%',
+        ...(showCardBorder && !(showModuleIndicator && moduleIndicator === 'border') 
+          ? { borderColor: cardBorderColor } 
+          : {})
       }}
     >
       {/* Badge de plataforma delivery */}

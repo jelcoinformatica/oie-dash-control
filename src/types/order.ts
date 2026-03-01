@@ -34,6 +34,7 @@ export interface OrderCardConfig {
   cardMinHeight?: number; // Altura mínima dos cards (px)
   cardMaxHeight?: number; // Altura máxima dos cards (px)
   cardWidth?: number;     // Largura dos cards (px)
+  cardBorderColor?: string; // Cor da borda dos cards
 }
 
 export interface PanelIdentification {

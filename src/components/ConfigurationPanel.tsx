@@ -687,6 +687,30 @@ export const ConfigurationPanel = ({
                 </div>
                </div>
 
+               {/* Controle de Borda dos Cards */}
+               <div className="pt-2 border-t border-gray-200">
+                 <Label className="text-xs font-semibold text-gray-600">Bordas dos Cards</Label>
+               </div>
+               <div className="flex items-center gap-2">
+                 <Switch 
+                   checked={config.production.showCardBorder || false} 
+                   onCheckedChange={(checked) => updateConfig('production.showCardBorder', checked)}
+                   className="scale-50"
+                 />
+                 <Label className="text-xs">Exibir Borda nos Cards</Label>
+               </div>
+               {config.production.showCardBorder && (
+                 <div>
+                   <Label className="text-xs">Cor da Borda</Label>
+                   <Input
+                     type="color"
+                     value={config.production.cardConfig.cardBorderColor || '#9ca3af'}
+                     onChange={(e) => updateConfig('production.cardConfig.cardBorderColor', e.target.value)}
+                     className="h-8 mt-1 border-2"
+                   />
+                 </div>
+               )}
+
                {/* Controles de Ajuste Fino */}
                <div className="pt-2 border-t border-gray-200">
                  <Label className="text-xs font-semibold text-gray-600">Ajuste Fino de Espaçamentos</Label>
@@ -930,6 +954,30 @@ export const ConfigurationPanel = ({
                   />
                 </div>
               </div>
+              
+               {/* Controle de Borda dos Cards */}
+               <div className="pt-2 border-t border-gray-200">
+                 <Label className="text-xs font-semibold text-gray-600">Bordas dos Cards</Label>
+               </div>
+               <div className="flex items-center gap-2">
+                 <Switch 
+                   checked={config.ready.showCardBorder || false} 
+                   onCheckedChange={(checked) => updateConfig('ready.showCardBorder', checked)}
+                   className="scale-50"
+                 />
+                 <Label className="text-xs">Exibir Borda nos Cards</Label>
+               </div>
+               {config.ready.showCardBorder && (
+                 <div>
+                   <Label className="text-xs">Cor da Borda</Label>
+                   <Input
+                     type="color"
+                     value={config.ready.cardConfig.cardBorderColor || '#9ca3af'}
+                     onChange={(e) => updateConfig('ready.cardConfig.cardBorderColor', e.target.value)}
+                     className="h-8 mt-1 border-2"
+                   />
+                 </div>
+               )}
               
 
                {/* Controles de Ajuste Fino */}
