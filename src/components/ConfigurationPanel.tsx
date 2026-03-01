@@ -1318,7 +1318,8 @@ export const ConfigurationPanel = ({
                     <div className="space-y-1">
                       <div>✓ QR Code exibido na coluna de publicidade</div>
                       <div>✓ Cliente escaneia e acompanha pelo celular</div>
-                      <div>✓ Atualização em tempo real a cada 10s</div>
+                      <div>✓ Atualização a cada 10s quando houver API pública configurada</div>
+                      <div>⚠️ Em SIMULAÇÃO/localhost, o celular não recebe os pedidos locais do painel</div>
                       <div>📱 URL: <code>https://oieweb.lovable.app/acompanhar</code></div>
                     </div>
                   </div>

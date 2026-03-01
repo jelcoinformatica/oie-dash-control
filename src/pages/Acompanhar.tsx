@@ -24,14 +24,17 @@ const Acompanhar = () => {
 
   const apiBaseUrl = config.database?.apiBaseUrl || defaultConfig.database.apiBaseUrl;
   const useMockData = config.database?.useMockData ?? defaultConfig.database.useMockData;
+  const forceMockSimulation = localStorage.getItem('simulation-force-mock') === 'true';
+  const isLocalApi = /localhost|127\.0\.0\.1/i.test(apiBaseUrl);
+  const shouldUseMockData = useMockData || forceMockSimulation;
 
   const loadOrders = useCallback(async () => {
     if (loadingRef.current) return;
     loadingRef.current = true;
     try {
       const [prod, ready] = await Promise.all([
-        fetchProductionOrders(apiBaseUrl, useMockData),
-        fetchReadyOrders(apiBaseUrl, useMockData)
+        fetchProductionOrders(apiBaseUrl, shouldUseMockData),
+        fetchReadyOrders(apiBaseUrl, shouldUseMockData)
       ]);
       setProductionOrders(prod);
       setReadyOrders(ready);
@@ -41,7 +44,7 @@ const Acompanhar = () => {
       loadingRef.current = false;
       setLoading(false);
     }
-  }, [apiBaseUrl, useMockData]);
+  }, [apiBaseUrl, shouldUseMockData]);
 
   useEffect(() => {
     loadOrders();
@@ -96,6 +99,13 @@ const Acompanhar = () => {
           📋 Acompanhe seu Pedido
         </h1>
       </div>
+
+      {(forceMockSimulation || isLocalApi) && (
+        <div className="mx-3 mt-3 rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-[11px] leading-relaxed text-amber-800">
+          <strong>Modo Simulação/Local ativo:</strong> chamadas à API externa estão desativadas ou indisponíveis neste dispositivo.
+          Em celular, pedidos gerados localmente no painel não são sincronizados sem API pública.
+        </div>
+      )}
 
       {/* Ready section - DESTAQUE */}
       <div className="flex-1 flex flex-col min-h-0 px-3 pt-3 pb-1">
