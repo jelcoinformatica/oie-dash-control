@@ -500,9 +500,17 @@ const Acompanhar = () => {
               className={`flex-1 py-3 text-sm font-bold text-center transition-all ${
                 mobileTab === 'ready'
                   ? 'text-white'
-                  : 'text-gray-400 bg-gray-900 active:scale-95'
+                  : filteredReady.length > 0
+                    ? 'text-white animate-pulse bg-gray-900 active:scale-95'
+                    : 'text-gray-400 bg-gray-900 active:scale-95'
               }`}
-              style={mobileTab === 'ready' ? { backgroundColor: config.ready.headerBg || '#0011FA' } : undefined}
+              style={
+                mobileTab === 'ready'
+                  ? { backgroundColor: config.ready.headerBg || '#0011FA' }
+                  : filteredReady.length > 0
+                    ? { backgroundColor: config.ready.headerBg || '#0011FA' }
+                    : undefined
+              }
             >
               ✅ {config.ready.title || 'PRONTOS'}
               <span className={`ml-1.5 text-xs font-bold px-1.5 py-0.5 rounded-full ${
