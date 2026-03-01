@@ -1,32 +1,34 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { Order } from '../types/order';
 import { getSimulatedOrdersFromStorage } from '../services/orderService';
-import { cloudFetchProductionOrders, cloudFetchReadyOrders, cloudSubscribeOrders } from '../services/cloudOrderService';
+import { 
+  cloudFetchProductionOrders, cloudFetchReadyOrders, cloudSubscribeOrders,
+  cloudMarkOrder, cloudUnmarkOrder
+} from '../services/cloudOrderService';
 import { defaultConfig } from '../data/defaultConfig';
 import { PanelConfig } from '../types/order';
 
-// Helper to manage marked orders in localStorage (per-device)
-const MARKED_KEY = 'oie-marked-orders';
-const getMarkedOrders = (): string[] => {
+const MARKED_KEY = 'oie-my-orders';
+const getStoredMarked = (): string[] => {
   try { return JSON.parse(localStorage.getItem(MARKED_KEY) || '[]'); } catch { return []; }
 };
-const saveMarkedOrders = (ids: string[]) => {
-  localStorage.setItem(MARKED_KEY, JSON.stringify(ids));
-};
+const saveStoredMarked = (ids: string[]) => localStorage.setItem(MARKED_KEY, JSON.stringify(ids));
 
 const Acompanhar = () => {
   const [productionOrders, setProductionOrders] = useState<Order[]>([]);
   const [readyOrders, setReadyOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
-  const [markedIds, setMarkedIds] = useState<string[]>(getMarkedOrders);
+  const [myOrderIds, setMyOrderIds] = useState<string[]>(getStoredMarked);
+  const [personalMode, setPersonalMode] = useState(() => getStoredMarked().length > 0);
+  const [confirmOrder, setConfirmOrder] = useState<Order | null>(null);
+  const [alreadyMarkedWarning, setAlreadyMarkedWarning] = useState(false);
   const [alertOrder, setAlertOrder] = useState<Order | null>(null);
+  const [activeTab, setActiveTab] = useState(0); // for multiple orders cycling
   const loadingRef = useRef(false);
-  const alertAudioRef = useRef<HTMLAudioElement | null>(null);
+  const myOrderIdsRef = useRef(myOrderIds);
   const productionIdsRef = useRef<Set<string>>(new Set());
 
-  // Keep refs in sync
-  const markedIdsRef = useRef(markedIds);
-  useEffect(() => { markedIdsRef.current = markedIds; }, [markedIds]);
+  useEffect(() => { myOrderIdsRef.current = myOrderIds; saveStoredMarked(myOrderIds); }, [myOrderIds]);
 
   const config: PanelConfig = (() => {
     try {
@@ -36,52 +38,13 @@ const Acompanhar = () => {
     return defaultConfig;
   })();
 
-  // Mark/unmark an order
-  const toggleMark = useCallback((orderId: string) => {
-    setMarkedIds(prev => {
-      const next = prev.includes(orderId) ? prev.filter(id => id !== orderId) : [...prev, orderId];
-      saveMarkedOrders(next);
-      return next;
-    });
-  }, []);
-
-  // Trigger alert when a marked order becomes ready
-  const triggerAlert = useCallback((order: Order) => {
-    setAlertOrder(order);
-    // Vibrate if supported
-    if (navigator.vibrate) navigator.vibrate([300, 100, 300, 100, 300]);
-    // Play sound
-    try {
-      const audio = new Audio('/sounds/kds_sound_bell1.wav');
-      audio.volume = 1;
-      audio.play().catch(() => {});
-      alertAudioRef.current = audio;
-    } catch {}
-    // Auto-dismiss after 8 seconds
-    setTimeout(() => setAlertOrder(null), 8000);
-  }, []);
-
-  // Check if an order moving to ready is one we marked
-  const checkMarkedOrderReady = useCallback((order: Order) => {
-    if (markedIdsRef.current.includes(order.id)) {
-      triggerAlert(order);
-      // Remove from marked since it's now ready
-      setMarkedIds(prev => {
-        const next = prev.filter(id => id !== order.id);
-        saveMarkedOrders(next);
-        return next;
-      });
-    }
-  }, [triggerAlert]);
-
-  // Load orders
+  // --- DATA LOADING ---
   const loadOrders = useCallback(async () => {
     if (loadingRef.current) return;
     loadingRef.current = true;
     try {
       const [prod, ready] = await Promise.all([
-        cloudFetchProductionOrders(),
-        cloudFetchReadyOrders()
+        cloudFetchProductionOrders(), cloudFetchReadyOrders()
       ]);
       if (prod.length > 0 || ready.length > 0) {
         setProductionOrders(prod);
@@ -104,13 +67,23 @@ const Acompanhar = () => {
     }
   }, []);
 
-  useEffect(() => {
-    loadOrders();
-    const interval = setInterval(loadOrders, 5000);
-    return () => clearInterval(interval);
-  }, [loadOrders]);
+  useEffect(() => { loadOrders(); const i = setInterval(loadOrders, 5000); return () => clearInterval(i); }, [loadOrders]);
 
-  // Realtime subscription
+  // --- ALERT ---
+  const triggerAlert = useCallback((order: Order) => {
+    setAlertOrder(order);
+    if (navigator.vibrate) navigator.vibrate([300, 100, 300, 100, 300]);
+    try { const a = new Audio('/sounds/kds_sound_bell1.wav'); a.volume = 1; a.play().catch(() => {}); } catch {}
+    setTimeout(() => setAlertOrder(null), 10000);
+  }, []);
+
+  const checkMyOrderReady = useCallback((order: Order) => {
+    if (myOrderIdsRef.current.includes(order.id)) {
+      triggerAlert(order);
+    }
+  }, [triggerAlert]);
+
+  // --- REALTIME ---
   useEffect(() => {
     const unsubscribe = cloudSubscribeOrders(
       (order) => {
@@ -119,9 +92,8 @@ const Acompanhar = () => {
           productionIdsRef.current.add(order.id);
         } else if (order.status === 'ready') {
           setReadyOrders(prev => [order, ...prev.filter(o => o.id !== order.id)]);
-          // Check if this was a marked production order
           if (productionIdsRef.current.has(order.id)) {
-            checkMarkedOrderReady(order);
+            checkMyOrderReady(order);
             productionIdsRef.current.delete(order.id);
           }
         }
@@ -130,7 +102,7 @@ const Acompanhar = () => {
         if (order.status === 'ready') {
           setProductionOrders(prev => prev.filter(o => o.id !== order.id));
           setReadyOrders(prev => [order, ...prev.filter(o => o.id !== order.id)]);
-          checkMarkedOrderReady(order);
+          checkMyOrderReady(order);
           productionIdsRef.current.delete(order.id);
         } else if (order.status === 'production') {
           setReadyOrders(prev => prev.filter(o => o.id !== order.id));
@@ -142,42 +114,75 @@ const Acompanhar = () => {
         setProductionOrders(prev => prev.filter(o => o.id !== id));
         setReadyOrders(prev => prev.filter(o => o.id !== id));
         productionIdsRef.current.delete(id);
+        // Remove from my orders if expedited
+        setMyOrderIds(prev => prev.filter(i => i !== id));
       }
     );
     return unsubscribe;
-  }, [checkMarkedOrderReady]);
+  }, [checkMyOrderReady]);
 
-  // Cleanup stale marked IDs (orders that no longer exist)
+  // Clean up stale marked orders
   useEffect(() => {
     const allIds = new Set([...productionOrders.map(o => o.id), ...readyOrders.map(o => o.id)]);
-    setMarkedIds(prev => {
+    setMyOrderIds(prev => {
       const cleaned = prev.filter(id => allIds.has(id));
-      if (cleaned.length !== prev.length) saveMarkedOrders(cleaned);
-      return cleaned;
+      if (cleaned.length === 0 && personalMode) setPersonalMode(false);
+      return cleaned.length !== prev.length ? cleaned : prev;
     });
-  }, [productionOrders, readyOrders]);
+  }, [productionOrders, readyOrders, personalMode]);
 
   // Block navigation
   useEffect(() => {
-    const handlePopState = () => {
-      if (window.location.pathname !== '/acompanhar') {
-        window.history.pushState(null, '', '/acompanhar');
-      }
-    };
-    window.addEventListener('popstate', handlePopState);
+    const h = () => { if (window.location.pathname !== '/acompanhar') window.history.pushState(null, '', '/acompanhar'); };
+    window.addEventListener('popstate', h);
     window.history.pushState(null, '', '/acompanhar');
-    return () => window.removeEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', h);
   }, []);
 
-  const displayNumber = (order: Order) => {
-    const num = String(order.numeroPedido || order.number || '');
-    const isDelivery = num.match(/^(IF|DD|RA|UB)-/);
-    if (isDelivery) return num.split('-')[1];
-    return num;
+  // --- MARKING FLOW ---
+  const handleTapOrder = (order: Order) => {
+    if (myOrderIds.includes(order.id)) return; // already mine
+    setConfirmOrder(order);
+    setAlreadyMarkedWarning(false);
   };
 
+  const handleConfirmMark = async () => {
+    if (!confirmOrder) return;
+    const { alreadyMarked } = await cloudMarkOrder(confirmOrder.id);
+    if (alreadyMarked && !alreadyMarkedWarning) {
+      setAlreadyMarkedWarning(true);
+      return; // show second-level warning
+    }
+    // Confirmed
+    setMyOrderIds(prev => [...prev, confirmOrder.id]);
+    setPersonalMode(true);
+    setConfirmOrder(null);
+    setAlreadyMarkedWarning(false);
+  };
+
+  const handleCancelMark = () => {
+    setConfirmOrder(null);
+    setAlreadyMarkedWarning(false);
+  };
+
+  const handleExitPersonalMode = async () => {
+    setPersonalMode(false);
+  };
+
+  // --- HELPERS ---
+  const displayNumber = (order: Order) => {
+    const num = String(order.numeroPedido || order.number || '');
+    const m = num.match(/^(IF|DD|RA|UB)-/);
+    if (m) return num.split('-')[1];
+    return num;
+  };
   const displayName = (order: Order) => order.nomeCliente || order.nickname || '';
 
+  // My orders data
+  const myProductionOrders = productionOrders.filter(o => myOrderIds.includes(o.id));
+  const myReadyOrders = readyOrders.filter(o => myOrderIds.includes(o.id));
+
+  // --- LOADING ---
   if (loading) {
     return (
       <div className="h-screen w-screen flex items-center justify-center bg-gray-900">
@@ -186,86 +191,202 @@ const Acompanhar = () => {
     );
   }
 
-  return (
-    <div className="h-screen w-screen flex flex-col bg-gray-900 overflow-hidden select-none" 
-         style={{ touchAction: 'none' }}>
+  // Reversed production orders (últimos primeiro)
+  const reversedProduction = [...productionOrders].reverse();
 
-      {/* ALERT OVERLAY */}
+  return (
+    <div className="h-screen w-screen flex flex-col bg-gray-900 overflow-hidden select-none" style={{ touchAction: 'none' }}>
+
+      {/* === ALERT OVERLAY === */}
       {alertOrder && (
-        <div 
-          className="fixed inset-0 z-[200] flex items-center justify-center animate-pulse"
-          style={{ backgroundColor: 'rgba(0, 180, 50, 0.92)' }}
-          onClick={() => setAlertOrder(null)}
-        >
-          <div className="text-center text-white px-6">
+        <div className="fixed inset-0 z-[200] flex items-center justify-center" onClick={() => setAlertOrder(null)}>
+          <div className="absolute inset-0 bg-green-600 animate-pulse" />
+          <div className="relative text-center text-white px-6 z-10">
             <div className="text-6xl mb-4">🎉</div>
             <div className="text-2xl font-bold mb-2">SEU PEDIDO ESTÁ PRONTO!</div>
-            <div className="text-7xl font-black my-6" style={{ textShadow: '0 4px 20px rgba(0,0,0,0.3)' }}>
+            <div className="text-8xl font-black my-6" style={{ textShadow: '0 4px 20px rgba(0,0,0,0.3)' }}>
               {displayNumber(alertOrder)}
             </div>
             {displayName(alertOrder) && (
               <div className="text-2xl font-semibold opacity-90">{displayName(alertOrder)}</div>
             )}
-            <div className="mt-8 text-sm opacity-70">Toque para fechar</div>
+            <div className="mt-6 text-lg font-medium">🔔 Retire seu pedido!</div>
+            <div className="mt-8 text-sm opacity-60">Toque para fechar</div>
           </div>
         </div>
       )}
 
-      {/* Header */}
+      {/* === CONFIRM DIALOG === */}
+      {confirmOrder && (
+        <div className="fixed inset-0 z-[150] flex items-center justify-center bg-black/70 px-6" onClick={handleCancelMark}>
+          <div className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl" onClick={e => e.stopPropagation()}>
+            {!alreadyMarkedWarning ? (
+              <>
+                <h2 className="text-lg font-bold text-gray-800 text-center mb-4">Este é seu pedido?</h2>
+                <div className="bg-gray-50 rounded-xl p-6 text-center mb-4">
+                  <div className="text-5xl font-black text-gray-800">{displayNumber(confirmOrder)}</div>
+                  {displayName(confirmOrder) && (
+                    <div className="text-lg text-gray-500 mt-2">{displayName(confirmOrder)}</div>
+                  )}
+                </div>
+                <p className="text-sm text-gray-500 text-center mb-6">
+                  📋 Confira o número no seu cupom fiscal antes de confirmar.
+                </p>
+                <div className="flex gap-3">
+                  <button onClick={handleCancelMark} className="flex-1 py-3 rounded-xl border border-gray-300 text-gray-600 font-semibold">
+                    Cancelar
+                  </button>
+                  <button onClick={handleConfirmMark} className="flex-1 py-3 rounded-xl bg-blue-600 text-white font-bold shadow-lg active:scale-95 transition-transform">
+                    É meu! ✅
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="text-center mb-3">
+                  <span className="text-4xl">⚠️</span>
+                </div>
+                <h2 className="text-lg font-bold text-amber-700 text-center mb-3">Atenção</h2>
+                <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-center mb-4">
+                  <p className="text-amber-800 text-sm">
+                    O pedido <strong>#{displayNumber(confirmOrder)}</strong> já está sendo acompanhado por outro dispositivo.
+                  </p>
+                  <p className="text-amber-600 text-xs mt-2">
+                    Confira se este é realmente o seu pedido verificando o número no cupom fiscal.
+                  </p>
+                </div>
+                <div className="flex gap-3">
+                  <button onClick={handleCancelMark} className="flex-1 py-3 rounded-xl border border-gray-300 text-gray-600 font-semibold">
+                    Voltar
+                  </button>
+                  <button onClick={handleConfirmMark} className="flex-1 py-3 rounded-xl bg-amber-500 text-white font-bold shadow-lg active:scale-95 transition-transform">
+                    É meu sim!
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* === HEADER === */}
       <div className="flex-shrink-0 bg-gray-800 px-4 py-3 text-center border-b border-gray-700">
         <h1 className="text-white text-lg font-bold tracking-wide">
-          📋 Acompanhe seu Pedido
+          {personalMode ? '⭐ Meu Pedido' : '📋 Acompanhe seu Pedido'}
         </h1>
-        {markedIds.length > 0 && (
-          <p className="text-amber-400 text-xs mt-0.5">
-            ⭐ {markedIds.length} pedido{markedIds.length > 1 ? 's' : ''} marcado{markedIds.length > 1 ? 's' : ''}
-          </p>
+        {personalMode && (
+          <button 
+            onClick={handleExitPersonalMode}
+            className="text-blue-400 text-xs mt-0.5 underline"
+          >
+            ← Ver todos os pedidos
+          </button>
         )}
       </div>
 
-      {/* Ready section */}
-      <div className="flex-1 flex flex-col min-h-0 px-3 pt-3 pb-1">
-        <div className="flex-shrink-0 rounded-t-xl px-4 py-2.5 flex items-center justify-between"
-             style={{ backgroundColor: config.ready.headerBg || '#0011FA' }}>
-          <span className="text-white font-bold text-base tracking-wider">
-            ✅ {config.ready.title || 'PRONTOS'}
-          </span>
-          <span className="bg-white/20 text-white text-sm font-bold px-2.5 py-0.5 rounded-full">
-            {readyOrders.length}
-          </span>
-        </div>
-        <div className="flex-1 bg-white rounded-b-xl p-2 min-h-0 overflow-hidden">
-          <MobileCardGrid orders={readyOrders} variant="ready" displayNumber={displayNumber} displayName={displayName} markedIds={[]} onToggleMark={() => {}} />
-        </div>
-      </div>
+      {/* === PERSONAL MODE === */}
+      {personalMode ? (
+        <div className="flex-1 flex flex-col min-h-0 px-4 py-4 gap-4">
+          {/* My production orders */}
+          {myProductionOrders.length > 0 && (
+            <div className="flex-1 flex flex-col items-center justify-center">
+              {myProductionOrders.map((order, idx) => (
+                <div key={order.id} className={`w-full max-w-xs ${idx > 0 ? 'mt-4' : ''}`}>
+                  <div className="bg-gray-800 rounded-2xl p-8 text-center border-2 border-gray-600 shadow-xl">
+                    <div className="text-gray-400 text-sm font-semibold mb-2 tracking-wider">🔥 EM PREPARO</div>
+                    <div className="text-6xl font-black text-white my-4">{displayNumber(order)}</div>
+                    {displayName(order) && (
+                      <div className="text-xl text-gray-300 font-medium">{displayName(order)}</div>
+                    )}
+                    <div className="mt-6 flex items-center justify-center gap-2">
+                      <div className="w-2 h-2 bg-amber-400 rounded-full animate-pulse" />
+                      <span className="text-amber-400 text-sm font-medium">Aguardando preparo...</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
 
-      {/* Production section */}
-      <div className="flex-shrink-0 px-3 pb-3 pt-1" style={{ height: '35%' }}>
-        <div className="flex-shrink-0 rounded-t-xl px-4 py-2 flex items-center justify-between"
-             style={{ backgroundColor: config.production.headerBg || '#636363' }}>
-          <span className="text-white font-bold text-sm tracking-wider">
-            🔥 {config.production.title || 'EM PRODUÇÃO'}
-          </span>
-          <span className="bg-white/20 text-white text-xs font-bold px-2 py-0.5 rounded-full">
-            {productionOrders.length}
-          </span>
+          {/* My ready orders */}
+          {myReadyOrders.length > 0 && (
+            <div className="flex-shrink-0">
+              {myReadyOrders.map((order) => (
+                <div key={order.id} className="w-full max-w-xs mx-auto mb-3">
+                  <div className="bg-green-600 rounded-2xl p-8 text-center border-2 border-green-400 shadow-xl animate-pulse">
+                    <div className="text-green-100 text-sm font-semibold mb-2 tracking-wider">✅ PRONTO!</div>
+                    <div className="text-6xl font-black text-white my-4">{displayNumber(order)}</div>
+                    {displayName(order) && (
+                      <div className="text-xl text-green-100 font-medium">{displayName(order)}</div>
+                    )}
+                    <div className="mt-4 text-white text-lg font-bold">🔔 Retire seu pedido!</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* All my orders gone */}
+          {myProductionOrders.length === 0 && myReadyOrders.length === 0 && (
+            <div className="flex-1 flex items-center justify-center">
+              <div className="text-center text-gray-400">
+                <div className="text-4xl mb-3">✅</div>
+                <p className="text-lg">Todos os seus pedidos foram entregues!</p>
+                <button onClick={handleExitPersonalMode} className="mt-4 text-blue-400 underline text-sm">
+                  Ver todos os pedidos
+                </button>
+              </div>
+            </div>
+          )}
         </div>
-        <div className="flex-1 bg-gray-100 rounded-b-xl p-2 overflow-hidden" style={{ height: 'calc(100% - 36px)' }}>
-          <MobileCardGrid 
-            orders={productionOrders} 
-            variant="production" 
-            displayNumber={displayNumber} 
-            displayName={displayName}
-            markedIds={markedIds}
-            onToggleMark={toggleMark}
-          />
-        </div>
-        {markedIds.length === 0 && productionOrders.length > 0 && (
-          <div className="text-center mt-1">
-            <span className="text-gray-500 text-[10px]">💡 Toque no seu pedido para ser avisado quando ficar pronto</span>
+      ) : (
+        /* === NORMAL MODE === */
+        <>
+          {/* Ready section */}
+          <div className="flex-1 flex flex-col min-h-0 px-3 pt-3 pb-1">
+            <div className="flex-shrink-0 rounded-t-xl px-4 py-2.5 flex items-center justify-between"
+                 style={{ backgroundColor: config.ready.headerBg || '#0011FA' }}>
+              <span className="text-white font-bold text-base tracking-wider">
+                ✅ {config.ready.title || 'PRONTOS'}
+              </span>
+              <span className="bg-white/20 text-white text-sm font-bold px-2.5 py-0.5 rounded-full">
+                {readyOrders.length}
+              </span>
+            </div>
+            <div className="flex-1 bg-white rounded-b-xl p-2 min-h-0 overflow-hidden">
+              <MobileCardGrid orders={readyOrders} variant="ready" displayNumber={displayNumber} displayName={displayName} onTap={() => {}} myOrderIds={myOrderIds} />
+            </div>
           </div>
-        )}
-      </div>
+
+          {/* Production section */}
+          <div className="flex-shrink-0 px-3 pb-3 pt-1" style={{ height: '35%' }}>
+            <div className="flex-shrink-0 rounded-t-xl px-4 py-2 flex items-center justify-between"
+                 style={{ backgroundColor: config.production.headerBg || '#636363' }}>
+              <span className="text-white font-bold text-sm tracking-wider">
+                🔥 {config.production.title || 'EM PRODUÇÃO'}
+              </span>
+              <span className="bg-white/20 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                {productionOrders.length}
+              </span>
+            </div>
+            <div className="flex-1 bg-gray-100 rounded-b-xl p-2 overflow-hidden" style={{ height: 'calc(100% - 36px)' }}>
+              <MobileCardGrid 
+                orders={reversedProduction} 
+                variant="production" 
+                displayNumber={displayNumber} 
+                displayName={displayName}
+                onTap={handleTapOrder}
+                myOrderIds={myOrderIds}
+              />
+            </div>
+            {myOrderIds.length === 0 && productionOrders.length > 0 && (
+              <div className="text-center mt-1">
+                <span className="text-gray-500 text-[10px]">💡 Toque no seu pedido para acompanhar individualmente</span>
+              </div>
+            )}
+          </div>
+        </>
+      )}
 
       {/* Footer */}
       <div className="flex-shrink-0 bg-gray-800 px-4 py-1.5 text-center border-t border-gray-700">
@@ -275,16 +396,11 @@ const Acompanhar = () => {
   );
 };
 
-// Grid component
-const MobileCardGrid = ({ 
-  orders, variant, displayNumber, displayName, markedIds, onToggleMark
-}: { 
-  orders: Order[]; 
-  variant: 'ready' | 'production';
-  displayNumber: (o: Order) => string;
-  displayName: (o: Order) => string;
-  markedIds: string[];
-  onToggleMark: (id: string) => void;
+// --- GRID COMPONENT ---
+const MobileCardGrid = ({ orders, variant, displayNumber, displayName, onTap, myOrderIds }: { 
+  orders: Order[]; variant: 'ready' | 'production';
+  displayNumber: (o: Order) => string; displayName: (o: Order) => string;
+  onTap: (o: Order) => void; myOrderIds: string[];
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [maxCards, setMaxCards] = useState(20);
@@ -295,8 +411,7 @@ const MobileCardGrid = ({
       if (!containerRef.current) return;
       const h = containerRef.current.clientHeight;
       const cardH = isReady ? 72 : 56;
-      const gap = 8;
-      const rows = Math.max(1, Math.floor((h + gap) / (cardH + gap)));
+      const rows = Math.max(1, Math.floor((h + 8) / (cardH + 8)));
       setMaxCards(rows * 2);
     };
     updateMax();
@@ -304,14 +419,12 @@ const MobileCardGrid = ({
     return () => window.removeEventListener('resize', updateMax);
   }, [isReady]);
 
-  const visibleOrders = orders.slice(0, maxCards);
+  const visible = orders.slice(0, maxCards);
 
   if (orders.length === 0) {
     return (
       <div ref={containerRef} className="h-full flex items-center justify-center">
-        <span className="text-sm text-gray-400">
-          {isReady ? 'Nenhum pedido pronto' : 'Nenhum pedido em produção'}
-        </span>
+        <span className="text-sm text-gray-400">{isReady ? 'Nenhum pedido pronto' : 'Nenhum pedido em produção'}</span>
       </div>
     );
   }
@@ -319,50 +432,40 @@ const MobileCardGrid = ({
   return (
     <div ref={containerRef} className="h-full">
       <div className="grid grid-cols-2 gap-2 h-full" style={{ gridAutoRows: isReady ? '72px' : '56px' }}>
-        {visibleOrders.map((order) => {
+        {visible.map((order) => {
           const num = displayNumber(order);
           const name = displayName(order);
-          const isMarked = markedIds.includes(order.id);
-          const canMark = !isReady; // Only production orders can be marked
-
+          const isMine = myOrderIds.includes(order.id);
           return (
             <div
               key={order.id}
-              onClick={() => canMark && onToggleMark(order.id)}
+              onClick={() => !isReady && onTap(order)}
               className={`rounded-lg flex flex-col items-center justify-center p-1.5 border transition-all relative ${
-                isReady 
-                  ? 'bg-blue-50 border-blue-200 shadow-sm' 
-                  : isMarked
-                    ? 'bg-amber-50 border-amber-400 shadow-md ring-2 ring-amber-300'
+                isReady
+                  ? 'bg-blue-50 border-blue-200 shadow-sm'
+                  : isMine
+                    ? 'bg-amber-50 border-amber-400 ring-2 ring-amber-300'
                     : 'bg-white border-gray-200 active:scale-95'
               }`}
-              style={{ cursor: canMark ? 'pointer' : 'default' }}
+              style={{ cursor: !isReady ? 'pointer' : 'default' }}
             >
-              {isMarked && (
-                <span className="absolute top-0.5 right-1 text-amber-500 text-xs">⭐</span>
-              )}
+              {isMine && <span className="absolute top-0.5 right-1 text-amber-500 text-xs">⭐</span>}
               <span className={`font-bold leading-none ${
-                isReady ? 'text-blue-700' 
-                  : isMarked ? 'text-amber-700' : 'text-gray-600'
+                isReady ? 'text-blue-700' : isMine ? 'text-amber-700' : 'text-gray-600'
               }`} style={{ fontSize: isReady ? '1.6rem' : '1.2rem' }}>
                 {num}
               </span>
               {name && (
                 <span className={`text-xs mt-0.5 truncate max-w-full ${
-                  isReady ? 'text-blue-500' 
-                    : isMarked ? 'text-amber-500' : 'text-gray-400'
-                }`}>
-                  {name}
-                </span>
+                  isReady ? 'text-blue-500' : isMine ? 'text-amber-500' : 'text-gray-400'
+                }`}>{name}</span>
               )}
             </div>
           );
         })}
       </div>
       {orders.length > maxCards && (
-        <div className="absolute bottom-1 right-2 text-xs text-gray-400">
-          +{orders.length - maxCards} mais
-        </div>
+        <div className="absolute bottom-1 right-2 text-xs text-gray-400">+{orders.length - maxCards} mais</div>
       )}
     </div>
   );
