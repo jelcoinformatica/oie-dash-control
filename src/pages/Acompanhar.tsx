@@ -30,7 +30,7 @@ const Acompanhar = () => {
   const [alertOrder, setAlertOrder] = useState<Order | null>(null);
   const [activeTab, setActiveTab] = useState(0); // for multiple orders cycling
   const [platformFilter, setPlatformFilter] = useState<string | null>(null);
-  const [mobileTab, setMobileTab] = useState<'ready' | 'production'>('ready');
+  const [mobileTab, setMobileTab] = useState<'ready' | 'production'>('production');
   const loadingRef = useRef(false);
   const myOrderIdsRef = useRef(myOrderIds);
   const productionIdsRef = useRef<Set<string>>(new Set());
@@ -380,7 +380,7 @@ const Acompanhar = () => {
         {personalMode && (
           <button 
             onClick={handleExitPersonalMode}
-            className="text-blue-400 text-xs mt-0.5 underline"
+            className="mt-2 bg-blue-600 active:bg-blue-700 text-white text-base font-bold px-6 py-3 rounded-xl shadow-lg active:scale-95 transition-transform"
           >
             ← Ver todos os pedidos
           </button>
@@ -466,8 +466,8 @@ const Acompanhar = () => {
               <div className="text-center text-gray-400">
                 <div className="text-4xl mb-3">✅</div>
                 <p className="text-lg">Todos os seus pedidos foram entregues!</p>
-                <button onClick={handleExitPersonalMode} className="mt-4 text-blue-400 underline text-sm">
-                  Ver todos os pedidos
+                <button onClick={handleExitPersonalMode} className="mt-4 bg-blue-600 active:bg-blue-700 text-white text-base font-bold px-6 py-3 rounded-xl shadow-lg active:scale-95 transition-transform">
+                  ← Ver todos os pedidos
                 </button>
               </div>
             </div>
@@ -478,24 +478,6 @@ const Acompanhar = () => {
         <>
           {/* Tab bar */}
           <div className="flex-shrink-0 bg-gray-800 flex border-b border-gray-700">
-            <button
-              onClick={() => setMobileTab('ready')}
-              className={`flex-1 py-2.5 text-sm font-bold text-center transition-all relative ${
-                mobileTab === 'ready'
-                  ? 'text-white'
-                  : 'text-gray-400 active:scale-95'
-              }`}
-            >
-              ✅ {config.ready.title || 'PRONTOS'}
-              <span className={`ml-1.5 text-xs font-bold px-1.5 py-0.5 rounded-full ${
-                mobileTab === 'ready' ? 'bg-white/20 text-white' : 'bg-gray-700 text-gray-400'
-              }`}>
-                {filteredReady.length}
-              </span>
-              {mobileTab === 'ready' && (
-                <div className="absolute bottom-0 left-2 right-2 h-0.5 rounded-full" style={{ backgroundColor: config.ready.headerBg || '#0011FA' }} />
-              )}
-            </button>
             <button
               onClick={() => setMobileTab('production')}
               className={`flex-1 py-2.5 text-sm font-bold text-center transition-all relative ${
@@ -512,6 +494,24 @@ const Acompanhar = () => {
               </span>
               {mobileTab === 'production' && (
                 <div className="absolute bottom-0 left-2 right-2 h-0.5 rounded-full" style={{ backgroundColor: config.production.headerBg || '#636363' }} />
+              )}
+            </button>
+            <button
+              onClick={() => setMobileTab('ready')}
+              className={`flex-1 py-2.5 text-sm font-bold text-center transition-all relative ${
+                mobileTab === 'ready'
+                  ? 'text-white'
+                  : 'text-gray-400 active:scale-95'
+              }`}
+            >
+              ✅ {config.ready.title || 'PRONTOS'}
+              <span className={`ml-1.5 text-xs font-bold px-1.5 py-0.5 rounded-full ${
+                mobileTab === 'ready' ? 'bg-white/20 text-white' : 'bg-gray-700 text-gray-400'
+              }`}>
+                {filteredReady.length}
+              </span>
+              {mobileTab === 'ready' && (
+                <div className="absolute bottom-0 left-2 right-2 h-0.5 rounded-full" style={{ backgroundColor: config.ready.headerBg || '#0011FA' }} />
               )}
             </button>
           </div>
