@@ -122,7 +122,8 @@ export const defaultConfig: PanelConfig = {
   simulation: {
     enabled: false,
     intervalSeconds: 30,
-    ordersPerInterval: 1
+    ordersPerInterval: 1,
+    modules: ['balcao', 'mesa', 'entrega', 'ficha']
   },
   modules: {
     balcao: {

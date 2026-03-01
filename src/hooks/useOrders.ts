@@ -299,7 +299,7 @@ export const useOrders = (ttsConfig: TTSConfig, autoExpeditionConfig: AutoExpedi
       console.log('🟢 Modo SIMULAÇÃO ativado — chamadas à API ignoradas.');
       // Verificar módulos da simulação (prioridade) ou módulos ativos
       const simModules = config?.simulation?.modules;
-      const activeModules = simModules && simModules.length > 0
+      const activeModules = simModules !== undefined
         ? simModules
         : (() => {
             const m: string[] = [];
@@ -310,8 +310,8 @@ export const useOrders = (ttsConfig: TTSConfig, autoExpeditionConfig: AutoExpedi
             return m;
           })();
       
-      // Se nenhum módulo ativo, usar ficha como padrão
-      const modulesToUse = activeModules.length > 0 ? activeModules : ['ficha'];
+      // Se nenhum módulo selecionado, usar entrega como padrão
+      const modulesToUse = activeModules.length > 0 ? activeModules : ['entrega'];
       
       console.log(`📋 Módulos ativos: ${modulesToUse.join(', ')}`);
       
