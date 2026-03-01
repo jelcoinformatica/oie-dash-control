@@ -77,8 +77,9 @@ export interface PanelConfig {
     backgroundColor: string;
     imageUrl?: string;
     websiteUrl?: string;
-    newsMode?: boolean; // Nova propriedade para modo notícias
-    newsSource?: 'g1' | 'uol' | 'cnn' | 'panelinha' | 'cybercook' | 'tudogostoso' | 'foodnetwork'; // Fontes expandidas
+    newsMode?: boolean;
+    qrCodeMode?: boolean; // Modo QR Code para acompanhamento mobile
+    newsSource?: 'g1' | 'uol' | 'cnn' | 'panelinha' | 'cybercook' | 'tudogostoso' | 'foodnetwork';
     newsFontSize?: number; // Tamanho da fonte das notícias
     showBorder?: boolean;
     showShadow?: boolean;

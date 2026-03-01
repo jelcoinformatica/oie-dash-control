@@ -527,6 +527,7 @@ const Index = () => {
                       imageUrl={config.advertising.imageUrl}
                       websiteUrl={config.advertising.websiteUrl}
                       newsMode={config.advertising.newsMode}
+                      qrCodeMode={config.advertising.qrCodeMode}
                       newsSource={config.advertising.newsSource}
                       newsFontSize={config.advertising.newsFontSize || 2.5}
                       showShadow={config.advertising.showShadow}
@@ -724,6 +725,7 @@ const Index = () => {
                   imageUrl={config.advertising.imageUrl}
                   websiteUrl={config.advertising.websiteUrl}
                   newsMode={config.advertising.newsMode}
+                  qrCodeMode={config.advertising.qrCodeMode}
                   newsSource={config.advertising.newsSource}
                   newsFontSize={config.advertising.newsFontSize || 2.5}
                   showShadow={config.advertising.showShadow}

@@ -1,5 +1,6 @@
 import { cn } from '../lib/utils';
 import { NewsDisplay } from './NewsDisplay';
+import { QRCodeSVG } from 'qrcode.react';
 
 interface AdvertisingColumnProps {
   title?: string;
@@ -14,8 +15,9 @@ interface AdvertisingColumnProps {
   showBorder?: boolean;
   showShadow?: boolean;
   newsMode?: boolean;
+  qrCodeMode?: boolean;
   newsSource?: 'g1' | 'uol' | 'cnn' | 'panelinha' | 'cybercook' | 'tudogostoso' | 'foodnetwork';
-  newsFontSize?: number; // Nova prop para tamanho da fonte
+  newsFontSize?: number;
   onToggleHeader?: () => void;
 }
 
@@ -32,8 +34,9 @@ export const AdvertisingColumn = ({
   showBorder = false,
   showShadow = false,
   newsMode = false,
+  qrCodeMode = false,
   newsSource = 'g1',
-  newsFontSize = 2.5, // Tamanho padrão para visualização à distância
+  newsFontSize = 2.5,
   onToggleHeader
 }: AdvertisingColumnProps) => {
 
@@ -68,14 +71,32 @@ export const AdvertisingColumn = ({
           className="flex-1 flex items-center justify-center overflow-hidden p-2"
           style={{ backgroundColor: newsMode ? 'transparent' : backgroundColor }}
         >
-          {newsMode ? (
+          {qrCodeMode ? (
+            <div className="flex flex-col items-center justify-center gap-4 p-4">
+              <div className="text-center">
+                <div className="text-lg font-bold text-gray-700 mb-1">📱 Acompanhe seu Pedido</div>
+                <div className="text-sm text-gray-500">Escaneie o QR Code abaixo</div>
+              </div>
+              <div className="bg-white p-4 rounded-xl shadow-lg">
+                <QRCodeSVG 
+                  value={`${window.location.origin}/acompanhar`}
+                  size={200}
+                  level="M"
+                  includeMargin={true}
+                />
+              </div>
+              <div className="text-xs text-gray-400 text-center">
+                Veja em tempo real o status do seu pedido
+              </div>
+            </div>
+          ) : newsMode ? (
             <NewsDisplay 
               className="w-full h-full"
               autoRotate={true}
-              rotationInterval={25000} // 25 segundos
+              rotationInterval={25000}
               showSource={true}
               newsSource={newsSource}
-              fontSize={newsFontSize} // Passa o tamanho da fonte configurado
+              fontSize={newsFontSize}
             />
           ) : websiteUrl ? (
             <iframe
