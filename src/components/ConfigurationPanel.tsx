@@ -35,14 +35,14 @@ interface ConfigSectionProps {
 }
 
 const ConfigSection = ({ title, icon, isOpen, onToggle, children, colorClass = "text-blue-600" }: ConfigSectionProps) => (
-  <div className="border-b border-gray-200">
+  <div className="border-b border-gray-300">
     <button
       onClick={onToggle}
       className={cn(
         "w-full px-4 py-2 flex items-center justify-between transition-all duration-200",
         isOpen 
-          ? "bg-gradient-to-r from-blue-50 to-blue-100 shadow-sm border-l-4 border-blue-400" 
-          : "bg-white hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100"
+          ? "bg-gradient-to-r from-blue-100 to-blue-200 shadow-sm border-l-4 border-blue-500" 
+          : "bg-white hover:bg-gradient-to-r hover:from-gray-100 hover:to-gray-200"
       )}
     >
       <div className="flex items-center gap-3">
@@ -58,7 +58,7 @@ const ConfigSection = ({ title, icon, isOpen, onToggle, children, colorClass = "
       )}
     </button>
     {isOpen && (
-      <div className="px-3 pb-2 pt-1 space-y-1 bg-gradient-to-b from-blue-25 to-white border-t border-blue-100">
+      <div className="px-3 pb-2 pt-1 space-y-1 bg-gradient-to-b from-blue-50 to-gray-50 border-t border-blue-200">
         {children}
       </div>
     )}
@@ -72,12 +72,12 @@ const SubConfigSection = ({ title, isOpen, onToggle, children, icon }: {
   children: React.ReactNode;
   icon?: React.ReactNode;
 }) => (
-  <div className="border border-gray-200 rounded-md mb-2">
+  <div className="border border-gray-300 rounded-md mb-2 shadow-sm">
     <button
       onClick={onToggle}
       className={cn(
-        "w-full px-3 py-2 flex items-center justify-between transition-colors",
-        isOpen ? "bg-gray-100" : "bg-white hover:bg-gray-50"
+        "w-full px-3 py-2 flex items-center justify-between transition-colors rounded-t-md",
+        isOpen ? "bg-gray-200" : "bg-gray-100 hover:bg-gray-200"
       )}
     >
       <div className="flex items-center gap-2">
@@ -91,7 +91,7 @@ const SubConfigSection = ({ title, isOpen, onToggle, children, icon }: {
       )}
     </button>
     {isOpen && (
-      <div className="px-3 pb-3 bg-gray-50">
+      <div className="px-3 pb-3 bg-gray-100 border-t border-gray-300">
         {children}
       </div>
     )}
