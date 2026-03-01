@@ -1212,6 +1212,7 @@ export const ConfigurationPanel = ({
                         setTimeout(() => {
                           updateConfig('advertising.websiteUrl', '');
                           updateConfig('advertising.imageUrl', '');
+                          updateConfig('advertising.qrCodeMode', false);
                         }, 100);
                       }
                     }}
@@ -1287,6 +1288,49 @@ export const ConfigurationPanel = ({
                     >
                       Abrir URL de Notícias ↗
                     </Button>
+                  </div>
+                )}
+              </div>
+
+              <div className="space-y-2 border-t pt-3">
+                <div className="flex items-center gap-2">
+                  <Switch 
+                    checked={Boolean(config.advertising.qrCodeMode)} 
+                    onCheckedChange={(checked) => {
+                      updateConfig('advertising.qrCodeMode', checked);
+                      if (checked) {
+                        setTimeout(() => {
+                          updateConfig('advertising.newsMode', false);
+                          updateConfig('advertising.websiteUrl', '');
+                          updateConfig('advertising.imageUrl', '');
+                        }, 100);
+                      }
+                    }}
+                    className="scale-75"
+                  />
+                  <Label 
+                    className="text-xs font-medium cursor-pointer flex-1"
+                    onClick={() => {
+                      const newValue = !Boolean(config.advertising.qrCodeMode);
+                      updateConfig('advertising.qrCodeMode', newValue);
+                      if (newValue) {
+                        updateConfig('advertising.newsMode', false);
+                        updateConfig('advertising.websiteUrl', '');
+                        updateConfig('advertising.imageUrl', '');
+                      }
+                    }}
+                  >
+                    📱 QR Code - Acompanhe seu Pedido
+                  </Label>
+                </div>
+                {config.advertising.qrCodeMode && (
+                  <div className="text-xs text-green-600 bg-green-50 p-3 rounded-md border border-green-200">
+                    <div className="space-y-1">
+                      <div>✓ QR Code exibido na coluna de publicidade</div>
+                      <div>✓ Cliente escaneia e acompanha pelo celular</div>
+                      <div>✓ Atualização em tempo real a cada 10s</div>
+                      <div>📱 URL: <code>{window.location.origin}/acompanhar</code></div>
+                    </div>
                   </div>
                 )}
               </div>
