@@ -173,6 +173,11 @@
   }
 
   /* Animações personalizadas */
+  @keyframes blink-tab {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.15; }
+  }
+
   @keyframes pulse-glow {
     0%, 100% {
       box-shadow: 0 0 5px hsl(var(--last-order) / 0.5);

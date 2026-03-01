@@ -501,7 +501,7 @@ const Acompanhar = () => {
                 mobileTab === 'ready'
                   ? 'text-white'
                   : filteredReady.length > 0
-                    ? 'text-white animate-pulse bg-gray-900 active:scale-95'
+                    ? 'text-white active:scale-95 animate-[blink-tab_0.6s_ease-in-out_infinite]'
                     : 'text-gray-400 bg-gray-900 active:scale-95'
               }`}
               style={
