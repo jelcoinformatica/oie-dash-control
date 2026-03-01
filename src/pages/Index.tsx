@@ -383,7 +383,7 @@ const Index = () => {
                         showItems={config.production?.cardConfig?.showItems ?? true}
                         moduleIndicator={config.production?.cardConfig?.moduleIndicator ?? 'bullet'}
                         config={config}
-                        cardConfig={{
+                      cardConfig={{
                           fontSize: config.production.cardConfig.fontSize,
                           fontFamily: config.production.cardConfig.fontFamily,
                           textColor: config.production.cardConfig.textColor,
@@ -391,8 +391,10 @@ const Index = () => {
                           gapHorizontal: config.production.cardConfig.gapHorizontal,
                           gapVertical: config.production.cardConfig.gapVertical,
                           cardMinHeight: config.production.cardConfig.cardMinHeight,
-                          cardMaxHeight: config.production.cardConfig.cardMaxHeight
+                          cardMaxHeight: config.production.cardConfig.cardMaxHeight,
+                          cardBorderColor: config.production.cardConfig.cardBorderColor
                         }}
+                        showCardBorder={config.production.showCardBorder}
                       />
                         </div>
                       </div>
