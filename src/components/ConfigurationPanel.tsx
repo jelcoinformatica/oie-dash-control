@@ -2568,36 +2568,35 @@ export const ConfigurationPanel = ({
               )}
             </div>
             
+            {/* Seleção de Módulos na Simulação */}
             <div className="space-y-2 border-t pt-3">
-              <Label className="text-xs font-medium">Módulos Ativos:</Label>
-              <div className="flex flex-col gap-1 text-xs">
-                {config.modules.balcao.enabled && (
-                  <div className="flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
-                    <span>BALCÃO ({config.modules.balcao.displayOption})</span>
-                  </div>
-                )}
-                {config.modules.entrega.enabled && (
-                  <div className="flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
-                    <span>ENTREGA ({config.modules.entrega.displayOption})</span>
-                  </div>
-                )}
-                {config.modules.mesa.enabled && (
-                  <div className="flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 bg-purple-500 rounded-full"></div>
-                    <span>MESA ({config.modules.mesa.displayOption})</span>
-                  </div>
-                )}
-                {config.modules.ficha.enabled && (
-                  <div className="flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 bg-orange-500 rounded-full"></div>
-                    <span>FICHA ({config.modules.ficha.displayOption})</span>
-                  </div>
-                )}
-                {!config.modules.balcao.enabled && !config.modules.entrega.enabled && !config.modules.mesa.enabled && !config.modules.ficha.enabled && (
-                  <span className="text-gray-500 italic">Nenhum módulo ativo</span>
-                )}
+              <Label className="text-xs font-semibold">Módulos na Simulação:</Label>
+              <p className="text-xs text-gray-500">Selecione quais módulos serão usados para gerar pedidos</p>
+              <div className="grid grid-cols-2 gap-2">
+                {[
+                  { key: 'balcao', label: 'Balcão', icon: '🏪', color: 'text-blue-600' },
+                  { key: 'mesa', label: 'Mesa', icon: '🍽️', color: 'text-purple-600' },
+                  { key: 'entrega', label: 'Entrega', icon: '🚚', color: 'text-green-600' },
+                  { key: 'ficha', label: 'Ficha', icon: '🎫', color: 'text-orange-600' },
+                ].map(mod => {
+                  const simModules = config.simulation?.modules || ['balcao', 'mesa', 'entrega', 'ficha'];
+                  const isChecked = simModules.includes(mod.key);
+                  return (
+                    <label key={mod.key} className="flex items-center gap-1.5 text-xs cursor-pointer">
+                      <Checkbox
+                        checked={isChecked}
+                        onCheckedChange={(checked) => {
+                          const current = config.simulation?.modules || ['balcao', 'mesa', 'entrega', 'ficha'];
+                          const updated = checked
+                            ? [...current, mod.key]
+                            : current.filter(m => m !== mod.key);
+                          updateConfig('simulation.modules', updated);
+                        }}
+                      />
+                      <span className={mod.color}>{mod.icon} {mod.label}</span>
+                    </label>
+                  );
+                })}
               </div>
             </div>
           </div>

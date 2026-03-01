@@ -297,12 +297,18 @@ export const useOrders = (ttsConfig: TTSConfig, autoExpeditionConfig: AutoExpedi
       localStorage.setItem('simulation-force-mock', 'true');
       setIsSimulationActive(true);
       console.log('🟢 Modo SIMULAÇÃO ativado — chamadas à API ignoradas.');
-      // Verificar módulos ativos
-      const activeModules = [];
-      if (config?.modules?.balcao?.enabled) activeModules.push('balcao');
-      if (config?.modules?.mesa?.enabled) activeModules.push('mesa');
-      if (config?.modules?.entrega?.enabled) activeModules.push('entrega');
-      if (config?.modules?.ficha?.enabled) activeModules.push('ficha');
+      // Verificar módulos da simulação (prioridade) ou módulos ativos
+      const simModules = config?.simulation?.modules;
+      const activeModules = simModules && simModules.length > 0
+        ? simModules
+        : (() => {
+            const m: string[] = [];
+            if (config?.modules?.balcao?.enabled) m.push('balcao');
+            if (config?.modules?.mesa?.enabled) m.push('mesa');
+            if (config?.modules?.entrega?.enabled) m.push('entrega');
+            if (config?.modules?.ficha?.enabled) m.push('ficha');
+            return m;
+          })();
       
       // Se nenhum módulo ativo, usar ficha como padrão
       const modulesToUse = activeModules.length > 0 ? activeModules : ['ficha'];
