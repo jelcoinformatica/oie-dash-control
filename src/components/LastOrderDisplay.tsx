@@ -1,3 +1,4 @@
+import { useRef, useEffect, useState } from 'react';
 import { cn } from '../lib/utils';
 
 interface LastOrderDisplayProps {
@@ -23,7 +24,6 @@ export const LastOrderDisplay = ({
   className,
   onExpedite
 }: LastOrderDisplayProps) => {
-  // Safety check with default values
   const safeConfig = {
     height: config?.height || 120,
     fontSize: config?.fontSize || 5,
@@ -34,24 +34,65 @@ export const LastOrderDisplay = ({
     backgroundColor: config?.backgroundColor || '#fef3c7'
   };
 
-  // Garante que o número do pedido seja sempre uma string antes de usar métodos de string.
-  // Também lida com casos onde orderNumber pode ser null ou undefined.
   const displayNumber = String(orderNumber || '');
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(1);
 
-  // Get order details to show nickname
+  const isDelivery = !!displayNumber.match(/^(IF|DD|RA|UB)-/);
+  const mainNumber = isDelivery ? displayNumber.split('-')[1] : displayNumber;
+  const platformPrefix = isDelivery ? displayNumber.split('-')[0] : null;
+
+  const getPlatformName = (prefix: string) => {
+    switch (prefix) {
+      case 'IF': return 'iFood';
+      case 'RA': return 'Rappi';
+      case 'UB': return 'Uber';
+      case 'DD': return 'Delivery Direto';
+      default: return prefix;
+    }
+  };
+
+  // Auto-fit: medir e escalar
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    const measure = () => {
+      const containerH = el.clientHeight;
+      const containerW = el.clientWidth;
+      if (containerH === 0 || containerW === 0) return;
+
+      const baseFontSize = safeConfig.fontSize;
+      const numberPx = baseFontSize * 16 * 1.1;
+      const namePx = nickname ? baseFontSize * 0.5 * 16 * 1.3 : 0;
+      const prefixPx = isDelivery ? baseFontSize * 0.4 * 16 : 0;
+      const padding = 24;
+
+      const totalNeeded = numberPx + namePx + prefixPx + padding;
+
+      // Também checar largura
+      const charCount = (mainNumber || '').length;
+      const estimatedW = charCount * baseFontSize * 16 * 0.65;
+      const widthScale = estimatedW > containerW - 32 ? (containerW - 32) / estimatedW : 1;
+
+      const heightScale = totalNeeded > containerH ? containerH / totalNeeded : 1;
+
+      setScale(Math.max(0.4, Math.min(heightScale, widthScale)));
+    };
+
+    measure();
+    const obs = new ResizeObserver(measure);
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [safeConfig.fontSize, nickname, isDelivery, mainNumber]);
+
+  const scaledFont = safeConfig.fontSize * scale;
+
   const handleClick = () => {
     if (onExpedite) {
       onExpedite(orderNumber);
     }
   };
-
-  // Calcular tamanho da fonte baseado no tipo de pedido
-  const adjustedFontSize = (displayNumber.match(/^(IF|DD|RA|UB)-/) ? 
-    safeConfig.fontSize * 0.6 : 
-    safeConfig.fontSize);
-  
-  // Calcular tamanho da fonte do apelido como 50% do número ajustado
-  const nicknameFontSize = adjustedFontSize * 0.5;
 
   return (
     <div 
@@ -62,51 +103,35 @@ export const LastOrderDisplay = ({
       )}
       style={{ 
         height: `${safeConfig.height * 0.85}px`,
-        fontSize: `${adjustedFontSize}rem`,
         fontFamily: safeConfig.fontFamily,
         color: safeConfig.textColor,
         backgroundColor: safeConfig.backgroundColor,
-        marginTop: '8px' // Garante espaço abaixo do título
+        marginTop: '8px'
       }}
       onClick={handleClick}
     >
-      <div className="relative h-full flex flex-col items-center justify-center">
-          <div className="flex flex-col items-center">
-            <span className="leading-none font-bold">
-              {displayNumber.match(/^(IF|DD|RA|UB)-/) ? (
-                <div className="flex flex-col items-center">
-                  <span style={{ 
-                    fontStyle: 'italic', 
-                    fontWeight: 'normal',
-                    fontSize: `${adjustedFontSize * 0.5}rem`,
-                    lineHeight: '0.9'
-                  }}>
-                    {(() => {
-                      const prefix = displayNumber.split('-')[0];
-                      switch (prefix) {
-                        case 'IF': return 'iFood';
-                        case 'RA': return 'Rappi';
-                        default: return prefix;
-                      }
-                    })()}
-                  </span>
-                  <span style={{ fontSize: `${adjustedFontSize * 1.2}rem` }}>
-                    {displayNumber.split('-')[1]}
-                  </span>
-                </div>
-              ) : (
-                displayNumber
-              )}
-            </span>
-            {nickname && (
-              <div 
-                className="opacity-90 leading-none -mt-1"
-                style={{ fontSize: `${nicknameFontSize}rem` }}
-              >
-                {nickname}
-              </div>
-            )}
+      <div ref={containerRef} className="relative h-full flex flex-col items-center justify-center overflow-hidden">
+        {platformPrefix && (
+          <span style={{ 
+            fontStyle: 'italic', 
+            fontWeight: 'normal',
+            fontSize: `${scaledFont * 0.45}rem`,
+            lineHeight: '1'
+          }}>
+            {getPlatformName(platformPrefix)}
+          </span>
+        )}
+        <span className="leading-none font-bold" style={{ fontSize: `${scaledFont}rem`, lineHeight: '1' }}>
+          {mainNumber}
+        </span>
+        {nickname && (
+          <div 
+            className="leading-none overflow-hidden text-ellipsis whitespace-nowrap w-full"
+            style={{ fontSize: `${scaledFont * 0.45}rem`, lineHeight: '1.2', marginTop: '2px', opacity: 0.9 }}
+          >
+            {nickname}
           </div>
+        )}
       </div>
     </div>
   );
