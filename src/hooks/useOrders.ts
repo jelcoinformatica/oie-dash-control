@@ -206,7 +206,8 @@ export const useOrders = (ttsConfig: TTSConfig, autoExpeditionConfig: AutoExpedi
         setReadyOrders(prev => prev.filter(o => o.id !== order.id));
         
         // Se foi expedido o último pedido, encontrar novo último pedido
-        if (orderNumber === lastOrderNumber) {
+        const expeditedNum = order.numeroPedido || order.number || '';
+        if (expeditedNum === lastOrderNumber) {
           const remainingReady = readyOrders.filter(o => o.id !== order.id);
           if (remainingReady.length > 0) {
             const newLastOrder = remainingReady[0];
