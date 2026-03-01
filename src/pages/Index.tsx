@@ -331,7 +331,7 @@ const Index = () => {
             </div>
           </div>
         )}
-      <div className={`flex-1 p-1.5 pt-1.5 h-full overflow-hidden bg-gray-300/60 ${isTablet ? 'pb-12' : ''}`}>
+      <div className={`flex-1 p-1.5 pt-1.5 h-full overflow-hidden ${isTablet ? 'pb-12' : ''}`}>
         {config.resizableColumns !== false ? (
           <ResizablePanelGroup 
             direction="horizontal" 
