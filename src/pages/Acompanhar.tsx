@@ -215,9 +215,23 @@ const Acompanhar = () => {
   useEffect(() => { const t = setInterval(() => setNow(Date.now()), 1000); return () => clearInterval(t); }, []);
 
   // --- HELPERS ---
+  const platformLogos: Record<string, string> = {
+    'IF': '/images/platforms/ifood.png',
+    'RA': '/images/platforms/rappi.png',
+    'DD': '/images/platforms/deliverydireto.png',
+    'KE': '/images/platforms/keeta.png',
+    '99': '/images/platforms/99food.png',
+  };
+
+  const getDeliveryPrefix = (order: Order): string | null => {
+    const num = String(order.numeroPedido || order.number || '');
+    const m = num.match(/^(IF|DD|RA|KE|99)-/);
+    return m ? m[1] : null;
+  };
+
   const displayNumber = (order: Order) => {
     const num = String(order.numeroPedido || order.number || '');
-    const m = num.match(/^(IF|DD|RA|UB)-/);
+    const m = num.match(/^(IF|DD|RA|KE|99)-/);
     if (m) return num.split('-')[1];
     return num;
   };
@@ -422,7 +436,7 @@ const Acompanhar = () => {
               </span>
             </div>
             <div className="flex-1 bg-white rounded-b-xl p-2 min-h-0 overflow-hidden">
-              <MobileCardGrid orders={filteredReady} variant="ready" displayNumber={displayNumber} displayName={displayName} onTap={() => {}} myOrderIds={myOrderIds} elapsedText={elapsedText} />
+              <MobileCardGrid orders={filteredReady} variant="ready" displayNumber={displayNumber} displayName={displayName} onTap={() => {}} myOrderIds={myOrderIds} elapsedText={elapsedText} getDeliveryPrefix={getDeliveryPrefix} platformLogos={platformLogos} />
             </div>
           </div>
 
@@ -446,6 +460,8 @@ const Acompanhar = () => {
                 onTap={handleTapOrder}
                 myOrderIds={myOrderIds}
                 elapsedText={elapsedText}
+                getDeliveryPrefix={getDeliveryPrefix}
+                platformLogos={platformLogos}
               />
             </div>
             {myOrderIds.length === 0 && filteredProduction.length > 0 && (
@@ -466,10 +482,12 @@ const Acompanhar = () => {
 };
 
 // --- GRID COMPONENT ---
-const MobileCardGrid = ({ orders, variant, displayNumber, displayName, onTap, myOrderIds, elapsedText }: { 
+const MobileCardGrid = ({ orders, variant, displayNumber, displayName, onTap, myOrderIds, elapsedText, getDeliveryPrefix, platformLogos }: { 
   orders: Order[]; variant: 'ready' | 'production';
   displayNumber: (o: Order) => string; displayName: (o: Order) => string;
   onTap: (o: Order) => void; myOrderIds: string[]; elapsedText: (o: Order) => string;
+  getDeliveryPrefix: (o: Order) => string | null;
+  platformLogos: Record<string, string>;
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [maxCards, setMaxCards] = useState(20);
@@ -505,6 +523,8 @@ const MobileCardGrid = ({ orders, variant, displayNumber, displayName, onTap, my
           const num = displayNumber(order);
           const name = displayName(order);
           const isMine = myOrderIds.includes(order.id);
+          const prefix = getDeliveryPrefix(order);
+          const logo = prefix ? platformLogos[prefix] : null;
           return (
             <div
               key={order.id}
@@ -518,6 +538,13 @@ const MobileCardGrid = ({ orders, variant, displayNumber, displayName, onTap, my
               }`}
               style={{ cursor: !isReady ? 'pointer' : 'default' }}
             >
+              {logo && (
+                <div className="absolute top-0.5 left-0.5">
+                  <div className="rounded-full overflow-hidden border border-gray-200 shadow-sm" style={{ width: '1.1rem', height: '1.1rem' }}>
+                    <img src={logo} alt="" className="w-full h-full object-cover" />
+                  </div>
+                </div>
+              )}
               {isMine && <span className="absolute top-0.5 right-1 text-amber-500 text-xs">⭐</span>}
               <span className={`font-bold leading-none ${
                 isReady ? 'text-blue-700' : isMine ? 'text-amber-700' : 'text-gray-600'
