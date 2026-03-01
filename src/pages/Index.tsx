@@ -331,7 +331,7 @@ const Index = () => {
             </div>
           </div>
         )}
-      <div className={`flex-1 p-1 pt-1 h-full overflow-hidden ${isTablet ? 'pb-12' : ''}`}>
+      <div className={`flex-1 p-1.5 pt-1.5 h-full overflow-hidden bg-gray-300/60 ${isTablet ? 'pb-12' : ''}`}>
         {config.resizableColumns !== false ? (
           <ResizablePanelGroup 
             direction="horizontal" 
@@ -481,7 +481,7 @@ const Index = () => {
                       </div>
                     )}
                     
-                    <div className="flex-1 p-0 bg-white" style={{ overflow: 'hidden' }}>
+                    <div className="flex-1 p-0 bg-gray-50" style={{ overflow: 'hidden' }}>
                     <OrderColumnGrid
                       orders={readyOrders}
                       columns={config.ready.cardConfig.columns}
@@ -583,7 +583,7 @@ const Index = () => {
                       </div>
                     </div>
                     
-                    <div className="flex-1 p-2 bg-white" style={{ overflow: 'hidden' }}>
+                    <div className="flex-1 p-2 bg-gray-50" style={{ overflow: 'hidden' }}>
                     <OrderColumnGrid
                       orders={productionOrders}
                       columns={config.production.cardConfig.columns}
@@ -688,7 +688,7 @@ const Index = () => {
                     </div>
                   )}
                   
-                  <div className="flex-1 p-0 bg-white" style={{ overflow: 'hidden' }}>
+                  <div className="flex-1 p-0 bg-gray-50" style={{ overflow: 'hidden' }}>
                     <OrderColumnGrid
                       orders={readyOrders}
                       columns={config.ready.cardConfig.columns}
