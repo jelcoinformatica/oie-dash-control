@@ -79,7 +79,7 @@ export const AdvertisingColumn = ({
               </div>
               <div className="bg-white p-4 rounded-xl shadow-lg">
                 <QRCodeSVG 
-                  value={`${window.location.origin}/acompanhar`}
+                  value="https://oieweb.lovable.app/acompanhar"
                   size={200}
                   level="M"
                   includeMargin={true}
