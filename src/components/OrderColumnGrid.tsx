@@ -111,8 +111,8 @@ export const OrderColumnGrid = ({
     const requestedFontSize = cardConfig?.fontSize || 1.2;
     
     // Usar configurações de gap do usuário
-    const gapH = cardConfig?.gapHorizontal || 4;
-    const gapV = cardConfig?.gapVertical || 4;
+    const gapH = Math.max(0, cardConfig?.gapHorizontal ?? 4);
+    const gapV = Math.max(0, cardConfig?.gapVertical ?? 4);
     const minHeight = cardConfig?.cardMinHeight || 60;
     const maxHeight = cardConfig?.cardMaxHeight || 120;
     
@@ -157,9 +157,10 @@ export const OrderColumnGrid = ({
       <div 
         className="grid"
         style={{ 
-          gridTemplateColumns: `repeat(${columns}, 1fr)`,
-          gridTemplateRows: `repeat(auto-fit, ${cardHeight}px)`,
-          gap: `${cardConfig?.gapVertical || 4}px ${cardConfig?.gapHorizontal || 4}px`
+          gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
+          gridAutoRows: `${cardHeight}px`,
+          alignContent: 'start',
+          gap: `${Math.max(0, cardConfig?.gapVertical ?? 4)}px ${Math.max(0, cardConfig?.gapHorizontal ?? 4)}px`
         }}
       >
         {visibleOrders.map((order, index) => {
