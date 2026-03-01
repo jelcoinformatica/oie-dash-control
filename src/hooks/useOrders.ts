@@ -363,6 +363,18 @@ export const useOrders = (ttsConfig: TTSConfig, autoExpeditionConfig: AutoExpedi
     }
   }, [productionOrders, readyOrders, isSimulationActive]);
 
+  // Ao montar, se NÃO há simulação ativa, limpar pedidos órfãos do Cloud
+  const cloudCleanedRef = useRef(false);
+  useEffect(() => {
+    if (cloudCleanedRef.current) return;
+    const forceMock = localStorage.getItem('simulation-force-mock') === 'true';
+    if (!forceMock && !isSimulationActive) {
+      cloudCleanedRef.current = true;
+      cloudClearAllOrders().catch(() => {});
+      console.log('🧹 Cloud limpo na inicialização (sem simulação ativa).');
+    }
+  }, []);
+
   // IMPORTANTE: Em modo simulação, o polling é completamente desativado.
   useEffect(() => {
     const forceMock = localStorage.getItem('simulation-force-mock') === 'true';
