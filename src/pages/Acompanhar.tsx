@@ -34,6 +34,7 @@ const Acompanhar = () => {
   const loadingRef = useRef(false);
   const myOrderIdsRef = useRef(myOrderIds);
   const productionIdsRef = useRef<Set<string>>(new Set());
+  const realtimeActiveRef = useRef(false);
 
   useEffect(() => { myOrderIdsRef.current = myOrderIds; saveStoredMarked(myOrderIds); }, [myOrderIds]);
 
@@ -74,7 +75,18 @@ const Acompanhar = () => {
     }
   }, []);
 
-  useEffect(() => { loadOrders(); const i = setInterval(loadOrders, 5000); return () => clearInterval(i); }, [loadOrders]);
+  useEffect(() => {
+    loadOrders(); // carga inicial
+    const i = setInterval(() => {
+      // Após realtime estar ativo, reduzir polling para apenas backup a cada 30s
+      if (!realtimeActiveRef.current) {
+        loadOrders();
+      }
+    }, 5000);
+    // Backup polling a cada 30s mesmo com realtime (para garantir consistência)
+    const backup = setInterval(loadOrders, 30000);
+    return () => { clearInterval(i); clearInterval(backup); };
+  }, [loadOrders]);
 
   // --- ALERT ---
   const playAlertSound = useCallback(() => {
@@ -129,6 +141,7 @@ const Acompanhar = () => {
   useEffect(() => {
     const unsubscribe = cloudSubscribeOrders(
       (order) => {
+        realtimeActiveRef.current = true;
         if (order.status === 'production') {
           setProductionOrders(prev => [order, ...prev.filter(o => o.id !== order.id)]);
           productionIdsRef.current.add(order.id);
@@ -141,6 +154,7 @@ const Acompanhar = () => {
         }
       },
       (order) => {
+        realtimeActiveRef.current = true;
         if (order.status === 'ready') {
           setProductionOrders(prev => prev.filter(o => o.id !== order.id));
           setReadyOrders(prev => [order, ...prev.filter(o => o.id !== order.id)]);
@@ -153,10 +167,10 @@ const Acompanhar = () => {
         }
       },
       (id) => {
+        realtimeActiveRef.current = true;
         setProductionOrders(prev => prev.filter(o => o.id !== id));
         setReadyOrders(prev => prev.filter(o => o.id !== id));
         productionIdsRef.current.delete(id);
-        // Remove from my orders if expedited
         setMyOrderIds(prev => prev.filter(i => i !== id));
       }
     );
