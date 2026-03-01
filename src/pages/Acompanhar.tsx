@@ -388,7 +388,7 @@ const Acompanhar = () => {
 
       {/* === PLATFORM FILTER BAR === */}
       {!personalMode && availablePlatforms.length > 0 && (
-        <div className="flex-shrink-0 bg-gray-800 px-3 py-2 flex items-center gap-2 overflow-x-auto border-b border-gray-700">
+        <div className="flex-shrink-0 bg-gray-800 px-3 py-2 flex items-center justify-center gap-3 border-b border-gray-700">
           <button
             onClick={() => setPlatformFilter(null)}
             className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-bold transition-all ${
@@ -403,16 +403,15 @@ const Acompanhar = () => {
             <button
               key={prefix}
               onClick={() => setPlatformFilter(platformFilter === prefix ? null : prefix)}
-              className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all ${
+              className={`flex-shrink-0 p-1 rounded-full transition-all ${
                 platformFilter === prefix 
-                  ? 'bg-white text-gray-800 ring-2 ring-white/50' 
-                  : 'bg-gray-700 text-gray-300 active:scale-95'
+                  ? 'ring-2 ring-white bg-white/20' 
+                  : 'active:scale-95'
               }`}
             >
-              <div className="rounded-full overflow-hidden border border-gray-500" style={{ width: '1.2rem', height: '1.2rem' }}>
+              <div className="rounded-full overflow-hidden border border-gray-500" style={{ width: '1.9rem', height: '1.9rem' }}>
                 <img src={platformLogos[prefix]} alt="" className="w-full h-full object-cover" />
               </div>
-              <span>{prefix === 'IF' ? 'iFood' : prefix === 'RA' ? 'Rappi' : prefix === 'DD' ? 'DD' : prefix === 'KE' ? 'Keeta' : prefix === '99' ? '99Food' : prefix}</span>
             </button>
           ))}
         </div>
