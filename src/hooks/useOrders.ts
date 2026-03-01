@@ -342,7 +342,19 @@ export const useOrders = (ttsConfig: TTSConfig, autoExpeditionConfig: AutoExpedi
     loadOrdersRef.current = loadOrders;
   }, [loadOrders]);
 
-  // Efeito para carregar os pedidos inicial e periodicamente.
+  // Sincronizar pedidos com localStorage para o preview mobile (iframe /acompanhar)
+  useEffect(() => {
+    const forceMock = localStorage.getItem('simulation-force-mock') === 'true';
+    if (forceMock || isSimulationActive) {
+      try {
+        localStorage.setItem('sim-production-orders', JSON.stringify(productionOrders));
+        localStorage.setItem('sim-ready-orders', JSON.stringify(readyOrders));
+      } catch (e) {
+        console.warn('Erro ao sincronizar pedidos com localStorage:', e);
+      }
+    }
+  }, [productionOrders, readyOrders, isSimulationActive]);
+
   // IMPORTANTE: Em modo simulação, o polling é completamente desativado.
   useEffect(() => {
     const forceMock = localStorage.getItem('simulation-force-mock') === 'true';
