@@ -43,7 +43,6 @@ interface OrderCardProps {
 const platformLogos: Record<string, string> = {
   'IF': '/images/platforms/ifood.png',
   'RA': '/images/platforms/rappi.png',
-  'UB': '/images/platforms/rappi.png', // placeholder
   'DD': '/images/platforms/deliverydireto.png',
   'KE': '/images/platforms/keeta.png',
   '99': '/images/platforms/99food.png',
@@ -213,14 +212,13 @@ export const OrderCard = ({
   // Garante que o número do pedido seja sempre uma string para evitar erros com .match()
   const displayNumber = String(order.numeroPedido || order.number || '');
   const displayName = order.nomeCliente || order.nickname;
-  const isOnlineDelivery = displayNumber.match(/^(IF|DD|RA|UB|KE|99)-/);
+  const isOnlineDelivery = displayNumber.match(/^(IF|DD|RA|KE|99)-/);
   
   // Para delivery online, o nome da plataforma vai na etiqueta
   const getDeliveryPlatformName = (prefix: string) => {
     switch (prefix) {
       case 'IF': return 'iFood';
       case 'RA': return 'Rappi';
-      case 'UB': return 'Uber';
       case 'DD': return 'Delivery Direto';
       case 'KE': return 'Keeta';
       case '99': return '99 Food';
