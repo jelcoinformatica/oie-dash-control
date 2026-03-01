@@ -22,11 +22,12 @@ const generateRandomOrder = (id: string, status: 'production' | 'ready'): Order 
 
   const selectedModule = modules[Math.floor(Math.random() * modules.length)];
   
-  // Para pedidos de entrega, 70% devem ter prefixo "IF-" com 5 dígitos
+  // Para pedidos de entrega, 80% devem ter prefixo de plataforma
   let orderNumber: string;
-  if (selectedModule === 'entrega' && Math.random() < 0.7) {
-    // Gerar número com 5 dígitos para iFood
-    orderNumber = `IF-${Math.floor(Math.random() * 90000) + 10000}`;
+  if (selectedModule === 'entrega' && Math.random() < 0.8) {
+    const platforms = ['IF', 'IF', 'IF', 'RA', 'DD', 'UB', '99', 'KE']; // iFood mais frequente
+    const platform = platforms[Math.floor(Math.random() * platforms.length)];
+    orderNumber = `${platform}-${Math.floor(Math.random() * 90000) + 10000}`;
   } else {
     // Número padrão de 3 dígitos
     orderNumber = (Math.floor(Math.random() * 900) + 100).toString();
@@ -42,8 +43,8 @@ const generateRandomOrder = (id: string, status: 'production' | 'ready'): Order 
     status,
     ultimoConsumo: new Date(Date.now() - Math.random() * 3600000),
     dataContabil: new Date(),
-    localEntrega: selectedModule === 'entrega' && orderNumber.startsWith('IF-') 
-      ? 'iFood Delivery' 
+    localEntrega: selectedModule === 'entrega' && /^(IF|DD|RA|UB|KE|99)-/.test(orderNumber)
+      ? 'Delivery Online' 
       : `Local ${Math.floor(Math.random() * 20) + 1}`,
     nomeCliente: selectedNickname,
     // Campos de compatibilidade
@@ -51,8 +52,8 @@ const generateRandomOrder = (id: string, status: 'production' | 'ready'): Order 
     nickname: selectedNickname,
     createdAt: new Date(Date.now() - Math.random() * 3600000),
     updatedAt: new Date(),
-    items: selectedModule === 'entrega' && orderNumber.startsWith('IF-')
-      ? ['Combo iFood', 'Taxa de Entrega']
+    items: selectedModule === 'entrega' && /^(IF|DD|RA|UB|KE|99)-/.test(orderNumber)
+      ? ['Combo Delivery', 'Taxa de Entrega']
       : Array.from({ length: Math.floor(Math.random() * 3) + 1 }, () => 
           items[Math.floor(Math.random() * items.length)]
         ),

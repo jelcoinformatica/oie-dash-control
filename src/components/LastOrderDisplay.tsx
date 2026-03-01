@@ -38,9 +38,18 @@ export const LastOrderDisplay = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
 
-  const isDelivery = !!displayNumber.match(/^(IF|DD|RA|UB)-/);
+  const isDelivery = !!displayNumber.match(/^(IF|DD|RA|UB|KE|99)-/);
   const mainNumber = isDelivery ? displayNumber.split('-')[1] : displayNumber;
   const platformPrefix = isDelivery ? displayNumber.split('-')[0] : null;
+
+  const platformLogos: Record<string, string> = {
+    'IF': '/images/platforms/ifood.png',
+    'RA': '/images/platforms/rappi.png',
+    'UB': '/images/platforms/rappi.png',
+    'DD': '/images/platforms/deliverydireto.png',
+    'KE': '/images/platforms/keeta.png',
+    '99': '/images/platforms/99food.png',
+  };
 
   const getPlatformName = (prefix: string) => {
     switch (prefix) {
@@ -48,9 +57,13 @@ export const LastOrderDisplay = ({
       case 'RA': return 'Rappi';
       case 'UB': return 'Uber';
       case 'DD': return 'Delivery Direto';
+      case 'KE': return 'Keeta';
+      case '99': return '99 Food';
       default: return prefix;
     }
   };
+
+  const platformLogo = platformPrefix ? platformLogos[platformPrefix] : null;
 
   // Auto-fit: medir e escalar
   useEffect(() => {
@@ -111,7 +124,15 @@ export const LastOrderDisplay = ({
       onClick={handleClick}
     >
       <div ref={containerRef} className="relative h-full flex flex-col items-center justify-center overflow-hidden">
-        {platformPrefix && (
+        {platformLogo && (
+          <div className="absolute top-0 left-0 z-10">
+            <div className="rounded-full overflow-hidden border border-gray-200 shadow-sm"
+              style={{ width: `${Math.max(scaledFont * 0.6, 1.2)}rem`, height: `${Math.max(scaledFont * 0.6, 1.2)}rem` }}>
+              <img src={platformLogo} alt="" className="w-full h-full object-cover" />
+            </div>
+          </div>
+        )}
+        {platformPrefix && !platformLogo && (
           <span style={{ 
             fontStyle: 'italic', 
             fontWeight: 'normal',

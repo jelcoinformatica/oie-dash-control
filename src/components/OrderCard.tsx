@@ -40,6 +40,15 @@ interface OrderCardProps {
   showCardBorder?: boolean;
 }
 
+const platformLogos: Record<string, string> = {
+  'IF': '/images/platforms/ifood.png',
+  'RA': '/images/platforms/rappi.png',
+  'UB': '/images/platforms/rappi.png', // placeholder
+  'DD': '/images/platforms/deliverydireto.png',
+  'KE': '/images/platforms/keeta.png',
+  '99': '/images/platforms/99food.png',
+};
+
 const moduleColors = {
   balcao: 'bg-green-500',
   mesa: 'bg-blue-500',
@@ -204,7 +213,7 @@ export const OrderCard = ({
   // Garante que o número do pedido seja sempre uma string para evitar erros com .match()
   const displayNumber = String(order.numeroPedido || order.number || '');
   const displayName = order.nomeCliente || order.nickname;
-  const isOnlineDelivery = displayNumber.match(/^(IF|DD|RA|UB)-/);
+  const isOnlineDelivery = displayNumber.match(/^(IF|DD|RA|UB|KE|99)-/);
   
   // Para delivery online, o nome da plataforma vai na etiqueta
   const getDeliveryPlatformName = (prefix: string) => {
@@ -213,9 +222,14 @@ export const OrderCard = ({
       case 'RA': return 'Rappi';
       case 'UB': return 'Uber';
       case 'DD': return 'Delivery Direto';
+      case 'KE': return 'Keeta';
+      case '99': return '99 Food';
       default: return prefix;
     }
   };
+
+  const deliveryPrefix = isOnlineDelivery ? displayNumber.split('-')[0] : null;
+  const platformLogo = deliveryPrefix ? platformLogos[deliveryPrefix] : null;
 
   // Nova lógica: verifica se o módulo específico tem indicador ativado
   const shouldShowModuleIndicator = (): boolean => {
@@ -255,8 +269,18 @@ export const OrderCard = ({
         width: '100%'
       }}
     >
-      {/* Indicador de Módulo */}
-      {showModuleIndicator && moduleIndicator !== 'border' && (
+      {/* Badge de plataforma delivery */}
+      {platformLogo && (
+        <div className="absolute top-0.5 left-0.5 z-10">
+          <div className="rounded-full overflow-hidden border border-gray-200 shadow-sm"
+            style={{ width: `${Math.max(fontSize * 0.55, 0.9)}rem`, height: `${Math.max(fontSize * 0.55, 0.9)}rem` }}>
+            <img src={platformLogo} alt="" className="w-full h-full object-cover" />
+          </div>
+        </div>
+      )}
+
+      {/* Indicador de Módulo (não-delivery) */}
+      {showModuleIndicator && moduleIndicator !== 'border' && !platformLogo && (
         <>
           {moduleIndicator === 'bullet' ? (
             <div className={cn(
@@ -269,10 +293,7 @@ export const OrderCard = ({
               modulePastelColors[order.modulo]
             )}
             style={{ fontSize: `${fontSize * 0.3}rem` }}>
-              {isOnlineDelivery 
-                ? getDeliveryPlatformName(displayNumber.split('-')[0])
-                : moduleLabels[order.modulo]
-              }
+              {moduleLabels[order.modulo]}
             </div>
           )}
         </>
