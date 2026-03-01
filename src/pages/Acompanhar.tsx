@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Order } from '../types/order';
 import { getSimulatedOrdersFromStorage } from '../services/orderService';
 import { 
@@ -15,6 +16,9 @@ const getStoredMarked = (): string[] => {
 const saveStoredMarked = (ids: string[]) => localStorage.setItem(MARKED_KEY, JSON.stringify(ids));
 
 const Acompanhar = () => {
+  const [searchParams] = useSearchParams();
+  const moduloFilter = searchParams.get('modulo') as Order['modulo'] | null;
+  
   const [productionOrders, setProductionOrders] = useState<Order[]>([]);
   const [readyOrders, setReadyOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
@@ -168,11 +172,12 @@ const Acompanhar = () => {
 
   // Block navigation
   useEffect(() => {
-    const h = () => { if (window.location.pathname !== '/acompanhar') window.history.pushState(null, '', '/acompanhar'); };
+    const fullPath = `/acompanhar${moduloFilter ? `?modulo=${moduloFilter}` : window.location.search}`;
+    const h = () => { if (window.location.pathname !== '/acompanhar') window.history.pushState(null, '', fullPath); };
     window.addEventListener('popstate', h);
-    window.history.pushState(null, '', '/acompanhar');
+    window.history.pushState(null, '', fullPath);
     return () => window.removeEventListener('popstate', h);
-  }, []);
+  }, [moduloFilter]);
 
   // --- MARKING FLOW ---
   const handleTapOrder = (order: Order) => {
@@ -241,8 +246,18 @@ const Acompanhar = () => {
     );
   }
 
+  // Apply module filter from query param (e.g. ?modulo=entrega)
+  const filteredProduction = moduloFilter 
+    ? productionOrders.filter(o => o.modulo === moduloFilter)
+    : productionOrders;
+  const filteredReady = moduloFilter
+    ? readyOrders.filter(o => o.modulo === moduloFilter)
+    : readyOrders;
+
   // Reversed production orders (últimos primeiro)
-  const reversedProduction = [...productionOrders].reverse();
+  const reversedProduction = [...filteredProduction].reverse();
+
+  const isDeliveryMode = moduloFilter === 'entrega';
 
   return (
     <div className="h-screen w-screen flex flex-col bg-gray-900 overflow-hidden select-none" style={{ touchAction: 'none' }}>
@@ -322,7 +337,7 @@ const Acompanhar = () => {
       {/* === HEADER === */}
       <div className="flex-shrink-0 bg-gray-800 px-4 py-3 text-center border-b border-gray-700">
         <h1 className="text-white text-lg font-bold tracking-wide">
-          {personalMode ? '⭐ Meu Pedido' : '📋 Acompanhe seu Pedido'}
+          {personalMode ? '⭐ Meu Pedido' : isDeliveryMode ? '🏍️ Entregas' : '📋 Acompanhe seu Pedido'}
         </h1>
         {personalMode && (
           <button 
@@ -400,11 +415,11 @@ const Acompanhar = () => {
                 ✅ {config.ready.title || 'PRONTOS'}
               </span>
               <span className="bg-white/20 text-white text-sm font-bold px-2.5 py-0.5 rounded-full">
-                {readyOrders.length}
+                {filteredReady.length}
               </span>
             </div>
             <div className="flex-1 bg-white rounded-b-xl p-2 min-h-0 overflow-hidden">
-              <MobileCardGrid orders={readyOrders} variant="ready" displayNumber={displayNumber} displayName={displayName} onTap={() => {}} myOrderIds={myOrderIds} elapsedText={elapsedText} />
+              <MobileCardGrid orders={filteredReady} variant="ready" displayNumber={displayNumber} displayName={displayName} onTap={() => {}} myOrderIds={myOrderIds} elapsedText={elapsedText} />
             </div>
           </div>
 
@@ -416,7 +431,7 @@ const Acompanhar = () => {
                 🔥 {config.production.title || 'EM PRODUÇÃO'}
               </span>
               <span className="bg-white/20 text-white text-xs font-bold px-2 py-0.5 rounded-full">
-                {productionOrders.length}
+                {filteredProduction.length}
               </span>
             </div>
             <div className="flex-1 bg-gray-100 rounded-b-xl p-2 overflow-hidden" style={{ height: 'calc(100% - 36px)' }}>
@@ -430,7 +445,7 @@ const Acompanhar = () => {
                 elapsedText={elapsedText}
               />
             </div>
-            {myOrderIds.length === 0 && productionOrders.length > 0 && (
+            {myOrderIds.length === 0 && filteredProduction.length > 0 && (
               <div className="text-center mt-1">
                 <span className="text-gray-500 text-[10px]">💡 Toque no seu pedido para acompanhar individualmente</span>
               </div>
