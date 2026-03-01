@@ -188,10 +188,16 @@ const Index = () => {
   };
 
   const handleExpedite = (orderNumber: string) => {
+    // Busca flexível: aceita número parcial (ex: "49528" encontra "99-49528")
+    const flexMatch = (orderNum: string, search: string) => {
+      const stripped = orderNum.replace(/[^\d]/g, '');
+      return orderNum === search || stripped === search || orderNum.endsWith('-' + search);
+    };
+
     // Primeiro, verificar se o pedido está em produção
     const productionOrder = productionOrders.find(order => {
       const orderNum = order.numeroPedido || order.number || '';
-      return orderNum === orderNumber || orderNum.replace(/[^\d]/g, '') === orderNumber;
+      return flexMatch(orderNum, orderNumber);
     });
     
     if (productionOrder) {

@@ -147,12 +147,12 @@ export const useOrders = (ttsConfig: TTSConfig, autoExpeditionConfig: AutoExpedi
     const isMock = useMockDataRef.current || forceMock;
     
     try {
-      // Verificar se começa com "-" para retornar para produção
+    // Verificar se começa com "-" para retornar para produção
       if (orderNumber.startsWith('-')) {
         const numOnly = orderNumber.slice(1);
         const order = readyOrders.find(o => {
           const orderNum = o.numeroPedido || o.number || '';
-          return orderNum === numOnly || orderNum.replace(/[^\d]/g, '') === numOnly;
+          return orderNum === numOnly || orderNum.replace(/[^\d]/g, '') === numOnly || orderNum.endsWith('-' + numOnly);
         });
         
         if (order) {
@@ -191,7 +191,7 @@ export const useOrders = (ttsConfig: TTSConfig, autoExpeditionConfig: AutoExpedi
       // Expedição normal
       const order = readyOrders.find(o => {
         const orderNum = o.numeroPedido || o.number || '';
-        return orderNum === orderNumber || orderNum.replace(/[^\d]/g, '') === orderNumber;
+        return orderNum === orderNumber || orderNum.replace(/[^\d]/g, '') === orderNumber || orderNum.endsWith('-' + orderNumber);
       });
       
       if (order) {
