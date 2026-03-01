@@ -253,6 +253,17 @@ const Acompanhar = () => {
   const myProductionOrders = productionOrders.filter(o => myOrderIds.includes(o.id));
   const myReadyOrders = readyOrders.filter(o => myOrderIds.includes(o.id));
 
+  // Detect which platforms exist in current orders
+  const availablePlatforms = useMemo(() => {
+    const allOrders = [...productionOrders, ...readyOrders];
+    const prefixes = new Set<string>();
+    allOrders.forEach(o => {
+      const prefix = getDeliveryPrefix(o);
+      if (prefix) prefixes.add(prefix);
+    });
+    return Array.from(prefixes);
+  }, [productionOrders, readyOrders]);
+
   // --- LOADING ---
   if (loading) {
     return (
@@ -277,17 +288,6 @@ const Acompanhar = () => {
   };
   const filteredProduction = applyFilter(productionOrders);
   const filteredReady = applyFilter(readyOrders);
-
-  // Detect which platforms exist in current orders
-  const availablePlatforms = useMemo(() => {
-    const allOrders = [...productionOrders, ...readyOrders];
-    const prefixes = new Set<string>();
-    allOrders.forEach(o => {
-      const prefix = getDeliveryPrefix(o);
-      if (prefix) prefixes.add(prefix);
-    });
-    return Array.from(prefixes);
-  }, [productionOrders, readyOrders]);
 
   // Reversed production orders (últimos primeiro)
   const reversedProduction = [...filteredProduction].reverse();
