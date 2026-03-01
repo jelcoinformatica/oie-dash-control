@@ -92,11 +92,24 @@ export const useOrders = (ttsConfig: TTSConfig, autoExpeditionConfig: AutoExpedi
   }, [loading, lastOrderNumber]); // Manter lastOrderNumber para a lógica interna de comparação
   
   const moveToReady = useCallback(async (orderId: string) => {
+    const forceMock = localStorage.getItem('simulation-force-mock') === 'true';
+    const isMock = useMockDataRef.current || forceMock;
+    
     try {
-      const updatedOrder = await updateOrderStatus(orderId, 'ready', apiBaseUrlRef.current);
-      setOrders(prev => prev.map(o => 
-        o.id === orderId ? updatedOrder : o
-      ));
+      let updatedOrder: Order;
+      
+      if (isMock) {
+        // Modo local: atualizar diretamente no estado
+        const existingOrder = productionOrders.find(o => o.id === orderId);
+        if (!existingOrder) return;
+        updatedOrder = { ...existingOrder, status: 'ready' as const, updatedAt: new Date() };
+      } else {
+        updatedOrder = await updateOrderStatus(orderId, 'ready', apiBaseUrlRef.current);
+      }
+      
+      // Atualizar estados diretamente
+      setProductionOrders(prev => prev.filter(o => o.id !== orderId));
+      setReadyOrders(prev => [updatedOrder, ...prev]);
       
       const newOrderNumber = updatedOrder.numeroPedido || updatedOrder.number || '';
       
@@ -120,41 +133,38 @@ export const useOrders = (ttsConfig: TTSConfig, autoExpeditionConfig: AutoExpedi
       setLastOrderNumber(newOrderNumber);
       
     } catch (error) {
-      // toast({
-      //   title: "Erro",
-      //   description: "Falha ao mover pedido",
-      //   variant: "destructive"
-      // });
+      console.error('Erro ao mover pedido:', error);
     }
-  }, [orders, lastOrderNumber, speak, apiBaseUrlRef.current]);
+  }, [productionOrders, lastOrderNumber, speak, apiBaseUrlRef.current]);
 
   const expedite = useCallback(async (orderNumber: string) => {
+    const forceMock = localStorage.getItem('simulation-force-mock') === 'true';
+    const isMock = useMockDataRef.current || forceMock;
+    
     try {
       // Verificar se começa com "-" para retornar para produção
       if (orderNumber.startsWith('-')) {
         const numOnly = orderNumber.slice(1);
-        const order = orders.find(o => {
+        const order = readyOrders.find(o => {
           const orderNum = o.numeroPedido || o.number || '';
           return orderNum === numOnly || orderNum.replace(/[^\d]/g, '') === numOnly;
         });
         
         if (order) {
-          const updatedOrder = await updateOrderStatus(order.id, 'production', apiBaseUrlRef.current);
-          setOrders(prev => prev.map(o => 
-            o.id === order.id ? updatedOrder : o
-          ));
+          if (!isMock) {
+            await updateOrderStatus(order.id, 'production', apiBaseUrlRef.current);
+          }
+          
+          // Atualizar estados diretamente
+          setReadyOrders(prev => prev.filter(o => o.id !== order.id));
+          setProductionOrders(prev => [{ ...order, status: 'production' as const }, ...prev]);
           
           // Se era o último pedido, atualizar dados
           if ((order.numeroPedido || order.number) === lastOrderNumber) {
-            const remainingReady = orders.filter(o => o.status === 'ready' && o.id !== order.id);
+            const remainingReady = readyOrders.filter(o => o.id !== order.id);
             if (remainingReady.length > 0) {
-              const newLastOrder = remainingReady.sort((a, b) => {
-                const dateA = new Date(a.updatedAt || a.ultimoConsumo || 0);
-                const dateB = new Date(b.updatedAt || b.ultimoConsumo || 0);
-                return dateB.getTime() - dateA.getTime();
-              })[0];
-              const newLastOrderNumber = newLastOrder.numeroPedido || newLastOrder.number || '';
-              setLastOrderNumber(newLastOrderNumber);
+              const newLastOrder = remainingReady[0];
+              setLastOrderNumber(newLastOrder.numeroPedido || newLastOrder.number || '');
               setLastOrderData(newLastOrder);
             } else {
               setLastOrderNumber('');
@@ -162,44 +172,37 @@ export const useOrders = (ttsConfig: TTSConfig, autoExpeditionConfig: AutoExpedi
             }
           }
           
-        // Adicionar ao log de expedição (no início da lista) - manter últimos 10
-        setExpeditionLog(prev => [{
-          orderNumber: order.numeroPedido || order.number || '',
-          nickname: order.nomeCliente,
-          expeditionTime: new Date(),
-          createdAt: order.createdAt || order.ultimoConsumo || new Date(),
-          isAutoExpedition: false
-        }, ...prev].slice(0, 10));
-          
-          // toast({
-          //   title: "Pedido Retornado",
-          //   description: `Pedido ${order.numeroPedido || order.number} voltou para produção`
-          // });
+          setExpeditionLog(prev => [{
+            orderNumber: order.numeroPedido || order.number || '',
+            nickname: order.nomeCliente,
+            expeditionTime: new Date(),
+            createdAt: order.createdAt || order.ultimoConsumo || new Date(),
+            isAutoExpedition: false
+          }, ...prev].slice(0, 10));
         }
         return;
       }
       
       // Expedição normal
-      const order = orders.find(o => {
+      const order = readyOrders.find(o => {
         const orderNum = o.numeroPedido || o.number || '';
         return orderNum === orderNumber || orderNum.replace(/[^\d]/g, '') === orderNumber;
       });
       
       if (order) {
-        await expediteOrder(order.id, apiBaseUrlRef.current);
-        setOrders(prev => prev.filter(o => o.id !== order.id));
+        if (!isMock) {
+          await expediteOrder(order.id, apiBaseUrlRef.current);
+        }
+        
+        // Remover do estado
+        setReadyOrders(prev => prev.filter(o => o.id !== order.id));
         
         // Se foi expedido o último pedido, encontrar novo último pedido
         if (orderNumber === lastOrderNumber) {
-          const remainingReady = orders.filter(o => o.status === 'ready' && (o.numeroPedido || o.number) !== orderNumber);
+          const remainingReady = readyOrders.filter(o => o.id !== order.id);
           if (remainingReady.length > 0) {
-            const newLastOrder = remainingReady.sort((a, b) => {
-              const dateA = new Date(a.updatedAt || a.ultimoConsumo || 0);
-              const dateB = new Date(b.updatedAt || b.ultimoConsumo || 0);
-              return dateB.getTime() - dateA.getTime();
-            })[0];
-            const newLastOrderNumber = newLastOrder.numeroPedido || newLastOrder.number || '';
-            setLastOrderNumber(newLastOrderNumber);
+            const newLastOrder = remainingReady[0];
+            setLastOrderNumber(newLastOrder.numeroPedido || newLastOrder.number || '');
             setLastOrderData(newLastOrder);
           } else {
             setLastOrderNumber('');
@@ -207,7 +210,6 @@ export const useOrders = (ttsConfig: TTSConfig, autoExpeditionConfig: AutoExpedi
           }
         }
         
-        // Adicionar ao log de expedição (no início da lista) - manter últimos 10
         setExpeditionLog(prev => [{
           orderNumber: order.numeroPedido || order.number || '',
           nickname: order.nomeCliente,
@@ -215,20 +217,11 @@ export const useOrders = (ttsConfig: TTSConfig, autoExpeditionConfig: AutoExpedi
           createdAt: order.createdAt || order.ultimoConsumo || new Date(),
           isAutoExpedition: false
         }, ...prev].slice(0, 10));
-        
-        // toast({
-        //   title: "Pedido Expedido",
-        //   description: `Pedido ${order.numeroPedido || order.number} foi entregue`
-        // });
       }
     } catch (error) {
-      // toast({
-      //   title: "Erro",
-      //   description: "Falha ao expedir pedido",
-      //   variant: "destructive"
-      // });
+      console.error('Erro ao expedir pedido:', error);
     }
-  }, [orders, lastOrderNumber, apiBaseUrlRef.current]);
+  }, [readyOrders, lastOrderNumber, apiBaseUrlRef.current]);
   
   // Auto-expedição otimizada
   useEffect(() => {
@@ -264,6 +257,8 @@ export const useOrders = (ttsConfig: TTSConfig, autoExpeditionConfig: AutoExpedi
   // Funções para simulação
   const clearAllOrders = useCallback(async () => {
     setOrders([]);
+    setProductionOrders([]);
+    setReadyOrders([]);
     setLastOrderNumber('');
     setLastOrderData(null);
     setExpeditionLog([]);
