@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { Order } from '../types/order';
 import { fetchProductionOrders, fetchReadyOrders, getSimulatedOrdersFromStorage } from '../services/orderService';
+import { cloudFetchProductionOrders, cloudFetchReadyOrders, cloudSubscribeOrders } from '../services/cloudOrderService';
 import { defaultConfig } from '../data/defaultConfig';
 import { PanelConfig } from '../types/order';
 
@@ -24,41 +25,76 @@ const Acompanhar = () => {
 
   const apiBaseUrl = config.database?.apiBaseUrl || defaultConfig.database.apiBaseUrl;
   const useMockData = config.database?.useMockData ?? defaultConfig.database.useMockData;
-  const forceMockSimulation = localStorage.getItem('simulation-force-mock') === 'true';
   const isLocalApi = /localhost|127\.0\.0\.1/i.test(apiBaseUrl);
-  const isSimulationMode = forceMockSimulation || isLocalApi;
 
+  // Carregar pedidos: tenta Cloud primeiro, fallback para localStorage
   const loadOrders = useCallback(async () => {
     if (loadingRef.current) return;
     loadingRef.current = true;
     try {
-      if (isSimulationMode) {
-        // Em modo simulação: ler diretamente do localStorage (sincronizado pelo painel principal)
+      // Tentar Cloud primeiro
+      const [prod, ready] = await Promise.all([
+        cloudFetchProductionOrders(),
+        cloudFetchReadyOrders()
+      ]);
+      
+      if (prod.length > 0 || ready.length > 0) {
+        setProductionOrders(prod);
+        setReadyOrders(ready);
+      } else {
+        // Fallback: localStorage (para preview iframe no mesmo browser)
         const stored = getSimulatedOrdersFromStorage();
         setProductionOrders(stored.production);
         setReadyOrders(stored.ready);
-      } else {
-        const [prod, ready] = await Promise.all([
-          fetchProductionOrders(apiBaseUrl, useMockData),
-          fetchReadyOrders(apiBaseUrl, useMockData)
-        ]);
-        setProductionOrders(prod);
-        setReadyOrders(ready);
       }
     } catch (e) {
       console.error('Erro ao carregar pedidos:', e);
+      // Fallback localStorage
+      const stored = getSimulatedOrdersFromStorage();
+      setProductionOrders(stored.production);
+      setReadyOrders(stored.ready);
     } finally {
       loadingRef.current = false;
       setLoading(false);
     }
-  }, [apiBaseUrl, useMockData, isSimulationMode]);
+  }, []);
 
+  // Carregar inicial + polling de fallback
   useEffect(() => {
     loadOrders();
-    // Em simulação: polling rápido (3s, só localStorage). Em produção: 10s (API).
-    const interval = setInterval(loadOrders, isSimulationMode ? 3000 : 10000);
+    const interval = setInterval(loadOrders, 5000);
     return () => clearInterval(interval);
-  }, [loadOrders, isSimulationMode]);
+  }, [loadOrders]);
+
+  // Realtime subscription do Cloud
+  useEffect(() => {
+    const unsubscribe = cloudSubscribeOrders(
+      // INSERT
+      (order) => {
+        if (order.status === 'production') {
+          setProductionOrders(prev => [order, ...prev.filter(o => o.id !== order.id)]);
+        } else if (order.status === 'ready') {
+          setReadyOrders(prev => [order, ...prev.filter(o => o.id !== order.id)]);
+        }
+      },
+      // UPDATE
+      (order) => {
+        if (order.status === 'ready') {
+          setProductionOrders(prev => prev.filter(o => o.id !== order.id));
+          setReadyOrders(prev => [order, ...prev.filter(o => o.id !== order.id)]);
+        } else if (order.status === 'production') {
+          setReadyOrders(prev => prev.filter(o => o.id !== order.id));
+          setProductionOrders(prev => [order, ...prev.filter(o => o.id !== order.id)]);
+        }
+      },
+      // DELETE
+      (id) => {
+        setProductionOrders(prev => prev.filter(o => o.id !== id));
+        setReadyOrders(prev => prev.filter(o => o.id !== id));
+      }
+    );
+    return unsubscribe;
+  }, []);
 
   // Block navigation to main panel
   useEffect(() => {
@@ -108,12 +144,6 @@ const Acompanhar = () => {
         </h1>
       </div>
 
-      {isSimulationMode && (
-        <div className="mx-3 mt-2 rounded-lg border border-amber-300 bg-amber-50 px-3 py-1.5 text-[11px] leading-relaxed text-amber-800">
-          <strong>🎮 Modo Simulação:</strong> Lendo pedidos do painel principal via localStorage. Atualização a cada 3s.
-        </div>
-      )}
-
       {/* Ready section - DESTAQUE */}
       <div className="flex-1 flex flex-col min-h-0 px-3 pt-3 pb-1">
         <div className="flex-shrink-0 rounded-t-xl px-4 py-2.5 flex items-center justify-between"
@@ -148,7 +178,7 @@ const Acompanhar = () => {
 
       {/* Footer */}
       <div className="flex-shrink-0 bg-gray-800 px-4 py-1.5 text-center border-t border-gray-700">
-        <span className="text-gray-500 text-xs">Oie! Painel de Acompanhamento</span>
+        <span className="text-gray-500 text-xs">Oie! Painel de Acompanhamento • Realtime ⚡</span>
       </div>
     </div>
   );
@@ -190,7 +220,7 @@ const MobileCardGrid = ({
   if (orders.length === 0) {
     return (
       <div ref={containerRef} className="h-full flex items-center justify-center">
-        <span className={`text-sm ${isReady ? 'text-gray-400' : 'text-gray-400'}`}>
+        <span className="text-sm text-gray-400">
           {isReady ? 'Nenhum pedido pronto' : 'Nenhum pedido em produção'}
         </span>
       </div>

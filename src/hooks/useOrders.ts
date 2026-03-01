@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { Order } from '../types/order';
 import { fetchOrders, updateOrderStatus, expediteOrder, addSimulatedOrder, fetchProductionOrders, fetchReadyOrders } from '../services/orderService';
+import { cloudInsertOrder, cloudInsertOrders, cloudUpdateOrderStatus, cloudDeleteOrder, cloudClearAllOrders } from '../services/cloudOrderService';
 import { useTextToSpeech } from './useTextToSpeech';
 
 interface TTSConfig {
@@ -111,6 +112,9 @@ export const useOrders = (ttsConfig: TTSConfig, autoExpeditionConfig: AutoExpedi
       setProductionOrders(prev => prev.filter(o => o.id !== orderId));
       setReadyOrders(prev => [updatedOrder, ...prev]);
       
+      // Sincronizar com Cloud
+      cloudUpdateOrderStatus(orderId, 'ready').catch(() => {});
+      
       const newOrderNumber = updatedOrder.numeroPedido || updatedOrder.number || '';
       
       // Armazenar dados completos do último pedido
@@ -191,8 +195,11 @@ export const useOrders = (ttsConfig: TTSConfig, autoExpeditionConfig: AutoExpedi
       
       if (order) {
         if (!isMock) {
-          await expediteOrder(order.id, apiBaseUrlRef.current);
-        }
+            await expediteOrder(order.id, apiBaseUrlRef.current);
+          }
+          
+          // Sincronizar com Cloud
+          cloudDeleteOrder(order.id).catch(() => {});
         
         // Remover do estado
         setReadyOrders(prev => prev.filter(o => o.id !== order.id));
@@ -270,7 +277,9 @@ export const useOrders = (ttsConfig: TTSConfig, autoExpeditionConfig: AutoExpedi
     
     try {
       const { clearAllOrdersService } = await import('../services/orderService');
-      await clearAllOrdersService(apiBaseUrlRef.current, true); // Limpa dados locais
+      await clearAllOrdersService(apiBaseUrlRef.current, true);
+      // Limpar Cloud também
+      await cloudClearAllOrders().catch(() => {});
     } catch (error) {
       console.error('Erro ao zerar pedidos:', error);
     }
@@ -308,6 +317,8 @@ export const useOrders = (ttsConfig: TTSConfig, autoExpeditionConfig: AutoExpedi
         try {
           const newOrder = await addSimulatedOrder(modulesToUse, apiBaseUrlRef.current, true);
           console.log(`🆕 Pedido criado: ${newOrder.numeroPedido} (${newOrder.modulo})`);
+          // Sincronizar com Cloud em background
+          cloudInsertOrder(newOrder).catch(() => {});
         } catch (error) {
           console.error(`❌ Erro ao criar pedido ${i + 1}:`, error);
         }
@@ -315,10 +326,7 @@ export const useOrders = (ttsConfig: TTSConfig, autoExpeditionConfig: AutoExpedi
       
       console.log(`✅ Processo de geração concluído`);
       
-      // Aguardar um pouco antes de recarregar para garantir que todos foram salvos
       await new Promise(resolve => setTimeout(resolve, 200));
-      
-      // Recarregar para sincronizar o estado React
       await loadOrders();
       
       console.log(`🔄 Estado recarregado completo`);
