@@ -292,7 +292,8 @@ const Acompanhar = () => {
   const filteredReady = applyFilter(readyOrders);
 
   // Reversed production orders (últimos primeiro)
-  const reversedProduction = [...filteredProduction].reverse();
+  // Mesma ordem do painel desktop (sem inverter)
+  const sortedProduction = filteredProduction;
 
   const isDeliveryMode = moduloFilter === 'entrega';
   const isExcludeDeliveryMode = moduloExclude === 'entrega';
@@ -519,14 +520,14 @@ const Acompanhar = () => {
           {/* Tab content — full height */}
           <div className="flex-1 flex flex-col min-h-0 px-3 py-3">
             {mobileTab === 'ready' ? (
-              <div className="flex-1 bg-white rounded-xl p-2 min-h-0 overflow-hidden">
+              <div className="flex-1 bg-white rounded-xl p-2 min-h-0 overflow-y-auto">
                 <MobileCardGrid orders={filteredReady} variant="ready" displayNumber={displayNumber} displayName={displayName} onTap={() => {}} myOrderIds={myOrderIds} elapsedText={elapsedText} getDeliveryPrefix={getDeliveryPrefix} platformLogos={platformLogos} />
               </div>
             ) : (
               <>
-                <div className="flex-1 bg-gray-100 rounded-xl p-2 min-h-0 overflow-hidden">
+                <div className="flex-1 bg-gray-100 rounded-xl p-2 min-h-0 overflow-y-auto">
                   <MobileCardGrid 
-                    orders={reversedProduction} 
+                    orders={sortedProduction} 
                     variant="production" 
                     displayNumber={displayNumber} 
                     displayName={displayName}
@@ -565,23 +566,7 @@ const MobileCardGrid = ({ orders, variant, displayNumber, displayName, onTap, my
   platformLogos: Record<string, string>;
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [maxCards, setMaxCards] = useState(20);
   const isReady = variant === 'ready';
-
-  useEffect(() => {
-    const updateMax = () => {
-      if (!containerRef.current) return;
-      const h = containerRef.current.clientHeight;
-      const cardH = isReady ? 72 : 56;
-      const rows = Math.max(1, Math.floor((h + 8) / (cardH + 8)));
-      setMaxCards(rows * 2);
-    };
-    updateMax();
-    window.addEventListener('resize', updateMax);
-    return () => window.removeEventListener('resize', updateMax);
-  }, [isReady]);
-
-  const visible = orders.slice(0, maxCards);
 
   if (orders.length === 0) {
     return (
@@ -593,8 +578,8 @@ const MobileCardGrid = ({ orders, variant, displayNumber, displayName, onTap, my
 
   return (
     <div ref={containerRef} className="h-full">
-      <div className="grid grid-cols-2 gap-2 h-full" style={{ gridAutoRows: isReady ? '72px' : '56px' }}>
-        {visible.map((order) => {
+      <div className="grid grid-cols-2 gap-2" style={{ gridAutoRows: isReady ? '72px' : '56px' }}>
+        {orders.map((order) => {
           const num = displayNumber(order);
           const name = displayName(order);
           const isMine = myOrderIds.includes(order.id);
@@ -638,9 +623,6 @@ const MobileCardGrid = ({ orders, variant, displayNumber, displayName, onTap, my
           );
         })}
       </div>
-      {orders.length > maxCards && (
-        <div className="absolute bottom-1 right-2 text-xs text-gray-400">+{orders.length - maxCards} mais</div>
-      )}
     </div>
   );
 };
