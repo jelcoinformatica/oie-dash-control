@@ -39,6 +39,7 @@ export const useOrders = (ttsConfig: TTSConfig, autoExpeditionConfig: AutoExpedi
   const autoExpeditionTimeoutRef = useRef<NodeJS.Timeout>();
   const apiBaseUrlRef = useRef(apiBaseUrl);
   const useMockDataRef = useRef(useMockData);
+  const cloudCleanedRef = useRef(false);
   
   // Atualizar refs quando configs mudarem
   useEffect(() => {
@@ -364,7 +365,6 @@ export const useOrders = (ttsConfig: TTSConfig, autoExpeditionConfig: AutoExpedi
   }, [productionOrders, readyOrders, isSimulationActive]);
 
   // Ao montar, se NÃO há simulação ativa, limpar pedidos órfãos do Cloud
-  const cloudCleanedRef = useRef(false);
   useEffect(() => {
     if (cloudCleanedRef.current) return;
     const forceMock = localStorage.getItem('simulation-force-mock') === 'true';
