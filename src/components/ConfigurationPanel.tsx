@@ -1314,13 +1314,32 @@ export const ConfigurationPanel = ({
                   </Label>
                 </div>
                 {config.advertising.qrCodeMode && (
-                  <div className="text-xs text-green-600 bg-green-50 p-3 rounded-md border border-green-200">
-                    <div className="space-y-1">
-                      <div>✓ QR Code exibido na coluna de publicidade</div>
-                      <div>✓ Cliente escaneia e acompanha pelo celular</div>
-                      <div>✓ Atualização a cada 10s quando houver API pública configurada</div>
-                      <div>⚠️ Em SIMULAÇÃO/localhost, o celular não recebe os pedidos locais do painel</div>
-                      <div>📱 URL: <code>https://oieweb.lovable.app/acompanhar</code></div>
+                  <div className="space-y-2">
+                    <div className="flex gap-1">
+                      {[
+                        { value: 'all', label: '📋 Todos' },
+                        { value: 'delivery', label: '🏍️ Só Delivery' },
+                        { value: 'all-except-delivery', label: '🚫🏍️ Todos - Delivery' },
+                      ].map(opt => (
+                        <button
+                          key={opt.value}
+                          onClick={() => updateConfig('advertising.qrCodeFilter', opt.value)}
+                          className={`flex-1 text-[10px] py-1.5 px-1 rounded border font-medium transition-all ${
+                            (config.advertising.qrCodeFilter || 'all') === opt.value
+                              ? 'bg-blue-600 text-white border-blue-600'
+                              : 'bg-white text-gray-600 border-gray-300 hover:bg-gray-50'
+                          }`}
+                        >
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
+                    <div className="text-xs text-green-600 bg-green-50 p-2 rounded-md border border-green-200">
+                      <div className="space-y-0.5">
+                        <div>✓ QR Code exibido na coluna de publicidade</div>
+                        <div>✓ Cliente/motoboy escaneia e acompanha pelo celular</div>
+                        <div>⚠️ Em SIMULAÇÃO/localhost, o celular não recebe os pedidos locais</div>
+                      </div>
                     </div>
                   </div>
                 )}

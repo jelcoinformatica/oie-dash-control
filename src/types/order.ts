@@ -78,7 +78,8 @@ export interface PanelConfig {
     imageUrl?: string;
     websiteUrl?: string;
     newsMode?: boolean;
-    qrCodeMode?: boolean; // Modo QR Code para acompanhamento mobile
+    qrCodeMode?: boolean;
+    qrCodeFilter?: 'all' | 'delivery' | 'all-except-delivery';
     newsSource?: 'g1' | 'uol' | 'cnn' | 'panelinha' | 'cybercook' | 'tudogostoso' | 'foodnetwork';
     newsFontSize?: number; // Tamanho da fonte das notícias
     showBorder?: boolean;
