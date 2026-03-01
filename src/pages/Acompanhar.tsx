@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { Order } from '../types/order';
 import { getSimulatedOrdersFromStorage } from '../services/orderService';
 import { 
@@ -169,6 +169,10 @@ const Acompanhar = () => {
     setPersonalMode(false);
   };
 
+  // --- TIME TICKER ---
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => { const t = setInterval(() => setNow(Date.now()), 1000); return () => clearInterval(t); }, []);
+
   // --- HELPERS ---
   const displayNumber = (order: Order) => {
     const num = String(order.numeroPedido || order.number || '');
@@ -177,6 +181,17 @@ const Acompanhar = () => {
     return num;
   };
   const displayName = (order: Order) => order.nomeCliente || order.nickname || '';
+  const elapsedText = (order: Order) => {
+    const created = order.createdAt;
+    if (!created) return '';
+    const diffMs = now - new Date(created).getTime();
+    if (diffMs < 0) return '';
+    const mins = Math.floor(diffMs / 60000);
+    if (mins < 1) return 'agora';
+    if (mins < 60) return `${mins}min`;
+    const h = Math.floor(mins / 60);
+    return `${h}h${String(mins % 60).padStart(2, '0')}`;
+  };
 
   // My orders data
   const myProductionOrders = productionOrders.filter(o => myOrderIds.includes(o.id));
@@ -300,7 +315,7 @@ const Acompanhar = () => {
                     )}
                     <div className="mt-6 flex items-center justify-center gap-2">
                       <div className="w-2 h-2 bg-amber-400 rounded-full animate-pulse" />
-                      <span className="text-amber-400 text-sm font-medium">Aguardando preparo...</span>
+                      <span className="text-amber-400 text-sm font-medium">Aguardando {elapsedText(order) || '...'}</span>
                     </div>
                   </div>
                 </div>
@@ -354,7 +369,7 @@ const Acompanhar = () => {
               </span>
             </div>
             <div className="flex-1 bg-white rounded-b-xl p-2 min-h-0 overflow-hidden">
-              <MobileCardGrid orders={readyOrders} variant="ready" displayNumber={displayNumber} displayName={displayName} onTap={() => {}} myOrderIds={myOrderIds} />
+              <MobileCardGrid orders={readyOrders} variant="ready" displayNumber={displayNumber} displayName={displayName} onTap={() => {}} myOrderIds={myOrderIds} elapsedText={elapsedText} />
             </div>
           </div>
 
@@ -377,6 +392,7 @@ const Acompanhar = () => {
                 displayName={displayName}
                 onTap={handleTapOrder}
                 myOrderIds={myOrderIds}
+                elapsedText={elapsedText}
               />
             </div>
             {myOrderIds.length === 0 && productionOrders.length > 0 && (
@@ -397,10 +413,10 @@ const Acompanhar = () => {
 };
 
 // --- GRID COMPONENT ---
-const MobileCardGrid = ({ orders, variant, displayNumber, displayName, onTap, myOrderIds }: { 
+const MobileCardGrid = ({ orders, variant, displayNumber, displayName, onTap, myOrderIds, elapsedText }: { 
   orders: Order[]; variant: 'ready' | 'production';
   displayNumber: (o: Order) => string; displayName: (o: Order) => string;
-  onTap: (o: Order) => void; myOrderIds: string[];
+  onTap: (o: Order) => void; myOrderIds: string[]; elapsedText: (o: Order) => string;
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [maxCards, setMaxCards] = useState(20);
@@ -459,6 +475,9 @@ const MobileCardGrid = ({ orders, variant, displayNumber, displayName, onTap, my
                 <span className={`text-xs mt-0.5 truncate max-w-full ${
                   isReady ? 'text-blue-500' : isMine ? 'text-amber-500' : 'text-gray-400'
                 }`}>{name}</span>
+              )}
+              {!isReady && elapsedText(order) && (
+                <span className="text-[10px] text-gray-400 mt-0.5">⏱ {elapsedText(order)}</span>
               )}
             </div>
           );
