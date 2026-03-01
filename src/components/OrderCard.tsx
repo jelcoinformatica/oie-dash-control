@@ -211,15 +211,18 @@ export const OrderCard = ({
         </div>
 
         {/* Apelido embaixo */}
-        <div className="flex-shrink-0 w-full flex items-center justify-center px-1">
+        <div className="flex-shrink-0 w-full flex items-center justify-center px-1 overflow-hidden" style={{ maxHeight: '40%' }}>
           {displayName && showNickname && displayNumber && (
             <div 
-              className="font-medium text-center leading-tight break-words hyphens-auto w-full"
+              className="font-medium text-center leading-tight w-full overflow-hidden"
               style={{ 
-                fontSize: `${fontSize * 0.5}rem`,
+                fontSize: `${Math.min(fontSize * 0.5, 1.2)}rem`,
+                lineHeight: '1.15',
+                display: '-webkit-box',
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: 'vertical' as const,
                 wordBreak: 'break-word',
                 overflowWrap: 'break-word',
-                hyphens: 'auto'
               }}
             >
               {displayName}
