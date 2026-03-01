@@ -123,6 +123,7 @@ export interface PanelConfig {
     intervalSeconds: number;
     ordersPerInterval: number;
     deliveryPlatforms?: string[]; // Plataformas de delivery ativas na simulação
+    modules?: string[]; // Módulos ativos na simulação (balcao, mesa, entrega, ficha)
   };
   modules: {
     balcao: {
