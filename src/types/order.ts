@@ -122,6 +122,7 @@ export interface PanelConfig {
     enabled: boolean;
     intervalSeconds: number;
     ordersPerInterval: number;
+    deliveryPlatforms?: string[]; // Plataformas de delivery ativas na simulação
   };
   modules: {
     balcao: {

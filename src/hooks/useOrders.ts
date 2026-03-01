@@ -316,7 +316,8 @@ export const useOrders = (ttsConfig: TTSConfig, autoExpeditionConfig: AutoExpedi
         console.log(`⚙️ Gerando pedido ${i + 1}/${count}...`);
         
         try {
-          const newOrder = await addSimulatedOrder(modulesToUse, apiBaseUrlRef.current, true);
+          const allowedPlatforms = config?.simulation?.deliveryPlatforms || ['IF', 'RA', 'DD', 'KE', '99'];
+          const newOrder = await addSimulatedOrder(modulesToUse, apiBaseUrlRef.current, true, allowedPlatforms);
           console.log(`🆕 Pedido criado: ${newOrder.numeroPedido} (${newOrder.modulo})`);
           // Sincronizar com Cloud em background
           cloudInsertOrder(newOrder).catch(() => {});
