@@ -1,0 +1,1 @@
+ALTER TABLE public.orders ADD COLUMN marked_count integer NOT NULL DEFAULT 0;

@@ -21,6 +21,7 @@ export type Database = {
           id: string
           items: Json
           local_entrega: string
+          marked_count: number
           modulo: string
           nome_cliente: string
           numero_pedido: string
@@ -37,6 +38,7 @@ export type Database = {
           id: string
           items?: Json
           local_entrega?: string
+          marked_count?: number
           modulo?: string
           nome_cliente?: string
           numero_pedido?: string
@@ -53,6 +55,7 @@ export type Database = {
           id?: string
           items?: Json
           local_entrega?: string
+          marked_count?: number
           modulo?: string
           nome_cliente?: string
           numero_pedido?: string

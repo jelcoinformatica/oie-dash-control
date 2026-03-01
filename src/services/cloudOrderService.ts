@@ -92,6 +92,37 @@ export const cloudFetchReadyOrders = async (panelId?: number): Promise<Order[]> 
   return (data || []).map(fromDbOrder);
 };
 
+// Incrementar marked_count de um pedido
+export const cloudMarkOrder = async (orderId: string): Promise<{ alreadyMarked: boolean; newCount: number }> => {
+  // Ler o valor atual
+  const { data, error: readErr } = await supabase.from('orders').select('marked_count').eq('id', orderId).single();
+  if (readErr || !data) return { alreadyMarked: false, newCount: 0 };
+
+  const currentCount = (data as any).marked_count || 0;
+  const alreadyMarked = currentCount > 0;
+  const newCount = currentCount + 1;
+
+  const { error } = await supabase.from('orders').update({ marked_count: newCount } as any).eq('id', orderId);
+  if (error) console.error('Erro ao marcar pedido:', error);
+
+  return { alreadyMarked, newCount };
+};
+
+// Decrementar marked_count de um pedido
+export const cloudUnmarkOrder = async (orderId: string): Promise<void> => {
+  const { data } = await supabase.from('orders').select('marked_count').eq('id', orderId).single();
+  if (!data) return;
+  const currentCount = (data as any).marked_count || 0;
+  const newCount = Math.max(0, currentCount - 1);
+  await supabase.from('orders').update({ marked_count: newCount } as any).eq('id', orderId);
+};
+
+// Buscar marked_count de um pedido
+export const cloudGetMarkedCount = async (orderId: string): Promise<number> => {
+  const { data } = await supabase.from('orders').select('marked_count').eq('id', orderId).single();
+  return (data as any)?.marked_count || 0;
+};
+
 // Subscrever para atualizações realtime
 export const cloudSubscribeOrders = (
   onInsert: (order: Order) => void,
