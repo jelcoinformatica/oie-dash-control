@@ -30,6 +30,7 @@ const Acompanhar = () => {
   const [alertOrder, setAlertOrder] = useState<Order | null>(null);
   const [activeTab, setActiveTab] = useState(0); // for multiple orders cycling
   const [platformFilter, setPlatformFilter] = useState<string | null>(null);
+  const [mobileTab, setMobileTab] = useState<'ready' | 'production'>('ready');
   const loadingRef = useRef(false);
   const myOrderIdsRef = useRef(myOrderIds);
   const productionIdsRef = useRef<Set<string>>(new Set());
@@ -473,52 +474,75 @@ const Acompanhar = () => {
           )}
         </div>
       ) : (
-        /* === NORMAL MODE === */
+        /* === NORMAL MODE — TABS === */
         <>
-          {/* Ready section */}
-          <div className="flex-1 flex flex-col min-h-0 px-3 pt-3 pb-1">
-            <div className="flex-shrink-0 rounded-t-xl px-4 py-2.5 flex items-center justify-between"
-                 style={{ backgroundColor: config.ready.headerBg || '#0011FA' }}>
-              <span className="text-white font-bold text-base tracking-wider">
-                ✅ {config.ready.title || 'PRONTOS'}
-              </span>
-              <span className="bg-white/20 text-white text-sm font-bold px-2.5 py-0.5 rounded-full">
+          {/* Tab bar */}
+          <div className="flex-shrink-0 bg-gray-800 flex border-b border-gray-700">
+            <button
+              onClick={() => setMobileTab('ready')}
+              className={`flex-1 py-2.5 text-sm font-bold text-center transition-all relative ${
+                mobileTab === 'ready'
+                  ? 'text-white'
+                  : 'text-gray-400 active:scale-95'
+              }`}
+            >
+              ✅ {config.ready.title || 'PRONTOS'}
+              <span className={`ml-1.5 text-xs font-bold px-1.5 py-0.5 rounded-full ${
+                mobileTab === 'ready' ? 'bg-white/20 text-white' : 'bg-gray-700 text-gray-400'
+              }`}>
                 {filteredReady.length}
               </span>
-            </div>
-            <div className="flex-1 bg-white rounded-b-xl p-2 min-h-0 overflow-hidden">
-              <MobileCardGrid orders={filteredReady} variant="ready" displayNumber={displayNumber} displayName={displayName} onTap={() => {}} myOrderIds={myOrderIds} elapsedText={elapsedText} getDeliveryPrefix={getDeliveryPrefix} platformLogos={platformLogos} />
-            </div>
-          </div>
-
-          {/* Production section */}
-          <div className="flex-shrink-0 px-3 pb-3 pt-1" style={{ height: '35%' }}>
-            <div className="flex-shrink-0 rounded-t-xl px-4 py-2 flex items-center justify-between"
-                 style={{ backgroundColor: config.production.headerBg || '#636363' }}>
-              <span className="text-white font-bold text-sm tracking-wider">
-                🔥 {config.production.title || 'EM PRODUÇÃO'}
-              </span>
-              <span className="bg-white/20 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+              {mobileTab === 'ready' && (
+                <div className="absolute bottom-0 left-2 right-2 h-0.5 rounded-full" style={{ backgroundColor: config.ready.headerBg || '#0011FA' }} />
+              )}
+            </button>
+            <button
+              onClick={() => setMobileTab('production')}
+              className={`flex-1 py-2.5 text-sm font-bold text-center transition-all relative ${
+                mobileTab === 'production'
+                  ? 'text-white'
+                  : 'text-gray-400 active:scale-95'
+              }`}
+            >
+              🔥 {config.production.title || 'EM PRODUÇÃO'}
+              <span className={`ml-1.5 text-xs font-bold px-1.5 py-0.5 rounded-full ${
+                mobileTab === 'production' ? 'bg-white/20 text-white' : 'bg-gray-700 text-gray-400'
+              }`}>
                 {filteredProduction.length}
               </span>
-            </div>
-            <div className="flex-1 bg-gray-100 rounded-b-xl p-2 overflow-hidden" style={{ height: 'calc(100% - 36px)' }}>
-              <MobileCardGrid 
-                orders={reversedProduction} 
-                variant="production" 
-                displayNumber={displayNumber} 
-                displayName={displayName}
-                onTap={handleTapOrder}
-                myOrderIds={myOrderIds}
-                elapsedText={elapsedText}
-                getDeliveryPrefix={getDeliveryPrefix}
-                platformLogos={platformLogos}
-              />
-            </div>
-            {myOrderIds.length === 0 && filteredProduction.length > 0 && (
-              <div className="text-center mt-1">
-                <span className="text-gray-500 text-[10px]">💡 Toque no seu pedido para acompanhar individualmente</span>
+              {mobileTab === 'production' && (
+                <div className="absolute bottom-0 left-2 right-2 h-0.5 rounded-full" style={{ backgroundColor: config.production.headerBg || '#636363' }} />
+              )}
+            </button>
+          </div>
+
+          {/* Tab content — full height */}
+          <div className="flex-1 flex flex-col min-h-0 px-3 py-3">
+            {mobileTab === 'ready' ? (
+              <div className="flex-1 bg-white rounded-xl p-2 min-h-0 overflow-hidden">
+                <MobileCardGrid orders={filteredReady} variant="ready" displayNumber={displayNumber} displayName={displayName} onTap={() => {}} myOrderIds={myOrderIds} elapsedText={elapsedText} getDeliveryPrefix={getDeliveryPrefix} platformLogos={platformLogos} />
               </div>
+            ) : (
+              <>
+                <div className="flex-1 bg-gray-100 rounded-xl p-2 min-h-0 overflow-hidden">
+                  <MobileCardGrid 
+                    orders={reversedProduction} 
+                    variant="production" 
+                    displayNumber={displayNumber} 
+                    displayName={displayName}
+                    onTap={handleTapOrder}
+                    myOrderIds={myOrderIds}
+                    elapsedText={elapsedText}
+                    getDeliveryPrefix={getDeliveryPrefix}
+                    platformLogos={platformLogos}
+                  />
+                </div>
+                {myOrderIds.length === 0 && filteredProduction.length > 0 && (
+                  <div className="text-center mt-1">
+                    <span className="text-gray-500 text-[10px]">💡 Toque no seu pedido para acompanhar individualmente</span>
+                  </div>
+                )}
+              </>
             )}
           </div>
         </>
