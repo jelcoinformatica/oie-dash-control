@@ -125,7 +125,7 @@ export const LastOrderDisplay = ({
         {platformLogo && (
           <div className="absolute top-0 left-0 z-10">
             <div className="rounded-full overflow-hidden border border-gray-200 shadow-sm"
-              style={{ width: `${Math.max(scaledFont * 0.66, 1.3)}rem`, height: `${Math.max(scaledFont * 0.66, 1.3)}rem` }}>
+              style={{ width: `${Math.max(scaledFont * 1.2, 2.5)}rem`, height: `${Math.max(scaledFont * 1.2, 2.5)}rem` }}>
               <img src={platformLogo} alt="" className="w-full h-full object-cover" />
             </div>
           </div>
