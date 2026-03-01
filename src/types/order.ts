@@ -55,6 +55,7 @@ export interface ColumnConfig {
   showBorder?: boolean;
   showShadow?: boolean;
   showCardBorder?: boolean;
+  columnBackground?: string;
   cardConfig: OrderCardConfig;
 }
 

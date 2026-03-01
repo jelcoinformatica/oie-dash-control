@@ -551,7 +551,17 @@ export const ConfigurationPanel = ({
                   step={1}
                   className="mt-1"
                 />
-              </div>
+               </div>
+
+               <div>
+                 <Label className="text-xs">Cor Fundo da Coluna</Label>
+                 <Input
+                   type="color"
+                   value={config.production.columnBackground || '#f3f4f6'}
+                   onChange={(e) => updateConfig('production.columnBackground', e.target.value)}
+                   className="h-8 mt-1 border-2"
+                 />
+               </div>
             </div>
           </SubConfigSection>
 
@@ -785,7 +795,17 @@ export const ConfigurationPanel = ({
                   step={1}
                   className="mt-1"
                 />
-              </div>
+               </div>
+
+               <div>
+                 <Label className="text-xs">Cor Fundo da Coluna</Label>
+                 <Input
+                   type="color"
+                   value={config.ready.columnBackground || '#FAFAFA'}
+                   onChange={(e) => updateConfig('ready.columnBackground', e.target.value)}
+                   className="h-8 mt-1 border-2"
+                 />
+               </div>
             </div>
           </SubConfigSection>
 
