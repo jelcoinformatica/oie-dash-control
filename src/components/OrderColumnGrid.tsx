@@ -42,6 +42,7 @@ interface OrderColumnGridProps {
     gapVertical?: number;
     cardMinHeight?: number;
     cardMaxHeight?: number;
+    cardBorderColor?: string;
   };
   lastOrderNumber?: string;
   lastOrderConfig?: {
@@ -184,6 +185,7 @@ export const OrderColumnGrid = ({
               textColor={isLastOrder ? lastOrderConfig?.textColor : cardConfig?.textColor}
               backgroundColor={isLastOrder ? lastOrderConfig?.backgroundColor : cardConfig?.backgroundColor}
               showCardBorder={showCardBorder}
+              cardBorderColor={cardConfig?.cardBorderColor}
             />
           );
         })}
