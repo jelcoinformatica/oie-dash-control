@@ -25,7 +25,7 @@ const generateRandomOrder = (id: string, status: 'production' | 'ready'): Order 
   // Para pedidos de entrega, 80% devem ter prefixo de plataforma
   let orderNumber: string;
   if (selectedModule === 'entrega' && Math.random() < 0.8) {
-    const platforms = ['IF', 'IF', 'IF', 'RA', 'DD', 'UB', '99', 'KE']; // iFood mais frequente
+    const platforms = ['IF', 'IF', 'IF', 'RA', 'DD', '99', 'KE']; // iFood mais frequente
     const platform = platforms[Math.floor(Math.random() * platforms.length)];
     orderNumber = `${platform}-${Math.floor(Math.random() * 90000) + 10000}`;
   } else {
@@ -43,7 +43,7 @@ const generateRandomOrder = (id: string, status: 'production' | 'ready'): Order 
     status,
     ultimoConsumo: new Date(Date.now() - Math.random() * 3600000),
     dataContabil: new Date(),
-    localEntrega: selectedModule === 'entrega' && /^(IF|DD|RA|UB|KE|99)-/.test(orderNumber)
+    localEntrega: selectedModule === 'entrega' && /^(IF|DD|RA|KE|99)-/.test(orderNumber)
       ? 'Delivery Online' 
       : `Local ${Math.floor(Math.random() * 20) + 1}`,
     nomeCliente: selectedNickname,
@@ -52,7 +52,7 @@ const generateRandomOrder = (id: string, status: 'production' | 'ready'): Order 
     nickname: selectedNickname,
     createdAt: new Date(Date.now() - Math.random() * 3600000),
     updatedAt: new Date(),
-    items: selectedModule === 'entrega' && /^(IF|DD|RA|UB|KE|99)-/.test(orderNumber)
+    items: selectedModule === 'entrega' && /^(IF|DD|RA|KE|99)-/.test(orderNumber)
       ? ['Combo Delivery', 'Taxa de Entrega']
       : Array.from({ length: Math.floor(Math.random() * 3) + 1 }, () => 
           items[Math.floor(Math.random() * items.length)]

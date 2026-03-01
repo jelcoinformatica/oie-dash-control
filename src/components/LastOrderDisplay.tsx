@@ -38,14 +38,13 @@ export const LastOrderDisplay = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
 
-  const isDelivery = !!displayNumber.match(/^(IF|DD|RA|UB|KE|99)-/);
+  const isDelivery = !!displayNumber.match(/^(IF|DD|RA|KE|99)-/);
   const mainNumber = isDelivery ? displayNumber.split('-')[1] : displayNumber;
   const platformPrefix = isDelivery ? displayNumber.split('-')[0] : null;
 
   const platformLogos: Record<string, string> = {
     'IF': '/images/platforms/ifood.png',
     'RA': '/images/platforms/rappi.png',
-    'UB': '/images/platforms/rappi.png',
     'DD': '/images/platforms/deliverydireto.png',
     'KE': '/images/platforms/keeta.png',
     '99': '/images/platforms/99food.png',
@@ -55,7 +54,6 @@ export const LastOrderDisplay = ({
     switch (prefix) {
       case 'IF': return 'iFood';
       case 'RA': return 'Rappi';
-      case 'UB': return 'Uber';
       case 'DD': return 'Delivery Direto';
       case 'KE': return 'Keeta';
       case '99': return '99 Food';
