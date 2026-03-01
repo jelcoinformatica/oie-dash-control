@@ -51,8 +51,8 @@ export const defaultConfig: PanelConfig = {
     showShadow: false,
     showCardBorder: false,
       cardConfig: {
-        columns: 4,
-        rows: 2,
+        columns: 2,
+        rows: 4,
         height: 60,
         backgroundColor: '#FAFAFA',
         textColor: '#000000',
@@ -123,7 +123,8 @@ export const defaultConfig: PanelConfig = {
     enabled: false,
     intervalSeconds: 30,
     ordersPerInterval: 1,
-    modules: ['balcao', 'mesa', 'entrega', 'ficha']
+    modules: ['entrega'],
+    deliveryPlatforms: ['IF', 'RA', 'DD', 'KE', '99']
   },
   modules: {
     balcao: {

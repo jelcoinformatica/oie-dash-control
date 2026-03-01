@@ -271,7 +271,7 @@ export const OrderCard = ({
       {platformLogo && (
         <div className="absolute top-0.5 left-0.5 z-10">
           <div className="rounded-full overflow-hidden border border-gray-200 shadow-sm"
-            style={{ width: `${Math.max(fontSize * 0.6, 1)}rem`, height: `${Math.max(fontSize * 0.6, 1)}rem` }}>
+            style={{ width: `${Math.max(fontSize * 1, 1.8)}rem`, height: `${Math.max(fontSize * 1, 1.8)}rem` }}>
             <img src={platformLogo} alt="" className="w-full h-full object-cover" />
           </div>
         </div>

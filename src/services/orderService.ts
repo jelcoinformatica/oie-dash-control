@@ -211,14 +211,27 @@ export const addSimulatedOrder = async (allowedModules: string[] | undefined, ap
       ? allowedPlatforms 
       : defaultPlatforms;
     
-    // Para pedidos de entrega, 70% devem ter prefixo de delivery online
+    // Para pedidos de entrega, gerar com plataforma de delivery
     let orderNumber: string;
-    if (selectedModule === 'entrega' && platforms.length > 0 && Math.random() < 0.7) {
-      const randomPlatform = platforms[Math.floor(Math.random() * platforms.length)];
-      orderNumber = `${randomPlatform}-${Math.floor(Math.random() * 90000) + 10000}`;
-    } else if (selectedModule === 'entrega' && platforms.includes('interno')) {
+    // Separar plataformas web de 'interno'
+    const webPlatforms = platforms.filter(p => p !== 'interno');
+    const allowInternal = platforms.includes('interno');
+    
+    if (selectedModule === 'entrega' && webPlatforms.length > 0) {
+      // Se tem plataformas web, decidir entre web e interno
+      if (allowInternal && Math.random() < 0.3) {
+        // 30% chance de pedido interno (se permitido)
+        orderNumber = (Math.floor(Math.random() * 900) + 100).toString();
+      } else {
+        // Pedido de plataforma web
+        const randomPlatform = webPlatforms[Math.floor(Math.random() * webPlatforms.length)];
+        orderNumber = `${randomPlatform}-${Math.floor(Math.random() * 90000) + 10000}`;
+      }
+    } else if (selectedModule === 'entrega' && allowInternal) {
+      // Só interno selecionado
       orderNumber = (Math.floor(Math.random() * 900) + 100).toString();
     } else {
+      // Outros módulos ou nenhuma plataforma
       orderNumber = (Math.floor(Math.random() * 900) + 100).toString();
     }
  
