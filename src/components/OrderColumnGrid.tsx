@@ -104,6 +104,9 @@ export const OrderColumnGrid = ({
       };
     }
 
+    const padding = 8; // p-1 = 4px each side
+    const containerW = containerDimensions.width - padding;
+    const containerH = containerDimensions.height - padding;
     const baseFontSize = 16;
     const requestedFontSize = cardConfig?.fontSize || 1.2;
     
@@ -119,7 +122,7 @@ export const OrderColumnGrid = ({
     
     // Ajustar fonte para caber na largura do card
     const totalGapsH = gapH * (columns - 1);
-    const availableWidth = containerDimensions.width - totalGapsH;
+    const availableWidth = containerW - totalGapsH;
     const cardWidth = Math.floor(availableWidth / columns);
     
     let adjustedFontSize = requestedFontSize;
@@ -129,7 +132,7 @@ export const OrderColumnGrid = ({
     }
     
     // Calcular quantas linhas cabem com os gaps configurados pelo usuário
-    const maxRows = Math.floor((containerDimensions.height + gapV) / (cardHeight + gapV));
+    const maxRows = Math.floor((containerH + gapV) / (cardHeight + gapV));
     
     // Limitar cards para não haver cortes
     const maxVisibleCards = Math.max(0, maxRows * columns);
@@ -149,7 +152,7 @@ export const OrderColumnGrid = ({
   return (
     <div 
       ref={containerRef}
-      className="w-full h-full overflow-hidden"
+      className="w-full h-full overflow-hidden p-1"
     >
       <div 
         className="grid"
