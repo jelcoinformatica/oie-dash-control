@@ -7,9 +7,10 @@ import { Slider } from './ui/slider';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from './ui/alert-dialog';
 import { PanelConfig } from '../types/order';
-import { Settings, Palette, Factory, CheckCircle, Monitor, Volume2, Clock, Puzzle, Cog, X, ChevronRight, ChevronDown, Plus, Minus, ChevronLeft, ArrowLeft, ArrowRight, Mic, Database, Download, Upload, Store, Eye, RotateCcw, Lightbulb, Zap, History, Megaphone, Wrench } from 'lucide-react';
+import { Settings, Palette, Factory, CheckCircle, Monitor, Volume2, Clock, Puzzle, Cog, X, ChevronRight, ChevronDown, Plus, Minus, ChevronLeft, ArrowLeft, ArrowRight, Mic, Database, Download, Upload, Store, Eye, RotateCcw, Lightbulb, Zap, History, Megaphone, Wrench, LayoutTemplate } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { defaultConfig } from '../data/defaultConfig';
+import { configTemplates } from '../data/configTemplates';
 import { RadioGroup, RadioGroupItem } from './ui/radio-group';
 import { Checkbox } from './ui/checkbox';
 import { toast } from '../hooks/use-toast';
@@ -109,6 +110,7 @@ export const ConfigurationPanel = ({
   generateOrders
 }: ConfigurationPanelProps) => {
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
+    templates: false,
     overlayControls: false,
     background: false,
     panel: false,
@@ -147,6 +149,7 @@ export const ConfigurationPanel = ({
   useEffect(() => {
     if (open) {
       setOpenSections({
+        templates: false,
         overlayControls: false,
         background: false,
         panel: false,
@@ -172,6 +175,7 @@ export const ConfigurationPanel = ({
     const allOpen = Object.values(openSections).every(Boolean);
     const newState = !allOpen;
     setOpenSections({
+      templates: newState,
       overlayControls: newState,
       background: newState,
       panel: newState,
@@ -353,6 +357,50 @@ export const ConfigurationPanel = ({
         <div className="flex-1 overflow-y-auto">
         
         
+        {/* Templates Prontos */}
+        <ConfigSection
+          title="Templates Prontos"
+          icon={<LayoutTemplate className="w-4 h-4" />}
+          isOpen={openSections.templates}
+          onToggle={() => toggleSection('templates')}
+          colorClass="text-amber-600"
+        >
+          <div className="space-y-2">
+            <p className="text-xs text-gray-500">Aplique um visual completo com um clique</p>
+            <div className="grid grid-cols-1 gap-2">
+              {configTemplates.map((template) => (
+                <button
+                  key={template.id}
+                  onClick={() => {
+                    const newConfig = template.apply(config);
+                    onConfigChange(newConfig);
+                    toast({
+                      title: `Template "${template.name}" aplicado`,
+                      description: template.description,
+                    });
+                  }}
+                  className="flex items-center gap-3 p-2 rounded-lg border border-gray-200 hover:border-amber-400 hover:bg-amber-50 transition-all text-left group"
+                >
+                  {/* Mini preview */}
+                  <div className="flex-shrink-0 w-14 h-9 rounded overflow-hidden border border-gray-300 flex shadow-sm">
+                    <div style={{ backgroundColor: template.preview.col1Color, width: '30%' }} />
+                    <div style={{ backgroundColor: template.preview.col2Color, width: '40%' }} className="flex items-center justify-center">
+                      <span style={{ color: template.preview.col2TextColor, fontSize: '6px', fontWeight: 'bold' }}>123</span>
+                    </div>
+                    <div style={{ backgroundColor: template.preview.col3Color, width: '30%' }} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-xs font-semibold text-gray-800 group-hover:text-amber-700">
+                      {template.icon} {template.name}
+                    </div>
+                    <div className="text-[10px] text-gray-500 truncate">{template.description}</div>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        </ConfigSection>
+
         {/* Controles Diretos */}
         <ConfigSection
           title="Controles Diretos"
