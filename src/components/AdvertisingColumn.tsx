@@ -16,6 +16,7 @@ interface AdvertisingColumnProps {
   showShadow?: boolean;
   newsMode?: boolean;
   qrCodeMode?: boolean;
+  qrCodeFilter?: 'all' | 'delivery' | 'all-except-delivery';
   newsSource?: 'g1' | 'uol' | 'cnn' | 'panelinha' | 'cybercook' | 'tudogostoso' | 'foodnetwork';
   newsFontSize?: number;
   onToggleHeader?: () => void;
@@ -35,6 +36,7 @@ export const AdvertisingColumn = ({
   showShadow = false,
   newsMode = false,
   qrCodeMode = false,
+  qrCodeFilter = 'all',
   newsSource = 'g1',
   newsFontSize = 2.5,
   onToggleHeader
@@ -74,19 +76,29 @@ export const AdvertisingColumn = ({
           {qrCodeMode ? (
             <div className="flex flex-col items-center justify-center gap-4 p-4">
               <div className="text-center">
-                <div className="text-lg font-bold text-gray-700 mb-1">📱 Acompanhe seu Pedido</div>
+                <div className="text-lg font-bold text-gray-700 mb-1">
+                  {qrCodeFilter === 'delivery' ? '🏍️ Entregas' : '📱 Acompanhe seu Pedido'}
+                </div>
                 <div className="text-sm text-gray-500">Escaneie o QR Code abaixo</div>
               </div>
               <div className="bg-white p-4 rounded-xl shadow-lg">
                 <QRCodeSVG 
-                  value="https://oieweb.lovable.app/acompanhar?modulo=entrega"
+                  value={
+                    qrCodeFilter === 'delivery' 
+                      ? "https://oieweb.lovable.app/acompanhar?modulo=entrega"
+                      : qrCodeFilter === 'all-except-delivery'
+                        ? "https://oieweb.lovable.app/acompanhar?excluir=entrega"
+                        : "https://oieweb.lovable.app/acompanhar"
+                  }
                   size={200}
                   level="M"
                   includeMargin={true}
                 />
               </div>
               <div className="text-xs text-gray-400 text-center">
-                Veja em tempo real o status do seu pedido
+                {qrCodeFilter === 'delivery' 
+                  ? 'Motoboy: veja os pedidos de entrega em tempo real'
+                  : 'Veja em tempo real o status do seu pedido'}
               </div>
             </div>
           ) : newsMode ? (

@@ -18,6 +18,7 @@ const saveStoredMarked = (ids: string[]) => localStorage.setItem(MARKED_KEY, JSO
 const Acompanhar = () => {
   const [searchParams] = useSearchParams();
   const moduloFilter = searchParams.get('modulo') as Order['modulo'] | null;
+  const moduloExclude = searchParams.get('excluir') as Order['modulo'] | null;
   
   const [productionOrders, setProductionOrders] = useState<Order[]>([]);
   const [readyOrders, setReadyOrders] = useState<Order[]>([]);
@@ -172,12 +173,12 @@ const Acompanhar = () => {
 
   // Block navigation
   useEffect(() => {
-    const fullPath = `/acompanhar${moduloFilter ? `?modulo=${moduloFilter}` : window.location.search}`;
+    const fullPath = `/acompanhar${window.location.search}`;
     const h = () => { if (window.location.pathname !== '/acompanhar') window.history.pushState(null, '', fullPath); };
     window.addEventListener('popstate', h);
     window.history.pushState(null, '', fullPath);
     return () => window.removeEventListener('popstate', h);
-  }, [moduloFilter]);
+  }, [moduloFilter, moduloExclude]);
 
   // --- MARKING FLOW ---
   const handleTapOrder = (order: Order) => {
@@ -246,18 +247,20 @@ const Acompanhar = () => {
     );
   }
 
-  // Apply module filter from query param (e.g. ?modulo=entrega)
-  const filteredProduction = moduloFilter 
-    ? productionOrders.filter(o => o.modulo === moduloFilter)
-    : productionOrders;
-  const filteredReady = moduloFilter
-    ? readyOrders.filter(o => o.modulo === moduloFilter)
-    : readyOrders;
+  // Apply module filter from query param (e.g. ?modulo=entrega or ?excluir=entrega)
+  const applyFilter = (orders: Order[]) => {
+    if (moduloFilter) return orders.filter(o => o.modulo === moduloFilter);
+    if (moduloExclude) return orders.filter(o => o.modulo !== moduloExclude);
+    return orders;
+  };
+  const filteredProduction = applyFilter(productionOrders);
+  const filteredReady = applyFilter(readyOrders);
 
   // Reversed production orders (últimos primeiro)
   const reversedProduction = [...filteredProduction].reverse();
 
   const isDeliveryMode = moduloFilter === 'entrega';
+  const isExcludeDeliveryMode = moduloExclude === 'entrega';
 
   return (
     <div className="h-screen w-screen flex flex-col bg-gray-900 overflow-hidden select-none" style={{ touchAction: 'none' }}>
@@ -337,7 +340,7 @@ const Acompanhar = () => {
       {/* === HEADER === */}
       <div className="flex-shrink-0 bg-gray-800 px-4 py-3 text-center border-b border-gray-700">
         <h1 className="text-white text-lg font-bold tracking-wide">
-          {personalMode ? '⭐ Meu Pedido' : isDeliveryMode ? '🏍️ Entregas' : '📋 Acompanhe seu Pedido'}
+          {personalMode ? '⭐ Meu Pedido' : isDeliveryMode ? '🏍️ Entregas' : isExcludeDeliveryMode ? '📋 Pedidos (sem delivery)' : '📋 Acompanhe seu Pedido'}
         </h1>
         {personalMode && (
           <button 
