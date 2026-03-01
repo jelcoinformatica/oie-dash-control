@@ -53,6 +53,10 @@ export const configTemplates: ConfigTemplate[] = [
     apply: (current) => ({
       ...current,
       backgroundColor: '#0a0a0a',
+      advertising: {
+        ...current.advertising,
+        visible: false,
+      },
       production: {
         ...current.production,
         headerBg: '#1a1a1a',
