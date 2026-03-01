@@ -299,6 +299,14 @@ const Index = () => {
         className="min-h-screen h-screen flex flex-col"
         style={{ backgroundColor: config.backgroundColor, position: 'relative' }}
       >
+        {/* Banner de Simulação */}
+        {isSimulationActive && (
+          <div className="w-full bg-amber-500 text-white text-center py-1.5 px-4 flex items-center justify-center gap-2 flex-shrink-0 z-50 shadow-md" style={{ fontSize: '0.85rem' }}>
+            <span className="animate-pulse">🎮</span>
+            <span className="font-bold tracking-wide">MODO SIMULAÇÃO</span>
+            <span className="opacity-80">— Chamadas à API desativadas. Dados locais apenas.</span>
+          </div>
+        )}
         {/* Header de Identificação do Painel */}
         {config.panel.displayLocation === 'above-headers' && (
           <div 

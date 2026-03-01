@@ -263,35 +263,30 @@ export const useOrders = (ttsConfig: TTSConfig, autoExpeditionConfig: AutoExpedi
     setLastOrderData(null);
     setExpeditionLog([]);
     
+    // Desativar modo simulação
+    localStorage.removeItem('simulation-force-mock');
+    setIsSimulationActive(false);
+    console.log('🔴 Modo SIMULAÇÃO desativado — API restaurada.');
+    
     try {
-      // Importar e usar a função de clear do service
       const { clearAllOrdersService } = await import('../services/orderService');
-      const forceMockSimulation = localStorage.getItem('simulation-force-mock') === 'true';
-      await clearAllOrdersService(apiBaseUrlRef.current, useMockDataRef.current || forceMockSimulation);
+      await clearAllOrdersService(apiBaseUrlRef.current, true); // Limpa dados locais
     } catch (error) {
-      console.error('Erro ao zerar pedidos, aplicando fallback local:', error);
-      const { clearAllOrdersService } = await import('../services/orderService');
-      await clearAllOrdersService(apiBaseUrlRef.current, true);
-      localStorage.setItem('simulation-force-mock', 'true');
+      console.error('Erro ao zerar pedidos:', error);
     }
     
-    // Marcar no localStorage que os pedidos foram zerados
     localStorage.setItem('orders-cleared', 'true');
-    
-    // toast({
-    //   title: "Pedidos Zerados",
-    //   description: "Todos os pedidos foram removidos",
-    //   variant: "default"
-    // });
   }, []);
   
   const generateOrders = useCallback(async (count: number, config?: any) => {
     try {
       console.log(`🎯 Iniciando geração de ${count} pedidos...`);
       
-      // Limpar a flag de pedidos zerados quando gerar novos pedidos
+      // Ativar modo simulação automaticamente
       localStorage.removeItem('orders-cleared');
       localStorage.setItem('simulation-force-mock', 'true');
+      setIsSimulationActive(true);
+      console.log('🟢 Modo SIMULAÇÃO ativado — chamadas à API ignoradas.');
       // Verificar módulos ativos
       const activeModules = [];
       if (config?.modules?.balcao?.enabled) activeModules.push('balcao');
@@ -348,22 +343,30 @@ export const useOrders = (ttsConfig: TTSConfig, autoExpeditionConfig: AutoExpedi
   }, [loadOrders]);
 
   // Efeito para carregar os pedidos inicial e periodicamente.
+  // IMPORTANTE: Em modo simulação, o polling é completamente desativado.
   useEffect(() => {
+    const forceMock = localStorage.getItem('simulation-force-mock') === 'true';
+    
+    if (forceMock || isSimulationActive) {
+      // Modo simulação: NÃO fazer polling à API
+      console.log('🎮 Modo SIMULAÇÃO ativo — polling desativado, sem chamadas à API.');
+      return;
+    }
+
     // 1. Carrega os pedidos imediatamente ao montar o componente.
     loadOrdersRef.current();
 
     // 2. Configura um intervalo para atualizações periódicas a cada 10 segundos.
     const intervalId = setInterval(() => {
       console.log('Polling for new orders...');
-      // Chama a versão mais recente da função loadOrders através da ref.
       loadOrdersRef.current();
-    }, 10000); // 10 segundos
+    }, 10000);
 
     // 3. Limpa o intervalo quando o componente é desmontado.
     return () => {
       clearInterval(intervalId);
     }
-  }, []); // Executa apenas uma vez, na montagem do componente.
+  }, [isSimulationActive]);
 
   return {
     orders,
