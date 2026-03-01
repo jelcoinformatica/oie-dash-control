@@ -478,42 +478,38 @@ const Acompanhar = () => {
         /* === NORMAL MODE — TABS === */
         <>
           {/* Tab bar */}
-          <div className="flex-shrink-0 bg-gray-800 flex border-b border-gray-700">
+          <div className="flex-shrink-0 flex">
             <button
               onClick={() => setMobileTab('production')}
-              className={`flex-1 py-2.5 text-sm font-bold text-center transition-all relative ${
+              className={`flex-1 py-3 text-sm font-bold text-center transition-all ${
                 mobileTab === 'production'
                   ? 'text-white'
-                  : 'text-gray-400 active:scale-95'
+                  : 'text-gray-400 bg-gray-900 active:scale-95'
               }`}
+              style={mobileTab === 'production' ? { backgroundColor: config.production.headerBg || '#636363' } : undefined}
             >
               🔥 {config.production.title || 'EM PRODUÇÃO'}
               <span className={`ml-1.5 text-xs font-bold px-1.5 py-0.5 rounded-full ${
-                mobileTab === 'production' ? 'bg-white/20 text-white' : 'bg-gray-700 text-gray-400'
+                mobileTab === 'production' ? 'bg-white/30 text-white' : 'bg-gray-700 text-gray-500'
               }`}>
                 {filteredProduction.length}
               </span>
-              {mobileTab === 'production' && (
-                <div className="absolute bottom-0 left-2 right-2 h-0.5 rounded-full" style={{ backgroundColor: config.production.headerBg || '#636363' }} />
-              )}
             </button>
             <button
               onClick={() => setMobileTab('ready')}
-              className={`flex-1 py-2.5 text-sm font-bold text-center transition-all relative ${
+              className={`flex-1 py-3 text-sm font-bold text-center transition-all ${
                 mobileTab === 'ready'
                   ? 'text-white'
-                  : 'text-gray-400 active:scale-95'
+                  : 'text-gray-400 bg-gray-900 active:scale-95'
               }`}
+              style={mobileTab === 'ready' ? { backgroundColor: config.ready.headerBg || '#0011FA' } : undefined}
             >
               ✅ {config.ready.title || 'PRONTOS'}
               <span className={`ml-1.5 text-xs font-bold px-1.5 py-0.5 rounded-full ${
-                mobileTab === 'ready' ? 'bg-white/20 text-white' : 'bg-gray-700 text-gray-400'
+                mobileTab === 'ready' ? 'bg-white/30 text-white' : 'bg-gray-700 text-gray-500'
               }`}>
                 {filteredReady.length}
               </span>
-              {mobileTab === 'ready' && (
-                <div className="absolute bottom-0 left-2 right-2 h-0.5 rounded-full" style={{ backgroundColor: config.ready.headerBg || '#0011FA' }} />
-              )}
             </button>
           </div>
 
