@@ -465,7 +465,7 @@ const Index = () => {
                       <span>{config.ready.title}</span>
                       
                       <div className="absolute right-4 bg-white/20 px-2 py-1 rounded-full font-bold" style={{ fontSize: '16px' }}>
-                        {readyOrders.length + (lastOrderNumber && config.lastOrder.highlight ? 1 : 0)}
+                        {readyOrders.length}
                       </div>
                     </div>
                     
@@ -672,7 +672,7 @@ const Index = () => {
                     <span>{config.ready.title}</span>
                     
                     <div className="absolute right-4 bg-white/20 px-2 py-1 rounded-full font-bold" style={{ fontSize: '16px' }}>
-                      {readyOrders.length + (lastOrderNumber && config.lastOrder.highlight ? 1 : 0)}
+                      {readyOrders.length}
                     </div>
                   </div>
                   

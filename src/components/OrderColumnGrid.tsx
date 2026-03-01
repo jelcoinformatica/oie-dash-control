@@ -133,14 +133,18 @@ export const OrderColumnGrid = ({
     
     // Limitar cards para não haver cortes
     const maxVisibleCards = Math.max(0, maxRows * columns);
-    const visibleOrders = orders.slice(0, maxVisibleCards);
+    // Se o painel "Último Pedido" está ativo, remover esse pedido da grade
+    const filteredOrders = (lastOrderNumber && lastOrderConfig?.highlight)
+      ? orders.filter(o => (o.numeroPedido || o.number) !== lastOrderNumber)
+      : orders;
+    const visibleOrders = filteredOrders.slice(0, maxVisibleCards);
     
     return {
       visibleOrders,
       cardHeight,
       adjustedFontSize
     };
-  }, [orders, columns, cardConfig?.fontSize, cardConfig?.gapHorizontal, cardConfig?.gapVertical, cardConfig?.cardMinHeight, cardConfig?.cardMaxHeight, containerDimensions]);
+  }, [orders, columns, cardConfig?.fontSize, cardConfig?.gapHorizontal, cardConfig?.gapVertical, cardConfig?.cardMinHeight, cardConfig?.cardMaxHeight, containerDimensions, lastOrderNumber, lastOrderConfig?.highlight]);
 
   return (
     <div 
