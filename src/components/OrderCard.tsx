@@ -257,7 +257,7 @@ export const OrderCard = ({
           ? cn("border-2", moduleBorderColors[order.modulo])
           : showCardBorder 
           ? "border-2"
-          : "border border-gray-300",
+          : "",
         className
       )}
       onClick={onClick}

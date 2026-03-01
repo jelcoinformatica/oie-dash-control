@@ -356,7 +356,8 @@ const Index = () => {
                     <div className="h-full relative">
                       <div className="flex flex-col h-full">
                         <div 
-                          className={`bg-white rounded-lg flex flex-col overflow-hidden h-full ${config.production.showShadow ? 'shadow-lg' : ''} ${config.production.showBorder ? 'ring-2 ring-blue-200' : ''}`}
+                          className={`rounded-lg flex flex-col overflow-hidden h-full ${config.production.showShadow ? 'shadow-lg' : ''} ${config.production.showBorder ? 'ring-2 ring-blue-200' : ''}`}
+                          style={{ backgroundColor: config.production.columnBackground || '#ffffff' }}
                         >
                         <div 
                           className="flex items-center justify-center px-4 font-bold shadow-sm border-b rounded-t-lg relative"
@@ -415,7 +416,8 @@ const Index = () => {
               <div className="h-full relative">
                 <div className="flex flex-col h-full">
                   <div 
-                    className={`bg-white rounded-lg flex flex-col overflow-hidden h-full ${config.ready.showShadow ? 'shadow-lg' : ''} ${config.ready.showBorder ? 'ring-2 ring-blue-200' : ''}`}
+                    className={`rounded-lg flex flex-col overflow-hidden h-full ${config.ready.showShadow ? 'shadow-lg' : ''} ${config.ready.showBorder ? 'ring-2 ring-blue-200' : ''}`}
+                    style={{ backgroundColor: config.ready.columnBackground || '#ffffff' }}
                   >
                     <div 
                       className="flex items-center justify-center px-4 font-bold shadow-sm border-b rounded-t-lg relative"
@@ -575,7 +577,8 @@ const Index = () => {
               <div style={{ width: `${(config.production.width / (config.production.width + config.ready.width + (config.advertising.visible ? config.advertising.width : 0))) * 100}%` }} className="h-full relative">
                 <div className="flex flex-col h-full">
                   <div 
-                    className={`bg-white rounded-lg flex flex-col overflow-hidden h-full ${config.production.showShadow ? 'shadow-lg' : ''} ${config.production.showBorder ? 'ring-2 ring-blue-200' : ''}`}
+                    className={`rounded-lg flex flex-col overflow-hidden h-full ${config.production.showShadow ? 'shadow-lg' : ''} ${config.production.showBorder ? 'ring-2 ring-blue-200' : ''}`}
+                    style={{ backgroundColor: config.production.columnBackground || '#ffffff' }}
                   >
                     <div 
                       className="flex items-center justify-center px-4 font-bold shadow-sm border-b rounded-t-lg relative"
@@ -625,7 +628,8 @@ const Index = () => {
             <div style={{ width: `${(config.ready.width / (config.production.width + config.ready.width + (config.advertising.visible ? config.advertising.width : 0))) * 100}%` }} className="h-full relative">
               <div className="flex flex-col h-full">
                 <div 
-                  className={`bg-white rounded-lg flex flex-col overflow-hidden h-full ${config.ready.showShadow ? 'shadow-lg' : ''} ${config.ready.showBorder ? 'ring-2 ring-blue-200' : ''}`}
+                  className={`rounded-lg flex flex-col overflow-hidden h-full ${config.ready.showShadow ? 'shadow-lg' : ''} ${config.ready.showBorder ? 'ring-2 ring-blue-200' : ''}`}
+                  style={{ backgroundColor: config.ready.columnBackground || '#ffffff' }}
                 >
                   <div 
                     className="flex items-center justify-center px-4 font-bold shadow-sm border-b rounded-t-lg relative"
