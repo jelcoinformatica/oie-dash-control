@@ -9,6 +9,7 @@ import { ControlPanel } from '../components/ControlPanel';
 import { ConfigurationPanel } from '../components/ConfigurationPanel';
 import { OverlayControls } from '../components/OverlayControls';
 import { SplashScreen } from '../components/SplashScreen';
+import { MobilePreview } from '../components/MobilePreview';
 import { defaultConfig } from '../data/defaultConfig';
 import { PanelConfig } from '../types/order';
 import { toast } from '../hooks/use-toast';
@@ -811,6 +812,9 @@ const Index = () => {
           onClick={handleCancelConfig}
         />
       )}
+
+      {/* Mobile Preview floating button - only in simulation */}
+      <MobilePreview visible={isSimulationActive} />
     </div>
     </>
   );

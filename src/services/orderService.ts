@@ -5,6 +5,31 @@ import { apiConfig } from '../config/api.config';
 // Simulação de estado em memória para os dados JSON
 let orders: Order[] = [];
 
+// Funções auxiliares para sincronizar com localStorage (para preview mobile)
+const syncOrdersToStorage = () => {
+  try {
+    const production = orders.filter(o => o.status === 'production');
+    const ready = orders.filter(o => o.status === 'ready');
+    localStorage.setItem('sim-production-orders', JSON.stringify(production));
+    localStorage.setItem('sim-ready-orders', JSON.stringify(ready));
+  } catch (e) {
+    console.warn('Erro ao sincronizar pedidos com localStorage:', e);
+  }
+};
+
+export const getSimulatedOrdersFromStorage = (): { production: Order[], ready: Order[] } => {
+  try {
+    const prod = JSON.parse(localStorage.getItem('sim-production-orders') || '[]');
+    const ready = JSON.parse(localStorage.getItem('sim-ready-orders') || '[]');
+    return {
+      production: prod.map((o: any) => ({ ...o, ultimoConsumo: new Date(o.ultimoConsumo), dataContabil: new Date(o.dataContabil), createdAt: new Date(o.createdAt), updatedAt: new Date(o.updatedAt) })),
+      ready: ready.map((o: any) => ({ ...o, ultimoConsumo: new Date(o.ultimoConsumo), dataContabil: new Date(o.dataContabil), createdAt: new Date(o.createdAt), updatedAt: new Date(o.updatedAt) }))
+    };
+  } catch {
+    return { production: [], ready: [] };
+  }
+};
+
 // Função para inicializar com dados do JSON (chamada apenas quando necessário)
 export const initializeWithDefaultOrders = (): void => {
   orders = ordersData.orders.map(order => ({
@@ -13,7 +38,6 @@ export const initializeWithDefaultOrders = (): void => {
     status: order.status as 'production' | 'ready' | 'delivered',
     ultimoConsumo: new Date(order.ultimoConsumo),
     dataContabil: new Date(order.dataContabil),
-    // Campos de compatibilidade para não quebrar componentes existentes
     number: order.numeroPedido,
     nickname: order.nomeCliente,
     createdAt: new Date(order.ultimoConsumo),
@@ -21,6 +45,7 @@ export const initializeWithDefaultOrders = (): void => {
     items: [`Local: ${order.localEntrega}`],
     totalValue: 0
   }));
+  syncOrdersToStorage();
 };
 
 // Função para buscar pedidos (simula chamada de API)
@@ -28,6 +53,9 @@ export const fetchOrders = async (apiBaseUrl: string, useMockData: boolean): Pro
   if (useMockData) {
     return [...orders];
   }
+
+  // Sincronizar storage sempre que buscar pedidos mock
+  
 
   try {
     const url = `${apiBaseUrl}/lista_producao`;
@@ -215,6 +243,7 @@ export const addSimulatedOrder = async (allowedModules: string[] | undefined, ap
     };
  
     orders.unshift(newOrder); // Adiciona no início
+    syncOrdersToStorage();
     return { ...newOrder };
   } else {
     try {
@@ -275,6 +304,7 @@ export const expediteOrder = async (orderId: string, apiBaseUrl: string): Promis
 export const clearAllOrdersService = async (apiBaseUrl: string, useMockData: boolean): Promise<void> => {
   if (useMockData) {
     orders = [];
+    syncOrdersToStorage();
   } else {
     try {
       const response = await fetch(`${apiBaseUrl}/limpa_pedidos`, {

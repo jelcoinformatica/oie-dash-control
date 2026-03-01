@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { Order } from '../types/order';
-import { fetchProductionOrders, fetchReadyOrders } from '../services/orderService';
+import { fetchProductionOrders, fetchReadyOrders, getSimulatedOrdersFromStorage } from '../services/orderService';
 import { defaultConfig } from '../data/defaultConfig';
 import { PanelConfig } from '../types/order';
 
@@ -26,31 +26,39 @@ const Acompanhar = () => {
   const useMockData = config.database?.useMockData ?? defaultConfig.database.useMockData;
   const forceMockSimulation = localStorage.getItem('simulation-force-mock') === 'true';
   const isLocalApi = /localhost|127\.0\.0\.1/i.test(apiBaseUrl);
-  const shouldUseMockData = useMockData || forceMockSimulation;
+  const isSimulationMode = forceMockSimulation || isLocalApi;
 
   const loadOrders = useCallback(async () => {
     if (loadingRef.current) return;
     loadingRef.current = true;
     try {
-      const [prod, ready] = await Promise.all([
-        fetchProductionOrders(apiBaseUrl, shouldUseMockData),
-        fetchReadyOrders(apiBaseUrl, shouldUseMockData)
-      ]);
-      setProductionOrders(prod);
-      setReadyOrders(ready);
+      if (isSimulationMode) {
+        // Em modo simulação: ler diretamente do localStorage (sincronizado pelo painel principal)
+        const stored = getSimulatedOrdersFromStorage();
+        setProductionOrders(stored.production);
+        setReadyOrders(stored.ready);
+      } else {
+        const [prod, ready] = await Promise.all([
+          fetchProductionOrders(apiBaseUrl, useMockData),
+          fetchReadyOrders(apiBaseUrl, useMockData)
+        ]);
+        setProductionOrders(prod);
+        setReadyOrders(ready);
+      }
     } catch (e) {
       console.error('Erro ao carregar pedidos:', e);
     } finally {
       loadingRef.current = false;
       setLoading(false);
     }
-  }, [apiBaseUrl, shouldUseMockData]);
+  }, [apiBaseUrl, useMockData, isSimulationMode]);
 
   useEffect(() => {
     loadOrders();
-    const interval = setInterval(loadOrders, 10000);
+    // Em simulação: polling rápido (3s, só localStorage). Em produção: 10s (API).
+    const interval = setInterval(loadOrders, isSimulationMode ? 3000 : 10000);
     return () => clearInterval(interval);
-  }, [loadOrders]);
+  }, [loadOrders, isSimulationMode]);
 
   // Block navigation to main panel
   useEffect(() => {
@@ -100,10 +108,9 @@ const Acompanhar = () => {
         </h1>
       </div>
 
-      {(forceMockSimulation || isLocalApi) && (
-        <div className="mx-3 mt-3 rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-[11px] leading-relaxed text-amber-800">
-          <strong>Modo Simulação/Local ativo:</strong> chamadas à API externa estão desativadas ou indisponíveis neste dispositivo.
-          Em celular, pedidos gerados localmente no painel não são sincronizados sem API pública.
+      {isSimulationMode && (
+        <div className="mx-3 mt-2 rounded-lg border border-amber-300 bg-amber-50 px-3 py-1.5 text-[11px] leading-relaxed text-amber-800">
+          <strong>🎮 Modo Simulação:</strong> Lendo pedidos do painel principal via localStorage. Atualização a cada 3s.
         </div>
       )}
 
