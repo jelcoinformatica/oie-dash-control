@@ -253,7 +253,8 @@ const Acompanhar = () => {
   const myProductionOrders = productionOrders.filter(o => myOrderIds.includes(o.id));
   const myReadyOrders = readyOrders.filter(o => myOrderIds.includes(o.id));
 
-  // Detect which platforms exist in current orders
+  // Detect which platforms exist in current orders (fixed order)
+  const platformOrder = ['99', 'IF', 'KE', 'DD', 'RA'];
   const availablePlatforms = useMemo(() => {
     const allOrders = [...productionOrders, ...readyOrders];
     const prefixes = new Set<string>();
@@ -261,7 +262,7 @@ const Acompanhar = () => {
       const prefix = getDeliveryPrefix(o);
       if (prefix) prefixes.add(prefix);
     });
-    return Array.from(prefixes);
+    return platformOrder.filter(p => prefixes.has(p));
   }, [productionOrders, readyOrders]);
 
   // --- LOADING ---
