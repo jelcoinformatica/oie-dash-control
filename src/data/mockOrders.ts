@@ -25,7 +25,7 @@ const generateRandomOrder = (id: string, status: 'production' | 'ready'): Order 
   // Para pedidos de entrega, 80% devem ter prefixo de plataforma
   let orderNumber: string;
   if (selectedModule === 'entrega' && Math.random() < 0.8) {
-    const platforms = ['IF', 'IF', 'IF', 'RA', 'DD', '99', 'KE']; // iFood mais frequente
+    const platforms = ['IF', 'IF', 'IF', 'RA', 'RA', 'DD', '99', '99', 'KE', 'KE']; // distribuição variada
     const platform = platforms[Math.floor(Math.random() * platforms.length)];
     orderNumber = `${platform}-${Math.floor(Math.random() * 90000) + 10000}`;
   } else {
