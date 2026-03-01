@@ -73,6 +73,7 @@ export const configTemplates: ConfigTemplate[] = [
         headerBg: '#D4AF37',
         headerColor: '#0a0a0a',
         showBorder: false,
+        showCardBorder: false,
         columnBackground: '#000000',
         cardConfig: {
           ...current.ready.cardConfig,
