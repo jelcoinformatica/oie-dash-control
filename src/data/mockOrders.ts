@@ -61,35 +61,37 @@ const generateRandomOrder = (id: string, status: 'production' | 'ready'): Order 
   };
 };
 
-// Gerar pedidos específicos do iFood
-const generateIfoodOrder = (id: string, status: 'production' | 'ready', orderNumber: string, customerName: string): Order => {
+const generateDeliveryOrder = (id: string, status: 'production' | 'ready', orderNumber: string, customerName: string): Order => {
   return {
     id,
     numeroPedido: orderNumber,
     ticket: orderNumber,
-    modulo: 'entrega', // iFood é sempre entrega
+    modulo: 'entrega',
     status,
-    ultimoConsumo: new Date(Date.now() - Math.random() * 1800000), // Últimas 30min
+    ultimoConsumo: new Date(Date.now() - Math.random() * 1800000),
     dataContabil: new Date(),
-    localEntrega: 'iFood Delivery',
+    localEntrega: 'Delivery Online',
     nomeCliente: customerName,
-    // Campos de compatibilidade
     number: orderNumber,
     nickname: customerName,
     createdAt: new Date(Date.now() - Math.random() * 1800000),
     updatedAt: new Date(),
-    items: ['Combo iFood', 'Taxa de Entrega'],
-    totalValue: Math.floor(Math.random() * 4000) + 2000 // R$ 20,00 - R$ 60,00
+    items: ['Combo Delivery', 'Taxa de Entrega'],
+    totalValue: Math.floor(Math.random() * 4000) + 2000
   };
 };
 
 export const mockOrders: Order[] = [
-  // Pedidos iFood de exemplo
-  generateIfoodOrder('ifood-1', 'production', 'IF-12345', 'Marina'),
-  generateIfoodOrder('ifood-2', 'production', 'IF-67890', 'Roberto'),
-  generateIfoodOrder('ifood-3', 'ready', 'IF-54321', 'Amanda'),
-  generateIfoodOrder('ifood-4', 'ready', 'IF-98765', 'Diego'),
-  generateIfoodOrder('ifood-5', 'production', 'IF-11223', 'Patricia'),
+  // Pedidos delivery de exemplo (várias plataformas)
+  generateDeliveryOrder('ifood-1', 'production', 'IF-12345', 'Marina'),
+  generateDeliveryOrder('ifood-2', 'production', 'IF-67890', 'Roberto'),
+  generateDeliveryOrder('ifood-3', 'ready', 'IF-54321', 'Amanda'),
+  generateDeliveryOrder('keeta-1', 'production', 'KE-33210', 'Thiago'),
+  generateDeliveryOrder('keeta-2', 'ready', 'KE-44821', 'Camila'),
+  generateDeliveryOrder('99food-1', 'production', '99-55102', 'Lucas'),
+  generateDeliveryOrder('99food-2', 'ready', '99-66734', 'Beatriz'),
+  generateDeliveryOrder('dd-1', 'production', 'DD-77456', 'Renato'),
+  generateDeliveryOrder('rappi-1', 'production', 'RA-88012', 'Vanessa'),
   
   // Pedidos em produção
   ...Array.from({ length: 10 }, (_, i) => generateRandomOrder(`prod-${i + 1}`, 'production')),
