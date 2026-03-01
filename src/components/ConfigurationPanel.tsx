@@ -2454,7 +2454,8 @@ export const ConfigurationPanel = ({
                 <Button
                   onClick={() => {
                     const input = document.getElementById('newOrdersCount') as HTMLInputElement;
-                    const count = parseInt(input?.value || '30');
+                    const parsed = parseInt(input?.value || '30', 10);
+                    const count = Number.isFinite(parsed) ? Math.min(50, Math.max(1, parsed)) : 30;
                     generateOrders?.(count);
                   }}
                   variant="default"
@@ -2473,7 +2474,13 @@ export const ConfigurationPanel = ({
                 />
                 <span className="text-gray-500">-</span>
               </div>
-            </div>
+              </div>
+
+              {config.database?.useMockData === false && (config.database?.apiBaseUrl || '').includes('localhost') && (
+                <div className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-md p-2">
+                  Pré-requisito: API local não está acessível no preview. A simulação manual usa modo local automaticamente.
+                </div>
+              )}
             
             <div className="space-y-3 border-t pt-3">
               <div className="space-y-2">
