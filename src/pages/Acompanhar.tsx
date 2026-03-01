@@ -29,6 +29,7 @@ const Acompanhar = () => {
   const [alreadyMarkedWarning, setAlreadyMarkedWarning] = useState(false);
   const [alertOrder, setAlertOrder] = useState<Order | null>(null);
   const [activeTab, setActiveTab] = useState(0); // for multiple orders cycling
+  const [platformFilter, setPlatformFilter] = useState<string | null>(null);
   const loadingRef = useRef(false);
   const myOrderIdsRef = useRef(myOrderIds);
   const productionIdsRef = useRef<Set<string>>(new Set());
@@ -263,12 +264,30 @@ const Acompanhar = () => {
 
   // Apply module filter from query param (e.g. ?modulo=entrega or ?excluir=entrega)
   const applyFilter = (orders: Order[]) => {
-    if (moduloFilter) return orders.filter(o => o.modulo === moduloFilter);
-    if (moduloExclude) return orders.filter(o => o.modulo !== moduloExclude);
-    return orders;
+    let result = orders;
+    if (moduloFilter) result = result.filter(o => o.modulo === moduloFilter);
+    if (moduloExclude) result = result.filter(o => o.modulo !== moduloExclude);
+    if (platformFilter) {
+      result = result.filter(o => {
+        const num = String(o.numeroPedido || o.number || '');
+        return num.startsWith(platformFilter + '-');
+      });
+    }
+    return result;
   };
   const filteredProduction = applyFilter(productionOrders);
   const filteredReady = applyFilter(readyOrders);
+
+  // Detect which platforms exist in current orders
+  const availablePlatforms = useMemo(() => {
+    const allOrders = [...productionOrders, ...readyOrders];
+    const prefixes = new Set<string>();
+    allOrders.forEach(o => {
+      const prefix = getDeliveryPrefix(o);
+      if (prefix) prefixes.add(prefix);
+    });
+    return Array.from(prefixes);
+  }, [productionOrders, readyOrders]);
 
   // Reversed production orders (últimos primeiro)
   const reversedProduction = [...filteredProduction].reverse();
@@ -365,6 +384,38 @@ const Acompanhar = () => {
           </button>
         )}
       </div>
+
+      {/* === PLATFORM FILTER BAR === */}
+      {!personalMode && availablePlatforms.length > 0 && (
+        <div className="flex-shrink-0 bg-gray-800 px-3 py-2 flex items-center gap-2 overflow-x-auto border-b border-gray-700">
+          <button
+            onClick={() => setPlatformFilter(null)}
+            className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-bold transition-all ${
+              !platformFilter 
+                ? 'bg-white text-gray-800' 
+                : 'bg-gray-700 text-gray-300 active:scale-95'
+            }`}
+          >
+            Todos
+          </button>
+          {availablePlatforms.map(prefix => (
+            <button
+              key={prefix}
+              onClick={() => setPlatformFilter(platformFilter === prefix ? null : prefix)}
+              className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all ${
+                platformFilter === prefix 
+                  ? 'bg-white text-gray-800 ring-2 ring-white/50' 
+                  : 'bg-gray-700 text-gray-300 active:scale-95'
+              }`}
+            >
+              <div className="rounded-full overflow-hidden border border-gray-500" style={{ width: '1.2rem', height: '1.2rem' }}>
+                <img src={platformLogos[prefix]} alt="" className="w-full h-full object-cover" />
+              </div>
+              <span>{prefix === 'IF' ? 'iFood' : prefix === 'RA' ? 'Rappi' : prefix === 'DD' ? 'DD' : prefix === 'KE' ? 'Keeta' : prefix === '99' ? '99Food' : prefix}</span>
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* === PERSONAL MODE === */}
       {personalMode ? (
