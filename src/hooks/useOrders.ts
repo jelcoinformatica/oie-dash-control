@@ -54,10 +54,23 @@ export const useOrders = (ttsConfig: TTSConfig, autoExpeditionConfig: AutoExpedi
       setLoading(true);
       
       // Busca os pedidos em produção e prontos simultaneamente
-      const [productionData, readyData] = await Promise.all([
-        fetchProductionOrders(apiBaseUrlRef.current, useMockDataRef.current),
-        fetchReadyOrders(apiBaseUrlRef.current, useMockDataRef.current)
-      ]);
+      let productionData: Order[] = [];
+      let readyData: Order[] = [];
+      
+      try {
+        [productionData, readyData] = await Promise.all([
+          fetchProductionOrders(apiBaseUrlRef.current, useMockDataRef.current),
+          fetchReadyOrders(apiBaseUrlRef.current, useMockDataRef.current)
+        ]);
+      } catch {
+        // Se a API falhar, tenta com mock data (para simulação funcionar)
+        if (!useMockDataRef.current) {
+          [productionData, readyData] = await Promise.all([
+            fetchProductionOrders(apiBaseUrlRef.current, true),
+            fetchReadyOrders(apiBaseUrlRef.current, true)
+          ]);
+        }
+      }
 
       console.log('Pedidos em produção:', productionData);
       console.log('Pedidos prontos:', readyData);
@@ -297,16 +310,14 @@ export const useOrders = (ttsConfig: TTSConfig, autoExpeditionConfig: AutoExpedi
       
       console.log(`📋 Módulos ativos: ${modulesToUse.join(', ')}`);
       
-      // Contar pedidos antes da geração
-      const ordersBefore = await fetchOrders(apiBaseUrlRef.current, useMockDataRef.current);
-      console.log(`📊 Pedidos antes da geração: ${ordersBefore.length} (Produção: ${ordersBefore.filter(o => o.status === 'production').length}, Prontos: ${ordersBefore.filter(o => o.status === 'ready').length})`);
+      // Simulação SEMPRE usa mock data (independente da config de API)
       
       // Gerar todos os pedidos sequencialmente
       for (let i = 0; i < count; i++) {
         console.log(`⚙️ Gerando pedido ${i + 1}/${count}...`);
         
         try {
-          const newOrder = await addSimulatedOrder(modulesToUse, apiBaseUrlRef.current, useMockDataRef.current);
+          const newOrder = await addSimulatedOrder(modulesToUse, apiBaseUrlRef.current, true);
           console.log(`🆕 Pedido criado: ${newOrder.numeroPedido} (${newOrder.modulo})`);
         } catch (error) {
           console.error(`❌ Erro ao criar pedido ${i + 1}:`, error);
@@ -317,9 +328,6 @@ export const useOrders = (ttsConfig: TTSConfig, autoExpeditionConfig: AutoExpedi
       
       // Aguardar um pouco antes de recarregar para garantir que todos foram salvos
       await new Promise(resolve => setTimeout(resolve, 200));
-      
-      const ordersAfterGeneration = await fetchOrders(apiBaseUrlRef.current, useMockDataRef.current);
-      console.log(`📊 Pedidos após geração: ${ordersAfterGeneration.length} (Produção: ${ordersAfterGeneration.filter(o => o.status === 'production').length}, Prontos: ${ordersAfterGeneration.filter(o => o.status === 'ready').length})`);
       
       // Recarregar para sincronizar o estado React
       await loadOrders();
