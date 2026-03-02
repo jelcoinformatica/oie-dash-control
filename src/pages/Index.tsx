@@ -338,6 +338,10 @@ const Index = () => {
             )}
           </div>
         )}
+        {/* Marcador de meio vertical da tela */}
+        <div className="w-full flex items-center justify-center flex-shrink-0" style={{ height: '2px' }}>
+          <div className="w-2 h-0.5 rounded-full bg-red-400 opacity-40" />
+        </div>
         {/* Header de Identificação do Painel */}
         {config.panel.displayLocation === 'above-headers' && (
           <div 
