@@ -141,14 +141,15 @@ const AutoFitCardContent = ({
 
   return (
     <div ref={containerRef} className="w-full h-full flex flex-col justify-between items-center py-1 overflow-hidden">
-      {/* Prefixo no topo */}
+      {/* Prefixo no topo - menor e discreto pois o logo já identifica */}
       <div className="flex-shrink-0 flex items-start justify-center" style={{ minHeight: 0 }}>
         {showPrefix && (
           <span style={{ 
             fontStyle: 'italic', 
             fontWeight: 'normal',
-            fontSize: `${scaledFontSize * 0.4}rem`,
-            lineHeight: '1'
+            fontSize: `${scaledFontSize * 0.28}rem`,
+            lineHeight: '1',
+            opacity: 0.7
           }}>
             {getDeliveryPlatformName(displayNumber.split('-')[0])}
           </span>
@@ -178,13 +179,13 @@ const AutoFitCardContent = ({
         </div>
       </div>
 
-      {/* Nome embaixo */}
+      {/* Nome embaixo - mais destaque */}
       <div className="flex-shrink-0 w-full flex items-end justify-center px-1 overflow-hidden" style={{ minHeight: 0 }}>
         {hasName && (
           <div 
-            className="font-medium text-center leading-tight w-full overflow-hidden text-ellipsis whitespace-nowrap"
+            className="font-bold text-center leading-tight w-full overflow-hidden text-ellipsis whitespace-nowrap"
             style={{ 
-              fontSize: `${nameFontSize}rem`,
+              fontSize: `${Math.min(scaledFontSize * 0.5, 1.2)}rem`,
               lineHeight: '1.2',
             }}
           >
