@@ -112,6 +112,7 @@ export const ConfigurationPanel = ({
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
     templates: false,
     overlayControls: false,
+    generalHeader: false,
     background: false,
     panel: false,
     production: false,
@@ -152,6 +153,7 @@ export const ConfigurationPanel = ({
       setOpenSections({
         templates: false,
         overlayControls: false,
+        generalHeader: false,
         background: false,
         panel: false,
         production: false,
@@ -196,6 +198,7 @@ export const ConfigurationPanel = ({
     setOpenSections({
       templates: newState,
       overlayControls: newState,
+      generalHeader: newState,
       background: newState,
       panel: newState,
       production: newState,
@@ -454,6 +457,98 @@ export const ConfigurationPanel = ({
           </div>
         </ConfigSection>
         
+        {/* Cabeçalho Geral */}
+        <ConfigSection
+          title="Cabeçalho Geral"
+          icon={<Monitor className="w-4 h-4" />}
+          isOpen={openSections.generalHeader}
+          onToggle={() => toggleSection('generalHeader')}
+          colorClass="text-blue-600"
+        >
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <Label className="text-xs font-medium">Exibir Cabeçalho</Label>
+              <Switch
+                checked={config.generalHeader?.enabled || false}
+                onCheckedChange={(checked) => updateConfig('generalHeader.enabled', checked)}
+                className="scale-75"
+              />
+            </div>
+            <div>
+              <Label className="text-xs font-medium">Texto</Label>
+              <Input
+                type="text"
+                value={config.generalHeader?.text || 'Oie Painel de Senhas'}
+                onChange={(e) => updateConfig('generalHeader.text', e.target.value)}
+                className="mt-1 h-8"
+                placeholder="Ex: Oie Painel de Senhas"
+              />
+            </div>
+            <div>
+              <Label className="text-xs font-medium">Fonte</Label>
+              <Select
+                value={config.generalHeader?.fontFamily || 'Tahoma'}
+                onValueChange={(value) => updateConfig('generalHeader.fontFamily', value)}
+              >
+                <SelectTrigger className="h-8 mt-1">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Tahoma">Tahoma</SelectItem>
+                  <SelectItem value="Arial">Arial</SelectItem>
+                  <SelectItem value="Verdana">Verdana</SelectItem>
+                  <SelectItem value="Helvetica">Helvetica</SelectItem>
+                  <SelectItem value="Georgia">Georgia</SelectItem>
+                  <SelectItem value="Impact">Impact</SelectItem>
+                  <SelectItem value="Trebuchet MS">Trebuchet MS</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label className="text-xs font-medium">Tamanho da Fonte: {config.generalHeader?.fontSize || 2}rem</Label>
+              <Slider
+                value={[config.generalHeader?.fontSize || 2]}
+                onValueChange={([value]) => updateConfig('generalHeader.fontSize', value)}
+                min={1}
+                max={5}
+                step={0.5}
+                className="mt-2"
+              />
+            </div>
+            <div>
+              <Label className="text-xs font-medium">Altura: {config.generalHeader?.height || 60}px</Label>
+              <Slider
+                value={[config.generalHeader?.height || 60]}
+                onValueChange={([value]) => updateConfig('generalHeader.height', value)}
+                min={30}
+                max={120}
+                step={5}
+                className="mt-2"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <Label className="text-xs font-medium">Cor de Fundo</Label>
+                <Input
+                  type="color"
+                  value={config.generalHeader?.backgroundColor || '#0011FA'}
+                  onChange={(e) => updateConfig('generalHeader.backgroundColor', e.target.value)}
+                  className="h-8 mt-1 border-2"
+                />
+              </div>
+              <div>
+                <Label className="text-xs font-medium">Cor do Texto</Label>
+                <Input
+                  type="color"
+                  value={config.generalHeader?.textColor || '#ffffff'}
+                  onChange={(e) => updateConfig('generalHeader.textColor', e.target.value)}
+                  className="h-8 mt-1 border-2"
+                />
+              </div>
+            </div>
+          </div>
+        </ConfigSection>
+
         {/* Fundo da Aplicação */}
         <ConfigSection
           title="Fundo da Aplicação"

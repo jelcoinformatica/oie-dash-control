@@ -168,6 +168,15 @@ export const defaultConfig: PanelConfig = {
     nomeFantasia: '',
     numeroLicenca: ''
   },
+  generalHeader: {
+    enabled: false,
+    text: 'Oie Painel de Senhas',
+    fontFamily: 'Tahoma',
+    fontSize: 2,
+    backgroundColor: '#0011FA',
+    textColor: '#ffffff',
+    height: 60
+  },
   splash: {
     enabled: false
   },

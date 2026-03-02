@@ -120,6 +120,7 @@ const Index = () => {
             }
           },
           splash: { ...defaultConfig.splash, ...parsedConfig.splash },
+          generalHeader: { ...defaultConfig.generalHeader, ...parsedConfig.generalHeader },
           dataFetching: { ...defaultConfig.dataFetching, ...parsedConfig.dataFetching },
         };
         
@@ -312,6 +313,21 @@ const Index = () => {
             <span className="animate-pulse">🎮</span>
             <span className="font-bold tracking-wide">MODO SIMULAÇÃO</span>
             <span className="opacity-80">— Chamadas à API desativadas. Dados locais apenas.</span>
+          </div>
+        )}
+        {/* Cabeçalho Geral */}
+        {config.generalHeader?.enabled && (
+          <div 
+            className="w-full flex items-center justify-center flex-shrink-0"
+            style={{
+              backgroundColor: config.generalHeader.backgroundColor,
+              color: config.generalHeader.textColor,
+              height: `${config.generalHeader.height}px`,
+              fontFamily: config.generalHeader.fontFamily,
+              fontSize: `${config.generalHeader.fontSize}rem`
+            }}
+          >
+            <span className="font-bold tracking-wide">{config.generalHeader.text}</span>
           </div>
         )}
         {/* Header de Identificação do Painel */}

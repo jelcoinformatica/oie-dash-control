@@ -168,6 +168,15 @@ export interface PanelConfig {
     nomeFantasia?: string;
     numeroLicenca?: string;
   };
+  generalHeader?: {
+    enabled: boolean;
+    text: string;
+    fontFamily: string;
+    fontSize: number;
+    backgroundColor: string;
+    textColor: string;
+    height: number;
+  };
   splash?: {
     enabled: boolean;
   };
