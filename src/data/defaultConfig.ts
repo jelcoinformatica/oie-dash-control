@@ -142,7 +142,8 @@ export const defaultConfig: PanelConfig = {
     entrega: {
       enabled: true,
       displayOption: 'numeroVenda',
-      showIndicator: false
+      showIndicator: false,
+      showDeliveryName: false
     },
     ficha: {
       enabled: true,

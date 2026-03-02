@@ -2001,6 +2001,7 @@ export const ConfigurationPanel = ({
                     )}
                     
                     {moduleKey === 'entrega' && (
+                      <>
                       <RadioGroup
                         value={moduleConfig.displayOption}
                         onValueChange={(value: 'numeroEntrega' | 'numeroVenda') => 
@@ -2016,6 +2017,19 @@ export const ConfigurationPanel = ({
                           <Label htmlFor="entrega-num-venda" className="text-xs">No. da venda (iFood, Rappi...)</Label>
                         </div>
                       </RadioGroup>
+                      
+                      <div className="flex items-center justify-between mt-2 pt-2 border-t border-gray-200">
+                        <div>
+                          <Label className="text-xs">Exibir nome da plataforma</Label>
+                          <p className="text-[10px] text-gray-400">Ex: "iFood", "Rappi" (além do ícone)</p>
+                        </div>
+                        <Switch
+                          checked={config.modules?.entrega?.showDeliveryName || false}
+                          onCheckedChange={(checked) => updateConfig('modules.entrega.showDeliveryName', checked)}
+                          className="scale-75"
+                        />
+                      </div>
+                      </>
                     )}
                     
                     {moduleKey === 'mesa' && (
