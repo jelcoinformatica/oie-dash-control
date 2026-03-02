@@ -360,7 +360,7 @@ const Index = () => {
                           style={{ backgroundColor: config.production.columnBackground || '#ffffff' }}
                         >
                         <div 
-                          className="flex items-center justify-center px-4 font-bold shadow-sm border-b rounded-t-lg relative"
+                          className="flex items-center justify-center px-4 font-bold shadow-sm rounded-t-lg relative"
                           style={{
                             backgroundColor: config.production.headerBg,
                             color: config.production.headerColor,
@@ -420,7 +420,7 @@ const Index = () => {
                     style={{ backgroundColor: config.ready.columnBackground || '#ffffff' }}
                   >
                     <div 
-                      className="flex items-center justify-center px-4 font-bold shadow-sm border-b rounded-t-lg relative"
+                      className="flex items-center justify-center px-4 font-bold shadow-sm rounded-t-lg relative"
                       style={{
                         backgroundColor: config.ready.headerBg,
                         color: config.ready.headerColor,
