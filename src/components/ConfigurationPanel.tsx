@@ -7,7 +7,7 @@ import { Slider } from './ui/slider';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from './ui/alert-dialog';
 import { PanelConfig } from '../types/order';
-import { Settings, Palette, Factory, CheckCircle, Monitor, Volume2, Clock, Puzzle, Cog, X, ChevronRight, ChevronDown, Plus, Minus, ChevronLeft, ArrowLeft, ArrowRight, Mic, Database, Download, Upload, Store, Eye, RotateCcw, Lightbulb, Zap, History, Megaphone, Wrench, LayoutTemplate } from 'lucide-react';
+import { Settings, Palette, Factory, CheckCircle, Monitor, Volume2, Clock, Puzzle, Cog, X, ChevronRight, ChevronDown, Plus, Minus, ChevronLeft, ArrowLeft, ArrowRight, Mic, Database, Download, Upload, Store, Eye, RotateCcw, Lightbulb, Zap, History, Megaphone, Wrench, LayoutTemplate, Globe, Info, Copy, Check } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { defaultConfig } from '../data/defaultConfig';
 import { configTemplates } from '../data/configTemplates';
@@ -139,6 +139,7 @@ export const ConfigurationPanel = ({
     advertisingHeader: false,
     advertisingContent: false,
     diversosDatabase: false,
+    diversosIntegrations: false,
     diversosBackup: false,
     diversosStore: false,
     diversosPanel: false,
@@ -2169,6 +2170,150 @@ export const ConfigurationPanel = ({
           onToggle={() => toggleSection('diversos')}
           colorClass="text-blue-600"
         >
+          {/* Integrações - API */}
+          <SubConfigSection
+            title="🔗 Integrações (API)"
+            isOpen={openSubSections.diversosIntegrations}
+            onToggle={() => toggleSubSection('diversosIntegrations')}
+            icon={<Globe className="w-3 h-3" />}
+          >
+            <div className="space-y-4">
+              {/* Status da conexão */}
+              <div className={`rounded-md p-3 border text-xs ${
+                config.database?.useMockData !== false 
+                  ? 'bg-amber-50 border-amber-200 text-amber-800' 
+                  : 'bg-green-50 border-green-200 text-green-800'
+              }`}>
+                <div className="flex items-center gap-2 font-semibold mb-1">
+                  <div className={`w-2 h-2 rounded-full ${config.database?.useMockData !== false ? 'bg-amber-500' : 'bg-green-500 animate-pulse'}`} />
+                  {config.database?.useMockData !== false ? 'Modo Simulação (Mock)' : 'Conectado à API'}
+                </div>
+                <p className="opacity-80">
+                  {config.database?.useMockData !== false 
+                    ? 'Dados fictícios em memória. Ideal para testes e demonstrações.' 
+                    : `Conectado a: ${config.database?.apiBaseUrl || 'http://localhost:3000'}`}
+                </p>
+              </div>
+
+              {/* Modo de dados */}
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label className="text-xs font-semibold">Usar dados da API real</Label>
+                  <p className="text-[10px] opacity-60">Desativado = modo simulação (mock)</p>
+                </div>
+                <Switch
+                  checked={config.database?.useMockData === false}
+                  onCheckedChange={(checked) => updateConfig('database.useMockData', !checked)}
+                  className="scale-75"
+                />
+              </div>
+
+              {/* URL Base da API */}
+              <div className="space-y-1">
+                <Label className="text-xs font-semibold">URL Base da API</Label>
+                <Input
+                  value={config.database?.apiBaseUrl || 'http://localhost:3000'}
+                  onChange={(e) => updateConfig('database.apiBaseUrl', e.target.value)}
+                  className="h-7 text-xs font-mono"
+                  placeholder="http://localhost:3000"
+                />
+                <p className="text-[10px] opacity-50">Endereço do servidor backend (sem barra final)</p>
+              </div>
+
+              {/* Polling info */}
+              <div className="space-y-1">
+                <Label className="text-xs font-semibold">Intervalo de Atualização</Label>
+                <p className="text-[10px] opacity-60">O sistema busca novos pedidos automaticamente a cada <strong>10 segundos</strong> via polling nos endpoints GET.</p>
+              </div>
+
+              {/* Documentação dos Endpoints */}
+              <div className="border rounded-md overflow-hidden">
+                <button
+                  type="button"
+                  className="w-full flex items-center justify-between p-2 bg-slate-50 hover:bg-slate-100 transition-colors text-xs font-semibold text-slate-700"
+                  onClick={() => toggleSubSection('diversosApiDocs')}
+                >
+                  <span className="flex items-center gap-1">
+                    <Info className="w-3 h-3" />
+                    📖 Documentação dos Endpoints
+                  </span>
+                  {openSubSections.diversosApiDocs ? <ChevronDown className="w-3 h-3" /> : <ChevronRight className="w-3 h-3" />}
+                </button>
+                
+                {openSubSections.diversosApiDocs && (
+                  <div className="p-3 space-y-3 text-[11px] bg-white">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded text-[10px] font-bold">GET</span>
+                        <code className="font-mono text-[11px] font-semibold">/lista_producao</code>
+                      </div>
+                      <p className="text-slate-500">Retorna array de pedidos em produção.</p>
+                      <pre className="bg-slate-50 rounded p-2 text-[10px] font-mono overflow-x-auto whitespace-pre">{`[{
+  "id": "123",
+  "numeroPedido": "456",
+  "ticket": "456",
+  "modulo": 1,        // 1=balcão 2=mesa 3=entrega 4=ficha
+  "status": "N",      // N=produção
+  "nomeCliente": "João",
+  "localEntrega": "Mesa 5",
+  "ultimoConsumo": "2025-01-01T12:00:00"
+}]`}</pre>
+                    </div>
+
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded text-[10px] font-bold">GET</span>
+                        <code className="font-mono text-[11px] font-semibold">/lista_prontos</code>
+                      </div>
+                      <p className="text-slate-500">Retorna array de pedidos prontos para retirada. Mesmo formato acima.</p>
+                    </div>
+
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="bg-green-100 text-green-700 px-1.5 py-0.5 rounded text-[10px] font-bold">POST</span>
+                        <code className="font-mono text-[11px] font-semibold">/atualiza_status</code>
+                      </div>
+                      <p className="text-slate-500">Move pedido entre colunas.</p>
+                      <pre className="bg-slate-50 rounded p-2 text-[10px] font-mono">{`{ "id": "123", "status": "ready" }`}</pre>
+                    </div>
+
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="bg-green-100 text-green-700 px-1.5 py-0.5 rounded text-[10px] font-bold">POST</span>
+                        <code className="font-mono text-[11px] font-semibold">/expede_pedido</code>
+                      </div>
+                      <p className="text-slate-500">Remove pedido expedido.</p>
+                      <pre className="bg-slate-50 rounded p-2 text-[10px] font-mono">{`{ "id": "123" }`}</pre>
+                    </div>
+
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="bg-green-100 text-green-700 px-1.5 py-0.5 rounded text-[10px] font-bold">POST</span>
+                        <code className="font-mono text-[11px] font-semibold">/gera_pedido</code>
+                      </div>
+                      <p className="text-slate-500">Gera pedido simulado no backend.</p>
+                      <pre className="bg-slate-50 rounded p-2 text-[10px] font-mono">{`{ "modules": ["balcao","entrega"] }`}</pre>
+                    </div>
+
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="bg-red-100 text-red-700 px-1.5 py-0.5 rounded text-[10px] font-bold">POST</span>
+                        <code className="font-mono text-[11px] font-semibold">/limpa_pedidos</code>
+                      </div>
+                      <p className="text-slate-500">Remove todos os pedidos.</p>
+                    </div>
+
+                    <div className="mt-2 pt-2 border-t space-y-1">
+                      <p className="font-semibold text-slate-600">Módulos: <code>1</code>=Balcão <code>2</code>=Mesa <code>3</code>=Entrega <code>4</code>=Ficha</p>
+                      <p className="font-semibold text-slate-600">Status: <code>"N"</code>=Produção <code>"S"</code>=Pronto</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </SubConfigSection>
+
+          {/* Conexão com Banco */}
           <SubConfigSection
             title="Conexão com Banco"
             isOpen={openSubSections.diversosDatabase}
