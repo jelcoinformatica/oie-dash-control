@@ -36,6 +36,7 @@ export const configTemplates: ConfigTemplate[] = [
       store: current.store,
       modules: current.modules,
       simulation: current.simulation,
+      generalHeader: { ...defaultConfig.generalHeader },
     }),
   },
   {
