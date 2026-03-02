@@ -169,7 +169,25 @@ export const ConfigurationPanel = ({
   }, [open]);
 
   const [showClearDialog, setShowClearDialog] = useState(false);
+  const [showCloseConfirm, setShowCloseConfirm] = useState(false);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [configSnapshot, setConfigSnapshot] = useState<string>('');
   const [panelPosition, setPanelPosition] = useState<'left' | 'right'>('right');
+
+  // Track initial config snapshot when panel opens
+  useEffect(() => {
+    if (open) {
+      setConfigSnapshot(JSON.stringify(config));
+      setHasUnsavedChanges(false);
+    }
+  }, [open]);
+
+  // Detect changes
+  useEffect(() => {
+    if (open && configSnapshot) {
+      setHasUnsavedChanges(JSON.stringify(config) !== configSnapshot);
+    }
+  }, [config, configSnapshot, open]);
 
   const toggleAllSections = () => {
     const allOpen = Object.values(openSections).every(Boolean);
@@ -347,7 +365,13 @@ export const ConfigurationPanel = ({
             >
               {Object.values(openSections).every(Boolean) ? <Minus className="h-3 w-3" /> : <Plus className="h-3 w-3" />}
             </Button>
-            <Button variant="ghost" size="sm" onClick={onCancel}>
+            <Button variant="ghost" size="sm" onClick={() => {
+              if (hasUnsavedChanges) {
+                setShowCloseConfirm(true);
+              } else {
+                onCancel();
+              }
+            }}>
               <X className="w-4 h-4" />
             </Button>
           </div>
@@ -588,8 +612,8 @@ export const ConfigurationPanel = ({
                 <Slider
                   value={[config.production.headerFontSize]}
                   onValueChange={([value]) => updateConfig('production.headerFontSize', value)}
-                  max={3}
-                  min={0.8}
+                  max={8}
+                  min={0.5}
                   step={0.1}
                   className="mt-1"
                 />
@@ -718,22 +742,22 @@ export const ConfigurationPanel = ({
 
                <div className="grid grid-cols-2 gap-2">
                  <div>
-                   <Label className="text-xs">Gap Horizontal: {config.production.cardConfig.gapHorizontal || 4}px</Label>
-                   <Slider
-                     value={[config.production.cardConfig.gapHorizontal || 4]}
-                     onValueChange={([value]) => updateConfig('production.cardConfig.gapHorizontal', value)}
-                     max={20}
+               <Label className="text-xs">Gap Horizontal: {config.production.cardConfig.gapHorizontal || 4}px</Label>
+                    <Slider
+                      value={[config.production.cardConfig.gapHorizontal || 4]}
+                      onValueChange={([value]) => updateConfig('production.cardConfig.gapHorizontal', value)}
+                      max={40}
                      min={0}
                      step={1}
                      className="mt-1"
                    />
                  </div>
                  <div>
-                   <Label className="text-xs">Gap Vertical: {config.production.cardConfig.gapVertical || 4}px</Label>
-                   <Slider
-                     value={[config.production.cardConfig.gapVertical || 4]}
-                     onValueChange={([value]) => updateConfig('production.cardConfig.gapVertical', value)}
-                     max={20}
+                    <Label className="text-xs">Gap Vertical: {config.production.cardConfig.gapVertical || 4}px</Label>
+                    <Slider
+                      value={[config.production.cardConfig.gapVertical || 4]}
+                      onValueChange={([value]) => updateConfig('production.cardConfig.gapVertical', value)}
+                      max={40}
                      min={0}
                      step={1}
                      className="mt-1"
@@ -743,23 +767,23 @@ export const ConfigurationPanel = ({
 
                <div className="grid grid-cols-2 gap-2">
                  <div>
-                   <Label className="text-xs">Altura Mín: {config.production.cardConfig.cardMinHeight || 60}px</Label>
-                   <Slider
-                     value={[config.production.cardConfig.cardMinHeight || 60]}
-                     onValueChange={([value]) => updateConfig('production.cardConfig.cardMinHeight', value)}
-                     max={150}
-                     min={40}
+               <Label className="text-xs">Altura Mín: {config.production.cardConfig.cardMinHeight || 60}px</Label>
+                    <Slider
+                      value={[config.production.cardConfig.cardMinHeight || 60]}
+                      onValueChange={([value]) => updateConfig('production.cardConfig.cardMinHeight', value)}
+                      max={300}
+                      min={20}
                      step={5}
                      className="mt-1"
                    />
                  </div>
                  <div>
-                   <Label className="text-xs">Altura Máx: {config.production.cardConfig.cardMaxHeight || 120}px</Label>
-                   <Slider
-                     value={[config.production.cardConfig.cardMaxHeight || 120]}
-                     onValueChange={([value]) => updateConfig('production.cardConfig.cardMaxHeight', value)}
-                     max={200}
-                     min={60}
+                    <Label className="text-xs">Altura Máx: {config.production.cardConfig.cardMaxHeight || 120}px</Label>
+                    <Slider
+                      value={[config.production.cardConfig.cardMaxHeight || 120]}
+                      onValueChange={([value]) => updateConfig('production.cardConfig.cardMaxHeight', value)}
+                      max={400}
+                      min={40}
                      step={5}
                      className="mt-1"
                    />
@@ -856,8 +880,8 @@ export const ConfigurationPanel = ({
                 <Slider
                   value={[config.ready.headerFontSize]}
                   onValueChange={([value]) => updateConfig('ready.headerFontSize', value)}
-                  max={3}
-                  min={0.8}
+                  max={8}
+                  min={0.5}
                   step={0.1}
                   className="mt-1"
                 />
@@ -987,22 +1011,22 @@ export const ConfigurationPanel = ({
 
                <div className="grid grid-cols-2 gap-2">
                  <div>
-                   <Label className="text-xs">Gap Horizontal: {config.ready.cardConfig.gapHorizontal || 4}px</Label>
-                   <Slider
-                     value={[config.ready.cardConfig.gapHorizontal || 4]}
-                     onValueChange={([value]) => updateConfig('ready.cardConfig.gapHorizontal', value)}
-                     max={20}
+                    <Label className="text-xs">Gap Horizontal: {config.ready.cardConfig.gapHorizontal || 4}px</Label>
+                    <Slider
+                      value={[config.ready.cardConfig.gapHorizontal || 4]}
+                      onValueChange={([value]) => updateConfig('ready.cardConfig.gapHorizontal', value)}
+                      max={40}
                      min={0}
                      step={1}
                      className="mt-1"
                    />
                  </div>
                  <div>
-                   <Label className="text-xs">Gap Vertical: {config.ready.cardConfig.gapVertical || 4}px</Label>
-                   <Slider
-                     value={[config.ready.cardConfig.gapVertical || 4]}
-                     onValueChange={([value]) => updateConfig('ready.cardConfig.gapVertical', value)}
-                     max={20}
+                    <Label className="text-xs">Gap Vertical: {config.ready.cardConfig.gapVertical || 4}px</Label>
+                    <Slider
+                      value={[config.ready.cardConfig.gapVertical || 4]}
+                      onValueChange={([value]) => updateConfig('ready.cardConfig.gapVertical', value)}
+                      max={40}
                      min={0}
                      step={1}
                      className="mt-1"
@@ -1012,23 +1036,23 @@ export const ConfigurationPanel = ({
 
                <div className="grid grid-cols-2 gap-2">
                  <div>
-                   <Label className="text-xs">Altura Mín: {config.ready.cardConfig.cardMinHeight || 70}px</Label>
-                   <Slider
-                     value={[config.ready.cardConfig.cardMinHeight || 70]}
-                     onValueChange={([value]) => updateConfig('ready.cardConfig.cardMinHeight', value)}
-                     max={150}
-                     min={40}
+                    <Label className="text-xs">Altura Mín: {config.ready.cardConfig.cardMinHeight || 70}px</Label>
+                    <Slider
+                      value={[config.ready.cardConfig.cardMinHeight || 70]}
+                      onValueChange={([value]) => updateConfig('ready.cardConfig.cardMinHeight', value)}
+                      max={300}
+                      min={20}
                      step={5}
                      className="mt-1"
                    />
                  </div>
                  <div>
-                   <Label className="text-xs">Altura Máx: {config.ready.cardConfig.cardMaxHeight || 150}px</Label>
-                   <Slider
-                     value={[config.ready.cardConfig.cardMaxHeight || 150]}
-                     onValueChange={([value]) => updateConfig('ready.cardConfig.cardMaxHeight', value)}
-                     max={200}
-                     min={60}
+                    <Label className="text-xs">Altura Máx: {config.ready.cardConfig.cardMaxHeight || 150}px</Label>
+                    <Slider
+                      value={[config.ready.cardConfig.cardMaxHeight || 150]}
+                      onValueChange={([value]) => updateConfig('ready.cardConfig.cardMaxHeight', value)}
+                      max={400}
+                      min={40}
                      step={5}
                      className="mt-1"
                    />
@@ -2739,8 +2763,19 @@ export const ConfigurationPanel = ({
 
         {/* Footer */}
         <div className="p-4 border-t border-gray-200 bg-gray-50/80">
+          {hasUnsavedChanges && (
+            <div className="text-xs text-amber-600 font-medium mb-2 text-center">
+              ⚠️ Alterações não salvas
+            </div>
+          )}
           <div className="flex gap-2">
-            <Button variant="outline" onClick={onCancel} className="flex-1">
+            <Button variant="outline" onClick={() => {
+              if (hasUnsavedChanges) {
+                setShowCloseConfirm(true);
+              } else {
+                onCancel();
+              }
+            }} className="flex-1">
               Fechar
             </Button>
             <Button onClick={onSave} className="flex-1">
@@ -2748,6 +2783,32 @@ export const ConfigurationPanel = ({
             </Button>
           </div>
         </div>
+
+        {/* Dialog de confirmação ao fechar sem salvar */}
+        <AlertDialog open={showCloseConfirm} onOpenChange={setShowCloseConfirm}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Alterações não salvas</AlertDialogTitle>
+              <AlertDialogDescription>
+                Você tem alterações que não foram salvas. Deseja salvar antes de sair?
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel onClick={() => {
+                setShowCloseConfirm(false);
+                onCancel();
+              }}>
+                Descartar
+              </AlertDialogCancel>
+              <AlertDialogAction onClick={() => {
+                setShowCloseConfirm(false);
+                onSave();
+              }}>
+                Salvar
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </div>
   );

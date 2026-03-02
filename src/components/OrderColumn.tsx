@@ -119,7 +119,7 @@ export const OrderColumn = ({
           }}
         >
           <span>{title}</span>
-          <div className="absolute right-4 bg-white/20 px-2 py-1 rounded-full font-bold" style={{ fontSize: '16px' }}>
+          <div className="absolute right-4 bg-white/20 px-2 py-1 rounded-full font-bold" style={{ fontSize: `${Math.max(0.5, headerFontSize * 0.6)}rem` }}>
             {totalCount ?? orders.length}
           </div>
         </div>

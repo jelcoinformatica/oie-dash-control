@@ -370,7 +370,7 @@ const Index = () => {
                           }}
                         >
                           <span>{config.production.title}</span>
-                          <div className="absolute right-4 bg-white/20 px-2 py-1 rounded-full font-bold" style={{ fontSize: '16px' }}>
+                          <div className="absolute right-4 bg-white/20 px-2 py-1 rounded-full font-bold" style={{ fontSize: `${Math.max(0.5, config.production.headerFontSize * 0.6)}rem` }}>
                             {productionOrders.length}
                           </div>
                         </div>
@@ -474,7 +474,7 @@ const Index = () => {
                       
                       <span>{config.ready.title}</span>
                       
-                      <div className="absolute right-4 bg-white/20 px-2 py-1 rounded-full font-bold" style={{ fontSize: '16px' }}>
+                      <div className="absolute right-4 bg-white/20 px-2 py-1 rounded-full font-bold" style={{ fontSize: `${Math.max(0.5, config.ready.headerFontSize * 0.6)}rem` }}>
                         {readyOrders.length}
                       </div>
                     </div>
@@ -571,7 +571,7 @@ const Index = () => {
             )}
           </ResizablePanelGroup>
         ) : (
-          <div className={`flex gap-0.5 h-full`}>
+          <div className={`flex h-full`}>
             {/* Layout fixo quando redimensionamento está desabilitado */}
             {config.production.visible && (
               <div style={{ width: `${(config.production.width / (config.production.width + config.ready.width + (config.advertising.visible ? config.advertising.width : 0))) * 100}%` }} className="h-full relative">
@@ -591,7 +591,7 @@ const Index = () => {
                       }}
                     >
                       <span>{config.production.title}</span>
-                      <div className="absolute right-4 bg-white/20 px-2 py-1 rounded-full font-bold" style={{ fontSize: '16px' }}>
+                      <div className="absolute right-4 bg-white/20 px-2 py-1 rounded-full font-bold" style={{ fontSize: `${Math.max(0.5, config.production.headerFontSize * 0.6)}rem` }}>
                         {productionOrders.length}
                       </div>
                     </div>
@@ -686,7 +686,7 @@ const Index = () => {
                     
                     <span>{config.ready.title}</span>
                     
-                    <div className="absolute right-4 bg-white/20 px-2 py-1 rounded-full font-bold" style={{ fontSize: '16px' }}>
+                    <div className="absolute right-4 bg-white/20 px-2 py-1 rounded-full font-bold" style={{ fontSize: `${Math.max(0.5, config.ready.headerFontSize * 0.6)}rem` }}>
                       {readyOrders.length}
                     </div>
                   </div>
