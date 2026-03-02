@@ -2646,12 +2646,26 @@ export const ConfigurationPanel = ({
         
         {/* Simulação */}
         <ConfigSection
-          title="Simulação"
+          title={`Simulação${config.database?.useMockData === false ? ' (desabilitada - API ativa)' : ''}`}
           icon={<Cog className="w-4 h-4" />}
           isOpen={openSections.simulation}
           onToggle={() => toggleSection('simulation')}
-          colorClass="text-blue-600"
+          colorClass={config.database?.useMockData === false ? "text-gray-400" : "text-blue-600"}
         >
+          {config.database?.useMockData === false ? (
+            <div className="p-4 text-center space-y-2">
+              <div className="bg-gray-100 border border-gray-300 rounded-md p-4">
+                <Cog className="w-8 h-8 text-gray-300 mx-auto mb-2" />
+                <p className="text-xs font-semibold text-gray-500">Simulação Desabilitada</p>
+                <p className="text-[10px] text-gray-400 mt-1">
+                  O modo API real está ativo. A simulação só funciona no modo Mock.
+                </p>
+                <p className="text-[10px] text-gray-400 mt-1">
+                  Para usar a simulação, desative "Usar dados da API real" na seção <strong>Integrações (API)</strong>.
+                </p>
+              </div>
+            </div>
+          ) : (
           <div className="space-y-4">
             {/* Resumo Dinâmico da Simulação */}
             <div className="bg-teal-50 border border-teal-200 rounded-md p-3">
@@ -2781,11 +2795,6 @@ export const ConfigurationPanel = ({
               </div>
               </div>
 
-              {config.database?.useMockData === false && (config.database?.apiBaseUrl || '').includes('localhost') && (
-                <div className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-md p-2">
-                  Pré-requisito: API local não está acessível no preview. A simulação manual usa modo local automaticamente.
-                </div>
-              )}
 
             {/* Seleção de Plataformas de Delivery */}
             <div className="space-y-2 border-t pt-3">
@@ -2904,6 +2913,7 @@ export const ConfigurationPanel = ({
               </div>
             </div>
           </div>
+          )}
         </ConfigSection>
 
         {/* Footer */}
