@@ -12,7 +12,7 @@ export const defaultConfig: PanelConfig = {
   production: {
     visible: true,
     title: 'EM PRODUÇÃO',
-    width: 30,
+    width: 50,
     headerHeight: 72,
     headerBg: '#636363',
     headerColor: '#ffffff',
@@ -42,7 +42,7 @@ export const defaultConfig: PanelConfig = {
   ready: {
     visible: true,
     title: 'PRONTOS',
-    width: 40,
+    width: 50,
     headerHeight: 72,
     headerBg: '#0011FA',
     headerColor: '#ffffff',
@@ -70,7 +70,7 @@ export const defaultConfig: PanelConfig = {
       }
   },
   advertising: {
-    visible: true,
+    visible: false,
     width: 30,
     headerVisible: true,
     headerHeight: 72,
@@ -84,7 +84,7 @@ export const defaultConfig: PanelConfig = {
     websiteUrl: undefined,
     newsMode: false,
     newsSource: 'panelinha',
-    newsFontSize: 2.5, // Tamanho da fonte para visualização à distância
+    newsFontSize: 2.5,
     showBorder: false,
     showShadow: false
   },
@@ -101,9 +101,9 @@ export const defaultConfig: PanelConfig = {
     production: false,
     ready: false,
     productionFile: '/sounds/kds_sound_bell1.wav',
-    readyFile: 'generated', // Indica uso do som gerado integrado
-    readySoundType: 'padrao', // Som estilo aeroporto como padrão
-    airportTones: 1 // Padrão 1 tom
+    readyFile: 'generated',
+    readySoundType: 'padrao',
+    airportTones: 1
   },
   textToSpeech: {
     enabled: false,
@@ -169,12 +169,12 @@ export const defaultConfig: PanelConfig = {
     numeroLicenca: ''
   },
   generalHeader: {
-    enabled: false,
+    enabled: true,
     mode: 'text',
-    text: 'Oie Painel de Senhas',
+    text: 'Oie! - Painel de Senhas',
     fontFamily: 'Tahoma',
     fontSize: 2,
-    backgroundColor: '#0011FA',
+    backgroundColor: '#000000',
     textColor: '#ffffff',
     height: 60,
     imageUrl: undefined
