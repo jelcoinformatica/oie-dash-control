@@ -318,7 +318,7 @@ const Index = () => {
         {/* Cabeçalho Geral */}
         {config.generalHeader?.enabled && (
           <div 
-            className="w-full flex items-center justify-center flex-shrink-0"
+            className="w-full flex items-center justify-center flex-shrink-0 overflow-hidden"
             style={{
               backgroundColor: config.generalHeader.backgroundColor,
               color: config.generalHeader.textColor,
@@ -327,7 +327,15 @@ const Index = () => {
               fontSize: `${config.generalHeader.fontSize}rem`
             }}
           >
-            <span className="font-bold tracking-wide">{config.generalHeader.text}</span>
+            {config.generalHeader.mode === 'image' && config.generalHeader.imageUrl ? (
+              <img 
+                src={config.generalHeader.imageUrl} 
+                alt="Cabeçalho" 
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <span className="font-bold tracking-wide">{config.generalHeader.text}</span>
+            )}
           </div>
         )}
         {/* Header de Identificação do Painel */}

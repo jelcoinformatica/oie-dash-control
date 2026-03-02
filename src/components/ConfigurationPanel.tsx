@@ -474,47 +474,154 @@ export const ConfigurationPanel = ({
                 className="scale-75"
               />
             </div>
+
+            {/* Modo: Texto ou Imagem */}
             <div>
-              <Label className="text-xs font-medium">Texto</Label>
-              <Input
-                type="text"
-                value={config.generalHeader?.text || 'Oie Painel de Senhas'}
-                onChange={(e) => updateConfig('generalHeader.text', e.target.value)}
-                className="mt-1 h-8"
-                placeholder="Ex: Oie Painel de Senhas"
-              />
-            </div>
-            <div>
-              <Label className="text-xs font-medium">Fonte</Label>
-              <Select
-                value={config.generalHeader?.fontFamily || 'Tahoma'}
-                onValueChange={(value) => updateConfig('generalHeader.fontFamily', value)}
+              <Label className="text-xs font-medium">Modo</Label>
+              <RadioGroup
+                value={config.generalHeader?.mode || 'text'}
+                onValueChange={(value: 'text' | 'image') => updateConfig('generalHeader.mode', value)}
+                className="flex gap-4 mt-1"
               >
-                <SelectTrigger className="h-8 mt-1">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Tahoma">Tahoma</SelectItem>
-                  <SelectItem value="Arial">Arial</SelectItem>
-                  <SelectItem value="Verdana">Verdana</SelectItem>
-                  <SelectItem value="Helvetica">Helvetica</SelectItem>
-                  <SelectItem value="Georgia">Georgia</SelectItem>
-                  <SelectItem value="Impact">Impact</SelectItem>
-                  <SelectItem value="Trebuchet MS">Trebuchet MS</SelectItem>
-                </SelectContent>
-              </Select>
+                <div className="flex items-center space-x-1">
+                  <RadioGroupItem value="text" id="header-mode-text" />
+                  <Label htmlFor="header-mode-text" className="text-xs">Texto</Label>
+                </div>
+                <div className="flex items-center space-x-1">
+                  <RadioGroupItem value="image" id="header-mode-image" />
+                  <Label htmlFor="header-mode-image" className="text-xs">Imagem</Label>
+                </div>
+              </RadioGroup>
             </div>
-            <div>
-              <Label className="text-xs font-medium">Tamanho da Fonte: {config.generalHeader?.fontSize || 2}rem</Label>
-              <Slider
-                value={[config.generalHeader?.fontSize || 2]}
-                onValueChange={([value]) => updateConfig('generalHeader.fontSize', value)}
-                min={1}
-                max={5}
-                step={0.5}
-                className="mt-2"
-              />
-            </div>
+
+            {/* Controles de Texto */}
+            {(config.generalHeader?.mode || 'text') === 'text' && (
+              <>
+                <div>
+                  <Label className="text-xs font-medium">Texto</Label>
+                  <Input
+                    type="text"
+                    value={config.generalHeader?.text || 'Oie Painel de Senhas'}
+                    onChange={(e) => updateConfig('generalHeader.text', e.target.value)}
+                    className="mt-1 h-8"
+                    placeholder="Ex: Oie Painel de Senhas"
+                  />
+                </div>
+                <div>
+                  <Label className="text-xs font-medium">Fonte</Label>
+                  <Select
+                    value={config.generalHeader?.fontFamily || 'Tahoma'}
+                    onValueChange={(value) => updateConfig('generalHeader.fontFamily', value)}
+                  >
+                    <SelectTrigger className="h-8 mt-1">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Tahoma">Tahoma</SelectItem>
+                      <SelectItem value="Arial">Arial</SelectItem>
+                      <SelectItem value="Verdana">Verdana</SelectItem>
+                      <SelectItem value="Helvetica">Helvetica</SelectItem>
+                      <SelectItem value="Georgia">Georgia</SelectItem>
+                      <SelectItem value="Impact">Impact</SelectItem>
+                      <SelectItem value="Trebuchet MS">Trebuchet MS</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label className="text-xs font-medium">Tamanho da Fonte: {config.generalHeader?.fontSize || 2}rem</Label>
+                  <Slider
+                    value={[config.generalHeader?.fontSize || 2]}
+                    onValueChange={([value]) => updateConfig('generalHeader.fontSize', value)}
+                    min={1}
+                    max={5}
+                    step={0.5}
+                    className="mt-2"
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <Label className="text-xs font-medium">Cor do Texto</Label>
+                    <Input
+                      type="color"
+                      value={config.generalHeader?.textColor || '#ffffff'}
+                      onChange={(e) => updateConfig('generalHeader.textColor', e.target.value)}
+                      className="h-8 mt-1 border-2"
+                    />
+                  </div>
+                </div>
+              </>
+            )}
+
+            {/* Controles de Imagem */}
+            {config.generalHeader?.mode === 'image' && (
+              <div className="space-y-2">
+                <div>
+                  <Label className="text-xs font-medium">Imagem do Cabeçalho</Label>
+                  <p className="text-[10px] text-gray-400 mb-1">
+                    Dimensão recomendada: <strong>1920 x {config.generalHeader?.height || 60}px</strong> (L x A)
+                  </p>
+                  <div className="flex gap-2">
+                    <Input
+                      type="text"
+                      value={config.generalHeader?.imageUrl || ''}
+                      onChange={(e) => updateConfig('generalHeader.imageUrl', e.target.value)}
+                      className="mt-1 h-8 flex-1"
+                      placeholder="URL da imagem ou selecione arquivo"
+                    />
+                  </div>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (event) => {
+                          updateConfig('generalHeader.imageUrl', event.target?.result as string);
+                        };
+                        reader.readAsDataURL(file);
+                      }
+                    }}
+                    style={{ display: 'none' }}
+                    id="header-image-upload"
+                  />
+                  <div className="flex gap-2 mt-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="text-xs h-7"
+                      onClick={() => document.getElementById('header-image-upload')?.click()}
+                    >
+                      <Upload className="w-3 h-3 mr-1" />
+                      Selecionar Imagem
+                    </Button>
+                    {config.generalHeader?.imageUrl && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="text-xs h-7 text-red-500"
+                        onClick={() => updateConfig('generalHeader.imageUrl', '')}
+                      >
+                        <X className="w-3 h-3 mr-1" />
+                        Remover
+                      </Button>
+                    )}
+                  </div>
+                </div>
+                {config.generalHeader?.imageUrl && (
+                  <div className="border rounded p-1 bg-gray-100">
+                    <p className="text-[10px] text-gray-400 mb-1">Preview:</p>
+                    <img 
+                      src={config.generalHeader.imageUrl} 
+                      alt="Preview cabeçalho" 
+                      className="w-full object-cover rounded"
+                      style={{ height: `${Math.min(config.generalHeader?.height || 60, 80)}px` }}
+                    />
+                  </div>
+                )}
+              </div>
+            )}
+
             <div>
               <Label className="text-xs font-medium">Altura: {config.generalHeader?.height || 60}px</Label>
               <Slider
@@ -526,25 +633,15 @@ export const ConfigurationPanel = ({
                 className="mt-2"
               />
             </div>
-            <div className="grid grid-cols-2 gap-2">
-              <div>
-                <Label className="text-xs font-medium">Cor de Fundo</Label>
-                <Input
-                  type="color"
-                  value={config.generalHeader?.backgroundColor || '#0011FA'}
-                  onChange={(e) => updateConfig('generalHeader.backgroundColor', e.target.value)}
-                  className="h-8 mt-1 border-2"
-                />
-              </div>
-              <div>
-                <Label className="text-xs font-medium">Cor do Texto</Label>
-                <Input
-                  type="color"
-                  value={config.generalHeader?.textColor || '#ffffff'}
-                  onChange={(e) => updateConfig('generalHeader.textColor', e.target.value)}
-                  className="h-8 mt-1 border-2"
-                />
-              </div>
+            <div>
+              <Label className="text-xs font-medium">Cor de Fundo</Label>
+              <Input
+                type="color"
+                value={config.generalHeader?.backgroundColor || '#0011FA'}
+                onChange={(e) => updateConfig('generalHeader.backgroundColor', e.target.value)}
+                className="h-8 mt-1 border-2"
+              />
+              <p className="text-[10px] text-gray-400 mt-0.5">Visível como fallback ou ao redor da imagem</p>
             </div>
           </div>
         </ConfigSection>
