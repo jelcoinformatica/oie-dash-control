@@ -143,6 +143,7 @@ export interface PanelConfig {
       enabled: boolean;
       displayOption: 'numeroEntrega' | 'numeroVenda';
       showIndicator?: boolean;
+      showDeliveryName?: boolean;
     };
     ficha: {
       enabled: boolean;

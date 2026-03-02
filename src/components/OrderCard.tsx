@@ -25,6 +25,7 @@ interface OrderCardProps {
         enabled: boolean;
         displayOption: 'numeroEntrega' | 'numeroVenda';
         showIndicator?: boolean;
+        showDeliveryName?: boolean;
       };
       ficha: {
         enabled: boolean;
@@ -86,7 +87,8 @@ const AutoFitCardContent = ({
   showModuleIndicator,
   moduleIndicator,
   fontSize,
-  getDeliveryPlatformName
+  getDeliveryPlatformName,
+  showDeliveryName = false
 }: {
   isOnlineDelivery: RegExpMatchArray | null;
   displayNumber: string;
@@ -96,6 +98,7 @@ const AutoFitCardContent = ({
   moduleIndicator: string;
   fontSize: number;
   getDeliveryPlatformName: (prefix: string) => string;
+  showDeliveryName?: boolean;
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
@@ -143,7 +146,7 @@ const AutoFitCardContent = ({
     <div ref={containerRef} className="w-full h-full flex flex-col justify-between items-center py-1 overflow-hidden">
       {/* Prefixo no topo - menor e discreto pois o logo já identifica */}
       <div className="flex-shrink-0 flex items-start justify-center" style={{ minHeight: 0 }}>
-        {showPrefix && (
+        {showPrefix && showDeliveryName && (
           <span style={{ 
             fontStyle: 'italic', 
             fontWeight: 'normal',
@@ -313,6 +316,7 @@ export const OrderCard = ({
         moduleIndicator={moduleIndicator}
         fontSize={fontSize}
         getDeliveryPlatformName={getDeliveryPlatformName}
+        showDeliveryName={config?.modules?.entrega?.showDeliveryName || false}
       />
       
       {/* Hidden optional content */}
