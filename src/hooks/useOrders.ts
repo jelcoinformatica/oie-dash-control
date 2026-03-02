@@ -335,10 +335,14 @@ export const useOrders = (ttsConfig: TTSConfig, autoExpeditionConfig: AutoExpedi
       
       console.log(`✅ Processo de geração concluído`);
       
-      await new Promise(resolve => setTimeout(resolve, 200));
-      await loadOrders();
+      // Atualizar estado diretamente a partir do array em memória (evita race condition com polling)
+      const { fetchProductionOrders: fetchProd, fetchReadyOrders: fetchReady } = await import('../services/orderService');
+      const prodData = await fetchProd(apiBaseUrlRef.current, true); // forçar mock
+      const readyData = await fetchReady(apiBaseUrlRef.current, true);
+      setProductionOrders(prodData);
+      setReadyOrders(readyData);
       
-      console.log(`🔄 Estado recarregado completo`);
+      console.log(`🔄 Estado recarregado completo: ${prodData.length} produção, ${readyData.length} prontos`);
       
     } catch (error) {
       console.error('❌ Erro geral ao gerar pedidos:', error);
@@ -398,6 +402,11 @@ export const useOrders = (ttsConfig: TTSConfig, autoExpeditionConfig: AutoExpedi
 
     // 2. Configura um intervalo para atualizações periódicas a cada 10 segundos.
     const intervalId = setInterval(() => {
+      // Re-verificar flag de simulação a cada tick (pode ter sido ativada entre renders)
+      if (localStorage.getItem('simulation-force-mock') === 'true') {
+        console.log('🎮 Simulação detectada no polling — ignorando chamada à API.');
+        return;
+      }
       console.log('Polling for new orders...');
       loadOrdersRef.current();
     }, 10000);
