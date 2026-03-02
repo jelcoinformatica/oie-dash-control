@@ -170,12 +170,14 @@ export interface PanelConfig {
   };
   generalHeader?: {
     enabled: boolean;
+    mode: 'text' | 'image';
     text: string;
     fontFamily: string;
     fontSize: number;
     backgroundColor: string;
     textColor: string;
     height: number;
+    imageUrl?: string;
   };
   splash?: {
     enabled: boolean;

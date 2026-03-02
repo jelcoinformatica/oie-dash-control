@@ -170,12 +170,14 @@ export const defaultConfig: PanelConfig = {
   },
   generalHeader: {
     enabled: false,
+    mode: 'text',
     text: 'Oie Painel de Senhas',
     fontFamily: 'Tahoma',
     fontSize: 2,
     backgroundColor: '#0011FA',
     textColor: '#ffffff',
-    height: 60
+    height: 60,
+    imageUrl: undefined
   },
   splash: {
     enabled: false
