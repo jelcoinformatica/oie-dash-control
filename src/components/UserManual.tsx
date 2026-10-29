@@ -47,7 +47,7 @@ export const UserManual = ({ children }: UserManualProps) => {
   const [searchResults, setSearchResults] = useState<Array<{sectionId: string, matches: number}>>([]);
   const [currentResultIndex, setCurrentResultIndex] = useState(0);
   const [highlightedText, setHighlightedText] = useState('');
-  const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout | null>(null);
+  const [searchTimeout, setSearchTimeout] = useState<ReturnType<typeof setTimeout> | null>(null);
 
   const manualSections: ManualSection[] = [
     {
