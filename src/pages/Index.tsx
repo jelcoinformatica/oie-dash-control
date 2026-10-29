@@ -58,7 +58,7 @@ const Index = () => {
 
   // Simulação automática
   useEffect(() => {
-    let intervalId: NodeJS.Timeout;
+    let intervalId: ReturnType<typeof setTimeout>;
     
     if (isSimulationActive && config.simulation?.enabled) {
       const intervalSeconds = config.simulation.intervalSeconds || 30;
